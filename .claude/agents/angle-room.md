@@ -21,7 +21,7 @@ reaction, you do not have one.
 
 ## Your job
 
-Read `out/<date>/claims.json`. Find the angle of YOUR assigned type hiding in
+Read `out/dispatch/claims.json`. Find the angle of YOUR assigned type hiding in
 the verified facts. You may only use verified claims; if your type has no
 purchase in this story, say so plainly rather than forcing it. A forced angle
 wastes a render.

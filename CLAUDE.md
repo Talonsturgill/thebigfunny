@@ -96,9 +96,9 @@ Everything else ships.
 
 - `prompts/` — `BIGFUNNY_ROUTINE.md` is the master prompt and the SOURCE OF
   TRUTH for run behavior. `ROUTINE_PROMPT.txt` is the thin trigger pointer.
-- `knowledge/` — the studio brain: `CAST_BIBLE.md` (who they are and how they
-  talk), `ANGLE_TAXONOMY.md` (the seven angles that land), `COMEDY_DOCTRINE.md`
-  (the craft standard), `FIELD_NOTES.md` (living lessons).
+- `knowledge/` — the studio brain: `CAST_BIBLE.md` (who they are, how they talk,
+  and the 60 second shape), `ANGLE_TAXONOMY.md` (the seven angles that land and
+  the first law), `FIELD_NOTES.md` (living lessons and inherited scar tissue).
 - `config/` — `brand.yaml` (voice and cast tokens), `sources.yaml` (the seven
   standing beats and where to look), `scoring_rubric.yaml` (gates, including the
   funny gate).
@@ -134,10 +134,13 @@ of them are scar tissue.
 ## Engine quickstart
 
 ```
-cd video-engine && npm install
-bash scripts/render.sh draft            # half-res preview, iterate here
-bash scripts/render.sh final            # 1080x1920 ship quality
-bash scripts/render.sh still 90         # single frame
+(cd video-engine && npm install)   # once. render.sh lives at the REPO ROOT,
+bash scripts/render.sh draft       # not in video-engine/, so run these from there.
+bash scripts/render.sh final       # 1080x1920 ship quality
+bash scripts/render.sh still 90    # single frame
 ```
+
+`render.sh` reads `out/dispatch/episode_props.json`, which `scripts/build_scenes.py`
+writes from the VO timings. There is nothing to render until the VO exists.
 
 Iterate on DRAFT renders. Only the final gate and the panel see a full render.

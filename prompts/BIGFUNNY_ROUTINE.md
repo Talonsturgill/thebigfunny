@@ -39,7 +39,7 @@ is yours.
    from it before you draw anything.**
 4. Read `knowledge/FIELD_NOTES.md`. Most rules here are scar tissue; do not
    relearn a lesson that is already written down.
-5. `mkdir -p out/<date>` for scratch. `runs/<date>/` is for shipped artifacts
+5. `mkdir -p out/dispatch` for scratch (live working dir, gitignored). `runs/<date>/` is for shipped artifacts
    only.
 
 ## PHASE 1: RESEARCH (wide, parallel, non-recursive)
@@ -71,7 +71,7 @@ retracted or corrected.
   ends channels.
 - Two independent sources for any number that carries an episode.
 
-Output: `out/<date>/claims.json`. Every downstream phase draws facts ONLY from
+Output: `out/dispatch/claims.json`. Every downstream phase draws facts ONLY from
 this file. If it is not in claims.json, it does not go in the script.
 
 ## PHASE 3: PICK THE STORY
@@ -125,8 +125,8 @@ out, the Institution answers, the button.
 - **Nothing explains a joke that already landed.** Cut every such line.
 - Every factual line carries its claim-id inline in the working draft.
 
-Target 50 to 58 seconds spoken. Read it aloud in your head at delivery pace, not
-reading pace. A 60 second script is roughly 130 to 150 words, not 200.
+Target 48 to 55 seconds spoken. Read it aloud in your head at delivery pace, not
+reading pace. A 55 second script is roughly 120 to 140 words, not 200.
 
 ### 4.2 Art direction
 
@@ -152,8 +152,14 @@ signature.
 
 ## PHASE 4.5: GATE 0 (before any scene code)
 
+Write `out/dispatch/storyboard.json` (beats, shots, assets per shot), then
+spawn `storyboard-critic` on it. This is the cheap save; a board fixed here
+is free and the same fix after a full-res render is not.
+
 Do not render until all of these are true:
-- Script is <= 58 seconds at delivery pace
+- Script is <= 56 seconds at delivery pace. The render adds a 1.5s
+  tail, and build_scenes.py hard-fails above 60.0s total, so 56 leaves
+  room. Do not push to the arithmetic limit.
 - Every factual line has a claim-id in `claims.json`
 - The angle is one sentence and maps to a named type
 - The Institution has no face anywhere in the storyboard
@@ -166,9 +172,12 @@ Failing Gate 0 is cheap. Failing after a render is not.
 
 ## PHASE 5: BUILD
 
-1. Build the VO. Use `.claude/skills/bigfunny-dispatch/` for synthesis, then
-   `vo_qc.py` for word error rate against the script. A VO that does not match
-   the script fails; do not hand-wave a bad take.
+1. Build the VO with `.claude/skills/bigfunny-dispatch/` (run
+   `scripts/setup_env.sh` first; the voice stack needs `.venv-voice`). Listen
+   back against the script and reject a take that drops or garbles a line.
+   KNOWN GAP: the ported path speaks all three characters in ONE cloned voice.
+   Until that is fixed, say so in the run report rather than letting the panel
+   grade as if the cast were realised.
 2. Force-align captions to the VO audio. Captions are burned in and must track
    the spoken word, because the show is watched muted more often than not.
 3. Scene code in `video-engine/src/`. Compose from `src/lib/`.
@@ -176,6 +185,10 @@ Failing Gate 0 is cheap. Failing after a render is not.
    Three to five cheap passes beat one expensive one.
 5. `bash scripts/render.sh final` only when the draft is right.
 6. `bash scripts/mux_and_verify.sh` for audio mux and integrity.
+7. `python3 scripts/render_gate.py <final.mp4>` — the OBJECTIVE renders_clean
+   gate. Dependency-free container parse: duration under 60.0s, 1080x1920, a
+   real audio track, non-trivial size. It is not a prose judgement and it is not
+   optional.
 
 ## PHASE 6: GATES + PANEL (the human is never the QA)
 
@@ -219,6 +232,21 @@ Every run, pass or fail:
 3. Spawn `upgrade-engineer` for 0 to 3 bounded, verified improvements to the
    machine. Log them to `ledger/upgrades.json`. Each set reverts as one
    `upgrade(<date>):` commit.
+
+**Commit Phase 8 separately.** Phase 7 already merged the run branch, so
+anything written now would otherwise be stranded in a dirty tree on a dead
+branch and the next run would check out main and get none of it, while
+instincts.json claimed the machine learned.
+
+```
+git fetch origin main && git checkout -B upgrade/<date> origin/main
+# retro + upgrade edits
+git commit -m "upgrade(<date>): <one line>"
+git push -u origin upgrade/<date>
+```
+
+Open it ready, merge it, same as a run. One commit for the whole set so it
+reverts as one.
 
 The machine is supposed to get better. A run that ships and learns nothing is
 half a run.

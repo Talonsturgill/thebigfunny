@@ -1,76 +1,54 @@
 ---
-name: alaska-dispatch
-description: Reference engine + helpers for producing an Alaska.Ai video "Dispatch" — a ~60s, 1080x1350, narrated cinematic video tying a recent verifiable Alaska story to an honest AI/ML angle. Use when the routine (see docs/ROUTINE_SPEC.md) needs to build a Dispatch video to the locked production standard (docs/VIDEO_PRODUCTION_STANDARD.md). Provides a proven, hand-coded PIL/numpy renderer, an edge-tts VO + sound-design + loudnorm-gated mix, cinematic finishing, and open captions. This is a STARTING POINT TO ADAPT per story, not a rigid template — vary the visual concept every time.
+name: bigfunny-dispatch
+description: VO synthesis, audio build and voice QC for The Big Funny. Turns a locked script into narration audio plus word timings for forced-aligned captions. Rendering is Remotion (video-engine/ + scripts/render.sh), NOT this skill.
 ---
 
-# Alaska.Ai Dispatch — production engine
+# bigfunny-dispatch
 
-Hand-coded illustration video (PIL + numpy + ffmpeg). No AI-generated imagery — that
-is the brand signature. Pairs with `docs/VIDEO_PRODUCTION_STANDARD.md` (craft bible) and
-`docs/ROUTINE_SPEC.md` (the routine). Fonts live in `../alaska-ai-brief/fonts/` (committed).
+The audio half of an episode. Script in, narration audio and word timings out.
 
-## Files
-- `easing.py` — Penner/easings.net curves + closed-form spring (vectorized). Import as `E`.
-- `post_grade.py` — standalone cinematic finishing pass (ACES, split-tone, bloom, grain,
-  vignette, CA, dither) over a frame; also integrated inline in the renderer.
-- `render_v2.py` — the reference renderer: 4:5 scene (glacial water + aurora + hero + parallax
-  drift + push-in), finishing, crisp UI, open captions. `test`/range CLI. Currently authored
-  at 30s/900 frames for the beluga Dispatch — **adapt per run** (see below).
-- `audio_build.py` — edge-tts VO assembly (5 segments → timed vo.wav). New session CA setup
-  required before edge-tts (append /etc/ssl/certs/ca-certificates.crt to certifi; export
-  SSL_CERT_FILE+SSL_CERT_DIR=/etc/ssl/certs; install edge-tts with pip --break-system-packages).
-- `audio_v2.py` — sound design + mix: synth underwater bed + distant whale + sonar, EQ-carved
-  + sidechain-ducked VO, two-pass loudnorm to -14 LUFS/-1.5 dBTP, plus the **measurement gate**.
-- `render_v3.py` — the CURRENT renderer: 9:16 1080x1920, 1800f/60s. Heroes get craft swim +
-  180° motion blur + DoF; continuous life (marine snow + a distant pod + a scrubbing playhead +
-  sonar every ~3s) so something moves every <5s; **HUD + captions composited AFTER the grade so
-  they stay razor-sharp**; voice-synced kinetic captions; unsharp acuity pass.
-- `craft.py` — illustration craft layer: `swim_deform`, `motion_blur`, `depth_blur`, `add_texture`.
-- `vo60.py` — 60s edge-tts VO that ALSO captures per-phrase word-timings → `audio/words60.json`
-  (captions are built from these, so they always match the voice). Emits `timing60.json`.
-- `audio_v3.py` — the 60s mix + single-pass loudnorm + the audio gate (prints PASS).
-- `quality_gate.py` — **the OBJECTIVE ship/fail gate.** Measures sharpness, HUD/caption text
-  legibility, the ≤5s event cadence, and caption sync; exits non-zero + writes `quality_report.json`.
-  This is the checks-and-balances that catches blur / illegible text / dead pacing / desync so a
-  human never has to. MUST pass before encoding (see ROUTINE_SPEC Phase 6, Gate A).
+**This skill does not render video.** The picture is Remotion:
+`video-engine/` plus `scripts/render.sh`. An earlier version of this file
+documented a retired PIL frame renderer as the production pipeline at the wrong
+aspect ratio, which would have sent a run down a dead path on its first day.
 
-## How to use (per run — VARY THE CONCEPT)
-1. This engine is a REFERENCE, not a stamp. Each Dispatch must use a different visual
-   archetype (see ROUTINE_SPEC Phase 3) and its own scene code. Copy the relevant pieces,
-   re-derive the scene/hero for the new story, keep the finishing + audio + caption + gate
-   machinery (those are the reusable quality layer).
-2. For ~60s: set the frame count to 1800 (NF) and re-time the VO segments, caption windows,
-   beat frames, and the music window to 60s. ~130–150 VO words.
-3. Render in the BACKGROUND, in parallel chunks (e.g. 3×600), never blocking the run.
-4. Before muxing/delivering: run `quality_gate.py` (objective Gate A — MUST exit 0) AND the audio
-   gate, THEN a visual contact sheet for taste. Never encode a render that fails the quality gate.
-5. Encode a ~12–14 Mbps faststart H.264/AAC post-master; deliver via `scripts/upload_video.py`
-   (→ one-click link) + `scripts/dispatch_email.py` (→ Gmail draft). Never base64 video
-   through the model.
+## What is here
 
-## Dependencies (install in the routine environment setup script; cached)
-- ffmpeg, Python 3.11+, `pip install --break-system-packages pillow numpy scipy edge-tts kokoro soundfile`
-  (Kokoro = Apache-2.0 publish voice, ~327MB cached; edge-tts = drafts. Voice roster: config/voices.yaml)
-- `rclone` for the upload step (`curl https://rclone.org/install.sh | bash`)
-- Fonts are committed under `../alaska-ai-brief/fonts/` — no download needed.
+| File | What |
+| --- | --- |
+| `build_vo.py` | Script to narration audio. |
+| `vo_backends.py`, `vo_gemini.py` | Synthesis backends. |
+| `vo_qc.py` | Voice QC helpers. **Note the gap below.** |
+| `vo60.py` | 60 second timing helpers. |
+| `audio_build.py` | Mix narration with music and sfx. |
+| `dispatch_core.py`, `easing.py`, `craft.py`, `dimensional.py` | Shared helpers. |
+| `post_grade.py` | Post-render grade pass. |
 
-## Locked brand tokens
-Deep flag-blue #081838, Pantone gold #FFC72C, aurora cyan-green #1AE5A4 + violet #7B5BFF,
-glacier/teal/spruce/slate/snow/coral; Fraunces Black display (opsz 144 wght 900), JetBrains
-Mono telemetry; vivid aurora signature; eyebrow "ALASKA.AI / FIELD SIGNAL"; signoff "alaska.ai".
+## The contract with the rest of the pipeline
 
-## On-screen copy punctuation (hard rule)
-NEVER use an em dash or en dash in ANY on-screen text, label, kinetic caption, or HUD string, ever.
-Zero exceptions. Use a middot "·", a comma, a period, parentheses, or a colon as the separator/pause,
-and write ranges as "X to Y". (Same rule the LinkedIn caption gate `scripts/caption_check.py` enforces
-on the post copy, and `config/brand.yaml` on the voice.)
+Audio work lands in `out/dispatch/`, which is the live scratch dir for the
+current run. Downstream, `scripts/align_captions.py` produces word timings and
+`scripts/build_scenes.py` turns those into `episode_props.json`, which is what
+`scripts/render.sh` feeds to Remotion. Nothing renders until the VO exists.
 
-## THE DIMENSIONAL ENGINE (default for new Dispatches, added 2026-07-10)
+## Format
 
-`dimensional.py` is the 3D cinematic raymarcher (Taichi CPU JIT, ~0.45-0.7s/frame at FULL
-1080x1920 with soft shadows, AO, specular, fog, depth-DOF). Author each shot as a scene file
-(SDF `_scene` + `_mat` hooks + a `cam_at(f)` camera move) — see `demo_dimensional.py` (the
-'Bristol Bay, Dawn' proof piece) and docs/craft/DIMENSIONAL_CRAFT.md for the doctrine and the
-ten look levers. bpy is available for Workbench mesh renders (~2.1s/f, needs libEGL) and Cycles
-hero bakes (~28s/f, bake-only). The 2D PIL path remains for HUD/caption/brand composites via
-dispatch_core, layered OVER the dimensional render.
+1080x1920 vertical, 60 seconds or under. The 60s ceiling is a hard gate, not a
+target: `build_scenes.py` refuses to write props for anything longer, and
+`scripts/render_gate.py` refuses to pass the finished file.
+
+## KNOWN GAP: one voice, three characters
+
+The ported synthesis path speaks every line in a SINGLE cloned reference voice.
+This show has three characters (Ray, Dee, the Institution) and they are the whole
+premise, so a single-voice read collapses the cast into a podcast.
+
+This is tracked in `.claude/WORKLOG.md`. Do not paper over it: if a run
+synthesises all three in one voice, say so in the run's report rather than
+letting a scorer grade it as if the cast were realised.
+
+## Environment
+
+The voice stack needs `scripts/setup_env.sh` (builds `.venv-voice` with
+chatterbox / faster-whisper / resemblyzer). Under system python these imports
+fail. Run setup before the first VO build.

@@ -8,7 +8,21 @@ import json, os
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 OUT = os.path.join(REPO, "out", "dispatch")
 FPS = 30
-TAIL = 2.6  # hold after the last word
+
+# Hold after the last word.
+#
+# Was 2.6s on the upstream show, which had no duration ceiling. This show has a
+# HARD 60.0s gate, and 2.6 made the arithmetic contradict itself: Gate 0 admits a
+# script up to 58s, the render is script + TAIL, and 58.0 + 2.6 = 60.6 fails the
+# gate AFTER paying for a full-res render. That is exactly the cost Gate 0 exists
+# to avoid. A sixty second short does not need a two and a half second hold.
+TAIL = 1.5
+
+# The hard ceiling, from config/scoring_rubric.yaml (sixty_seconds gate).
+MAX_TOTAL_S = 60.0
+# What Gate 0 may admit. DERIVED, not written down separately, so the routine's
+# number and this one cannot drift apart again.
+MAX_SCRIPT_S = MAX_TOTAL_S - TAIL
 
 # scene -> index of the VO line that starts it. 2026-07-22 "the checkpoint lever frozen
 # at the midpoint" has 7 scenes (S1..S7 in video-engine/src/Episode.tsx, SCENE_COMPONENTS)
@@ -66,6 +80,28 @@ def _apply_caption_fixups(caps):
     return caps
 
 
+def _episode_scene_count():
+    """How many scenes Episode.tsx actually renders.
+
+    Episode.tsx falls back to hardcoded DEFAULT_BOUNDS when
+    `scenes.length !== SCENE_COMPONENTS.length`, and it does so SILENTLY: the
+    picture keeps the previous episode's frame timings while the audio follows
+    this episode's VO, so the words and the pictures drift with nothing printed.
+    That already happened once upstream and the comment at the top of
+    SCENE_START_LINE warns about it in prose, which is not a check.
+
+    So read the truth out of the component and compare. Prose is not a gate.
+    """
+    import re
+    ep = os.path.join(REPO, "video-engine", "src", "Episode.tsx")
+    if not os.path.exists(ep):
+        return None
+    m = re.search(r"const\s+SCENE_COMPONENTS\s*:[^=]*=\s*\[([^\]]*)\]", open(ep).read())
+    if not m:
+        return None
+    return len([p for p in (x.strip() for x in m.group(1).split(",")) if p])
+
+
 def main():
     lines = json.load(open(os.path.join(OUT, "vo_lines.json")))["lines"]
     caps = _apply_caption_fixups(json.load(open(os.path.join(OUT, "captions.json"))))
@@ -73,6 +109,28 @@ def main():
     last_end = max(L["end"] for L in lines)
     total_s = last_end + TAIL
     total_f = round(total_s * FPS)
+
+    # HARD: the 60 second law. Fail here, before the render, not at Phase 6 after
+    # paying for it.
+    if total_s > MAX_TOTAL_S:
+        raise SystemExit(
+            f"FAIL sixty_seconds: VO ends at {last_end:.2f}s, +{TAIL}s tail = "
+            f"{total_s:.2f}s, over the {MAX_TOTAL_S}s hard gate.\n"
+            f"       Cut the script to {MAX_SCRIPT_S:.1f}s or less and rebuild the VO.\n"
+            f"       Do NOT raise the ceiling; it is a law (CLAUDE.md)."
+        )
+
+    # HARD: the scene-count contract with Episode.tsx.
+    want = _episode_scene_count()
+    if want is not None and want != len(SCENE_START_LINE):
+        raise SystemExit(
+            f"FAIL scene_count: SCENE_START_LINE has {len(SCENE_START_LINE)} entries but "
+            f"Episode.tsx renders {want} scenes.\n"
+            f"       Episode would SILENTLY fall back to DEFAULT_BOUNDS and the picture "
+            f"would drift from the words.\n"
+            f"       Fix SCENE_START_LINE (this file) or SCENE_COMPONENTS (Episode.tsx) "
+            f"so they agree."
+        )
 
     bounds = [round(start[si] * FPS) for si in SCENE_START_LINE]
     scenes = []

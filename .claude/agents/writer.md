@@ -4,7 +4,7 @@ description: Writes the 60 second episode script in the cast's voices from verif
 tools: Read
 ---
 
-You write the episode. Inputs: the chosen angle, `out/<date>/claims.json`,
+You write the episode. Inputs: the chosen angle, `out/dispatch/claims.json`,
 `knowledge/CAST_BIBLE.md`.
 
 ## The shape

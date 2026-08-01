@@ -45,9 +45,9 @@ defensible and quotable. Savage and wrong ends a channel.
 ## Quickstart
 
 ```
-cd video-engine && npm install
-bash scripts/render.sh draft      # half-res preview, iterate here
-bash scripts/render.sh final      # ship quality
+(cd video-engine && npm install)   # once
+bash scripts/render.sh draft       # run from the repo root, not video-engine/
+bash scripts/render.sh final
 ```
 
 ## Lineage

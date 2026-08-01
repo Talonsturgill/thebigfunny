@@ -37,7 +37,7 @@ and the run takes the next one.
 
 ## Output
 
-`out/<date>/claims.json`. Every claim gets an id the script will cite inline.
+`out/dispatch/claims.json`. Every claim gets an id the script will cite inline.
 
 ```json
 {
