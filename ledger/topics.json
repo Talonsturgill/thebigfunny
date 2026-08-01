@@ -1,0 +1,14 @@
+{
+  "_spec": {
+    "purpose": "30 day subject dedupe. The angle room and Phase 3 MUST read this before picking a story, and Phase 7 MUST append after delivery. A subject may not repeat within 30 days, and a BEAT should not run twice in any 3 episodes.",
+    "entry_schema": {
+      "run_date": "YYYY-MM-DD",
+      "episode_no": "int",
+      "beat": "beat id from config/sources.yaml",
+      "subject": "short slug",
+      "target": "the institution named",
+      "summary": "one line"
+    }
+  },
+  "entries": []
+}

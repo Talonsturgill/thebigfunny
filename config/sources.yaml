@@ -1,0 +1,135 @@
+# The Big Funny — standing beats and where to look
+#
+# Seven beats plus a wildcard. The structure exists to guarantee SUPPLY: the NO
+# EMPTY RUNS law means a run cannot end with "nothing happened today", and one
+# beat being quiet must never be able to stop the show. Something in at least
+# one of these categories happens every single day, with a document attached.
+#
+# The beats are also the variety mechanism. ledger/topics.json enforces a 30 day
+# no-repeat on subject, and a beat should not run twice in any three episodes.
+
+beats:
+  - id: the-fee
+    name: The Fee
+    covers: >
+      Shrinkflation, junk fees, subscription creep, resort fees, the tipping
+      screen on self-checkout, paying monthly for hardware you already own.
+    why_it_works: >
+      The most universally agreed grievance in America. Nobody defends a junk
+      fee, which means the audience is everyone.
+    sources:
+      - https://www.consumerfinance.gov/about-us/newsroom/
+      - https://www.ftc.gov/news-events/news/press-releases
+      - https://www.reddit.com/r/mildlyinfuriating/top/.json?t=day
+      - https://www.reddit.com/r/personalfinance/top/.json?t=day
+
+  - id: machine-said-no
+    name: The Machine Said No
+    covers: >
+      Insurance denials, automated rejection, algorithmic decisions about
+      people, customer service that is a closed loop, prior authorization.
+    why_it_works: >
+      The Institution is literally the antagonist. This beat writes the villain
+      for you.
+    sources:
+      - https://www.cms.gov/newsroom
+      - https://www.propublica.org/feeds/propublica/main
+      - https://www.reddit.com/r/HealthInsurance/top/.json?t=day
+
+  - id: the-job
+    name: The Job
+    covers: >
+      Layoffs, return-to-office mandates, AI replacing work, hustle culture,
+      LinkedIn-brain, job postings demanding 8 years of a 3 year old tool.
+    why_it_works: >
+      Everybody works. Also the beat with the best leaked-memo supply.
+    sources:
+      - https://layoffs.fyi/
+      - https://www.bls.gov/news.release/
+      - https://www.reddit.com/r/antiwork/top/.json?t=day
+      - https://www.reddit.com/r/recruitinghell/top/.json?t=day
+
+  - id: the-bill
+    name: The Bill
+    covers: >
+      Healthcare billing, rent, groceries, utilities, student loans, insurance,
+      the price of simply continuing to exist.
+    why_it_works: >
+      Highest emotional stakes of any beat. Handle with the most care on facts.
+    sources:
+      - https://www.bls.gov/cpi/
+      - https://www.consumerfinance.gov/data-research/consumer-complaints/
+      - https://www.reddit.com/r/medicalbill/top/.json?t=day
+
+  - id: the-suits
+    name: The Suits
+    covers: >
+      Executives saying something insane out loud, on an earnings call, in a
+      shareholder letter, in a leaked memo, in an interview they agreed to.
+    why_it_works: >
+      Pure Straight Face and Euphemism supply. They said it themselves, on the
+      record, which makes it both funny and safe.
+    sources:
+      - https://efts.sec.gov/LATEST/search-index?q=&dateRange=custom
+      - https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany
+      - https://www.sec.gov/news/pressreleases
+
+  - id: the-rules
+    name: The Rules
+    covers: >
+      DMV, TSA, permits, HOAs, licensing boards, the form that requires the
+      other form, regulations with an absurd concrete consequence.
+    why_it_works: >
+      Bureaucratic absurdity is bipartisan and visual. Excellent for the
+      Institution's paper family in the art library.
+    sources:
+      - https://www.federalregister.gov/api/v1/documents.json?per_page=40&order=newest
+      - https://www.regulations.gov/
+      - https://data.uspto.gov/
+
+  - id: the-feed
+    name: The Feed
+    covers: >
+      Platform decay, apps that got worse on purpose, AI slop, the influencer
+      economy, terms of service changes, features removed and sold back.
+    why_it_works: >
+      The audience lives here and feels it daily. Highest share rate.
+    sources:
+      - https://news.ycombinator.com/rss
+      - https://www.theverge.com/rss/index.xml
+      - https://www.reddit.com/r/assholedesign/top/.json?t=day
+
+wildcard:
+  name: The Wildcard
+  when: >
+    One story genuinely owns the country and ignoring it would make the show
+    look asleep. Use sparingly. The wildcard is NOT permission to do politics;
+    the punch-at-institutions rule and the no-partisanship rule both still
+    apply, and a story that cannot be told without picking a party is not a
+    wildcard, it is a trap.
+
+# Recall and enforcement feeds cut across every beat. A recall is a ready-made
+# episode: absurd, documented, non-partisan, and it ends on a real filing.
+cross_cutting:
+  - https://www.cpsc.gov/Newsroom/CPSC-RSS-Feed/Recalls
+  - https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds
+  - https://www.nhtsa.gov/recalls
+  - https://www.justice.gov/news/rss
+
+# Sentiment only, never the fact. Reddit and forums tell us what is RESONATING
+# today; they are never the source that clears Phase 2. Find the grievance here,
+# then go find the primary document, and if the document does not exist the
+# story does not exist.
+sentiment_only:
+  - reddit
+  - hacker news comments
+  - platform trending lists
+
+source_rules:
+  - A screenshot is not a source. A story dies unless a primary document,
+    filing, press release, statute, court record or dataset can be fetched and
+    quoted.
+  - Quote euphemisms VERBATIM. The exact corporate wording is the joke; a
+    paraphrase is both weaker and a fabrication risk.
+  - Two independent sources for any number that carries an episode.
+  - A retracted or corrected source kills the episode. Take the next story.

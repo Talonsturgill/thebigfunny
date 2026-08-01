@@ -1,0 +1,21 @@
+{
+  "_spec": {
+    "purpose": "Joke-structure variety. Without this the show becomes one gag shape repeated until it dies. An angle TYPE may not be used more than twice in any 7 episodes. Phase 3.5 reads it, Phase 7 appends.",
+    "angle_types": [
+      "euphemism",
+      "number",
+      "ratio",
+      "quiet-change",
+      "straight-face",
+      "precedent",
+      "who-benefits"
+    ],
+    "entry_schema": {
+      "run_date": "YYYY-MM-DD",
+      "angle_type": "one of angle_types",
+      "angle": "the one sentence",
+      "landed": "scorer funny subscore"
+    }
+  },
+  "entries": []
+}

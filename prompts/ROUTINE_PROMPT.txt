@@ -1,0 +1,8 @@
+Read prompts/BIGFUNNY_ROUTINE.md from main in Talonsturgill/thebigfunny and
+execute it end to end for today's date.
+
+That file is the SOURCE OF TRUTH for this routine's behavior. Follow it exactly,
+including the hard gates. A run that cannot clear a gate is killed, not softened.
+
+Ship autonomously per CLAUDE.md: merge the run to main in the same run. Draft the
+post copy to Gmail. Never post to a platform; a human posts.

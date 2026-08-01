@@ -1,0 +1,15 @@
+{
+  "_spec": {
+    "purpose": "Automation change trail. Phase 8's upgrade-engineer logs every machine change here. Each run's set reverts as one upgrade(<date>): commit.",
+    "entry_schema": {
+      "run_date": "YYYY-MM-DD",
+      "upgrade": "one line",
+      "files": [
+        "..."
+      ],
+      "verified_by": "how it was proven",
+      "commit": "sha"
+    }
+  },
+  "entries": []
+}

@@ -1,0 +1,180 @@
+# The Big Funny — scoring rubric and gates
+#
+# Two kinds of check. HARD GATES fail the run outright and no score can rescue
+# them. The WEIGHTED SCORE decides whether a run that is legal and true is also
+# good enough to ship.
+#
+# Scores are honest. A run that is not funny gets killed, not shipped with a
+# generous grade. The upstream publication learned this the expensive way: a
+# rubric that always passes is a rubric that measures nothing, and the machine
+# will happily grade its own homework forever if you let it.
+
+hard_gates:
+
+  - id: sourced
+    name: Every claim traced to a document
+    rule: >
+      Every factual line in the VO carries a claim-id resolving to a primary
+      source that was actually fetched. Zero exceptions. A claim that cannot be
+      proven is cut, and if cutting it kills the angle then the episode dies and
+      we take the next story.
+    fails_run: true
+
+  - id: sixty_seconds
+    name: 60 seconds or under
+    rule: >
+      Final render duration <= 60.0s. Target 50 to 58. This is a law, not a
+      target (see CLAUDE.md). Over by any amount fails.
+    fails_run: true
+
+  - id: punch_direction
+    name: Punching at institutions only
+    rule: >
+      The target is an institution, a company, or a public figure acting in
+      public. No private individuals. No protected classes. A customer service
+      worker, a nurse, a driver or a clerk is a fellow hostage and is never the
+      target.
+    fails_run: true
+
+  - id: platform_survivable
+    name: Crude, not fatal
+    rule: >
+      No slurs, no hate, no sexual content, no harassment of a named private
+      person, no calls to action against anyone. Profanity is fine. These are
+      ban conditions, not demonetization conditions, and one of them ends the
+      channel.
+    fails_run: true
+
+  - id: not_partisan
+    name: No party takes a side
+    rule: >
+      The episode does not advantage or attack a political party or candidate.
+      If the story cannot be told without doing so, it is the wrong story.
+    fails_run: true
+
+  - id: institution_faceless
+    name: The Institution has no face
+    rule: >
+      The antagonist never emotes, never negotiates, never gets a facial
+      expression. It emits policy, hold music, euphemism and forms. See
+      CAST_BIBLE.md; a creative gate in the upstream engine already rejected a
+      cartoon envelope for pulling a face and that ruling is law here.
+    fails_run: true
+
+  - id: variety
+    name: Not a repeat
+    rule: >
+      Subject not run within 30 days (ledger/topics.json). Angle TYPE not used
+      more than twice in the last 7 episodes (ledger/bits.json). Visual system
+      diverges from recent runs per ledger/artwork.json divergence rules.
+    fails_run: true
+
+  - id: renders_clean
+    name: The file is actually good
+    rule: >
+      Final mp4 exists, has audio, captions are aligned to the VO within
+      tolerance, no dropped frames, no missing fonts, no text outside safe area,
+      1080x1920.
+    fails_run: true
+
+# ---------------------------------------------------------------------------
+
+weighted_score:
+  ship_threshold: 78
+  note: >
+    Below threshold the run does NOT ship. It commits its evidence to the branch
+    and stops. A killed run is a normal outcome and is cheaper than a bad
+    episode, because the feed is the brand.
+
+  criteria:
+
+    - id: funny
+      weight: 35
+      name: Is it actually funny
+      note: >
+        The heaviest single criterion, because it is the only open question. The
+        rest of this machine was already proven by two shipping publications;
+        funny is the new risk and it gets weighted like it.
+      scale:
+        90-100: >
+          A specific line or beat is quotable on its own, out of context. You
+          would send this to someone.
+        75-89: >
+          Lands. A real laugh or a hard exhale. Nothing in it embarrasses the
+          show.
+        60-74: >
+          Amusing. Understands the joke it is telling but does not fully land
+          it. Usually an angle problem, not a writing problem.
+        0-59: >
+          Not funny. Agreement is not comedy. If the episode's whole content is
+          "this is bad and we all know it", score here and kill it.
+
+    - id: angle
+      weight: 25
+      name: The angle is specific and earned
+      scale:
+        90-100: >
+          One sentence, no context needed, gets a reaction. Maps cleanly to a
+          named type in ANGLE_TAXONOMY.md.
+        75-89: Specific and real, if slightly familiar.
+        60-74: True but broad. Drifting toward "X is bad".
+        0-59: It IS "X is bad". Kill.
+
+    - id: ray
+      weight: 15
+      name: Ray is right, and says it the way a person would
+      scale:
+        90-100: >
+          The restatement IS the joke. Short, verdict-first, no explaining.
+        75-89: In voice, lands, maybe one line too many.
+        60-74: Ranting rather than concluding. Explaining the joke.
+        0-59: >
+          Ray is a fool, or a mouthpiece, or punching down. Any of those is a
+          voice failure and the fix is a rewrite, not a trim.
+
+    - id: craft
+      weight: 15
+      name: It looks like somebody made it
+      note: >
+        Depth bar from the ported engine: form shading, rim light, contact
+        shadow, real staging, deliberate shape language. The library mandate
+        applies, cast from the shelf before drawing anything new.
+      scale:
+        90-100: A frame from this could be a poster.
+        75-89: Clean, staged, on-model, reads at thumbnail size.
+        60-74: Flat, or default camera, or a shelf asset used without staging.
+        0-59: Looks generated.
+
+    - id: button
+      weight: 10
+      name: The receipt landed
+      note: >
+        Every episode ends on the actual document. It is the trust mechanism and
+        the show's signature.
+      scale:
+        90-100: >
+          The document on screen is legible, damning, and the last line lands
+          against it.
+        75-89: Receipt present and clear.
+        60-74: Receipt present but decorative or unreadable at speed.
+        0-59: No receipt. Fails the show's whole premise.
+
+# ---------------------------------------------------------------------------
+
+funny_gate:
+  note: >
+    The funny score is decided by the funny-critic agent, which is adversarial
+    by design and defaults to dissatisfaction. It reads the script COLD, with no
+    knowledge of how hard the run worked, because effort is not funny and the
+    machine will otherwise reward itself for trying.
+  procedure:
+    - Read the script with no production context.
+    - Name the single funniest line. If you cannot, the score is capped at 59.
+    - Ask, would a person send this to another person. If no, cap at 74.
+    - Ask, does any line explain a joke that already landed. Each one is -5.
+    - Ask, is the funniest thing in it a FACT or a WRITTEN LINE. Facts are the
+      house style and score higher; a run carried entirely by written jokes is
+      working against the machine's actual strengths and is capped at 84.
+  anti_gaming: >
+    The critic never sees the score it is being asked to beat, never sees the
+    ship threshold, and does not get told that a low score kills the run.

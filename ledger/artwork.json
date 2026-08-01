@@ -1,0 +1,19 @@
+{
+  "_spec": {
+    "purpose": "Visual variety engine, ported from the upstream publication. The art-direction pass MUST read this before choosing a look and MUST append after delivery. Divergence rules are HARD: hero_structure must differ from the last 4 entries; atmosphere from the last 3; palette_family from the last 3; continuity_device from the last 2; camera_language from the last 2. The CAST is exempt and is meant to repeat; freshness comes from staging.",
+    "entry_schema": {
+      "run_date": "YYYY-MM-DD",
+      "episode_no": "int",
+      "hero_structure": "the signature look",
+      "atmosphere": "technique",
+      "palette_family": "name",
+      "continuity_device": "panorama|edge-tease|motif|camera|palette",
+      "camera_language": "locked|push|handheld|whip|orbit",
+      "set": "which biome/interior",
+      "new_assets": [
+        "registered in ASSET_MANIFEST.md same commit"
+      ]
+    }
+  },
+  "entries": []
+}

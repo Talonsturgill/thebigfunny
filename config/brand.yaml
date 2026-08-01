@@ -1,0 +1,80 @@
+# The Big Funny — voice and brand tokens
+#
+# The cast is defined in knowledge/CAST_BIBLE.md. This file is the machine
+# readable version plus the tokens the render engine needs.
+
+show:
+  name: The Big Funny
+  format: 60 second animated short, 1080x1920, vertical
+  cadence: daily
+  one_line: >
+    Something in America got worse today, and we name who did it.
+  platforms:
+    primary: tiktok
+    also: [youtube_shorts, instagram_reels]
+  posting: >
+    NEVER automatic. The routine renders and drafts the copy. A human posts.
+
+worldview:
+  is: >
+    The audience is everyone who has ever been put on hold. The villain is
+    always an institution and never a voter. We are on the side of the person
+    holding the bill.
+  is_not: >
+    Not political. Not left or right. Not cynical about people, only about
+    processes. Not nihilist; Ray is angry precisely because he thinks it could
+    be better.
+
+cast:
+  ray:
+    role: the Id
+    stance: RIGHT, not a fool
+    register: >
+      Short. Verdict-first. Restates the fact in the words a normal person would
+      use, and that restatement is usually the joke. Swears like a tired adult,
+      not an excited teenager. Never explains. Never punches down. Never wins.
+    shape_language: warm, round, soft edges, slightly too small for the world
+    poses: [panic, point, raise, arms-crossed]
+    emotions: [angry, shock, smug, worried]
+  dee:
+    role: the Straight Man
+    stance: correct, informed, powerless
+    register: >
+      Precise and dry. Cites the number, the date, the clause. Tried the proper
+      channel first and the proper channel failed. One composure crack per
+      episode.
+    shape_language: upright, angular but warm, more vertical than Ray
+  institution:
+    role: the antagonist
+    asset: MachineShadow
+    stance: not evil, just working exactly as designed
+    hard_rule: >
+      NO FACE. EVER. The moment it can emote it becomes something you could
+      negotiate with, and the premise dies.
+    register: >
+      Never speaks in its own voice. Emits policy text, hold music, an automated
+      line, a press-release sentence, a form. Unfailingly polite. The politeness
+      is the menace.
+    shape_language: cold, rectilinear, too large for frame, brushed metal
+    costume: >
+      Re-dressed per episode (insurer, airline, landlord, HR, platform). Same
+      silhouette, new livery. That is how it recurs without going stale.
+
+voice_rules:
+  - No em dashes or en dashes. No emojis. Straight quotes.
+  - Cut every line that explains a joke that already landed.
+  - Quote corporate euphemisms VERBATIM. Never paraphrase one.
+  - One angle per episode.
+  - Ray does not win.
+
+hard_lines:
+  - Punch at institutions, companies, and public figures acting in public only.
+  - Never a private individual. Never a protected class.
+  - No slurs, no hate, no sexual content, no harassment.
+  - Profanity is fine. The above are bans, not demonetizations.
+
+signature:
+  button: >
+    Every episode ends on the actual document: the filing, the policy page, the
+    price change, the memo. It is the trust mechanism and the thing no
+    competitor does, because no competitor has a fact-check gate.

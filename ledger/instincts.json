@@ -1,0 +1,20 @@
+{
+  "_spec": {
+    "purpose": "Self-improvement. Phase 8 appends every run, pass or fail. What landed, what did not, what to do differently. Read at Phase 0 so the machine stops repeating itself.",
+    "entry_schema": {
+      "run_date": "YYYY-MM-DD",
+      "shipped": "bool",
+      "score": "int",
+      "worked": [
+        "..."
+      ],
+      "did_not": [
+        "..."
+      ],
+      "next_time": [
+        "..."
+      ]
+    }
+  },
+  "entries": []
+}
