@@ -24,6 +24,36 @@ fingerprint + camera + staging, not from re-drawing the cast.
 When you add or upgrade an asset, update this file in the same commit. Keep entries
 one line: `Name — kind — file — params/poses — status`.
 
+## THE BRAND (The Big Funny) — lib/brand.tsx
+REGISTERED 2026-08-01 with the file, same commit.
+
+The identity as COMPONENTS, because a style guide is a suggestion and a
+component is a fact. Reasoning in `knowledge/BRAND_BIBLE.md`.
+
+- `Stamp` — the rubber-stamp landing — brand.tsx — spring overshoot into a hit
+  with a small recoil, deliberate off-square rotation, two-offset ink bleed,
+  multiply blend. NEVER a fade: a stamp is a verdict and a verdict does not ease
+  in. A square stamp reads as a logo; a crooked one reads as something a person
+  did to a document — ACTIVE
+- `Wordmark` — THE BIG / FUNNY — brand.tsx — stamps ONCE at ~2s, after the hook.
+  Deliberately NOT at the top of the episode: branding before the hook is how
+  short-form loses its audience, and no brand survives not being watched — ACTIVE
+- `CaseNumber` / `caseNo(n)` — the archive spine — brand.tsx — small and
+  letter-spaced wide because it is a serial, not a headline. Backed by
+  `ledger/cases.json`; never reused, never skipped, including for killed runs —
+  ACTIVE
+- `Highlighter` — the marker swipe on the worst number — brand.tsx — wipes on
+  from the left with a 14px overshoot and a 1.2deg tilt, because a marker held
+  by a person does not stop where the word stops. A clean rectangle reads as a UI
+  highlight and kills the conceit. ONCE per episode — ACTIVE
+- `EndCard` — brand.tsx — case number plus the promise, nothing else. No
+  subscribe animation, no end-screen clutter: a show whose pitch is "we have the
+  receipt" should not end by begging — ACTIVE
+- Palette `BRAND` = INK / MANILA / CARBON / STAMP / HIGHLIGHT / PAPER. Built ON
+  existing library tokens (INK from Character.tsx, HIGHLIGHT from FX.tsx, CARBON
+  is PaperOfficeBG's dark anchor) rather than beside them, so brand and art
+  cannot drift. **One-stamp rule: STAMP red appears once per episode.**
+
 ## THE FIXED CAST (The Big Funny) — lib/cast.tsx
 REGISTERED 2026-08-01 with the file, in the same commit, per the manifest-drift
 rule (two upstream runs failed a gate because an asset existed but was never

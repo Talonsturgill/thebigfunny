@@ -44,6 +44,15 @@ Decisions already locked, do not relitigate:
 | 16 | `video-engine/src/lib/cast.tsx` (Ray, Dee) + manifest registration | DONE |
 | 17 | Typecheck the whole ported engine | DONE (tsc exit 0) |
 | 18 | README | DONE |
+| 19 | Code review of the first commit (15 findings, all valid) | DONE |
+| 20 | Delete dangerous/dead ported code (publish_feed, story_gate, 28 one-offs) | DONE |
+| 21 | Fix TAIL 60.6s overshoot + scene-count silent fallback, both now hard-fail | DONE |
+| 22 | `scripts/render_gate.py` (renders_clean had NO implementation) + self-test | DONE |
+| 23 | `scripts/refs_check.py` (largest defect class) + self-test | DONE |
+| 24 | Rewrite 4 agents that graded from missing files | DONE |
+| 25 | `knowledge/BRAND_BIBLE.md` | DONE |
+| 26 | `video-engine/src/lib/brand.tsx` + manifest registration | DONE |
+| 27 | `ledger/cases.json` case register | DONE |
 
 ## Not done yet (the honest list)
 
@@ -52,7 +61,8 @@ Decisions already locked, do not relitigate:
 | A | **Produce episode 1 end to end** | The only real test. Funny is the open question; everything above is scaffolding until one episode exists. |
 | B | Look-dev frame for Ray and Dee | `cast.tsx` typechecks but has never been rendered. Wrappers over a proven rig, so low risk, but unrendered is unproven. |
 | C | Institution costume system | `MachineShadow` exists; the per-episode re-dressing (insurer/airline/HR livery) is designed, not built. |
-| D | `--self-test` for the funny gate | House rule: a gate that cannot fail certifies nothing. The funny gate currently has no proof it can go red. |
+| D | `--self-test` for the funny gate | House rule: a gate that cannot fail certifies nothing. The funny gate is a MODEL judgement, so it cannot be self-tested the way render_gate and refs_check are. Open question: feed it a known-unfunny script and require a sub-60. |
+| G | Brand components never rendered | brand.tsx typechecks; the stamp overshoot, ink bleed and highlighter overshoot are unproven until a frame exists. |
 | E | Trigger config at claude.ai/code/routines | Schedule, model, connectors. Lives outside this repo. |
 | F | VO voices for Ray and Dee | Ported synthesis is tuned for a single narrator persona; this show has three. |
 

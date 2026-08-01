@@ -78,3 +78,63 @@ signature:
     Every episode ends on the actual document: the filing, the policy page, the
     price change, the memo. It is the trust mechanism and the thing no
     competitor does, because no competitor has a fact-check gate.
+
+# ---------------------------------------------------------------------------
+# Identity. Full reasoning in knowledge/BRAND_BIBLE.md; the enforceable version
+# is video-engine/src/lib/brand.tsx, because a style guide is a suggestion and a
+# component is a fact.
+
+promise: "We didn't make this up. We have the filing."
+
+palette:
+  # Built ON the art library's existing tokens, never beside them. INK and
+  # HIGHLIGHT already existed in Character.tsx and FX.tsx; CARBON is already
+  # PaperOfficeBG's dark anchor. A parallel palette drifts within a month.
+  ink:       "#101423"   # type, linework
+  manila:    "#E3D4B0"   # the folder, the show's ground
+  carbon:    "#4A5A66"   # the Institution, never warm
+  stamp:     "#C0392B"   # ONCE per episode. see one_stamp_rule.
+  highlight: "#FFE24A"   # the damning number. once.
+  paper:     "#F2EADA"   # documents, captions
+
+one_stamp_rule: >
+  Stamp red appears exactly once per episode, on the thing that matters most. A
+  second use halves the first. This is the discipline that keeps the palette
+  from becoming decoration.
+
+type:
+  headline: "Arial Black"   # heavy, unfussy, American, reads at thumbnail size
+  body: "Arial"
+  case_number: "Arial, letter-spaced wide, small. It is a serial, not a headline."
+
+case_numbers:
+  format: "CASE No. 0001"
+  ledger: ledger/cases.json
+  rule: >
+    Every RUN takes the next number, pass or fail. Never reused, never skipped.
+    A gap would be the show lying about its own record.
+
+signature_moves:
+  - "Cold open, NO logo. The first two seconds are the fact, flat. Branding
+     before the hook is how short-form loses its audience."
+  - "The wordmark STAMPS at ~2s. Once. Hard. Slight rotation, ink bleed. It
+     never fades in; a stamp is a verdict."
+  - "The highlighter swipes the single worst number. Hand-drawn, overshoots."
+  - "The button is the receipt: the real document, legible, stamp lands on it."
+  - "End card: case number and the promise. Nothing else. The restraint is the
+     flex; a show whose pitch is 'we have the receipt' should not end by begging."
+
+titles:
+  good: "CASE No. 0031 - The Ambulance Was Out Of Network. The Ambulance They Sent."
+  bad: "Insurance Company Denies Ambulance Claim (INSANE)"
+  rule: >
+    The title is the ANGLE, not a description. No clickbait punctuation, no
+    all-caps screaming (the wordmark already screams), no emoji ever.
+
+never:
+  - Abbreviate to TBF in reader-facing copy. It is always the whole dumb name.
+  - Slick, gradient, glassy or tech-brand. Slick reads as marketing and
+    marketing is what the Institution does.
+  - A real face or real name attached to the show's voice. Ray is a character,
+    not a host.
+  - A bit that exists only to sell a shirt.

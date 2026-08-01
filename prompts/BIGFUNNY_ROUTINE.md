@@ -5,8 +5,9 @@ true thing that happened in America, prove it to the document, work out what
 everybody is thinking and nobody will say under their own name, and ship a 60
 second cartoon that says it.
 
-Read `CLAUDE.md` first. Then `knowledge/CAST_BIBLE.md` and
-`knowledge/ANGLE_TAXONOMY.md`. They are not background, they are the job.
+Read `CLAUDE.md` first. Then `knowledge/CAST_BIBLE.md`,
+`knowledge/ANGLE_TAXONOMY.md` and `knowledge/BRAND_BIBLE.md`. They are not
+background, they are the job.
 
 ## THE STANDARD
 
@@ -35,6 +36,9 @@ is yours.
 1. `git fetch origin main && git checkout -B run/<YYYY-MM-DD> origin/main`
 2. Read `ledger/topics.json` (30 day subject dedupe), `ledger/bits.json` (angle
    type variety), `ledger/artwork.json` (visual divergence rules).
+2b. Read `ledger/cases.json` and TAKE `next_case`. This run owns that number
+   whether it ships or dies. Never reuse it, never skip it: a gap in the
+   numbering is the show lying about its own record.
 3. Read `video-engine/src/lib/ASSET_MANIFEST.md`. **This is the shelf. You cast
    from it before you draw anything.**
 4. Read `knowledge/FIELD_NOTES.md`. Most rules here are scar tissue; do not
@@ -144,7 +148,23 @@ Shape language is law: Ray warm and round, the Institution cold and rectilinear
 and too large for frame. Depth bar on everything: form shading, rim light,
 contact shadow.
 
-### 4.3 The button
+### 4.3 Brand (the five signature moves)
+
+From `knowledge/BRAND_BIBLE.md`, composed from `video-engine/src/lib/brand.tsx`.
+Not optional and not restyled per episode; they are what makes the show
+recognisable with the sound off.
+
+1. **Cold open, NO logo.** First two seconds are the fact, flat.
+2. **The wordmark STAMPS at ~2s.** `<Wordmark/>`. Once, hard, never a fade.
+3. **The highlighter.** `<Highlighter/>` on the single worst number. Once.
+4. **The button is the receipt.** The real document, stamp lands on it.
+5. **The end card.** `<EndCard n={case}/>`. Case number and the promise, nothing
+   else.
+
+**The one-stamp rule:** `STAMP` red appears exactly ONCE in the episode. A second
+use halves the first.
+
+### 4.4 The button
 
 Decide now what document appears at the end and confirm it is legible at
 1080x1920 and at speed. Every episode ends on the real receipt. This is the

@@ -1,0 +1,16 @@
+{
+  "_spec": {
+    "purpose": "The case register. Every RUN takes the next case number, pass or fail, and it is never reused and never skipped. A gap in the numbering would be the show lying about its own record. Phase 0 reads next_case, Phase 7 (or the kill path) appends the entry.",
+    "brand_rule": "Case numbers are the show's archive spine. CASE No. 0400 implies 399 before it and implies somebody kept them. See knowledge/BRAND_BIBLE.md.",
+    "entry_schema": {
+      "case": "int",
+      "run_date": "YYYY-MM-DD",
+      "shipped": "bool",
+      "title": "the angle as a title, or null if killed",
+      "beat": "beat id",
+      "killed_reason": "null unless shipped is false"
+    }
+  },
+  "next_case": 1,
+  "entries": []
+}

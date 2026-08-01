@@ -6,6 +6,11 @@ routine.
 One story a day. **Something in America got worse, and we name who did it.**
 Sixty seconds, 1080x1920, and it always ends on the actual document.
 
+> ### We didn't make this up. We have the filing.
+
+Every episode is `CASE No. 0001`, incrementing forever, never reused and never
+skipped. The archive is a record, not a feed.
+
 ## How it works
 
 The show runs on an inversion that makes it possible to automate at all:
@@ -35,9 +40,9 @@ defensible and quotable. Savage and wrong ends a channel.
 | --- | --- |
 | `prompts/BIGFUNNY_ROUTINE.md` | The master routine. Source of truth for run behavior. |
 | `prompts/ROUTINE_PROMPT.txt` | Thin trigger pointer. |
-| `knowledge/` | Cast bible, angle taxonomy, field notes. |
+| `knowledge/` | Cast bible, angle taxonomy, brand bible, field notes. |
 | `config/` | Voice, the seven beats and their sources, the scoring rubric. |
-| `ledger/` | Dedupe, joke-shape variety, visual variety, instincts, upgrades. |
+| `ledger/` | Case register, dedupe, joke-shape variety, visual variety, instincts, upgrades. |
 | `.claude/agents/` | The room: researcher, fact-checker, angle-room, writer, critics, scorer. |
 | `video-engine/` | Remotion at 1080x1920 plus `src/lib/`, a ~7,800 line vector art library. |
 | `runs/` | Shipped episodes. |

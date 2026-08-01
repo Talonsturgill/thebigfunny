@@ -98,7 +98,8 @@ Everything else ships.
   TRUTH for run behavior. `ROUTINE_PROMPT.txt` is the thin trigger pointer.
 - `knowledge/` — the studio brain: `CAST_BIBLE.md` (who they are, how they talk,
   and the 60 second shape), `ANGLE_TAXONOMY.md` (the seven angles that land and
-  the first law), `FIELD_NOTES.md` (living lessons and inherited scar tissue).
+  the first law), `BRAND_BIBLE.md` (identity, the case number, the five
+  signature moves), `FIELD_NOTES.md` (living lessons and inherited scar tissue).
 - `config/` — `brand.yaml` (voice and cast tokens), `sources.yaml` (the seven
   standing beats and where to look), `scoring_rubric.yaml` (gates, including the
   funny gate).
