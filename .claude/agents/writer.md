@@ -178,3 +178,20 @@ is by definition wrong, however well it holds the timing, so mark it
 exactly this for three Institution lines and the button, and that is the correct
 behaviour: those four slots were genuinely unwritable, not merely constrained,
 and saying so is a better output than filling them.
+
+## SECONDS are the law. Words are a symptom.
+
+The word budget in this file assumes the DIALOGUE is carrying the episode. Once
+the world is doing the mechanism, that assumption inverts and the budget becomes
+a trap: the count-room script came in at 90 words against a 130 to 150 band,
+because every line cut was a line saying what the pile, the counter or the
+certificate already said. It was right to cut them and right to refuse to add
+them back.
+
+So: **the 60 second law is the law. The word count is a diagnostic, not a
+gate.** A script under the word band with the seconds inside the law is not
+short, it is a script whose pictures are working. A script AT the word band and
+over on seconds is the actual failure.
+
+If you come in low, say WHY in your note, so nobody downstream reads it as an
+unfinished draft and pads it back up.

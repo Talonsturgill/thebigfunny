@@ -22,7 +22,14 @@ else; it is your doctrine, your procedure and your parts list.
 ## Read
 
 - `out/dispatch/claims.json` (the CLEARED claim set, post fact-check)
-- `out/dispatch/angle.json` (the locked angle)
+- THE LOCKED ANGLE, which is CONTENT and not a filename. It is a mechanism
+  sentence sourced to cleared claim ids. It normally lives in
+  `out/dispatch/story.json` (`absurd_sentence`, `who_does_the_stupid_thing`,
+  `why_absurd_not_just_bad`, `licensed_by`), which is the name the routine
+  prompt and `scripts/story_check.py` both use. Older specs called it
+  `angle.json`; read whichever is present, and NAME THE FILE YOU FOUND IT IN in
+  your output. Return `designable: false` only when the CONTENT is absent from
+  every candidate, never because one filename is.
 - `knowledge/WORLD_KIT.md` (the doctrine, the derivation procedure, the primitives)
 - `video-engine/src/lib/ASSET_MANIFEST.md` (what already exists)
 - `ledger/artwork.json` (divergence rules; the world is now the sixth axis)
