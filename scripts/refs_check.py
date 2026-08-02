@@ -56,6 +56,15 @@ RUNTIME = (
 # Placeholders, not literal paths.
 PLACEHOLDER = re.compile(r"<[^>]+>|\*|\$\{")
 
+# A PLAN is allowed to name a file it has not built yet. .claude/WORKLOG.md
+# exists to describe work that does not exist, so treating every path in it as a
+# dangling reference makes the gate fight the planning rule in CLAUDE.md. But a
+# blanket exemption for the worklog would also stop it catching the real thing
+# (a plan pointing at a script that was deleted), so the plan has to SAY SO:
+# mark the line `(NEW)` or `(PLANNED)` and the reference on it is a promise
+# rather than a claim. Anything unmarked is still checked.
+PLANNED = re.compile(r"\((?:NEW|PLANNED)\)", re.I)
+
 
 def scan_file(rel):
     """Yield (line_no, path) for every repo path referenced that does not exist."""
@@ -67,6 +76,8 @@ def scan_file(rel):
         for m in PATH_RE.finditer(line):
             ref = m.group(1)
             if PLACEHOLDER.search(ref) or ref.startswith(RUNTIME):
+                continue
+            if PLANNED.search(line):
                 continue
             if not os.path.exists(os.path.join(REPO, ref)):
                 yield n, ref
@@ -111,6 +122,23 @@ def self_test():
         green = run() == 0
         print(f"  {'ok  ' if green else 'FAIL'} does not fire on a real path")
         ok &= green
+
+        # A plan may promise a file, but only by SAYING it is a promise.
+        planned = os.path.join(d, "planned.md")
+        open(planned, "w").write("- `scripts/not_built_yet.py` (NEW) — the gate.\n")
+        SCAN = [os.path.relpath(planned, REPO)]
+        allowed = run() == 0
+        print(f"  {'ok  ' if allowed else 'FAIL'} allows a path a plan marks (NEW)")
+        ok &= allowed
+
+        # ...and an UNMARKED missing path in the same kind of file still fails,
+        # or the exemption would be a hole rather than a rule.
+        sneaky = os.path.join(d, "sneaky.md")
+        open(sneaky, "w").write("- `scripts/not_built_yet.py` — the gate.\n")
+        SCAN = [os.path.relpath(sneaky, REPO)]
+        still_red = run() == 1
+        print(f"  {'ok  ' if still_red else 'FAIL'} still catches the SAME path when unmarked")
+        ok &= still_red
 
         SCAN = keep
     print("\nself-test: " + ("both directions correct, as designed"
