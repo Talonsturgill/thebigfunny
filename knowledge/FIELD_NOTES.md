@@ -216,3 +216,50 @@ retrofitting a story to whatever happens.
 5. **The temptation to soften a claim to save an angle will arrive early.** That
    is the move that ends channels. Kill the story instead; there are seven
    beats and something happened in one of them today.
+
+### 2026-08-02: three bugs, one shape, and none of them failed anything
+
+Case 0002 shipped, cleared every gate, and was then watched by the owner, whose
+first note was that the voices sounded robotic. Chasing that turned up three
+separate defects that share a shape worth naming, because the shape is what the
+gates cannot see.
+
+**A silent downgrade beats a loud one every time.** `vo_cast.py` set
+`DISPATCH_GEMINI_TTS_MODEL` at module scope; `vo_gemini` reads that variable when
+it is imported, which happens later. So the older model won on IMPORT ORDER
+alone, every take of the episode was synthesized on it, and the run reported the
+newer model in a commit message, a ledger entry and a cast bible. Nothing threw.
+The audio was fine, the render was fine, the gates were fine, and the claim was
+false. **Two defaults for one setting is the bug.** If a setting matters, one
+place owns it and something READS BACK what actually resolved.
+
+**Then the cache would have covered for the fix.** The take key covered the
+voice and the whole director's brief but not the model, so correcting the model
+would have replayed the old audio off disk under the new model's name. The key
+was also written out twice, in two functions, which is why the omission survived:
+duplicated keys have to be edited in lockstep forever and never are.
+
+**Then the picture would have gone stale silently.** Twenty-odd hand-typed
+seconds across three files described one thing, the shot ladder, and
+re-synthesizing the VO moves all of them. A stale one is invisible in review AND
+in the render, because every file stays internally consistent and the cut simply
+lands on the wrong word.
+
+The common shape: **an input that changes the OUTPUT without changing anything
+that is checked.** Every gate in this machine asks "did it render, is it under
+sixty, is it sourced, is it funny". None of them asks "is this the thing you said
+it was". So when a value decides how the show sounds or looks, derive it, key on
+it, or assert it. Do not write it down twice and trust the copies.
+
+**And the casting one, which is its own lesson.** Dee was cast as Schedar, whose
+one-word descriptor in the roster is "Even", and her brief then asked for
+"completely deadpan" with "no rising intonation". The flattest voice available,
+instructed to flatten. Two causes stacked, both authored here, neither visible to
+any gate. Cast for ECCENTRICITY, and never direct the ABSENCE of prosody: dry and
+deadpan describe a withheld REACTION, not a withheld melody. Both are now
+refused mechanically in `vo_cast.casting_problems()`, with the Institution
+exempt because a phone tree is supposed to sound like one.
+
+The honest coda: a seven-voice sweep measured every candidate between 3.46 and
+4.12 semitones of pitch variance, INCLUDING the one already judged robotic. The
+soundcheck cannot rank voices. It refuses known causes; the ear picks.
