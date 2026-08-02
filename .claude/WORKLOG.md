@@ -53,6 +53,11 @@ Decisions already locked, do not relitigate:
 | 25 | `knowledge/BRAND_BIBLE.md` | DONE |
 | 26 | `video-engine/src/lib/brand.tsx` + manifest registration | DONE |
 | 27 | `ledger/cases.json` case register | DONE |
+| 28 | Case 0001 run: research, fact-check, angle, script, composition, stills | DONE |
+| 29 | Fix the SVG mounting contract + font weight (found only by rendering) | DONE |
+| 30 | `scripts/vo_cast.py`: three Gemini voices, one per character, + self-test | DONE |
+| 31 | `scripts/caption_check.py` + caption and first-comment for case 0001 | DONE |
+| 32 | Script approved by the maintainer (2026-08-02) | DONE |
 
 ## Not done yet (the honest list)
 
@@ -64,7 +69,8 @@ Decisions already locked, do not relitigate:
 | D | `--self-test` for the funny gate | House rule: a gate that cannot fail certifies nothing. The funny gate is a MODEL judgement, so it cannot be self-tested the way render_gate and refs_check are. Open question: feed it a known-unfunny script and require a sub-60. |
 | G | Brand components never rendered | brand.tsx typechecks; the stamp overshoot, ink bleed and highlighter overshoot are unproven until a frame exists. |
 | E | Trigger config at claude.ai/code/routines | Schedule, model, connectors. Lives outside this repo. |
-| F | VO voices for Ray and Dee | Ported synthesis is tuned for a single narrator persona; this show has three. |
+| F | ~~VO voices for Ray and Dee~~ | DONE. `scripts/vo_cast.py` casts three Gemini voices (Algenib/Schedar/Despina) with per-character delivery direction. Needs `GEMINI_API_KEY` at run time; verified by `--dry-run` and `--self-test` only, never against the live API. |
+| H | Synthesize case 0001 for real | The casting layer has never made an API call. First run with a key is the proof. |
 
 ## File map
 
