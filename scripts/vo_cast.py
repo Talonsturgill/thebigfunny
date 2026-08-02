@@ -66,9 +66,21 @@ TAIL = 1.5
 EXPECTED_TTS_MODEL = "gemini-3.1-flash-tts-preview"
 
 
+def _skill_on_path():
+    """Put the dispatch skill on sys.path ONCE per process.
+
+    `sys.path.insert(0, SKILL)` was written raw at four call sites, two of which
+    (take_path and take) run PER LINE, so sys.path grew unboundedly across a run
+    and every import after it walked a longer list. Idempotent, so calling it
+    from anywhere is free.
+    """
+    if SKILL not in sys.path:
+        sys.path.insert(0, SKILL)
+
+
 def resolved_model():
     """The model that will REALLY be used, read back from vo_gemini after import."""
-    sys.path.insert(0, SKILL)
+    _skill_on_path()
     import vo_gemini
     return vo_gemini.MODEL
 
@@ -404,7 +416,7 @@ def take_path(p):
     Anything that changes how a take SOUNDS belongs in this string.
     """
     import hashlib
-    sys.path.insert(0, SKILL)
+    _skill_on_path()
     import vo_gemini
     c = CAST[p["who"]]
     key = hashlib.sha1(
@@ -532,7 +544,7 @@ def fit(script, planned, path):
     those same frozen numbers. One source of truth, chosen with the facts in
     hand instead of guessed.
     """
-    sys.path.insert(0, SKILL)
+    _skill_on_path()
     from vo_backends import SR
 
     cursor, rows = 0.0, []
@@ -569,7 +581,7 @@ def fit(script, planned, path):
 
 
 def synth_all(planned, script):
-    sys.path.insert(0, SKILL)
+    _skill_on_path()
     import numpy as np
     from vo_backends import SR
 
