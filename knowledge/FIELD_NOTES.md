@@ -354,3 +354,30 @@ nothing in the machine ever LOOKED at the episode. Every critic graded JSON.
 `scripts/visual_check.py` refuses talking heads mechanically on the BOARD,
 before a cent of audio is bought. A critic downstream of a decision never fixes
 the decision.
+
+## An absent input is not a passing input (2026-08-02)
+
+Third time this class bit in one session, and the third one shipped in a gate
+whose own docstring promised it did not.
+
+`coherence_check.py` exists to catch the plan and the world describing different
+films. Pointed at the real artifacts on its first live run, it returned PASS,
+while two independent agents had already found the fork in those same two files.
+The bug: `if plan_turn and world_turn:` emitted NO ROW when neither document
+declared the field. Silence scored as agreement. Two documents that both fail to
+declare the most load-bearing beat in the episode have not agreed, they have not
+decided.
+
+THE RULE: when the thing a guard grades is missing, the guard FAILS. It never
+skips. A row that is not emitted is indistinguishable from a row that passed, in
+the report and in the exit code, and the phase downstream reads both as
+permission.
+
+THE COROLLARY, which is how it got caught: verify a gate by RUNNING it against
+an empty document, not by reading it. Every gate here now has that test on
+record, and story_check and visual_check both survived it because a required
+field row fires before the deeper guards get a chance to skip. Reading the code
+would have flagged all three as suspects and been wrong about two of them.
+
+A gate whose comment is a lie is worse than one with no comment, because the
+comment is what the next author trusts instead of testing.
