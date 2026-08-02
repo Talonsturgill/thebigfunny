@@ -108,13 +108,29 @@ export const ambientMouth = (talking: number | undefined, f: number, phase = 0):
 // ---------------------------------------------------------------------------
 export const TalkMouth: React.FC<{
   openness: number;           // 0..1
+  /** LIP SPREAD 0..1: 0 = rounded (oo, oh, w), 1 = spread (ee, s, t).
+   *
+   *  THE SECOND AXIS, and the reason this mouth used to look wrong. With
+   *  openness alone every sound at the same loudness draws the SAME shape, so
+   *  the face is a hinge flapping at the volume meter. The lip-sync literature
+   *  is explicit that a volume-to-jaw mapping "fails under close-up scrutiny
+   *  because it cannot distinguish between vowel and consonant shapes".
+   *  Preston Blair's chart is 10 shapes and production systems use 8-15 visemes;
+   *  openness plus spread is the cheap two-axis approximation of that, and it is
+   *  most of what the eye reads at this size. Comes from SPREAD in
+   *  caseNNNN_mouth.ts (spectral centroid). */
+  spread?: number;
   w?: number;                 // mouth width
   ink?: string;
   mood?: 'neutral' | 'smile' | 'frown';
   showTeeth?: boolean;
-}> = ({openness, w = 60, ink = '#101423', mood = 'neutral', showTeeth = true}) => {
+}> = ({openness, spread = 0.5, w: wBase = 60, ink = '#101423', mood = 'neutral', showTeeth = true}) => {
   const o = Math.max(0, Math.min(1, openness));
-  const h = 4 + o * (w * 0.62);              // open height
+  const sp = Math.max(0, Math.min(1, spread));
+  // A rounded vowel is narrow and tall; a spread one is wide and shallow. Same
+  // jaw opening, different mouth, which is the whole point.
+  const w = wBase * (0.62 + 0.62 * sp);
+  const h = (4 + o * (wBase * 0.62)) * (1.24 - 0.42 * sp);
   const curve = mood === 'smile' ? 10 : mood === 'frown' ? -10 : 2;
   if (o < 0.06) {
     // closed: a simple expressive line

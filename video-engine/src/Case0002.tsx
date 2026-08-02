@@ -51,7 +51,7 @@ import {MainStreetBG} from './lib/biomes';
 import {MachineShadow} from './lib/kit';
 import {NightGrade, GradeLayer} from './lib/lighting';
 import {CAPTIONS, speakerAt, TOTAL as TOTAL_S} from './case0002_captions';
-import {openAt, accentAt} from './case0002_mouth';
+import {openAt, spreadAt} from './case0002_mouth';
 
 export const case0002Schema = z.object({total: z.number().optional()});
 
@@ -221,20 +221,21 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
   const who = speakerAt(frame / FPS);
 
   /* The SPEAKER's mouth runs on their own voice (scripts/vo_envelope.py), their
-     body hits the onsets, and they carry full idle. The LISTENER's mouth is shut
-     and their idle is damped to a third, so at any instant the only real motion
-     in frame belongs to whoever is talking. That is what makes a two-shot
+     shaped on two axes: openness from loudness and SPREAD from the spectral
+     centroid, because loudness alone says how much mouth and never which one.
+     The LISTENER's mouth is shut and their idle is damped to a third, so at any
+     instant the only real motion in frame belongs to whoever is talking. The
+     BODY is deliberately not driven per-syllable; see Character's `accent`. That is what makes a two-shot
      legible without lip-sync accuracy, and it is the half the first cut was
      missing: everything moved all the time, on sines that did not know a word
      was happening. */
   const rayMouth = who === 'RAY' ? openAt(frame) : undefined;
   const deeMouth = who === 'DEE' ? openAt(frame) : undefined;
-  const rayAccent = who === 'RAY' ? accentAt(frame) : 0;
-  const deeAccent = who === 'DEE' ? accentAt(frame) : 0;
+  const spr = spreadAt(frame);
   const rayIdle = who === 'RAY' ? 1 : 0.32;
   const deeIdle = who === 'DEE' ? 1 : 0.32;
-  const rayVoice = {mouth: rayMouth, accent: rayAccent, idleGain: rayIdle};
-  const deeVoice = {mouth: deeMouth, accent: deeAccent, idleGain: deeIdle};
+  const rayVoice = {mouth: rayMouth, mouthSpread: spr, idleGain: rayIdle};
+  const deeVoice = {mouth: deeMouth, mouthSpread: spr, idleGain: deeIdle};
 
   /* The night street, lit only by what the scene DECLARES. NightGrade blooms
      only at registered sources by design, so the warm shop windows are the one

@@ -57,16 +57,17 @@ export interface CharacterProps {
       speaking. Gate this with speakerAt() so a LISTENER still never moves, which is
       the part of the old rule that was always right. */
   mouth?: number;
-  /** Onset strength 0..1 from scripts/vo_envelope.py's ACCENT track: where this
-      figure's own voice PUSHES. The body hits it with a small head nod and a
-      forward torso lean, then settles.
+  /** Lip spread 0..1 from the SPREAD track. See TalkMouth's `spread`. */
+  mouthSpread?: number;
+  /** DELIBERATELY NOT DRIVING THE BODY. Kept so callers do not break.
 
-      This is the half that makes a figure look like it is talking. Everything
-      else in this rig moves on free-running sines that do not know a word is
-      happening, and continuous motion unrelated to speech reads as drift rather
-      than performance (owner, 2026-08-02: "floating around aimlessly"). An
-      accent is the animation principle of the same name: the gesture lands ON
-      the stressed syllable and the body is otherwise still. */
+      Driving the figure from the per-frame onset track looked glitchy, and the
+      reason is worth keeping: that value has an INSTANT attack, so used as a
+      position offset it is a step function, and a step in position is a jerk
+      rather than a movement (owner, 2026-08-02: "ur jerking the whole body
+      around in a glitchy looking way"). Per-syllable body motion is also just
+      wrong. Animation changes POSE on phrase boundaries and holds it; the
+      composition already does that with `pose`. The MOUTH does the talking. */
   accent?: number;
   /** true = play an articulated walk cycle (alternating leg swing around the hips,
       a step-synced body bob, and an arm counter-swing) instead of standing still.
@@ -111,7 +112,7 @@ export const Character: React.FC<CharacterProps> = ({
   y = 0,
   talking,
   mouth,
-  accent = 0,
+  mouthSpread = 0.5,
   walking = false,
   walkPhase,
   eyes = '#41607d',
@@ -264,7 +265,8 @@ export const Character: React.FC<CharacterProps> = ({
                 cycle, NEVER the narrator's per-word amplitude (2026-07-21 owner rule: word-synced
                 mouths read as a failed narration attempt; characters talk to each other, not for
                 the voiceover) */}
-            <TalkMouth openness={mouth !== undefined ? mouth : (ambientMouth(talking, f, swayPhase) ?? 0)} w={36} ink={INK}
+            <TalkMouth openness={mouth !== undefined ? mouth : (ambientMouth(talking, f, swayPhase) ?? 0)}
+                       spread={mouthSpread} w={36} ink={INK}
                        mood={emotion === 'angry' || emotion === 'worried' ? 'frown' : emotion === 'smug' ? 'smile' : 'neutral'} />
           </g>
         ) : (
@@ -472,7 +474,7 @@ export const Character: React.FC<CharacterProps> = ({
           group with its own small term. Do not give it a second copy of the
           body's motion.
         */}
-        <g transform={`translate(0,${bob + walkBob + accent * 2.6}) rotate(${accent * 0.6} 0 0)`}>
+        <g transform={`translate(0,${bob + walkBob})`}>
         {/* torso (breath) */}
         <g transform={`translate(0,-160) scale(1,${breath}) translate(0,160)`}>
           <g transform="translate(0,-160)">
@@ -606,7 +608,7 @@ export const Character: React.FC<CharacterProps> = ({
         </g>
         {/* head — everyday Alaskan headgear (never the Native-coded fur ruff).
             Offset is CONSTANT. The bob it shares with the torso is on the parent. */}
-        <g transform={`translate(0,${-368 - accent * 1.4}) rotate(${accent * 0.9} 0 40)`}>
+        <g transform="translate(0,-368)">
           {(() => {
             const hg = outfit === 'parka' ? 'trapper' : headgear;
             const beanieCol = c.main;
