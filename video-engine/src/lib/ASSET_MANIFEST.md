@@ -1,5 +1,68 @@
 # Cast & Asset Manifest — The Big Funny engine
 
+## THE MANDATE: THIS SHELF IS A KIT, NOT A PLACE (2026-08-02)
+
+**Every episode BUILDS the world of its story. It does not go shopping for one.**
+
+Read `knowledge/WORLD_KIT.md` before you read the inventory. It holds the
+doctrine, the derivation procedure, five worked examples and the parts list. This
+section is only the mandate; that file is the method.
+
+**Why this exists.** The inventory below was ported from an Alaska show. It is
+good craft and it is also a PLACE, while this show's stories are national. The
+old rule at the top of this file told every run to cast from the shelf before
+drawing anything new, and that rule was quietly doing enormous damage: the only
+sets on the shelf were Alaskan, so a story about an insurer got staged on a main
+street or against a filing cabinet, and the set had nothing to do with the story.
+A set that has nothing to do with the story cannot illustrate the story. Once the
+set is inert, the only thing left for an episode to do is have two people talk.
+
+"Two people talking and doing nothing" is not a staging failure. It is what is
+left over after the world has been amputated from the story. It is the root cause
+behind the owner's diagnosis and behind both standing repeat offenders in
+`scripts/retro.py` (`carried_by_fact`, `agreement_not_comedy`): the fact was
+carrying every episode because nothing else was ALLOWED to.
+
+**The rule, restated correctly. The old one is not deleted, it is aimed properly.**
+
+> **Cast the PRIMITIVES from the shelf. Build the WORLD fresh.**
+
+- A **world** is the physical inside of the mechanism the story is about. Not the
+  place where the story is discussed. A recall story is staged inside the engine,
+  standing on the piston. A denial story is staged inside the body the claim is
+  about.
+- **Primitives** are what every world is assembled from, and they ARE reused,
+  aggressively, because that is what makes a world cost one run instead of one
+  week: interior volumes and vanishing points, passages, the three machine verbs
+  (rotating, reciprocating, conveying), flow, stacks and queues and grids,
+  signage and paperwork, scale reversal, and the lighting rig each implies. Prop
+  shapes for all of them are in `knowledge/WORLD_KIT.md`.
+- The engines already on this shelf are primitives too and are the first place to
+  look: `lib/draw.ts`, `lib/lighting.tsx`, `lib/materials.tsx`, `lib/motion.tsx`,
+  `lib/stage3d.tsx`, `lib/FX.tsx`, `lib/paper.tsx`, `lib/records.tsx`,
+  `lib/brand.tsx`, and `makeSpine()` inside `lib/fishcraft.tsx`, which was written
+  for a salmon and knows nothing about fish.
+- **The CAST is still a hard lock.** Ray and Dee are never redrawn to fit a
+  world; the world is built around them. Freshness comes from the world, the
+  staging, the camera and the storyboard fingerprint.
+- **Alaska is never the default.** Fauna, Alaskan biomes, vehicles and parkas are
+  cast ONLY when a story is genuinely about them. They are paid-for craft, they
+  are kept, and one day a story will be about Alaska. Nothing here gets deleted.
+  A moose in a story that is not about a moose is the exact failure this mandate
+  ends. `knowledge/WORLD_KIT.md` lists asset by asset what is genuinely generic
+  and what is place-locked.
+- **Registration is unchanged and still absolute.** Anything new, world component
+  or prop, is registered in this file IN THE SAME COMMIT. Manifest drift is a
+  known bug class here and it has cost this repo three gate failures.
+- The library de-Alaskas through `.claude/agents/asset-upgrader.md`, which is
+  capped at two verified changes per run and is forbidden from deleting anything.
+  Sweeping rewrites are how a library becomes unverifiable.
+
+Everything below this line is the INVENTORY. It is what you cast FROM, not what
+you cast INSTEAD of thinking.
+
+---
+
 > **PORTED SHELF, READ THIS FIRST.** Most of the inventory below was drawn for a
 > daily Alaska publication and carried over wholesale, because a shelf of proven
 > assets is worth more than an empty one that matches the new brand. Expect
@@ -15,11 +78,15 @@
 > and is the part that matters for this show.
 
 The living inventory of everything the Dispatch video engine can draw. **Every run
-reads this FIRST and CASTS from this shelf by default** — reuse with fresh staging is
-the point of the library (see the library mandate, `prompts/BIGFUNNY_ROUTINE.md` §4.2,
-rebalanced 2026-07-20). Grow it when a story finds a real gap, and register every
-addition here in the same commit. Composition freshness comes from the storyboard
-fingerprint + camera + staging, not from re-drawing the cast.
+reads this FIRST and CASTS THE PRIMITIVES AND THE CAST from this shelf by default**
+(see the library mandate, `prompts/BIGFUNNY_ROUTINE.md` §4.2, rebalanced 2026-07-20;
+scoped to primitives 2026-08-02 by the kit-not-place mandate above). Reuse of the
+CAST and the ENGINES with fresh staging is the point of the library. Reuse of a
+whole SET is not, and a run that opens with a ported biome unchanged has almost
+certainly skipped the world derivation. Grow the shelf when a story finds a real
+gap, and register every addition here in the same commit. Composition freshness
+comes from the world, the storyboard fingerprint, the camera and the staging, not
+from re-drawing the cast.
 
 When you add or upgrade an asset, update this file in the same commit. Keep entries
 one line: `Name — kind — file — params/poses — status`.

@@ -249,7 +249,7 @@ export interface WorldPalette {
 }
 ```
 
-### 1. `Volume` — the interior box and its vanishing point
+### 1. `Volume`: the interior box and its vanishing point
 
 The most-repeated code in the library and therefore the first primitive.
 `MainStreetBG`, `PaperOfficeBG` and `StairwellBG` each hand-rolled the same
@@ -281,7 +281,7 @@ The three surfaces are drawn as separate LIT and SHADED faces. That is the rule
 `TaperedCone` had to learn twice: without two distinct faces a form reads flat no
 matter how correct the outline is.
 
-### 2. `Passage` — corridor, duct, shaft, bore, chute
+### 2. `Passage`: corridor, duct, shaft, bore, chute
 
 The connective tissue. Also the cheapest way to get motion without moving the
 camera: scroll the segments toward the lens and the world travels while the shot
@@ -355,7 +355,7 @@ export const Conveyor: React.FC<{
 }>;
 ```
 
-### 4. `Flow` — fluid, and everything that behaves like fluid
+### 4. `Flow`: fluid, and everything that behaves like fluid
 
 Money, data, sewage, air, claims and callers all move the same way on screen, and
 the two states that matter are FULL and DRY. A dry pipe is usually the joke.
@@ -420,7 +420,7 @@ export const Grid: React.FC<{
 }>;
 ```
 
-### 6. `Signage` and `Paperwork` — the institution's two voices
+### 6. `Signage` and `Paperwork`: the institution's two voices
 
 The Institution has no face, ever. That rule is law and it is not up for
 revisiting. So the institution speaks in exactly two registers: what it puts on
@@ -458,7 +458,7 @@ export const Paperwork: React.FC<{
 numeric shadow contract that makes paper read as a solid) and `PaperFiber`. It
 does not replace them.
 
-### 7. `ScaleFrame` — the cast made tiny inside something ordinary
+### 7. `ScaleFrame`: the cast made tiny inside something ordinary
 
 The single most powerful move available to this show, and the one with the
 sharpest failure mode: without a size reference in frame, a viewer reads a giant
@@ -482,7 +482,7 @@ INTERACT with world geometry (stand on it, hold onto it, be moved by it) within
 the first two seconds. A tiny figure floating in front of a big thing reads as a
 compositing error.
 
-### 8. `WorldRig` — the lighting each world implies
+### 8. `WorldRig`: the lighting each world implies
 
 Every primitive above implies a light. A duct is lit at its two ends and nowhere
 else. A machine cavity has one hot practical and no ambient at all. A concourse
