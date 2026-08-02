@@ -366,17 +366,33 @@ def cues(lines_out):
             for l in lines_out]
 
 
+def take_path(p):
+    """Where this line's cached take lives. ONE definition, deliberately.
+
+    This key existed in two copies, in cached_duration and in take, and the two
+    then had to be edited in lockstep forever. They were not: the MODEL was
+    missing from both, so changing the model would have replayed old audio under
+    a new name. That is the third instance in one day of the same bug class, an
+    input that changes the audio without changing the identity of the audio, so
+    the key is computed in exactly one place now and everything reads it here.
+
+    Anything that changes how a take SOUNDS belongs in this string.
+    """
+    import hashlib
+    sys.path.insert(0, SKILL)
+    import vo_gemini
+    c = CAST[p["who"]]
+    key = hashlib.sha1(
+        f"{vo_gemini.MODEL}|{p['voice']}|{c.get('scene','')}|{c.get('style','')}"
+        f"|{c.get('pace','')}|{c.get('accent','')}|{p['text']}".encode()).hexdigest()[:16]
+    return os.path.join(TAKES, f"{key}.wav")
+
+
 def cached_duration(p):
     """Seconds of the cached take for this line, or None if it has not been
     synthesized yet. Lets the guards check against fact instead of a constant."""
-    import hashlib
     import wave as _wave
-    c = CAST[p["who"]]
-    # Cache key covers the WHOLE brief, so changing a director's note busts it.
-    key = hashlib.sha1(
-        f"{p['voice']}|{c.get('scene','')}|{c.get('style','')}|{c.get('pace','')}"
-        f"|{c.get('accent','')}|{p['text']}".encode()).hexdigest()[:16]
-    path = os.path.join(TAKES, f"{key}.wav")
+    path = take_path(p)
     if not os.path.exists(path):
         return None
     try:
@@ -438,17 +454,12 @@ def take(p, sr):
     measure once, keep the audio, and lay the timeline out from what the takes
     ACTUALLY are.
     """
-    import hashlib
     import wave as _wave
     import numpy as np
     import vo_gemini
 
     c = CAST[p["who"]]
-    # Cache key covers the WHOLE brief, so changing a director's note busts it.
-    key = hashlib.sha1(
-        f"{p['voice']}|{c.get('scene','')}|{c.get('style','')}|{c.get('pace','')}"
-        f"|{c.get('accent','')}|{p['text']}".encode()).hexdigest()[:16]
-    path = os.path.join(TAKES, f"{key}.wav")
+    path = take_path(p)   # see take_path: one key, and the model is in it
     if os.path.exists(path):
         with _wave.open(path, "rb") as w:
             return np.frombuffer(w.readframes(w.getnframes()), dtype="<i2").astype("float32") / 32767.0
