@@ -414,7 +414,38 @@ that exists and cannot be parameterised for the shot is worse than a missing
 one, because a missing asset gets budgeted and a mis-cast one gets discovered at
 the render.
 
-**Also a live import hazard:** `brand.Stamp` and `kit.Stamp` are two different
-components with the same name and incompatible props. Import one, get the other,
-and the failure is a prop-type error at best and a silently wrong mark at worst.
-Always import them qualified.
+### THE FULL COLLISION LIST (audited 2026-08-02)
+
+`brand.Stamp` / `kit.Stamp` was documented here alone. A repo-wide scan found
+six more. Two of them are the same hazard and were not written down:
+
+| name | where | severity |
+| --- | --- | --- |
+| `Stamp` | `brand.tsx`, `kit.tsx` | **two components, incompatible props** |
+| `PAPER` | `brand.tsx` (a string `'#F2EADA'`), `paper.tsx` (an object `{front, mid, desk, ...}`) | **incompatible types, same name** |
+| `SatelliteEye` | `kit.tsx:678`, `sensors.tsx:16` | **two different components** |
+| `INK` | `Character.tsx`, `brand.tsx`, `kit.tsx`, `lighting.tsx` | four copies, same value. Harmless today, four places to change. |
+| `Emotion` | `Character.tsx`, `Figure.tsx` | identical unions, two declarations |
+| `Pose` | `Character.tsx`, `Figure.tsx` | identical unions, two declarations |
+
+`PAPER` is the dangerous one, because the two are not merely different, they are
+different KINDS: `import {PAPER}` from the wrong module and every `PAPER.front`
+is `undefined` and every `fill={PAPER}` is an object. Neither fails loudly.
+
+**So import all of these QUALIFIED.** `import * as brand` and `import * as paper`,
+never `import {PAPER}`.
+
+`Emotion` and `Pose` are the retired-rig hazard rather than a naming one. `cast.tsx`
+takes them from `Figure` (the live rig) and `Case0002.tsx`, `Case0003.tsx` and
+`scripts/gen_faces_ts.py` took theirs from `Character` (the crowd rig that
+`cast.tsx` says "is not the cast any more"). The unions are identical today, so
+`tsc` cannot warn: they stay structurally compatible right up until they diverge,
+and the first divergence lands as a browless, mouthless face at render time. All
+three now read the live rig, and `gen_faces_ts` CHECKS the union out of
+`Figure.tsx` before it generates a face track rather than asserting the match in
+a comment.
+
+### Dead props, which are not castability gaps but read like features
+
+- `kit.AlaskaMini.pinLabel?: string` is destructured and rendered NOWHERE
+  (`kit.tsx:299`). A board that casts it for a label gets no label and no error.

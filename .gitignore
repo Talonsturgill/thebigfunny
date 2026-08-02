@@ -5,3 +5,8 @@ __pycache__/
 .DS_Store
 video-engine/out/
 video-engine/node_modules/
+
+# Tool output that belongs in out/, not at the repo root. caption_report.json
+# was committed as tracked scratch from a prior run: a stale FAIL report for a
+# 0-character caption, sitting at the root of the repo looking like a finding.
+caption_report.json

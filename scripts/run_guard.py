@@ -232,6 +232,11 @@ def self_test() -> int:
 
 
 def _main() -> int:
+    # `--self-test` is how every other gate in scripts/ is invoked, and a sweep
+    # that runs them all would have skipped this one for taking a subcommand
+    # instead. Both spellings work.
+    if "--self-test" in sys.argv:
+        return self_test()
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
 

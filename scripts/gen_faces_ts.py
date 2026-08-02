@@ -42,10 +42,44 @@ OUT = os.path.join(REPO, "out", "dispatch")
 SRC = os.path.join(REPO, "video-engine", "src")
 FPS = 30
 
-# Must match Character.tsx's Emotion union. A typo here is silent: an unknown
-# string falls through every `emotion === ...` test and renders a browless,
-# mouthless face, which is worse than the wrong expression.
+# Must match the LIVE rig's Emotion union, which is video-engine/src/lib/Figure.tsx.
+# It said Character.tsx, the retired crowd rig, and the two unions happen to be
+# identical today. A typo or a drift here is silent: an unknown string falls
+# through every `emotion === ...` test and renders a browless, mouthless face,
+# which is worse than the wrong expression, and tsc cannot catch it because the
+# unions stay structurally compatible right up until they diverge.
+#
+# So it is CHECKED rather than asserted in a comment. _figure_emotions() reads
+# the union out of the rig and _check_emotions() refuses a mismatch.
 EMOTIONS = {"neutral", "angry", "worried", "shock", "smug", "flat", "squint"}
+
+
+def _figure_emotions():
+    """The Emotion union as the live rig actually declares it, or None."""
+    import re as _re
+    fig = os.path.join(REPO, "video-engine", "src", "lib", "Figure.tsx")
+    if not os.path.exists(fig):
+        return None
+    m = _re.search(r"export type Emotion\s*=\s*([^;]+);", open(fig).read())
+    if not m:
+        return None
+    return set(_re.findall(r"'([a-z-]+)'", m.group(1)))
+
+
+def _check_emotions():
+    """Refuse to generate against a stale vocabulary. -> (ok, detail)."""
+    live = _figure_emotions()
+    if live is None:
+        return False, ("could not read the Emotion union from "
+                       "video-engine/src/lib/Figure.tsx. This file generates the "
+                       "face track against a vocabulary it can no longer verify.")
+    if live != EMOTIONS:
+        return False, (f"EMOTIONS here is {sorted(EMOTIONS)} and the rig declares "
+                       f"{sorted(live)}. Missing from the rig: "
+                       f"{sorted(EMOTIONS - live)}; missing here: "
+                       f"{sorted(live - EMOTIONS)}. An emotion the rig does not "
+                       f"know renders a browless, mouthless face.")
+    return True, f"{len(live)} registers, matching the rig"
 
 # Who can hold a face. The Institution is a rectangle and never gets one.
 CHARACTERS = ("RAY", "DEE")
@@ -125,7 +159,10 @@ def render_ts(tracks, case, name):
 
 
 def self_test():
-    ok = True
+    _vocab_ok, _vocab_why = _check_emotions()
+    print(f"  {'ok  ' if _vocab_ok else 'FAIL'} the emotion vocabulary matches the "
+          f"live rig   {_vocab_why}")
+    ok = _vocab_ok
     lines = [
         {"t": 0.0, "who": "RAY", "face": {"RAY": "angry", "DEE": "flat"}},
         {"t": 4.0, "who": "DEE", "face": {"DEE": "smug"}},
@@ -175,6 +212,14 @@ def main():
     a = ap.parse_args()
     if a.self_test:
         return self_test()
+
+    # The vocabulary has to match the rig BEFORE anything is generated against
+    # it. Prose saying "must match" is not a check.
+    vocab_ok, vocab_why = _check_emotions()
+    if not vocab_ok:
+        print(f"gen_faces_ts: FAIL emotion vocabulary: {vocab_why}", file=sys.stderr)
+        return 1
+
     if a.case is None:
         print("gen_faces_ts: --case is required", file=sys.stderr)
         return 2

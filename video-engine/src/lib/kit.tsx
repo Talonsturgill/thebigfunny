@@ -324,6 +324,17 @@ export const AlaskaMini: React.FC<{frame: number; x: number; y: number; scale?: 
             <path d="M0,26 C -20,2 -20,-16 0,-24 C 20,-16 20,2 0,26 Z" fill={RED} stroke={INK} strokeWidth={5.5} strokeLinejoin="round" />
             <circle cx={0} cy={-6} r={7.5} fill={ICE} stroke={INK} strokeWidth={4} />
           </g>
+          {/* pinLabel was declared, destructured and RENDERED NOWHERE, so a board
+              that cast this for a label got no label and no error. Either the prop
+              draws something or it should not be in the signature. */}
+          {pinLabel && (
+            <text x={300} y={20} textAnchor="middle" fontSize={30} fontWeight={800}
+                  fill={INK} stroke={SNOW} strokeWidth={7} paintOrder="stroke"
+                  style={{fontFamily: 'Barlow Condensed, Impact, sans-serif',
+                          letterSpacing: 1.5}}>
+              {pinLabel.toUpperCase()}
+            </text>
+          )}
         </>
       )}
     </g>

@@ -113,10 +113,20 @@ def check(story):
     why = str(story.get("why_absurd_not_just_bad", "")).strip()
     if why:
         low = why.lower()
+        adjective = re.search(r"\b(bad|wrong|unfair|greedy|corrupt|evil)\b\s*$",
+                              low.strip("."))
+        long_enough = len(why.split()) >= 6
+        # The detail used to be `"reasoned" if long_enough else "too short"`,
+        # which printed a PASS message on a FAILED row whenever the trailing
+        # adjective fired and the length passed. A red row that reads "reasoned"
+        # teaches the room to skim the verdict column.
         row("says why it is ABSURD, not merely that it is bad",
-            not re.search(r"\b(bad|wrong|unfair|greedy|corrupt|evil)\b\s*$", low.strip("."))
-            and len(why.split()) >= 6,
-            "reasoned" if len(why.split()) >= 6 else "too short to be a reason")
+            not adjective and long_enough,
+            "reasoned" if (not adjective and long_enough) else
+            (f"ends on '{adjective.group(1)}'. That is a VERDICT on the story, not "
+             f"a reason it is absurd. Absurd is the shape of the thing: internally "
+             f"consistent and insane anyway."
+             if adjective else "too short to be a reason"))
 
     return rows
 
