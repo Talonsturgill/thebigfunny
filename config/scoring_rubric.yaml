@@ -97,7 +97,7 @@ weighted_score:
 
     - id: funny
       weight: 35
-      name: Is it actually funny
+      name: Is it actually funny, and does it have teeth
       note: >
         The heaviest single criterion, because it is the only open question. The
         rest of this machine was already proven by two shipping publications;
@@ -116,6 +116,20 @@ weighted_score:
           Not funny. Agreement is not comedy. If the episode's whole content is
           "this is bad and we all know it", score it here and say so. The run
           rewrites; it does not ship this and it does not stop.
+      register: >
+        THIS SHOW IS FOR ADULTS. Added 2026-08-02 by the owner, after case 0002
+        shipped at 79.65 while being bureaucratic trivia about a car that would
+        not beep: correct, well made, and no adult would repeat it.
+
+        Crude is not merely tolerated here, it is the register. CLAUDE.md says
+        so, and this file says "Profanity is fine" in the platform gate. The
+        bans are slurs, hate, sexual content and harassment, and NONE of those
+        is the same thing as being blunt, angry or profane. An episode that
+        stays polite is not being safe, it is being timid, and timid is the one
+        failure this rubric used to reward.
+
+        Find the border and work against it. The border is the ban list, not
+        good taste.
 
     - id: angle
       weight: 25
@@ -183,6 +197,12 @@ funny_gate:
     - Ask, is the funniest thing in it a FACT or a WRITTEN LINE. Facts are the
       house style and score higher; a run carried entirely by written jokes is
       working against the machine's actual strengths and is capped at 84.
+    - Ask, DOES IT HAVE TEETH. Would a normal adult repeat this out loud, angry,
+      to another adult? If the worst thing in the episode is an inconvenience,
+      or if the whole thing could be read aloud in a primary school without
+      anybody blinking, CAP AT 70 and say the word "toothless" in your reason.
+      This show is for adults. A tame episode is a failure of nerve, not a
+      standard, and case 0002 proved the rubric would happily ship one.
   anti_gaming: >
     The critic never sees the score it is being asked to beat, never sees the
     ship threshold, and is never told what its number will cause. It grades the

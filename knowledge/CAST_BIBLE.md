@@ -35,6 +35,16 @@ sometimes unhinged about the remedy.
   ambulance. That they sent."
 - He asks the question the press release was designed to prevent.
 - He swears like an adult who is tired, not like a teenager who is excited.
+  **And he does swear.** `config/scoring_rubric.yaml` says profanity is fine in
+  as many words, and the ban list is slurs, hate, sexual content and harassment,
+  none of which is profanity. Case 0002 shipped with zero swearing and read
+  polite, which is a failure of nerve, not a standard. If a line would be said
+  with a word in it, use the word.
+- He is ANNOYED, not sedated. "Tired" describes what he has seen, not his pulse.
+  Case 0002's delivery direction said "flat, tired ... land on the last word and
+  stop", and it ran him at 140 words per minute against 150-190 for ordinary
+  American speech, so a show billed as savage came out sounding like a hold
+  message. He talks fast because he is irritated and wants this over with.
 - He never explains the joke. If a line needs a follow-up to land, the line is
   wrong.
 

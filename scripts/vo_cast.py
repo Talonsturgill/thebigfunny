@@ -53,28 +53,49 @@ TAIL = 1.5
 #
 # Voice choice is doing real work here, so the reasoning is written down rather
 # than left to whoever edits this next.
+# MODEL: the pro TTS voice, chosen by the owner on 2026-08-02 after A/B on real
+# takes. It is set here rather than left to the environment so the show's voice
+# is in the repo. vo_gemini still honours DISPATCH_GEMINI_TTS_MODEL if set.
+os.environ.setdefault("DISPATCH_GEMINI_TTS_MODEL", "gemini-2.5-pro-preview-tts")
+
 CAST = {
     "RAY": {
         # Gravelly. Ray is a tired adult who has already found out, not an
         # excited one. A bright voice makes him a ranter and the register dies.
+        #
+        # PACE REWRITTEN 2026-08-02. The old direction was "in a flat, tired,
+        # matter-of-fact voice ... Land on the last word and stop", and it was
+        # doing two kinds of damage at once. It ran him at 2.33 words/sec, about
+        # 140wpm, against 150-190 for ordinary American speech, so he sounded
+        # robotic. And "flat, tired" is a note for a man who has given up, not
+        # one who is annoyed, which made a show billed as savage sound polite.
+        # Measured on the same line and the same voice, this direction runs 3.75
+        # w/s. Ray is ANNOYED and IN A HURRY, not sedated.
         "voice": "Algenib",
-        "style": ("in a flat, tired, matter-of-fact voice, like someone stating "
-                  "a verdict they already reached. Do not sell the joke. Land on "
-                  "the last word and stop"),
+        "style": ("fast and clipped, the way someone talks when they are annoyed "
+                  "and in a hurry. Flat, unimpressed, almost throwaway. Run the "
+                  "sentences together. Absolutely no pauses"),
     },
     "DEE": {
         # Even. Her comedy is total deadpan delivery of something insane, so the
-        # voice must not lift at the end of a sentence.
+        # voice must not lift at the end of a sentence. Same pace correction as
+        # Ray: she was reading at 1.84 w/s, which is dictation, not deadpan.
+        # Deadpan is a REFUSAL to react, and it is delivered at normal speed.
         "voice": "Schedar",
-        "style": ("in an even, precise, dry voice, reading from a document. No "
-                  "rising intonation at the end of sentences. Completely deadpan"),
+        "style": ("at a brisk natural conversational pace, precise and completely "
+                  "deadpan, reading off a document. No rising intonation. Do not "
+                  "pause between sentences"),
     },
     "INSTITUTION": {
         # Smooth. The politeness is the menace, so it must sound HELPFUL, never
         # threatening. This is hold music with a mouth.
         "voice": "Despina",
-        "style": ("in a smooth, pleasant, automated corporate voice, unfailingly "
-                  "polite and slightly too even, like a recorded phone menu"),
+        # Also paced up, but LESS than the other two on purpose. A recorded
+        # phone menu speaks at normal speed; it is the evenness that menaces,
+        # not the slowness. Dragging just made it sound broken instead of calm.
+        "style": ("in a smooth, pleasant, automated corporate voice at a normal "
+                  "announcement pace, unfailingly polite and slightly too even, "
+                  "like a recorded phone menu. Do not slow down for emphasis"),
     },
 }
 
@@ -129,8 +150,27 @@ def check(script, planned):
     row("no line starts before the previous ends", not bad,
         f"{len(bad)} overlap(s)" if bad else "clean")
 
-    tight = [f"{p['who']}@{p['t']}s" for p in planned
-             if p["slot"] < max(1.0, len(p["text"].split()) / 3.6)]
+    # ROOM TO BE SPOKEN. Prefer the MEASURED take over the heuristic whenever a
+    # cached take exists, because the heuristic is a guess and the take is the
+    # fact. The old rule was `slot < words / 3.6` in both directions, and 3.6 was
+    # wrong twice over: it under-booked the slow direction (2026-08-02, Ray at
+    # 1.85 w/s overran a slot this check had passed) and then over-booked the
+    # fast one (same day, after the pace fix Ray runs 3.75 w/s and the check
+    # started demanding more room than the audio needs, vetoing a timeline that
+    # --fit had built from the real durations). A guess must never overrule a
+    # measurement it disagrees with.
+    tight = []
+    for p in planned:
+        measured = cached_duration(p)
+        # Tolerance is NEGATIVE on purpose. --fit gives the final line a slot
+        # exactly equal to its duration (the 1.5s tail follows it), so demanding
+        # a cushion here fails a timeline that is correct by construction. A
+        # genuine overrun is still caught at synthesis, which hard-fails on
+        # dur > slot + 0.35 and refuses to slide the timeline.
+        need = measured - 0.02 if measured is not None else max(1.0, len(p["text"].split()) / 3.6)
+        if p["slot"] < need:
+            tight.append(f"{p['who']}@{p['t']}s"
+                         + ("(measured)" if measured is not None else "(estimated)"))
     row("every line has room to be spoken", not tight,
         f"{len(tight)} too tight: {tight[:3]}" if tight else "clean")
     return rows
@@ -154,6 +194,23 @@ def cues(lines_out):
     does not, and line-level is what this show burns in."""
     return [{"start": l["start"], "end": l["end"], "text": l["text"]}
             for l in lines_out]
+
+
+def cached_duration(p):
+    """Seconds of the cached take for this line, or None if it has not been
+    synthesized yet. Lets the guards check against fact instead of a constant."""
+    import hashlib
+    import wave as _wave
+    style = CAST[p["who"]]["style"]
+    key = hashlib.sha1(f"{p['voice']}|{style}|{p['text']}".encode()).hexdigest()[:16]
+    path = os.path.join(TAKES, f"{key}.wav")
+    if not os.path.exists(path):
+        return None
+    try:
+        with _wave.open(path, "rb") as w:
+            return w.getnframes() / float(w.getframerate())
+    except Exception:
+        return None
 
 
 def trim_silence(a, sr, thr_db=-42.0, keep=0.06):
