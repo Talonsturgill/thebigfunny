@@ -15,5 +15,20 @@
       ]
     }
   },
-  "entries": []
+  "entries": [
+    {
+      "run_date": "2026-08-01",
+      "episode_no": 1,
+      "hero_structure": "interior two-hander against filing-cabinet wall",
+      "atmosphere": "fluorescent records room, dust column",
+      "palette_family": "manila/carbon",
+      "continuity_device": "motif:the drifting sheet",
+      "camera_language": "locked",
+      "set": "PaperOfficeBG",
+      "new_assets": [
+        "lib/brand.tsx",
+        "lib/cast.tsx (both registered in ASSET_MANIFEST.md)"
+      ]
+    }
+  ]
 }

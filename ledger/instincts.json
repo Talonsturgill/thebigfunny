@@ -16,5 +16,25 @@
       ]
     }
   },
-  "entries": []
+  "entries": [
+    {
+      "run_date": "2026-08-01",
+      "shipped": false,
+      "score": null,
+      "worked": [
+        "The fact-check gate killed two stories and one headline number, and the episode got stronger each time.",
+        "Casting from the shelf: the office set, Ray and Dee all existed. Nothing new was drawn.",
+        "The angle came from the RESEARCH (the FAQ has no prices), not from writing a joke. That is the house thesis holding."
+      ],
+      "did_not": [
+        "Library art mounted in divs rendered nothing. Typechecked and exited 0.",
+        "Arial Black fell back to a regular weight; no Arial on the host.",
+        "No VO path, so no audio, captions or mp4."
+      ],
+      "next_time": [
+        "Render a still at Gate 0, before writing the rest of the composition.",
+        "Give Ray and Dee more of the frame; the two-shot leaves dead space in the middle third."
+      ]
+    }
+  ]
 }

@@ -1,0 +1,76 @@
+{
+  "case": 1,
+  "run_date": "2026-08-01",
+  "beat": "the-fee",
+  "target": "Microsoft",
+  "story_status": "alive",
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Microsoft's official page about the increase is titled 'Packaging and Pricing Updates for Microsoft 365 Commercial Suites Public FAQs'.",
+      "ruling": "verified",
+      "supporting_text": "Packaging and Pricing Updates for Microsoft 365 Commercial Suites Public FAQs",
+      "sources": ["https://www.microsoft.com/en-us/licensing/news/2026-m365-packaging-pricing-updates-faq"],
+      "date_of_source": "2026-07-01",
+      "notes": "Primary source is Microsoft's own licensing page. The euphemism is the company's own wording, quoted exactly, never paraphrased."
+    },
+    {
+      "id": "c2",
+      "text": "Microsoft describes the change as 'global price and packaging updates for commercial Microsoft 365 suites'.",
+      "ruling": "verified",
+      "supporting_text": "Microsoft is announcing global price and packaging updates for commercial Microsoft 365 suites.",
+      "sources": ["https://www.microsoft.com/en-us/licensing/news/2026-m365-packaging-pricing-updates-faq"],
+      "date_of_source": "2026-07-01",
+      "notes": "Verbatim."
+    },
+    {
+      "id": "c3",
+      "text": "Microsoft's stated justification is that the change reflects innovation and expanded value.",
+      "ruling": "verified",
+      "supporting_text": "This change reflects the significant innovation delivered over the last several years and the expanded value customers will gain with new additions to the suites, including major advancements in security and IT management.",
+      "sources": ["https://www.microsoft.com/en-us/licensing/news/2026-m365-packaging-pricing-updates-faq"],
+      "date_of_source": "2026-07-01",
+      "notes": "Verbatim. This is the Institution's line in the episode and must be delivered word for word."
+    },
+    {
+      "id": "c4",
+      "text": "The change took effect July 1, 2026.",
+      "ruling": "verified",
+      "supporting_text": "July 1, 2026",
+      "sources": ["https://www.microsoft.com/en-us/licensing/news/2026-m365-packaging-pricing-updates-faq"],
+      "date_of_source": "2026-07-01",
+      "notes": "Stated on the FAQ."
+    },
+    {
+      "id": "c5",
+      "text": "The FAQ explaining the price increase contains no prices; it directs readers to a table elsewhere.",
+      "ruling": "verified",
+      "supporting_text": "NONE PROVIDED. The page states 'Check the table [here]' and references an external link to pricing details, but no actual dollar amounts or percentage increases appear in this FAQ document itself.",
+      "sources": ["https://www.microsoft.com/en-us/licensing/news/2026-m365-packaging-pricing-updates-faq"],
+      "date_of_source": "2026-08-01",
+      "notes": "This is the angle. Verified by direct fetch of the page and confirmed absence, not inferred. A negative claim, so it is stated as what the FAQ does not contain rather than as an accusation of intent."
+    },
+    {
+      "id": "c6",
+      "text": "Office 365 E3 rose from $23 to $26 per user per month, a 13 percent increase.",
+      "ruling": "verified",
+      "supporting_text": "Office 365 E3: 13% ($23 -> $26). Table labeled 'Source: Microsoft.'",
+      "sources": [
+        "https://www.uscloud.com/blog/microsoft-365-price-increase-july-1-2026-what-enterprise-buyers-need-to-know-part-1/",
+        "https://www.microsoft.com/en-us/licensing/news/2026-m365-packaging-pricing-updates-faq"
+      ],
+      "date_of_source": "2026-07-01",
+      "notes": "Figures published as Microsoft's own, in a table attributed to Microsoft. Used because it is the plainest single before-and-after in the set."
+    }
+  ],
+  "killed": [
+    {
+      "claim": "Microsoft 365 prices rose 'up to 43 percent'.",
+      "why": "Single source (windowslatest.com), and it CONFLICTS with a per-SKU table attributed to Microsoft showing a maximum of 14 percent. The house rule is two independent sources for any number that carries an episode, and softening a disputed number to keep it is the move that ends channels. Cut. The angle does not need it and is stronger without it."
+    },
+    {
+      "claim": "Consumer Policy Center: real estate 'junk fees' cost consumers $2 billion annually.",
+      "why": "First story considered and dropped at Phase 2. The primary PDF could not be read (multiple subset fonts with different CMaps, so no reliable verbatim extraction), and the trade press notes the report is 'based largely on anecdotal evidence' with an author-qualified estimate. Could not be quoted verbatim to the standard, so the story was killed rather than sourced to reporting about it."
+    }
+  ]
+}

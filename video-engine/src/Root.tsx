@@ -1,5 +1,6 @@
 import React from 'react';
 import {Ep0729, ep0729Schema} from './Ep0729';
+import {Case0001, case0001Schema} from './Case0001';
 import { Composition } from 'remotion';
 import { Episode, episodeSchema } from './Episode';
 import { Standoff } from './Standoff';
@@ -35,6 +36,18 @@ const standoffSchema = z.object({
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      {/* THE BIG FUNNY, case 0001. 57.5s at 30fps = 1725 frames, inside the
+          60.0s hard gate with room. */}
+      <Composition
+        id="Case0001"
+        component={Case0001}
+        durationInFrames={1725}
+        fps={30}
+        width={1080}
+        height={1920}
+        schema={case0001Schema}
+        defaultProps={{}}
+      />
       <Composition
         id="Dispatch0729"
         component={Ep0729}

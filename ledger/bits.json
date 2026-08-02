@@ -17,5 +17,12 @@
       "landed": "scorer funny subscore"
     }
   },
-  "entries": []
+  "entries": [
+    {
+      "run_date": "2026-08-01",
+      "angle_type": "euphemism",
+      "angle": "Microsoft raised the price of Office, called it a 'packaging and pricing update', and the official FAQ explaining it contains no prices.",
+      "landed": null
+    }
+  ]
 }

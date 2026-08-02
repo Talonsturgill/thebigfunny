@@ -28,7 +28,7 @@ export const BRAND = {INK, MANILA, CARBON, STAMP, HIGHLIGHT, PAPER} as const;
 
 export const PROMISE = "WE DIDN'T MAKE THIS UP. WE HAVE THE FILING.";
 
-const HEAD = 'Arial Black, Arial, sans-serif';
+const HEAD = 'Arial Black, DejaVu Sans, FreeSans, sans-serif';
 const BODY = 'Arial, sans-serif';
 
 /**
