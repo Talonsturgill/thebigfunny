@@ -1,0 +1,253 @@
+{
+  "title": "The refund clock starts when they mail the check",
+  "angle": "The deadline they hold you to is partly made of their own mail",
+  "target": "the claims processor who starts the ten day clock at the envelope, not the hand",
+  "angle_type": "the-clock-is-theirs",
+  "visual_system": {
+    "set": "the ten day chute",
+    "world": {
+      "name": "the ten day mail chute",
+      "drawn_from": [
+        "mail",
+        "clock",
+        "chute",
+        "envelope",
+        "letterbox",
+        "days"
+      ],
+      "why_this_world": "The theft happens in the span between the stamp and the hand, so the set is that span made physical: the walls are the ten days and the distance down them is the mail, running on a separate schedule."
+    }
+  },
+  "shots": [
+    {
+      "id": "s1",
+      "t": [
+        0.0,
+        5.0
+      ],
+      "figures": [
+        "RAY",
+        "DEE"
+      ],
+      "visual": "Straight down a chute. Numbered lamps 10, 9, 8 receding into black, a lit letterbox slot far below beside a stencilled 4, a bin past it with one dead envelope in it. A steel stamp head the size of a car drops beside two figures the height of a postage stamp.",
+      "visual_contributes": "The count and the distance are established as two different things running down the same tube, which is the mechanism the dialogue never has to explain.",
+      "captions": [
+        "Ten days to reply, it says"
+      ],
+      "staging": {
+        "RAY": "left",
+        "DEE": "right"
+      },
+      "events": [
+        {
+          "t": 1.0,
+          "kind": "prop",
+          "what": "the date stamp head drops"
+        },
+        {
+          "t": 2.0,
+          "kind": "sight_gag",
+          "what": "ink floods around Ray's boots and he is standing in the date",
+          "the_joke": "the date that starts the clock is literally under his feet and he cannot move off it"
+        },
+        {
+          "t": 3.0,
+          "kind": "prop",
+          "what": "panel 10 goes dark on the thunk"
+        },
+        {
+          "t": 4.2,
+          "kind": "camera",
+          "what": "the envelope tips and starts to travel"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "t": [
+        5.0,
+        20.0
+      ],
+      "figures": [
+        "DEE"
+      ],
+      "visual": "Dee braced against a postage stamp taller than she is, notice in hand. Panels 9 and 8 rise past the lens and die as they pass. Then the walls stop. Black. Deep ahead, panel 7 goes out. Held. Then 6. Envelopes crowd in behind.",
+      "visual_contributes": "The lamps keep going out after the envelope stops moving, so the viewer sees the count being spent on nothing while nobody says a word about it.",
+      "captions": [
+        "Ten days from the date of mailing"
+      ],
+      "staging": {
+        "DEE": "right"
+      },
+      "events": [
+        {
+          "t": 6.5,
+          "kind": "prop",
+          "what": "panel 9 dies as it passes"
+        },
+        {
+          "t": 9.0,
+          "kind": "prop",
+          "what": "panel 8 dies as it passes"
+        },
+        {
+          "t": 11.5,
+          "kind": "prop",
+          "what": "the OUTGOING gate slams and the envelope stops dead"
+        },
+        {
+          "t": 14.0,
+          "kind": "prop",
+          "what": "panel 7 goes out with nothing else moving"
+        },
+        {
+          "t": 16.5,
+          "kind": "prop",
+          "what": "envelopes crowd in behind"
+        },
+        {
+          "t": 18.5,
+          "kind": "prop",
+          "what": "panel 6 goes out"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "t": [
+        20.0,
+        40.0
+      ],
+      "figures": [
+        "RAY",
+        "DEE"
+      ],
+      "visual": "Panel 5 dies. The gate lifts, the pile shoves, the envelope runs out of the black into a hard wedge of daylight from a slot in the chute wall. Ray at the leading edge, backlit, the stencilled 4 beside him at his own height. Behind him six dark panels, ahead three lit.",
+      "visual_contributes": "The arithmetic is on the wall on both sides of him, so the viewer reaches the conclusion before Ray says it and the line lands as confirmation rather than explanation.",
+      "captions": [
+        "Six of them were the mail"
+      ],
+      "staging": {
+        "RAY": "left",
+        "DEE": "right"
+      },
+      "events": [
+        {
+          "t": 21.0,
+          "kind": "prop",
+          "what": "panel 5 dies"
+        },
+        {
+          "t": 23.0,
+          "kind": "prop",
+          "what": "the gate lifts and the pile shoves"
+        },
+        {
+          "t": 26.0,
+          "kind": "camera",
+          "what": "the envelope runs into the daylight wedge"
+        },
+        {
+          "t": 29.0,
+          "kind": "sight_gag",
+          "what": "the stencilled 4 sits at exactly Ray's height beside the slot",
+          "the_joke": "the number of days he has left is his own size, and the six he lost are behind him in the dark"
+        },
+        {
+          "t": 32.5,
+          "kind": "prop",
+          "what": "six dark panels behind, three lit ahead"
+        },
+        {
+          "t": 36.0,
+          "kind": "prop",
+          "what": "the pile shoves again"
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "t": [
+        40.0,
+        52.0
+      ],
+      "figures": [
+        "RAY"
+      ],
+      "visual": "A split-flap plate clacks down on the chute wall directly under the first, close enough to read. Under it a laminated card taped on crooked. Ray is standing on the words. Panel 3 goes out. The mail behind moves the envelope a few inches toward the slot, and past it.",
+      "visual_contributes": "The Institution answers by posting a second plate rather than speaking, so it stays a machine, and the card taped crooked under it does the sneering the show never lets a character do.",
+      "captions": [
+        "Considered delivered on the date of mailing"
+      ],
+      "staging": {
+        "RAY": "left"
+      },
+      "events": [
+        {
+          "t": 41.0,
+          "kind": "prop",
+          "what": "a split-flap plate clacks down"
+        },
+        {
+          "t": 44.0,
+          "kind": "sight_gag",
+          "what": "a laminated card taped on crooked reads delivery times may vary",
+          "the_joke": "the disclaimer that excuses the delay is stuck under the rule that punishes him for it"
+        },
+        {
+          "t": 47.0,
+          "kind": "prop",
+          "what": "panel 3 goes out"
+        },
+        {
+          "t": 50.0,
+          "kind": "prop",
+          "what": "the mail shoves the envelope past the slot"
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "t": [
+        52.0,
+        60.0
+      ],
+      "figures": [
+        "RAY",
+        "DEE"
+      ],
+      "visual": "The lit slot slides up out of frame behind them. Panel 2 out. Panel 1 out. The envelope drops into the bin and lands on the one that was there in the first shot, except the bin is now full to the lip. Last frame is the notice, legible: the ten day clause, the printed date, and the bin it is lying in.",
+      "visual_contributes": "The one dead envelope planted in the first shot is now a full bin, so the ending says this happens to everyone without a line claiming it.",
+      "captions": [
+        "That is the whole system working"
+      ],
+      "staging": {
+        "RAY": "left",
+        "DEE": "right"
+      },
+      "events": [
+        {
+          "t": 53.0,
+          "kind": "camera",
+          "what": "the lit slot slides up out of frame behind them"
+        },
+        {
+          "t": 55.0,
+          "kind": "prop",
+          "what": "panel 2 out"
+        },
+        {
+          "t": 56.5,
+          "kind": "prop",
+          "what": "panel 1 out"
+        },
+        {
+          "t": 58.0,
+          "kind": "sight_gag",
+          "what": "the bin that held one envelope in shot one is now full to the lip",
+          "the_joke": "the plant pays off as scale: it was never about him"
+        }
+      ]
+    }
+  ]
+}
