@@ -287,11 +287,33 @@ Failing Gate 0 is cheap. Failing after a render is not.
 
 6. Iterate on DRAFT renders: `bash scripts/render.sh draft`. Look at the frames.
    Three to five cheap passes beat one expensive one.
-7. `bash scripts/render.sh final` only when the draft is right.
-8. `bash scripts/mux_and_verify.sh` for audio mux and integrity.
-9. `python3 scripts/render_gate.py <final.mp4>` — the OBJECTIVE renders_clean
-   gate. Dependency-free container parse: duration under 60.0s, 1080x1920, a
-   real audio track, non-trivial size. Not a prose judgement, not optional.
+
+7. **GATE: OPEN THE FRAMES. A RENDER IS NOT FINISHED UNTIL SOMEONE HAS LOOKED.**
+
+   ```
+   bash scripts/render.sh still <frame> "" out/dispatch/probe/f<frame>.png
+   ```
+   Pull at least one still on a SPEAKING beat and one on a held beat, Read them,
+   and say what is wrong with them before going on. If the rig, the cast, the
+   staging or the timing changed, this is mandatory, not a nicety.
+
+   Every objective gate below asks about the FILE: does it parse, is it
+   1080x1920, is it under sixty, does it carry audio. **Not one of them can see a
+   character.** On 2026-08-02 this episode was rendered five times in one session
+   with every gate green while the head was detached from the body, the default
+   pose's right arm was a solid black bar, and no motion in the rig knew a word
+   was being spoken. All three were visible in a single still. Nobody opened one
+   until the owner did.
+
+   When the rig or the staging changed, run `storyboard-critic` on the stills
+   too. It is the agent that caught the red arc across Ray's legs the same day.
+   It works when it runs.
+
+8. `bash scripts/render.sh final` only when the draft is right.
+9. `bash scripts/mux_and_verify.sh` for audio mux and integrity.
+10. `python3 scripts/render_gate.py <final.mp4>` — the OBJECTIVE renders_clean
+    gate. Dependency-free container parse: duration under 60.0s, 1080x1920, a
+    real audio track, non-trivial size. Not a prose judgement, not optional.
 
 ## PHASE 5B: THE CAPTION
 
