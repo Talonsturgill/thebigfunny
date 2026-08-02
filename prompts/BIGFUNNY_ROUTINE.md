@@ -101,6 +101,20 @@ Choose ONE. Score candidates on:
 Never pad. A 60 second episode built on a 20 second angle is worse than a good
 episode about a smaller story.
 
+### The story gate (mechanical, free, runs BEFORE the angle room)
+
+Write the story's conception to `out/dispatch/story.json` and run:
+
+```
+python3 scripts/story_check.py
+```
+
+It refuses a story that is infuriating rather than ABSURD: the absurd sentence
+in 22 words or fewer, a PERSON who does the stupid thing (you cannot act out a
+policy), and why it is absurd rather than merely bad. Two episodes were written,
+scored and rendered before anyone noticed the story could never have been funny;
+this is the cheapest place to fail, so fail here.
+
 ## PHASE 3.5: THE ANGLE ROOM
 
 Spawn 3 `angle-room` agents in parallel, each assigned a DIFFERENT type from
@@ -115,6 +129,22 @@ Then judge them yourself, hard:
 
 **If no angle survives, go back to Phase 3 and take a different story.** A weak
 angle cannot be rescued downstream and will cost a full render to discover.
+
+## PHASE 3.7: THE PRODUCER ROOM (what IS this episode, as a film)
+
+Spawn `producer` with the cleared claims and the locked angle. It returns
+`out/dispatch/episode_plan.json`: the world, the cold open, the escalation, the
+turn, the button, and what the viewer SEES at each beat. Every beat carries
+`what_happens` AND `what_the_viewer_SEES`, and if those are the same sentence
+the beat is not planned. The plan BINDS every later phase.
+
+Then spawn `devils-advocate` against the plan. THE ROOM PROTOCOL
+(knowledge/DIRECTING.md) applies: a round in which everyone agreed on the first
+pass is REJECTED, every position is tagged FACT / INFERENCE / ASSUMPTION, and
+every approved element ships with its kill criteria. Five agents agreeing
+politely is one mind billed five times.
+
+`no-episode-here` is a legitimate producer verdict: go back to Phase 3.
 
 ## PHASE 4: THE WRITERS ROOM
 
@@ -172,9 +202,31 @@ Decide now what document appears at the end and confirm it is legible at
 1080x1920 and at speed. Every episode ends on the real receipt. This is the
 signature.
 
+## PHASE 4.2: THE WORLD (production designer)
+
+Spawn `production-designer` with the plan and the locked script. THE WORLD OF
+THE STORY BECOMES THE SET: a Ford engine story is staged INSIDE a Ford engine.
+It proposes three worlds and kills two on the record, then returns the world,
+the establishing image, the palette, the cast-to-world scale with its required
+reference object, the primitives cast from `knowledge/WORLD_KIT.md`, and the
+shot-by-shot set naming what the world is DOING each beat. Never Alaska by
+default; the shelf is a KIT, not a place.
+
+## PHASE 4.4: THE DIRECTOR (what is ON SCREEN, second by second)
+
+Spawn `director` on the locked script and the world. Every line gets a visual
+that carries meaning the line does not; the field is literally named
+`what_the_picture_knows_that_the_line_does_not`, and if it is empty twice the
+LINE is the problem. The director has REJECT power: three unillustratable
+lines, or one on the turn or the button, sends the script back to Phase 4 with
+a rewrite ask, not a rewritten line. Two people talking over an inert set is a
+podcast with drawings on it, and it is the single failure this phase exists to
+prevent.
+
 ## PHASE 4.5: GATE 0 (before any scene code)
 
-Write `out/dispatch/storyboard.json` (beats, shots, assets per shot), then
+Write `out/dispatch/storyboard.json` (beats, shots, assets per shot),
+IMPLEMENTING the director's shot plan against the designer's set, then
 spawn `storyboard-critic` on it. This is the cheap save; a board fixed here
 is free and the same fix after a full-res render is not.
 
@@ -182,7 +234,16 @@ Run the mechanical half first, because it is free and it does not need a model:
 
 ```
 python3 scripts/script_check.py     # out/dispatch/{script,claims}.json
+python3 scripts/visual_check.py     # out/dispatch/storyboard.json
 ```
+
+`visual_check` mechanically refuses talking heads: 18 visual events per 60s
+minimum, no image held over 5s, two-figures-talking under 20 percent of screen
+time, 3 sight gags in 3 distinct shots each stating its joke, the world built
+from the story's own nouns (hard fail on an Alaska-shelf word with no
+counterpart in the story), and screen-side continuity across cuts. It runs on
+the BOARD, before a cent of audio is bought, because a critic downstream of a
+decision never fixes the decision.
 
 It hard-fails a claim-id that resolves to nothing, a line citing a claim the
 fact-checker CUT, Ray gone for longer than one whole beat, and Ray absent from
@@ -390,7 +451,21 @@ Then spawn the panel in parallel:
   consequence.
 - `storyboard-critic` — per-scene craft, on the real render
 - `flow-critic` — the episode as a sequence: pace, momentum, does the button land
+- `reader-sim` — NOT a critic: one simulated viewer, one watch, a second-by-second
+  experiential timeline with `first_scroll_risk_at`. Six scores on case 0003
+  described the same episode without once saying where a viewer LEFT; this says
+  where they left.
 - `scorer` — the weighted score, honestly
+
+Before the panel, render its eyes:
+
+```
+python3 scripts/contact_sheet.py Case<NNNN> out/dispatch/contact_sheet.png
+```
+
+The storyboard and flow critics grade the GRID, not the JSON. Every gate stayed
+green on an episode the owner called boring because nothing in the machine ever
+looked at a picture.
 
 Ship threshold is 78.
 
@@ -452,6 +527,17 @@ plain language so it cannot be missed.
 ## PHASE 8: RETROSPECTIVE + SELF-UPGRADE
 
 Every run, pass or fail:
+0. Record EVERY panel verdict to the cross-run ledger, then run the check:
+
+   ```
+   python3 scripts/retro.py --record <verdict.json>   # one per critic read
+   python3 scripts/retro.py --check                   # must exit 0
+   ```
+
+   A defect seen in 2+ distinct runs is a PROCESS defect owned by the phase
+   that made the decision, not the phase that caught it, and `--check` FAILS
+   the retro until an entry in `ledger/upgrades.json` claims that defect by
+   slug. Rewriting the artifact again is not a fix. The decision upstream is.
 1. Diff what you actually did against this file. Where you deviated, either the
    deviation was right (fix this file) or it was wrong (write it into
    `knowledge/FIELD_NOTES.md`).

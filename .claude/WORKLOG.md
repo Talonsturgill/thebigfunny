@@ -127,12 +127,12 @@ Everything below is downstream of that sentence.
 | 2 | retro.py cross-run memory + verdict ledger | DONE |
 | 3 | story_check.py phase 3 gate | DONE |
 | 4 | `button_doesnt_land` repeat offender still open | TODO |
-| 5 | knowledge/DIRECTING.md | TODO |
-| 6 | scripts/visual_check.py + self-test | TODO |
-| 7 | the four room agents | TODO |
-| 8 | asset-upgrader agent + kit mandate | TODO |
-| 9 | wire the routine prompt | TODO |
-| 10 | GitHub trending research, fold in what survives scrutiny | RUNNING |
+| 5 | knowledge/DIRECTING.md | DONE |
+| 6 | scripts/visual_check.py + self-test | DONE |
+| 7 | the room agents (producer, director, designer, devils-advocate, reader-sim) | DONE |
+| 8 | asset-upgrader agent + kit mandate | DONE |
+| 9 | wire the routine prompt (3.7, 4.2, 4.4, gates, panel, retro) | DONE |
+| 10 | GitHub trending research, folded into this file | DONE |
 | 11 | ship an episode that clears the new gates | TODO |
 
 ## What the GitHub scan actually returned (2026-08-02)
