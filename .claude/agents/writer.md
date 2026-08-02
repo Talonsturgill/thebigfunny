@@ -151,3 +151,30 @@ a two-hander is usually: Dee says the insane true thing completely `flat`, and w
 cut to Ray going from `angry` to `squint` because he cannot believe he heard it.
 Neither of them says anything about it. That beat costs zero seconds of runtime,
 which in a sixty second show is the only free thing there is.
+
+## `claims: []` is ambiguous, and the ambiguity is a shipping blocker
+
+An empty `claims` array means one of two completely different things, and the
+schema could not tell them apart until the first dry run:
+
+- **empty because it MUST be.** The line asserts no fact. Ray's verdict, a
+  reaction, a beat of silence. This ships.
+- **empty because nobody checked.** A factual line with no claim-id. This is the
+  thing Phase 2 exists to stop, and it must never ship.
+
+So every line carries `needs_claim` (bool) and, when true, `needs_claim_note`:
+one plain sentence naming what would have to be cleared. Write the note for a
+reader who has not seen the story, because the fact-checker uses it as a hunting
+list and a note only you can decode is worth nothing to them.
+
+If a line is a HELD SLOT (written, timed, and waiting on a clearance that has not
+happened), say so there rather than leaving an empty array to be read as
+innocent.
+
+**The Institution's lines are a special case and the strictest one.** Its
+euphemisms are quoted VERBATIM from a document. Any sentence you compose for it
+is by definition wrong, however well it holds the timing, so mark it
+`MAY NOT BE SPOKEN` and say what it is standing in for. The first dry run did
+exactly this for three Institution lines and the button, and that is the correct
+behaviour: those four slots were genuinely unwritable, not merely constrained,
+and saying so is a better output than filling them.

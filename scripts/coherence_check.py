@@ -120,14 +120,25 @@ def check(plan, world):
             f"FORK. plan: '{pt[:70]}' / world: '{wt[:70]}'. Nobody has ruled on which "
             f"one the episode is. Rule on it before Phase 4 writes to one and "
             f"ratifies it by accident.")
-    elif pt or wt:
+    else:
         row("the plan and the world agree on THE TURN", False,
-            "only ONE document declares a turn. The other has no opinion about the "
-            "most load-bearing beat in the episode, which is not agreement.")
+            ("only ONE document declares a turn. The other has no opinion about the "
+             "most load-bearing beat in the episode, which is not agreement.")
+            if (pt or wt) else
+            ("NEITHER document declares a turn. Silence is not agreement: it is two "
+             "documents that have not decided what the episode's most load-bearing "
+             "beat IS. This exact hole let the gate pass the fork it was built to "
+             "catch on its first live run."))
 
     # -- 3. THE BUTTON -------------------------------------------------------
     pb = _text(plan.get("the_button"), "image", "document")
     wb = _text(world.get("the_button") or world.get("button"), "image", "document")
+    if not wb:
+        # The designer's schema has no `the_button`; its ending lives in the LAST
+        # shot. Read it there rather than scoring silence as agreement.
+        shots = world.get("shots") or []
+        if isinstance(shots, list) and shots:
+            wb = _text(shots[-1], "visual", "image", "what_the_viewer_SEES", "description")
     if pb and wb:
         shared = words(pb) & words(wb)
         row(f"the plan and the world agree on THE BUTTON ({MIN_SHARED}+ shared terms)",
@@ -136,9 +147,13 @@ def check(plan, world):
             f"FORK. plan: '{pb[:70]}' / world: '{wb[:70]}'. `button_doesnt_land` is a "
             f"standing repeat offender here, and two documents disagreeing about what "
             f"the ending IS is the most direct way to earn it again.")
-    elif pb or wb:
+    else:
         row("the plan and the world agree on THE BUTTON", False,
-            "only ONE document declares a button.")
+            "only ONE document declares a button."
+            if (pb or wb) else
+            "NEITHER document declares a button. `button_doesnt_land` is a standing "
+            "repeat offender here, and the surest way to earn it again is for no "
+            "artifact to say what the ending IS.")
 
     # -- 4. props the plan needs and the world dropped -----------------------
     # The dry run's plan leaned on a pile of mail; the world dropped `Queue`
@@ -241,6 +256,14 @@ def self_test():
          good_plan, dict(good_world, shippable=False)),
         ("catches: only one document declaring a turn at all", ["THE TURN"],
          good_plan, {k: v for k, v in good_world.items() if k != "the_turn"}),
+        # THE BUG THIS GATE SHIPPED WITH. Both silent scored as agreement, so it
+        # passed the fork it exists to catch on its first live run.
+        ("catches: NEITHER document declaring a turn", ["THE TURN"],
+         {k: v for k, v in good_plan.items() if k != "the_turn"},
+         {k: v for k, v in good_world.items() if k != "the_turn"}),
+        ("catches: NEITHER document declaring a button", ["THE BUTTON"],
+         {k: v for k, v in good_plan.items() if k != "the_button"},
+         {k: v for k, v in good_world.items() if k != "the_button"}),
     ]
     for name, want, p, w in cases:
         rows = check(p, w)
