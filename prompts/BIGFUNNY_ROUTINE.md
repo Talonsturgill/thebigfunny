@@ -159,6 +159,21 @@ this room can edit.
 
 `no-episode-here` is a legitimate producer verdict: go back to Phase 3.
 
+### The rejection routing table
+
+A reject names WHERE it goes, because sending the right work to the wrong phase
+is worse than sending none: the wrong phase will do the work.
+
+| symptom | goes to |
+| --- | --- |
+| lines cannot be illustrated, and the world stages a different mechanism | PRODUCER (3.7) |
+| lines cannot be illustrated, and the world is right | WRITERS ROOM (4) |
+| a picture would assert something uncleared | FACT-CHECK (2) |
+| the world is right and the set cannot build it in one run | DESIGNER (4.2) |
+
+The director nearly sent thirteen serviceable lines back to the writers room for
+a producer's error, which would have bought a rewrite that fixes nothing.
+
 ### Then check the two artifacts describe the same film
 
 ```
