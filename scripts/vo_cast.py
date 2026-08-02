@@ -162,9 +162,16 @@ CAST = {
                   "verdicts, he never rants, and he never explains the joke. Let real "
                   "annoyance colour the words rather than volume. He swears like a "
                   "tired adult, never like an excited teenager."),
-        "pace": ("Fast and clipped. Run the sentences together. No dramatic pauses "
-                 "except where the transcript marks one, no drawn-out words, no "
-                 "announcer cadence."),
+        # FAST, and said four different ways because one adjective was not enough:
+        # the owner has called the delivery too slow four separate times, and the
+        # specific failure is that the caption shows the whole line while the voice
+        # is still on its third word.
+        "pace": ("FAST. Faster than feels correct for narration, because this is NOT "
+                 "narration, it is a man talking to someone standing next to him. Run "
+                 "the sentences together, bite the ends of words, no dramatic pauses "
+                 "except where the transcript marks one, no drawn-out vowels, no "
+                 "announcer cadence, no leaving air around a phrase for effect. If it "
+                 "sounds like it is being READ, it is far too slow."),
         "accent": "General American, working class.",
         # Kept so --dry-run and older callers still work.
         "style_legacy": "fast and clipped, annoyed and unimpressed",
@@ -190,8 +197,10 @@ CAST = {
                   "real variation from phrase to phrase. She underlines by pointing at "
                   "the fact, never by raising her volume. She has no patience left and "
                   "it is audible."),
-        "pace": ("Brisk and conversational, the clip of someone who has read this twice "
-                 "already and wants you to see the line she is pointing at. Numbers are "
+        "pace": ("FAST and conversational, the clip of someone who has read this twice "
+                 "already, is out of patience, and wants you to see the line she is "
+                 "pointing at before you look away. Never leave air around a phrase for "
+                 "effect. Numbers are "
                  "spoken like a person quoting an outrageous figure to a friend, with "
                  "the weight on the part that makes it outrageous, NEVER recited like a "
                  "digit string or an account number. Do not pause between sentences "
@@ -216,9 +225,11 @@ CAST = {
                   "question it was asked. It has no opinion because it is a process "
                   "working exactly as designed. NEVER use the [robotic] tag: it is "
                   "banned in vo_gemini and it makes this sound broken rather than calm."),
-        "pace": ("Normal announcement pace, slightly too even. A recorded menu does not "
-                 "drag. Legal and remedy clauses may be marked [extremely fast] in the "
-                 "transcript, which reads as a disclaimer and is in character."),
+        "pace": ("BRISK announcement pace, slightly too even. A recorded menu does not "
+                 "drag and never leaves air between phrases; dead time on hold is the "
+                 "one thing a phone tree is engineered to avoid. Legal and remedy "
+                 "clauses marked [extremely fast] are the disclaimer read at the end of "
+                 "a radio advert: genuinely rushed, not merely quick."),
         "accent": "General American, corporate neutral.",
         "style_legacy": "smooth, pleasant and automated, unfailingly polite",
     },
@@ -262,7 +273,8 @@ def plan(script):
         nxt = lines[i + 1]["t"] if i + 1 < len(lines) else script["estimated_seconds"]
         out.append({"idx": i, "who": l["who"], "t": l["t"], "slot": round(nxt - l["t"], 3),
                     "text": l["text"], "voice": CAST[l["who"]]["voice"],
-                    "claims": l.get("claims", [])})
+                    "claims": l.get("claims", []),
+                    "verbatim": bool(l.get("verbatim"))})
     return out
 
 
@@ -548,7 +560,8 @@ def synth_all(planned, script):
         track[i0:i0 + len(a)] += a[:max(0, len(track) - i0)]
         lines_out.append({"idx": p["idx"], "who": p["who"], "start": p["t"],
                           "end": round(p["t"] + dur, 3), "text": p["text"],
-                          "voice": p["voice"], "claims": p["claims"]})
+                          "voice": p["voice"], "claims": p["claims"],
+                          "verbatim": p.get("verbatim", False)})
         print(f"  {p['who']:<12} {p['voice']:<10} {p['t']:>5.1f}s  {dur:>4.2f}s  "
               f"{p['text'][:44]}")
 

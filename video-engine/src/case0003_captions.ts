@@ -20,29 +20,29 @@
 export type Cue = {start: number; end: number; who: string; text: string};
 
 export const CAPTIONS: Cue[] = [
-  {start: 0.0, end: 4.117, who: 'RAY', text: 'There is a company that decides if you are allowed to rent.'},
-  {start: 4.38, end: 6.999, who: 'DEE', text: 'RentGrow. The government sued them in July.'},
-  {start: 7.26, end: 8.012, who: 'RAY', text: 'For what?'},
-  {start: 8.27, end: 12.284, who: 'DEE', text: 'Their reports said people were evicted more times than they were.'},
-  {start: 12.54, end: 13.946, who: 'RAY', text: 'How do you get that wrong?'},
-  {start: 14.21, end: 17.311, who: 'DEE', text: 'They counted the same eviction twice.'},
-  {start: 17.57, end: 19.337, who: 'RAY', text: 'The same eviction.'},
-  {start: 19.6, end: 22.521, who: 'DEE', text: 'It is one case, listed twice.'},
-  {start: 22.78, end: 26.168, who: 'RAY', text: 'So you call and say, it is one eviction.'},
-  {start: 26.43, end: 28.438, who: 'DEE', text: 'They marked the dispute invalid.'},
-  {start: 28.69, end: 29.299, who: 'RAY', text: 'And?'},
-  {start: 29.56, end: 34.166, who: 'DEE', text: 'When people asked what was in their file, they left out where it came from.'},
-  {start: 34.43, end: 36.931, who: 'RAY', text: 'So you cannot even find the thing to argue with.'},
-  {start: 37.19, end: 40.492, who: 'DEE', text: 'And told the landlord something different than they told you.'},
-  {start: 40.75, end: 43.208, who: 'RAY', text: 'I am not the customer.'},
-  {start: 43.47, end: 43.873, who: 'DEE', text: 'No.'},
-  {start: 44.13, end: 48.654, who: 'INSTITUTION', text: 'Reasonable procedures to assure maximum possible accuracy.'},
-  {start: 48.92, end: 51.151, who: 'RAY', text: 'They paid two and a quarter million dollars.'},
-  {start: 51.41, end: 54.245, who: 'RAY', text: 'The landlord is still their customer tomorrow.'},
+  {start: 0.0, end: 2.275, who: 'RAY', text: 'There\'s a company that decides if you\'re allowed to rent.'},
+  {start: 2.54, end: 5.671, who: 'DEE', text: 'The government sued a company called RentGrow in July.'},
+  {start: 5.93, end: 6.933, who: 'RAY', text: 'For what?'},
+  {start: 7.19, end: 10.22, who: 'DEE', text: 'Their reports said people were evicted more times than they were.'},
+  {start: 10.48, end: 11.717, who: 'RAY', text: 'How do you get that wrong?'},
+  {start: 11.98, end: 14.378, who: 'DEE', text: 'They counted the same eviction twice.'},
+  {start: 14.63, end: 15.915, who: 'RAY', text: 'The same eviction.'},
+  {start: 16.18, end: 19.559, who: 'DEE', text: 'It\'s one case listed twice on the same report.'},
+  {start: 19.82, end: 22.851, who: 'RAY', text: 'So you call and say, it\'s one eviction.'},
+  {start: 23.11, end: 25.03, who: 'DEE', text: 'They marked the dispute invalid.'},
+  {start: 25.29, end: 25.893, who: 'RAY', text: 'So?'},
+  {start: 26.15, end: 29.834, who: 'DEE', text: 'When people asked what was in their file, they left out where it came from.'},
+  {start: 30.1, end: 32.131, who: 'RAY', text: 'So you can\'t even find the thing to argue with.'},
+  {start: 32.39, end: 35.285, who: 'DEE', text: 'They told the landlord something different than they told you.'},
+  {start: 35.54, end: 38.235, who: 'RAY', text: 'I\'m not the customer.'},
+  {start: 38.5, end: 39.243, who: 'DEE', text: 'No.'},
+  {start: 39.5, end: 43.05, who: 'INSTITUTION', text: 'Reasonable procedures to assure maximum possible accuracy.'},
+  {start: 43.31, end: 46.013, who: 'RAY', text: 'They paid two and a quarter million dollars.'},
+  {start: 46.27, end: 49.309, who: 'RAY', text: 'The landlord is still their customer tomorrow.'},
 ];
 
 /** Seconds of finished episode: last spoken word plus the 1.5s tail. */
-export const TOTAL = 55.74;
+export const TOTAL = 50.81;
 
 /** Who is speaking at time t, or null in a gap. One definition, so the caption
  *  tint, the speaker label and the talk pose can never disagree. */

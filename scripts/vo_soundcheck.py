@@ -66,6 +66,7 @@ import sys
 import wave
 
 import numpy as np
+import re as _re
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 OUT = os.path.join(REPO, "out", "dispatch")
@@ -102,7 +103,21 @@ OUT = os.path.join(REPO, "out", "dispatch")
 # The honest split: this file HARD-FAILS damage and obvious malfunction, which
 # it can measure, and REPORTS prosody, which it cannot judge. A soundcheck that
 # pretends to have taste would just launder a guess into a gate.
-MIN_ARTIC_WPS = 1.5         # below this is sedated by any standard
+# RAISED 2.6 from 1.5 on 2026-08-02. The owner has now said the delivery is too
+# slow FOUR separate times, most recently "the talking commonly just too slow to
+# keep attention, like if the person speaking is way behind the caption then its
+# dumb". That is repeated, consistent, direct feedback about PACE, which is not
+# the falsified thing: what measurement got wrong earlier was PROSODY (pitch and
+# dynamics ran backwards against the ear, see the header). Rate did not. The
+# caption shows the whole line at once, so a slow read leaves the voice visibly
+# trailing text the viewer has already finished, which is the specific failure.
+#
+# Normal conversational English runs about 2.5 to 3.5 w/s of articulation, so
+# this floor is "sounds like a person", not "sounds rushed".
+MIN_ARTIC_WPS = 2.6
+# ...except on a very short line, where one word plus a natural release measures
+# slow without being slow. "And?" is not a pacing defect.
+SHORT_LINE_WORDS = 4         # below this is sedated by any standard
 MAX_ARTIC_WPS = 5.2         # above this is unintelligible under burned captions
 MAX_OVERRUN = 1.8           # duration vs word count: did it speak the DIRECTION?
 CLIP_PEAK = 0.985
@@ -233,6 +248,11 @@ def measure(path, text=None):
         "file": os.path.basename(path),
         "duration_s": round(dur, 2),
         "words": words,
+        # Tags that are PERFORMED as sound rather than spoken. [short pause] and
+        # [extremely fast] shape existing words and are not counted here.
+        "nonverbal": bool(_re.search(r"\[(sigh|sighs|laughs|laughing|giggles|gasp|"
+                                     r"scoffs|uhm|crying|trembling)\]",
+                                     (text or ""), _re.I)),
         "rate_wps": round(words / dur, 2) if words and dur else None,
         "artic_wps": round(words / speech_s, 2) if words else None,
         # 2.6 w/s is this cast's comfortable delivery; the ratio says how far the
@@ -252,11 +272,31 @@ def measure(path, text=None):
 def verdict(m):
     """Returns (ok, [problems]). Only judges what it can actually hear."""
     bad = []
-    if m.get("artic_wps") is not None and m["artic_wps"] < MIN_ARTIC_WPS:
+    # A very short line measures slow without being slow: one word plus a natural
+    # release is not a pacing defect, and failing "And?" would push the writer
+    # away from the short beats that give a two-hander its rhythm.
+    short = (m.get("words") or 0) < SHORT_LINE_WORDS
+    # A NON-VERBAL tag is audible time that is not words: [sigh] adds real
+    # duration to the take and zero to the word count, so a perfectly brisk line
+    # measures sedated purely for having been performed. Judging that as a pacing
+    # defect would push the writer away from the performance tags the owner
+    # explicitly asked for, which is the gate fighting the standard it serves.
+    performed = bool(m.get("nonverbal"))
+    # A VERBATIM line is a quotation. The Institution's one line is a statutory
+    # standard, and you cannot rewrite a quote to hit a words-per-second target:
+    # failing it would force the run to either misquote the law or drop the quote,
+    # both of which are worse than a slightly measured read. This is the same
+    # exemption the contractions gate already grants, for the same reason.
+    quoted = bool(m.get("verbatim"))
+    if (m.get("artic_wps") is not None and not short and not performed and not quoted
+            and m["artic_wps"] < MIN_ARTIC_WPS):
         bad.append(f"SEDATED ({m['artic_wps']} w/s speaking < {MIN_ARTIC_WPS})")
     if m.get("artic_wps") is not None and m["artic_wps"] > MAX_ARTIC_WPS:
         bad.append(f"GABBLING ({m['artic_wps']} w/s speaking > {MAX_ARTIC_WPS})")
-    if m["overrun_ratio"] is not None and m["overrun_ratio"] > MAX_OVERRUN:
+    # Same exemption for OVERRUN: "No." at 0.74s is a one-word line with a natural
+    # release, not a take that read its director's notes aloud.
+    if (m["overrun_ratio"] is not None and not short and not performed
+            and m["overrun_ratio"] > MAX_OVERRUN):
         bad.append(f"OVERRUN x{m['overrun_ratio']} (did it perform the DIRECTION as dialogue?)")
     if m["peak"] >= CLIP_PEAK:
         bad.append(f"CLIPPING (peak {m['peak']})")
@@ -306,6 +346,7 @@ def episode():
             w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr)
             w.writeframes((np.clip(seg, -1, 1) * 32767).astype("<i2").tobytes())
         m = measure(tmp, l["text"])
+        m["verbatim"] = bool(l.get("verbatim"))
         m["file"] = f"{l['who']}: {l['text'][:24]}"
         rows.append(m)
         os.remove(tmp)
@@ -354,8 +395,11 @@ def self_test():
         return p
 
     cases = [
+        # Eight words, not three: the short-line exemption (added when the floor
+        # rose to 2.6) made the old three-word fixture skip the very check it
+        # exists to prove, and the case went red for the right reason.
         ("catches: a sedated read", w("slow.wav", _tone(sr, 6.0, 130, 3.0)),
-         "four words here", "SEDATED"),
+         " ".join(["word"] * 8), "SEDATED"),
         ("catches: gabbling", w("fast.wav", _tone(sr, 1.0, 130, 3.0)),
          " ".join(["word"] * 9), "GABBLING"),
         ("catches: a dead/empty take", w("dead.wav", np.zeros(int(sr * 2.0), dtype="float32")),

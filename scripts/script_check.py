@@ -57,6 +57,34 @@ MAX_RAY_GAP_S = 20.0
 STATUS_FIELDS = ("status", "ruling", "verdict", "state")
 NOT_USABLE = ("cut", "kill", "reject", "unverified", "unproven", "fail", "drop")
 
+# ---------------------------------------------------------------------------
+# THE CAST SPEAK LIKE PEOPLE. (owner, 2026-08-02)
+#
+# "ban the word 'cannot', and use the word 'can't' instead" and "lean toward
+# 'there's' instead of 'there is' as it sounds more natural".
+#
+# This is a gate rather than a note in the writer prompt because the uncontracted
+# form is exactly what a model reaches for by default, and it is the difference
+# between a person talking and a document being read aloud, which is the single
+# most repeated complaint this show has had.
+#
+# It also costs RUNTIME. Every uncontracted pair is a syllable the sixty second
+# law has to pay for, and the show is always short of seconds.
+#
+# A line may opt out with "verbatim": true, for a quote that must not be altered.
+CONTRACTIONS = {
+    "cannot": "can't", "can not": "can't",
+    "there is": "there's", "there are": "there're",
+    "it is": "it's", "that is": "that's", "what is": "what's",
+    "do not": "don't", "does not": "doesn't", "did not": "didn't",
+    "is not": "isn't", "are not": "aren't", "was not": "wasn't",
+    "will not": "won't", "would not": "wouldn't", "could not": "couldn't",
+    "should not": "shouldn't", "have not": "haven't", "has not": "hasn't",
+    "you are": "you're", "they are": "they're", "we are": "we're",
+    "i am": "I'm", "you will": "you'll", "they will": "they'll",
+    "let us": "let's",
+}
+
 
 def load(path):
     return json.load(open(path))
@@ -74,6 +102,43 @@ def claim_is_cut(claim):
         if isinstance(v, str) and any(w in v.lower() for w in NOT_USABLE):
             return v
     return None
+
+
+def conjunction_openers(lines):
+    """-> [(t, word)] for any line whose SENTENCE starts with And or But.
+
+    Owner, 2026-08-02: "ban starting sentences with 'And or But' ever."
+
+    It is a real writing tic and not just taste: an opener like that makes the
+    line sound appended to the previous one, so the delivery inherits the last
+    line's energy instead of starting its own. In a two-hander where every line
+    is a new speaker taking the floor, that is exactly wrong.
+    """
+    import re as _re
+    out = []
+    for ln in lines:
+        if ln.get("verbatim"):
+            continue
+        txt = _re.sub(r"\[[^\]]*\]", " ", ln.get("text", "")).strip()
+        for sentence in _re.split(r"(?<=[.!?])\s+", txt):
+            m = _re.match(r"^\s*(And|But)\b", sentence.strip(), _re.I)
+            if m:
+                out.append((ln.get("t"), m.group(1)))
+    return out
+
+
+def stilted(lines):
+    """-> [(t, found, want)] for every uncontracted pair a person would contract."""
+    import re as _re
+    out = []
+    for ln in lines:
+        if ln.get("verbatim"):
+            continue
+        txt = _re.sub(r"\[[^\]]*\]", " ", ln.get("text", "")).lower()
+        for found, want in CONTRACTIONS.items():
+            if _re.search(r"(?<![\w'])" + _re.escape(found) + r"(?![\w'])", txt):
+                out.append((ln.get("t"), found, want))
+    return out
 
 
 def spans(lines):
@@ -134,6 +199,14 @@ def check(script, claims_doc):
     # episode as well as a 58s one.
     lo, hi = est / 3.0, est * 2.0 / 3.0
     inside = [t for t, e in ray if t < hi and e > lo]
+    co = conjunction_openers(script["lines"])
+    row("no sentence opens with And or But", not co,
+        "clean" if not co else "; ".join(f"t={a}: '{b}'" for a, b in co[:4]))
+
+    st = stilted(script["lines"])
+    row("the cast speak like people, not documents", not st,
+        "clean" if not st else "; ".join(f"t={a}: '{b}' -> '{c}'" for a, b, c in st[:4]))
+
     row("Ray speaks in the middle third", bool(inside),
         f"{len(inside)} line(s) in {lo:.1f}-{hi:.1f}s" if inside
         else f"NONE in {lo:.1f}-{hi:.1f}s, the beat named 'Ray finds out'")
@@ -186,6 +259,14 @@ def self_test():
     ])
 
     cases = [
+        # RED: the uncontracted form is what a model reaches for by default and it
+        # is the difference between a person talking and a document read aloud.
+        ("a line nobody would say out loud", "speak like people",
+         script([dict(good["lines"][0], text="There is a thing you cannot argue with.")]
+                + good["lines"][1:])),
+        ("a line that opens on a conjunction", "And or But",
+         script([dict(good["lines"][0], text="And then they did it again.")]
+                + good["lines"][1:])),
         ("a claim-id that resolves to nothing", "resolves",
          script([dict(good["lines"][0], claims=["c9"])] + good["lines"][1:])),
         ("a line citing a claim the fact-checker CUT", "cut",
