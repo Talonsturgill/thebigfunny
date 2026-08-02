@@ -70,7 +70,9 @@ quote verbatim against the source, confirm the date, confirm nothing has been
 retracted or corrected.
 
 - Any claim that cannot be proven is CUT.
-- If cutting it kills the angle, the STORY is dead. Take the next one.
+- If cutting it kills the angle, that STORY is done and you take the next one.
+  This is the gate working, not a setback. Killing a claim is cheap; there are
+  seven beats and the whole public record behind it.
 - **Never soften a claim to keep an angle alive.** That is the exact move that
   ends channels.
 - Two independent sources for any number that carries an episode.
@@ -243,15 +245,44 @@ Run every hard gate in `config/scoring_rubric.yaml`. Any failure stops the run.
 
 Then spawn the panel in parallel:
 - `funny-critic` — reads the script COLD, adversarial, defaults to
-  dissatisfaction. It never sees the ship threshold and is never told a low
-  score kills the run.
+  dissatisfaction. It never sees the ship threshold and is never told what its
+  number will cause. A critic that knows the consequence starts managing the
+  consequence.
 - `storyboard-critic` — per-scene craft, on the real render
 - `flow-critic` — the episode as a sequence: pace, momentum, does the button land
 - `scorer` — the weighted score, honestly
 
-Ship threshold is 78. **Below it the run does NOT ship.** Commit the evidence to
-the branch and stop. A killed run is a normal, cheap outcome. The feed is the
-brand.
+Ship threshold is 78.
+
+**Below it you do not stop. You go back and fix the work.** A gate failure ends
+an attempt, never the run. The standard never comes down to meet what you have;
+the work goes up to meet the standard.
+
+The remedy is always specific to what failed, and there is always a remedy:
+
+| What failed | What you do |
+| --- | --- |
+| A claim cannot be proven | Cut it. If it was load-bearing, take the next story from Phase 3. |
+| The angle is "X is bad" | Back to Phase 3.5 with a different angle type, or a different story. |
+| Funny scored under 60 | Rewrite. Usually the angle is broad, not the jokes weak, so re-run the angle room before touching lines. |
+| Ray is ranting or explaining | Rewrite his lines to verdicts. Cut the line after the joke. |
+| A take overruns its slot | Cut the line. Never slide the timeline. |
+| Over 60 seconds | Cut. The law does not move. |
+| The Institution has a face | Re-board that shot. |
+| The render is wrong | Fix and re-render. Look at the frame; do not trust an exit code. |
+| A variety ledger blocks it | Different story, angle type, or visual system. That is what the ledgers are for. |
+
+Loop until it passes. **You are not finished when you have tried, you are
+finished when a video exists that cleared every gate.**
+
+If the SAME gate fails three times running, stop guessing and change something
+structural: a different story, a different beat, a different angle type. Three
+identical failures means the fix is not where you are looking.
+
+The only legitimate stop is a genuine external outage (the TTS API is down, the
+network is gone). That is an INCIDENT: say so loudly at the top of the Gmail
+draft, commit what exists, and make the failure impossible to miss. It is never
+a quiet "no episode today".
 
 ## PHASE 7: DELIVER
 
@@ -271,8 +302,12 @@ On a passing run:
 4. Draft the post copy (hook, caption, on-screen text) into the Gmail draft.
    **This routine never posts.** A human posts.
 
-On a failed run: commit the evidence and the reason to the branch, do NOT merge,
-and say plainly in the draft what failed and why.
+There is no "failed run" branch of this phase, because a run does not end
+without a video. If you are here, you have one.
+
+The single exception is a genuine external outage, which is an incident: commit
+what exists, do NOT merge, and put the outage at the TOP of the Gmail draft in
+plain language so it cannot be missed.
 
 ## PHASE 8: RETROSPECTIVE + SELF-UPGRADE
 

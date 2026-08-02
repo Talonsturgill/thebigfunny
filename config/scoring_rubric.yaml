@@ -1,13 +1,18 @@
 # The Big Funny — scoring rubric and gates
 #
-# Two kinds of check. HARD GATES fail the run outright and no score can rescue
-# them. The WEIGHTED SCORE decides whether a run that is legal and true is also
-# good enough to ship.
+# Two kinds of check. HARD GATES fail the ATTEMPT outright and no score can
+# rescue them. The WEIGHTED SCORE decides whether an attempt that is legal and
+# true is also good enough to ship.
 #
-# Scores are honest. A run that is not funny gets killed, not shipped with a
-# generous grade. The upstream publication learned this the expensive way: a
-# rubric that always passes is a rubric that measures nothing, and the machine
-# will happily grade its own homework forever if you let it.
+# NOTHING HERE ENDS A RUN. A failure sends the run back to fix the work and try
+# again, and the job is to deliver one video. Fix the work, never the standard:
+# the two never conflict, because the work is infinitely re-choosable (there are
+# seven beats and the whole public record) and the standard is not.
+#
+# Scores are honest. An episode that is not funny gets REWRITTEN, not shipped
+# with a generous grade. The upstream publication learned this the expensive
+# way: a rubric that always passes is a rubric that measures nothing, and the
+# machine will happily grade its own homework forever if you let it.
 
 hard_gates:
 
@@ -16,8 +21,8 @@ hard_gates:
     rule: >
       Every factual line in the VO carries a claim-id resolving to a primary
       source that was actually fetched. Zero exceptions. A claim that cannot be
-      proven is cut, and if cutting it kills the angle then the episode dies and
-      we take the next story.
+      proven is cut, and if cutting it kills the angle then that story is done
+      and the run takes the next one. Never soften a claim to keep an angle.
     fails_run: true
 
   - id: sixty_seconds
@@ -82,9 +87,11 @@ hard_gates:
 weighted_score:
   ship_threshold: 78
   note: >
-    Below threshold the run does NOT ship. It commits its evidence to the branch
-    and stops. A killed run is a normal outcome and is cheaper than a bad
-    episode, because the feed is the brand.
+    Below threshold you do NOT stop, and you do NOT lower the threshold. You go
+    back and fix the work, then score again. A gate failure ends an attempt,
+    never the run. See the remedy table in Phase 6 of the routine: there is a
+    specific fix for every failure and none of them is "ship it anyway" or "try
+    tomorrow". The job is to deliver one video.
 
   criteria:
 
@@ -107,7 +114,8 @@ weighted_score:
           it. Usually an angle problem, not a writing problem.
         0-59: >
           Not funny. Agreement is not comedy. If the episode's whole content is
-          "this is bad and we all know it", score here and kill it.
+          "this is bad and we all know it", score it here and say so. The run
+          rewrites; it does not ship this and it does not stop.
 
     - id: angle
       weight: 25
@@ -118,7 +126,7 @@ weighted_score:
           named type in ANGLE_TAXONOMY.md.
         75-89: Specific and real, if slightly familiar.
         60-74: True but broad. Drifting toward "X is bad".
-        0-59: It IS "X is bad". Kill.
+        0-59: It IS "X is bad". Back to the angle room.
 
     - id: ray
       weight: 15
@@ -177,4 +185,6 @@ funny_gate:
       working against the machine's actual strengths and is capped at 84.
   anti_gaming: >
     The critic never sees the score it is being asked to beat, never sees the
-    ship threshold, and does not get told that a low score kills the run.
+    ship threshold, and is never told what its number will cause. It grades the
+    script in front of it and nothing else. A critic that knows the consequence
+    starts managing the consequence.

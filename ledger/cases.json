@@ -1,14 +1,14 @@
 {
   "_spec": {
     "purpose": "The case register. Every RUN takes the next case number, pass or fail, and it is never reused and never skipped. A gap in the numbering would be the show lying about its own record. Phase 0 reads next_case, Phase 7 (or the kill path) appends the entry.",
-    "brand_rule": "Case numbers are the show's archive spine. CASE No. 0400 implies 399 before it and implies somebody kept them. See knowledge/BRAND_BIBLE.md.",
+    "brand_rule": "Case numbers are the show's archive spine. CASE No. 0400 implies 399 before it and implies somebody kept them. See knowledge/BRAND_BIBLE.md. A case is only closed by a delivered video. shipped:false is an INCIDENT record (an external outage), never a normal outcome; the run does not end without a video.",
     "entry_schema": {
       "case": "int",
       "run_date": "YYYY-MM-DD",
-      "shipped": "bool",
+      "shipped": "bool. false ONLY for a genuine external outage. A gate failure is not a reason for false; the run fixes the work and goes again.",
       "title": "the angle as a title, or null if killed",
       "beat": "beat id",
-      "killed_reason": "null unless shipped is false"
+      "killed_reason": "null unless shipped is false, in which case it names the OUTAGE. Never a quality reason: quality failures are fixed, not recorded as an ending."
     }
   },
   "next_case": 2,

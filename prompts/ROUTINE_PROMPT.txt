@@ -9,7 +9,11 @@ behaviour lives in the repo rather than in this box.
 Also read CLAUDE.md in the same repo before you start. It carries the delivery
 policy and the house rules.
 
-If a gate fails, the run is killed, not softened. Commit the evidence and stop.
-A killed run is a normal, cheap outcome.
+The job is to deliver ONE video. A gate failure ends an attempt, never the run.
+Fix the work and go again: take the next story, cut the line, re-render. The
+gates never bend and the standard is never lowered to fit what you have.
+
+You are not finished when you have tried. You are finished when a video exists
+that cleared every gate.
 
 Never post to a social platform. This routine renders and drafts; a human posts.

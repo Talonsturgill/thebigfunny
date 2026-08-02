@@ -44,9 +44,11 @@ This is the single most important brand device and it is doing four jobs:
 4. It is inherited honestly. The upstream publication ran a public docket of
    tracked decisions, and this is the same instinct pointed at comedy.
 
-A case number is never reused and never skipped, including for killed runs. A
-gap in the numbering would be the show lying about its own record on the one
-axis where its whole credibility sits.
+A case number is never reused and never skipped. A gap in the numbering would be
+the show lying about its own record on the one axis where its whole credibility
+sits. In practice every case ends in a delivered episode, because a gate failure
+sends the run back to fix the work rather than ending it; a number is only ever
+spent without an episode behind it in a genuine outage, which is an incident.
 
 ## Colour
 
