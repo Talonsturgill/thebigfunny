@@ -462,3 +462,34 @@ manifest that points at the wrong file, both read as working.
 **HOW TO USE THIS.** Two questions, cheap, and they found forty defects between
 them. Run the gate on `{}`. Then break the guard on purpose and check that the
 self-test notices.
+
+## A phase whose output cannot fit in its return channel fails at the last step (2026-08-02)
+
+The first live Phase 4.4 ran for twenty-five minutes, did the work correctly,
+and produced NOTHING. The director agent had `tools: Read`, so its only way out
+was the final message, and the board it was asked for is nineteen shots with
+eight prose fields each plus a per-shot event array. It stalled part-way through
+emitting the JSON. Everything it had figured out was still right and is now
+gone.
+
+Two things make this worth an entry rather than a one-line fix.
+
+**It fails silently and it fails LAST.** A stalled message looks exactly like a
+slow one, so there is nothing to react to until the task simply disappears from
+the runtime. The owner noticed it was gone before the machine did. And it burns
+the entire cost of the phase before failing, which is the most expensive place
+in a run to lose something.
+
+**The production designer never hit this**, because it writes its own artifact
+and has `Write`. Same brief size, same prose density, no problem. The difference
+was never the work, it was the channel.
+
+THE RULE: **if a phase produces an artifact, it WRITES the artifact.** The
+return message is a receipt, not the deliverable: a verdict, the counts, and
+anything that needs a ruling. Read-only is correct for critics, who return a
+judgement, and wrong for any room whose output is a document.
+
+The corollary, for the file it writes: write it ONCE and complete. A
+half-written `storyboard.json` at the right path is byte-for-byte
+indistinguishable from a finished one, and `build_scenes.py` will derive a scene
+map from it without knowing.
