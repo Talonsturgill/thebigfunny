@@ -14,8 +14,8 @@
 export type FaceBeat = {t: number; emotion: string};
 
 export const FACES: Record<string, FaceBeat[]> = {
-  DEE: [{t: 0, emotion: 'squint'}, {t: 2.54, emotion: 'flat'}, {t: 5.93, emotion: 'squint'}, {t: 7.19, emotion: 'flat'}, {t: 10.48, emotion: 'smug'}, {t: 11.98, emotion: 'flat'}, {t: 16.18, emotion: 'smug'}, {t: 19.82, emotion: 'flat'}, {t: 25.29, emotion: 'smug'}, {t: 26.15, emotion: 'flat'}, {t: 30.1, emotion: 'smug'}, {t: 32.39, emotion: 'flat'}, {t: 35.54, emotion: 'squint'}, {t: 38.5, emotion: 'smug'}, {t: 39.5, emotion: 'flat'}, {t: 43.31, emotion: 'smug'}, {t: 46.27, emotion: 'squint'}],
-  RAY: [{t: 0, emotion: 'flat'}, {t: 2.54, emotion: 'squint'}, {t: 5.93, emotion: 'angry'}, {t: 7.19, emotion: 'squint'}, {t: 10.48, emotion: 'angry'}, {t: 11.98, emotion: 'shock'}, {t: 14.63, emotion: 'squint'}, {t: 16.18, emotion: 'shock'}, {t: 19.82, emotion: 'angry'}, {t: 23.11, emotion: 'shock'}, {t: 25.29, emotion: 'squint'}, {t: 30.1, emotion: 'angry'}, {t: 32.39, emotion: 'shock'}, {t: 35.54, emotion: 'flat'}, {t: 39.5, emotion: 'angry'}, {t: 43.31, emotion: 'flat'}, {t: 46.27, emotion: 'angry'}],
+  DEE: [{t: 0, emotion: 'squint'}, {t: 2.54, emotion: 'flat'}, {t: 8.71, emotion: 'smug'}, {t: 9.86, emotion: 'flat'}, {t: 16.77, emotion: 'squint'}, {t: 19.11, emotion: 'flat'}, {t: 25.7, emotion: 'squint'}, {t: 28.85, emotion: 'flat'}, {t: 32.8, emotion: 'smug'}, {t: 35.53, emotion: 'squint'}, {t: 42.41, emotion: 'smug'}, {t: 46.2, emotion: 'flat'}, {t: 48.67, emotion: 'squint'}],
+  RAY: [{t: 0, emotion: 'flat'}, {t: 2.54, emotion: 'squint'}, {t: 6.2, emotion: 'angry'}, {t: 8.71, emotion: 'squint'}, {t: 9.86, emotion: 'angry'}, {t: 14.11, emotion: 'shock'}, {t: 16.77, emotion: 'smug'}, {t: 19.11, emotion: 'shock'}, {t: 22.85, emotion: 'angry'}, {t: 25.7, emotion: 'shock'}, {t: 28.85, emotion: 'angry'}, {t: 32.8, emotion: 'squint'}, {t: 35.53, emotion: 'flat'}, {t: 42.41, emotion: 'smug'}, {t: 46.2, emotion: 'flat'}, {t: 48.67, emotion: 'angry'}],
 };
 
 /** The expression in force for `who` at a global frame. */

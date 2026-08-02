@@ -165,6 +165,19 @@ def synth(text, voice=None, style=None, direction=None):
     try:
         b64 = resp["candidates"][0]["content"]["parts"][0]["inlineData"]["data"]
     except (KeyError, IndexError):
+        block = (resp.get("promptFeedback") or {}).get("blockReason")
+        if block:
+            # A SAFETY BLOCK is not a transient failure and retrying is pointless.
+            # Observed 2026-08-02 on the single word "Invalid.", which is not
+            # remotely prohibited: a one-word prompt gives the classifier nothing
+            # to anchor on, and this cast's director brief mentions swearing, so
+            # short lines can trip it. Name the line and say what to do, because
+            # the raw JSON sent the last run hunting through the whole script.
+            raise RuntimeError(
+                f"Gemini TTS refused this line ({block}). It is a CONTENT BLOCK, not an "
+                f"outage, so retrying will not help. Very short lines trip this most "
+                f"often because the classifier has no context. Lengthen the line or "
+                f"rephrase it, then re-run.\n  line: {spoken!r}")
         raise RuntimeError(f"Gemini TTS: no audio in response: {json.dumps(resp)[:500]}")
     pcm = np.frombuffer(base64.b64decode(b64), dtype="<i2")
     return _resample_to_sr(pcm)
