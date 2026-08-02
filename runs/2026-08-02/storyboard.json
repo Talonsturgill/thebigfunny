@@ -5,7 +5,6 @@
   "angle_type": "ratio",
   "angle": "Ford recalled 43,438 of these SUVs in October for a sound they would not make, updated the software and mailed the letters; in June the same recall came back covering 66,383, and the cars they already fixed have to be fixed again.",
   "target": "Ford Motor Company (an institution)",
-
   "visual_system": {
     "hero_structure": "exterior night street in one-point recession, the pair small on the road, the Institution a cold monolith at the vanishing point, resolving to two stacked federal records",
     "atmosphere": "night exterior, rationed practical light: warm shop windows behind, cold ambient on the road",
@@ -23,87 +22,165 @@
     },
     "why_this_set": "The story is about a sound a car does not make. A quiet street at night is the subject drawn. The one-point recession also motivates the push: the camera walks down the road for the whole episode and never cuts away from it, which is the continuity device."
   },
-
   "new_assets": [],
   "new_assets_note": "NONE. Every element is cast from ASSET_MANIFEST.md. The library mandate says reuse with fresh staging is the point of the shelf, and freshness here comes from set, camera and palette, not from redrawing anything.",
-
   "shots": [
     {
       "id": "S1",
       "from_line": 0,
-      "t": [0.0, 8.8],
+      "t": [
+        0.0,
+        8.8
+      ],
       "beat": "the hook (cold open, NO logo)",
       "action": "Night street, camera already pushing. Ray alone, mid-road, arms-crossed, angry: he has already found out. The fact stated flat over him. At 2.0s the WORDMARK STAMPS, once, hard, never a fade. Dee is not in frame yet.",
-      "assets": ["MainStreetBG (lib/biomes.tsx)", "NightGrade (lib/lighting.tsx)", "Ray (lib/cast.tsx)", "Wordmark (lib/brand.tsx)", "CaseNumber (lib/brand.tsx)"],
+      "assets": [
+        "MainStreetBG (lib/biomes.tsx)",
+        "NightGrade (lib/lighting.tsx)",
+        "Ray (lib/cast.tsx)",
+        "Wordmark (lib/brand.tsx)",
+        "CaseNumber (lib/brand.tsx)"
+      ],
       "camera": "push, slow, continuous",
-      "captions": ["Ford is recalling sixty-six thousand SUVs for a sound they don't make.", "Federal law. Hybrids have to make a noise so people hear them coming."]
+      "captions": [
+        "Ford is recalling sixty-six thousand SUVs for a sound they don't make.",
+        "Federal law. Hybrids have to make a noise so people hear them coming."
+      ]
     },
     {
       "id": "S2",
       "from_line": 2,
-      "t": [8.8, 14.4],
+      "t": [
+        8.8,
+        14.4
+      ],
       "beat": "the turn begins",
       "action": "Two-shot. Dee has walked in holding the printout, upright and vertical against Ray's round bulk. Ray turns to her. She reads the October record off the page: they already did this.",
-      "assets": ["MainStreetBG", "NightGrade", "Ray (facing Dee)", "Dee (lib/cast.tsx)"],
+      "assets": [
+        "MainStreetBG",
+        "NightGrade",
+        "Ray (facing Dee)",
+        "Dee (lib/cast.tsx)"
+      ],
       "camera": "push continues",
-      "captions": ["Fine. So fix it.", "They did. October. Software update, letters mailed November fifth."]
+      "captions": [
+        "Fine. So fix it.",
+        "They did. October. Software update, letters mailed November fifth."
+      ]
     },
     {
       "id": "S3",
       "from_line": 4,
-      "t": [14.4, 20.4],
+      "t": [
+        14.4,
+        20.4
+      ],
       "beat": "THE RATIO. the two numbers, placed, no commentary",
       "action": "The first count rises as a card: 43,438, unmarked, plain. Then the second card lands beside it at the same size and the same weight: 66,383. The HIGHLIGHTER swipes ONCE, on 66,383 only. Nothing animates between them, there is no arrow and no arithmetic on screen. Dee delivers both flat.",
-      "assets": ["MainStreetBG", "NightGrade", "Dee", "StatCard (lib/props.tsx) x2", "Highlighter (lib/brand.tsx)"],
+      "assets": [
+        "MainStreetBG",
+        "NightGrade",
+        "Dee",
+        "StatCard (lib/props.tsx) x2",
+        "Highlighter (lib/brand.tsx)"
+      ],
       "camera": "push continues",
-      "captions": ["Forty-three thousand, four hundred thirty-eight vehicles.", "It's back. Sixty-six thousand, three hundred eighty-three."],
+      "captions": [
+        "Forty-three thousand, four hundred thirty-eight vehicles.",
+        "It's back. Sixty-six thousand, three hundred eighty-three."
+      ],
       "discipline": "The taxonomy says place the two numbers and shut up. Both cards are identical in size, colour and weight so the viewer does the arithmetic and the show never does. The highlighter is the episode's ONLY swipe."
     },
     {
       "id": "S4",
       "from_line": 6,
-      "t": [20.4, 30.4],
+      "t": [
+        20.4,
+        30.4
+      ],
       "beat": "Ray finds out",
       "action": "Back to the two-shot, tighter as the push closes. Ray goes to shock on 'They already fixed those', then arrives at the verdict. Dee supplies the agency's own word for it. The cards are gone; this beat is performance, not graphics.",
-      "assets": ["MainStreetBG", "NightGrade", "Ray (shock then verdict)", "Dee"],
+      "assets": [
+        "MainStreetBG",
+        "NightGrade",
+        "Ray (shock then verdict)",
+        "Dee"
+      ],
       "camera": "push continues, framing tightens",
-      "captions": ["They already fixed those.", "The ones they fixed have to be fixed again.", "So the repair needs a repair.", "NHTSA calls it an expansion."]
+      "captions": [
+        "They already fixed those.",
+        "The ones they fixed have to be fixed again.",
+        "So the repair needs a repair.",
+        "NHTSA calls it an expansion."
+      ]
     },
     {
       "id": "S5",
       "from_line": 10,
-      "t": [30.4, 37.6],
+      "t": [
+        30.4,
+        37.6
+      ],
       "beat": "the sorting key, and Dee's ONE crack",
       "action": "A spec badge drops in reading 28 SPEAKERS, staged as a trim plate, the way a window sticker lists a feature. DEE_CRACK fires here: her composure survived both counts and breaks only when she has to read this line out loud. Ray goes smug and delivers the verdict on the SORTING.",
-      "assets": ["MainStreetBG", "NightGrade", "Dee (DEE_CRACK)", "Ray (smug)", "StatCard (lib/props.tsx)"],
+      "assets": [
+        "MainStreetBG",
+        "NightGrade",
+        "Dee (DEE_CRACK)",
+        "Ray (smug)",
+        "StatCard (lib/props.tsx)"
+      ],
       "camera": "push continues",
-      "captions": ["The fix they have is for Nautilus Hybrids with twenty-eight speakers.", "Twenty-eight speakers. That's how they decide who gets fixed."],
+      "captions": [
+        "The fix they have is for Nautilus Hybrids with twenty-eight speakers.",
+        "Twenty-eight speakers. That's how they decide who gets fixed."
+      ],
       "HARD_GUARD_c11": "The badge is a TRIM SPEC, never a diagram of the alert system. Nothing on screen may show the speakers failing, emitting, or trying to emit. No sound waves, no rings, no crossed-out speaker, no silence symbol. The claim is that the record SORTS cars by speaker count, not that the speakers are what broke."
     },
     {
       "id": "S6",
       "from_line": 12,
-      "t": [37.6, 49.4],
+      "t": [
+        37.6,
+        49.4
+      ],
       "beat": "the Institution answers",
       "action": "The monolith stands at the vanishing point, cold, rectilinear, too large for frame, and the street light does not reach it. Policy text rises on a cold plate over an automated read. Two emissions, verbatim. It does not budge and it does not acknowledge the question.",
-      "assets": ["MainStreetBG", "NightGrade", "MachineShadow (lib/kit.tsx)", "institution plate (composition-local, HTML over the art)"],
+      "assets": [
+        "MainStreetBG",
+        "NightGrade",
+        "MachineShadow (lib/kit.tsx)",
+        "institution plate (composition-local, HTML over the art)"
+      ],
       "camera": "push continues, straight down the road at the monolith",
-      "captions": ["The remedy is currently under development for all other Nautilus and Explorer Hybrid vehicles affected by this recall.", "Interim letters notifying owners of the safety risk are expected to be mailed August third."],
+      "captions": [
+        "The remedy is currently under development for all other Nautilus and Explorer Hybrid vehicles affected by this recall.",
+        "Interim letters notifying owners of the safety risk are expected to be mailed August third."
+      ],
       "HARD_GUARD_face": "MachineShadow has NO FACE and never gets one. No eyes, no mouth, no tilt, no reaction, no emotive motion of any kind. It is a process working exactly as designed."
     },
     {
       "id": "S7",
       "from_line": 14,
-      "t": [49.4, 56.0],
+      "t": [
+        49.4,
+        56.0
+      ],
       "beat": "the button: the receipt, then the end card",
       "action": "Cut to PAPER. The two federal records stacked, campaign numbers, months and counts legible, with the Remedy sentence beneath: 'Any vehicles previously repaired under 25V691 must have the new remedy completed.' The STAMP lands ONCE on the June record. Dee: that's tomorrow. Ray does not win: 'I still have the first letter.' Then the end card, case number and the promise, nothing else.",
-      "assets": ["Stamp (lib/brand.tsx)", "EndCard (lib/brand.tsx)", "document cards (composition-local HTML on BRAND.PAPER)"],
+      "assets": [
+        "Stamp (lib/brand.tsx)",
+        "EndCard (lib/brand.tsx)",
+        "document cards (composition-local HTML on BRAND.PAPER)"
+      ],
       "camera": "the push stops. The document is the only locked frame in the episode, which is what makes it read as evidence.",
-      "captions": ["That's tomorrow.", "I still have the first letter."],
+      "captions": [
+        "That's tomorrow.",
+        "I still have the first letter."
+      ],
       "button_document": "NHTSA campaigns 25V691000 (OCT 2025, 43,438) and 26V415000 (JUN 2026, 66,383), stacked, plus the previously-repaired Remedy sentence. Document type 34-46px on PAPER."
     }
   ],
-
   "brand_moves": {
     "cold_open_no_logo": "S1 opens on the fact, flat. No logo in the first two seconds.",
     "wordmark_stamps": "t=2.0, once, hard, with rotation and ink bleed. Never a fade.",
@@ -112,7 +189,6 @@
     "end_card": "case number and the promise, nothing else.",
     "one_stamp_rule": "STAMP red appears exactly ONCE, in S7. The wordmark and end card use the Stamp COMPONENT for its motion, and the audit below confirms the red token itself is spent only once."
   },
-
   "gate_0_checklist": {
     "script_under_56s": "estimated_seconds 54.5, +1.5s tail = 56.0s total. Under the 60.0s law with room, inside the 50-58 target band.",
     "every_factual_line_has_a_claim_id": "yes, verified against out/dispatch/claims.json. Non-factual reaction lines carry [].",
@@ -122,6 +198,7 @@
     "every_asset_exists_in_the_manifest": "yes, zero new assets. MainStreetBG, NightGrade, Ray, Dee, MachineShadow, StatCard, Wordmark, Stamp, Highlighter, CaseNumber, EndCard are all registered ACTIVE.",
     "button_document_chosen_and_legible": "yes, the two NHTSA records at 34-46px document type on PAPER."
   },
-
-  "tonal_line": "No impact, no injury, no near miss, no pedestrian in frame, no car in motion anywhere in the episode. The human cost of a car nobody hears is not funny and is not staged. The joke lives entirely on the paperwork, the two counts and the voided repair."
+  "tonal_line": "No impact, no injury, no near miss, no pedestrian in frame, no car in motion anywhere in the episode. The human cost of a car nobody hears is not funny and is not staged. The joke lives entirely on the paperwork, the two counts and the voided repair.",
+  "_archive_note": "This is the PRE-RENDER board as submitted to Gate 0, kept as the record of what was proposed and what the gate caught. Gate 0 FAILED it with six blockers. The delivered episode differs: S5 draws the eligibility SORTING rather than a lone 28 SPEAKERS badge (the c11 blocker), the hook no longer hardens c2, the one-stamp rule is earned via explicit non-red Wordmark and EndCard, the button sits outside NightGrade, and every shot was retimed twice off MEASURED take durations after the funny critic's notes. The authoritative delivered timings are in script.json and vo_lines.json in this directory.",
+  "delivered_runtime_seconds": 54.63
 }

@@ -26,9 +26,18 @@
     },
     {
       "idx": 2,
-      "who": "DEE",
+      "who": "RAY",
       "start": 9.54,
-      "end": 15.879,
+      "end": 11.285,
+      "text": "So fix it.",
+      "voice": "Algenib",
+      "claims": []
+    },
+    {
+      "idx": 3,
+      "who": "DEE",
+      "start": 11.55,
+      "end": 17.889,
       "text": "They did, in October. Software update, letters mailed November fifth.",
       "voice": "Schedar",
       "claims": [
@@ -36,10 +45,10 @@
       ]
     },
     {
-      "idx": 3,
+      "idx": 4,
       "who": "DEE",
-      "start": 16.14,
-      "end": 19.46,
+      "start": 18.14,
+      "end": 21.46,
       "text": "Forty-three thousand, four hundred thirty-eight.",
       "voice": "Schedar",
       "claims": [
@@ -47,10 +56,10 @@
       ]
     },
     {
-      "idx": 4,
+      "idx": 5,
       "who": "DEE",
-      "start": 19.72,
-      "end": 24.475,
+      "start": 21.72,
+      "end": 26.475,
       "text": "It's back. Sixty-six thousand, three hundred eighty-three.",
       "voice": "Schedar",
       "claims": [
@@ -59,10 +68,10 @@
       ]
     },
     {
-      "idx": 5,
+      "idx": 6,
       "who": "DEE",
-      "start": 24.73,
-      "end": 30.241,
+      "start": 26.74,
+      "end": 32.251,
       "text": "NHTSA calls it an expansion. The ones they fixed have to be fixed again.",
       "voice": "Schedar",
       "claims": [
@@ -70,22 +79,11 @@
       ]
     },
     {
-      "idx": 6,
-      "who": "RAY",
-      "start": 30.51,
-      "end": 33.77,
-      "text": "So the repair needs a repair.",
-      "voice": "Algenib",
-      "claims": [
-        "c5"
-      ]
-    },
-    {
       "idx": 7,
       "who": "DEE",
-      "start": 34.03,
-      "end": 38.912,
-      "text": "The only fix they have is for the Nautilus with twenty-eight speakers.",
+      "start": 32.51,
+      "end": 37.247,
+      "text": "The only fix they have is for the version with twenty-eight speakers.",
       "voice": "Schedar",
       "claims": [
         "c3",
@@ -95,8 +93,8 @@
     {
       "idx": 8,
       "who": "RAY",
-      "start": 39.17,
-      "end": 44.0,
+      "start": 37.51,
+      "end": 42.34,
       "text": "Twenty-eight speakers. That's how they decide who gets fixed.",
       "voice": "Algenib",
       "claims": [
@@ -106,8 +104,8 @@
     {
       "idx": 9,
       "who": "INSTITUTION",
-      "start": 44.26,
-      "end": 50.282,
+      "start": 42.6,
+      "end": 48.622,
       "text": "Interim letters notifying owners of the safety risk are expected to be mailed August third.",
       "voice": "Despina",
       "claims": [
@@ -117,8 +115,8 @@
     {
       "idx": 10,
       "who": "RAY",
-      "start": 50.54,
-      "end": 51.89,
+      "start": 48.88,
+      "end": 50.23,
       "text": "That's tomorrow.",
       "voice": "Algenib",
       "claims": [
@@ -128,8 +126,8 @@
     {
       "idx": 11,
       "who": "RAY",
-      "start": 52.15,
-      "end": 54.788,
+      "start": 50.49,
+      "end": 53.128,
       "text": "I still have the first letter.",
       "voice": "Algenib",
       "claims": [
