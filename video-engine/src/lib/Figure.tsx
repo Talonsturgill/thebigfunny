@@ -174,8 +174,9 @@ export type FigureProps = {
   /** garment + accent. Two colours is all a flat figure should carry. */
   wear?: {top: string; bottom: string; accent?: string};
   hairstyle?: 'long' | 'short' | 'wave';
-  /** 'skirt' bares the legs and puts her in heels. */
-  garment?: 'trousers' | 'skirt';
+  /** 'skirt' bares the legs and puts her in heels. 'suit' puts him in a jacket
+   *  with lapels, a shirt and a tie, and covers the arms in sleeves. */
+  garment?: 'trousers' | 'skirt' | 'suit';
   /** 0..1 per frame from the VO envelope. */
   mouth?: number;
   mouthSpread?: number;
@@ -459,8 +460,8 @@ export const Figure: React.FC<FigureProps> = ({
           of things being in front of other things. */}
       <Limb spine={legSpine(1)} w={s.legW} fill={INK} shadow />
       <Limb spine={legSpine(-1)} w={s.legW} fill={INK} />
-      <Foot at={legSpine(1)[3]} side={1} col={wear.accent ?? INK} heel={garment === 'skirt'} shadow />
-      <Foot at={legSpine(-1)[3]} side={-1} col={wear.accent ?? INK} heel={garment === 'skirt'} />
+      <Foot at={legSpine(1)[3]} side={1} col={garment === 'skirt' ? (wear.accent ?? INK) : shade(wear.bottom, 0.55)} heel={garment === 'skirt'} shadow />
+      <Foot at={legSpine(-1)[3]} side={-1} col={garment === 'skirt' ? (wear.accent ?? INK) : shade(wear.bottom, 0.55)} heel={garment === 'skirt'} />
 
       {/* FAR ARM behind the torso, near arm in front of it. */}
       <Limb spine={armSpine(1)} w={s.armW} fill={INK} shadow />
@@ -491,7 +492,69 @@ export const Figure: React.FC<FigureProps> = ({
                   fill="none" stroke={INK} strokeWidth={2.6} opacity={0.3} />
           </>
         )}
-        {sex === 'm' && (
+        {garment === 'suit' && (
+          <g>
+            {/* SHIRT wedge under the opening. Drawn first so the lapels sit on
+                top of it, which is the actual layering of a jacket. */}
+            <path d={spline([[-s.neckW * 0.56, Y.shoulder], [0, Y.shoulder + 14],
+                             [s.neckW * 0.56, Y.shoulder],
+                             [8, Y.chest + 56], [-8, Y.chest + 56]], true)}
+                  fill="#f0ece2" stroke={INK} strokeWidth={3} strokeLinejoin="round" />
+            {/* collar points folding down over the shirt */}
+            <path d={`M${-s.neckW * 0.56},${Y.shoulder - 2} l${s.neckW * 0.36},14 l${-s.neckW * 0.5},6 Z`}
+                  fill="#f0ece2" stroke={INK} strokeWidth={2.6} strokeLinejoin="round" />
+            <path d={`M${s.neckW * 0.56},${Y.shoulder - 2} l${-s.neckW * 0.36},14 l${s.neckW * 0.5},6 Z`}
+                  fill="#f0ece2" stroke={INK} strokeWidth={2.6} strokeLinejoin="round" />
+            {/* TIE. The one place the accent colour is allowed to shout, and it
+                sits on the centre line so it also reads the figure's lean. */}
+            <path d={spline([[-9, Y.shoulder + 18], [9, Y.shoulder + 18], [13, Y.chest + 26],
+                             [1, Y.chest + 54], [-12, Y.chest + 26]], true)}
+                  fill={wear.accent ?? '#7a2430'} stroke={INK} strokeWidth={2.6} strokeLinejoin="round" />
+            <path d={spline([[-9, Y.shoulder + 12], [9, Y.shoulder + 12], [7, Y.shoulder + 27],
+                             [-7, Y.shoulder + 27]], true)}
+                  fill={shade(wear.accent ?? '#7a2430', 0.8)} stroke={INK} strokeWidth={2.4} />
+            {/* LAPELS. Notched, asymmetric in weight (the near one catches the
+                light, the far one is in shade), and running down to the button
+                stance, which is what nips the jacket at the waist. */}
+            <path d={spline([[-s.shoulder * 0.34, Y.shoulder + 4], [-s.neckW * 0.52, Y.shoulder + 4],
+                             [-10, Y.chest + 50], [-s.bust * 0.22, Y.chest + 34],
+                             [-s.shoulder * 0.3, Y.chest - 12]], true)}
+                  fill={shade(wear.top, 1.1)} stroke={INK} strokeWidth={3.2} strokeLinejoin="round" />
+            <path d={spline([[s.shoulder * 0.34, Y.shoulder + 4], [s.neckW * 0.52, Y.shoulder + 4],
+                             [10, Y.chest + 50], [s.bust * 0.22, Y.chest + 34],
+                             [s.shoulder * 0.3, Y.chest - 12]], true)}
+                  fill={shade(wear.top, 0.82)} stroke={INK} strokeWidth={3.2} strokeLinejoin="round" />
+            {/* button stance and the front edge below it, which is what makes a
+                jacket read as CUT rather than as a painted panel */}
+            <circle cx={0} cy={Y.chest + 58} r={4.4} fill={shade(wear.top, 0.7)} stroke={INK} strokeWidth={2.4} />
+            <path d={spline([[0, Y.chest + 64], [3, waistY + 26], [10, Y.hip + 30]])}
+                  fill="none" stroke={INK} strokeWidth={2.8} opacity={0.55} />
+            {/* BUILT SHOULDERS. The pad is what makes a jacket read tailored:
+                a firm corner WIDER than the arm below it, with the sleeve-head
+                seam where the arm is set in. Without it the sleeve and the body
+                are one balloon, which is pajamas. */}
+            {[-1, 1].map((sd) => (
+              <g key={sd}>
+                <path d={spline([[sd * s.neckW * 0.9, Y.shoulder - 10],
+                                 [sd * s.shoulder * 0.5, Y.shoulder - 8],
+                                 [sd * (s.shoulder * 0.5 + 7), Y.shoulder + 14],
+                                 [sd * s.shoulder * 0.42, Y.shoulder + 26],
+                                 [sd * s.neckW * 1.05, Y.shoulder + 6]], true)}
+                      fill={sd < 0 ? shade(wear.top, 1.12) : shade(wear.top, 0.86)}
+                      stroke={INK} strokeWidth={3.2} strokeLinejoin="round" />
+                <path d={spline([[sd * s.shoulder * 0.44, Y.shoulder + 24],
+                                 [sd * s.shoulder * 0.47, Y.chest + 4]])}
+                      fill="none" stroke={INK} strokeWidth={2.6} opacity={0.5} />
+              </g>
+            ))}
+            {/* pocket welts */}
+            <path d={spline([[-s.waist * 0.52, waistY + 16], [-s.waist * 0.16, waistY + 20]])}
+                  fill="none" stroke={INK} strokeWidth={3} opacity={0.5} strokeLinecap="round" />
+            <path d={spline([[s.waist * 0.18, waistY + 20], [s.waist * 0.54, waistY + 16]])}
+                  fill="none" stroke={INK} strokeWidth={3} opacity={0.5} strokeLinecap="round" />
+          </g>
+        )}
+        {sex === 'm' && garment !== 'suit' && (
           // Pec shelf and the two lat lines the V-taper needs in order to explain
           // itself. A taper with nothing inside it reads as a garment, not a body.
           <>
@@ -566,11 +629,11 @@ export const Figure: React.FC<FigureProps> = ({
           of things being in front of other things. */}
       <Limb spine={legSpine(1)} w={s.legW} fill={garment === 'skirt' ? `url(#${uid}_skin)` : wear.bottom} shadow />
       <Limb spine={legSpine(-1)} w={s.legW} fill={garment === 'skirt' ? `url(#${uid}_skin)` : wear.bottom} />
-      <Foot at={legSpine(1)[3]} side={1} col={wear.accent ?? INK} heel={garment === 'skirt'} shadow />
-      <Foot at={legSpine(-1)[3]} side={-1} col={wear.accent ?? INK} heel={garment === 'skirt'} />
+      <Foot at={legSpine(1)[3]} side={1} col={garment === 'skirt' ? (wear.accent ?? INK) : shade(wear.bottom, 0.55)} heel={garment === 'skirt'} shadow />
+      <Foot at={legSpine(-1)[3]} side={-1} col={garment === 'skirt' ? (wear.accent ?? INK) : shade(wear.bottom, 0.55)} heel={garment === 'skirt'} />
 
       {/* FAR ARM behind the torso, near arm in front of it. */}
-      <Limb spine={armSpine(1)} w={s.armW} fill={`url(#${uid}_skin)`} shadow />
+      <Limb spine={armSpine(1)} w={s.armW} fill={garment === 'suit' ? `url(#${uid}_top)` : `url(#${uid}_skin)`} shadow />
 
       <g transform={`scale(1,${1 + 0.007 * breathe})`}>
         <path d={ribbon(spine, torsoW, {capStart: true, capEnd: false})}
@@ -598,7 +661,69 @@ export const Figure: React.FC<FigureProps> = ({
                   fill="none" stroke={INK} strokeWidth={2.6} opacity={0.3} />
           </>
         )}
-        {sex === 'm' && (
+        {garment === 'suit' && (
+          <g>
+            {/* SHIRT wedge under the opening. Drawn first so the lapels sit on
+                top of it, which is the actual layering of a jacket. */}
+            <path d={spline([[-s.neckW * 0.56, Y.shoulder], [0, Y.shoulder + 14],
+                             [s.neckW * 0.56, Y.shoulder],
+                             [8, Y.chest + 56], [-8, Y.chest + 56]], true)}
+                  fill="#f0ece2" stroke={INK} strokeWidth={3} strokeLinejoin="round" />
+            {/* collar points folding down over the shirt */}
+            <path d={`M${-s.neckW * 0.56},${Y.shoulder - 2} l${s.neckW * 0.36},14 l${-s.neckW * 0.5},6 Z`}
+                  fill="#f0ece2" stroke={INK} strokeWidth={2.6} strokeLinejoin="round" />
+            <path d={`M${s.neckW * 0.56},${Y.shoulder - 2} l${-s.neckW * 0.36},14 l${s.neckW * 0.5},6 Z`}
+                  fill="#f0ece2" stroke={INK} strokeWidth={2.6} strokeLinejoin="round" />
+            {/* TIE. The one place the accent colour is allowed to shout, and it
+                sits on the centre line so it also reads the figure's lean. */}
+            <path d={spline([[-9, Y.shoulder + 18], [9, Y.shoulder + 18], [13, Y.chest + 26],
+                             [1, Y.chest + 54], [-12, Y.chest + 26]], true)}
+                  fill={wear.accent ?? '#7a2430'} stroke={INK} strokeWidth={2.6} strokeLinejoin="round" />
+            <path d={spline([[-9, Y.shoulder + 12], [9, Y.shoulder + 12], [7, Y.shoulder + 27],
+                             [-7, Y.shoulder + 27]], true)}
+                  fill={shade(wear.accent ?? '#7a2430', 0.8)} stroke={INK} strokeWidth={2.4} />
+            {/* LAPELS. Notched, asymmetric in weight (the near one catches the
+                light, the far one is in shade), and running down to the button
+                stance, which is what nips the jacket at the waist. */}
+            <path d={spline([[-s.shoulder * 0.34, Y.shoulder + 4], [-s.neckW * 0.52, Y.shoulder + 4],
+                             [-10, Y.chest + 50], [-s.bust * 0.22, Y.chest + 34],
+                             [-s.shoulder * 0.3, Y.chest - 12]], true)}
+                  fill={shade(wear.top, 1.1)} stroke={INK} strokeWidth={3.2} strokeLinejoin="round" />
+            <path d={spline([[s.shoulder * 0.34, Y.shoulder + 4], [s.neckW * 0.52, Y.shoulder + 4],
+                             [10, Y.chest + 50], [s.bust * 0.22, Y.chest + 34],
+                             [s.shoulder * 0.3, Y.chest - 12]], true)}
+                  fill={shade(wear.top, 0.82)} stroke={INK} strokeWidth={3.2} strokeLinejoin="round" />
+            {/* button stance and the front edge below it, which is what makes a
+                jacket read as CUT rather than as a painted panel */}
+            <circle cx={0} cy={Y.chest + 58} r={4.4} fill={shade(wear.top, 0.7)} stroke={INK} strokeWidth={2.4} />
+            <path d={spline([[0, Y.chest + 64], [3, waistY + 26], [10, Y.hip + 30]])}
+                  fill="none" stroke={INK} strokeWidth={2.8} opacity={0.55} />
+            {/* BUILT SHOULDERS. The pad is what makes a jacket read tailored:
+                a firm corner WIDER than the arm below it, with the sleeve-head
+                seam where the arm is set in. Without it the sleeve and the body
+                are one balloon, which is pajamas. */}
+            {[-1, 1].map((sd) => (
+              <g key={sd}>
+                <path d={spline([[sd * s.neckW * 0.9, Y.shoulder - 10],
+                                 [sd * s.shoulder * 0.5, Y.shoulder - 8],
+                                 [sd * (s.shoulder * 0.5 + 7), Y.shoulder + 14],
+                                 [sd * s.shoulder * 0.42, Y.shoulder + 26],
+                                 [sd * s.neckW * 1.05, Y.shoulder + 6]], true)}
+                      fill={sd < 0 ? shade(wear.top, 1.12) : shade(wear.top, 0.86)}
+                      stroke={INK} strokeWidth={3.2} strokeLinejoin="round" />
+                <path d={spline([[sd * s.shoulder * 0.44, Y.shoulder + 24],
+                                 [sd * s.shoulder * 0.47, Y.chest + 4]])}
+                      fill="none" stroke={INK} strokeWidth={2.6} opacity={0.5} />
+              </g>
+            ))}
+            {/* pocket welts */}
+            <path d={spline([[-s.waist * 0.52, waistY + 16], [-s.waist * 0.16, waistY + 20]])}
+                  fill="none" stroke={INK} strokeWidth={3} opacity={0.5} strokeLinecap="round" />
+            <path d={spline([[s.waist * 0.18, waistY + 20], [s.waist * 0.54, waistY + 16]])}
+                  fill="none" stroke={INK} strokeWidth={3} opacity={0.5} strokeLinecap="round" />
+          </g>
+        )}
+        {sex === 'm' && garment !== 'suit' && (
           // Pec shelf and the two lat lines the V-taper needs in order to explain
           // itself. A taper with nothing inside it reads as a garment, not a body.
           <>
@@ -647,7 +772,7 @@ export const Figure: React.FC<FigureProps> = ({
         : spline([[-s.neckW * 0.72, Y.shoulder - 2], [0, Y.shoulder + 16], [s.neckW * 0.72, Y.shoulder - 2],
                   [s.neckW * 0.88, Y.shoulder + 8], [0, Y.shoulder + 30], [-s.neckW * 0.88, Y.shoulder + 8]], true)}
             fill={`url(#${uid}_top)`} stroke={INK} strokeWidth={3.6} strokeLinejoin="round" />
-      <Limb spine={armSpine(-1)} w={s.armW} fill={`url(#${uid}_skin)`} />
+      <Limb spine={armSpine(-1)} w={s.armW} fill={garment === 'suit' ? `url(#${uid}_top)` : `url(#${uid}_skin)`} />
       <Hand at={armSpine(-1)[armSpine(-1).length - 1]} r={s.armW[2] * 0.78} fill={skin} />
       <Hand at={armSpine(1)[armSpine(1).length - 1]} r={s.armW[2] * 0.74} fill={skin} shadow />
 

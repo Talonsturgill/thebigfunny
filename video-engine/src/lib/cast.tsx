@@ -27,7 +27,7 @@
 import React from 'react';
 import {Figure, FigureProps, Emotion, Pose} from './Figure';
 
-type CastProps = Omit<FigureProps, 'sex' | 'skin' | 'hair' | 'eyes' | 'wear' | 'hairstyle' | 'garment'> & {
+type CastProps = Omit<FigureProps, 'sex' | 'skin' | 'hair' | 'eyes' | 'wear' | 'hairstyle'> & {
   /** Escape hatch for a genuine costume gag. Rare: a cast that gets re-dressed
       for no reason is not a cast. */
   wearOverride?: FigureProps['wear'];
@@ -46,7 +46,7 @@ export const RAY = {
   skin: '#dda274',
   hair: '#3a2418',
   eyes: '#4a6f57',
-  wear: {top: '#4a7fa3', bottom: '#2f3a52', accent: '#3a3128'},
+  wear: {top: '#2f3f5e', bottom: '#26324a', accent: '#8e2f38'},
 } as const;
 
 export const Ray: React.FC<CastProps> = ({
@@ -62,6 +62,11 @@ export const Ray: React.FC<CastProps> = ({
        and can never show an arm. */
     wear={wearOverride ?? RAY.wear}
     hairstyle="short"
+    /* A SUIT, on the athletic build. The point is the contrast: the jacket is
+       cut to the V-taper rather than hiding it, which is what a suit is FOR.
+       An episode can drop him to a tee with garment="trousers" when the staging
+       wants it, but the default is dressed. */
+    garment="suit"
     skin={RAY.skin}
     hair={RAY.hair}
     eyes={RAY.eyes}
