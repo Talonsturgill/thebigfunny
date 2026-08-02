@@ -54,8 +54,8 @@ So: **B first (the expression engine), then A (a new episode that uses it).**
 | A4 | Script: 19 lines, 55.7s, Dee has a POV, faces on every line | DONE |
 | A5 | StairwellBG + Case0003, 8-shot ladder from cue indices, stills checked | DONE |
 | A6 | VO fitted, soundcheck PASS (refused one SEDATED line), 3 tracks generated | DONE |
-| A7 | Render, look at frames, panel, score | IN PROGRESS |
-| A8 | Ship: runs/ artifacts, caption, ledgers, PR, merge | TODO |
+| A7 | Panel run. Funny 57/58/63/69/64/63 across six blind reads. BLOCKED: TTS quota | BLOCKED |
+| A8 | Ship: runs/ artifacts, caption, ledgers, PR, merge | BLOCKED on A7 |
 
 ## PHASE B design
 
@@ -172,3 +172,43 @@ speaks has to be a person saying something, not a row from a table read aloud.
   called robotic, so the machine cannot rank them and does not pretend to.
 
 Delete this file when both phases are DONE.
+
+
+## INCIDENT 2026-08-02: TTS daily quota exhausted
+
+`generativelanguage.googleapis.com/generate_requests_per_model_per_day, limit: 100`.
+HTTP 429, persistent. **No new audio can be synthesized until the quota resets.**
+This is a genuine external outage and is recorded as an incident rather than
+quietly absorbed, per CLAUDE.md.
+
+79 takes are on disk and the cache survives, so 9 of the locked script's 13 lines
+are already paid for. Four are not.
+
+**How the budget went, honestly.** Six re-synthesis passes in one session, each
+re-rolling most lines because the take cache keys on the whole director's brief
+and the brief changed twice. On top of that, a diagnostic loop written to find a
+content-blocked line called `vo_gemini.synth()` DIRECTLY instead of `take()`, so
+it paid for six takes and cached none of them. That is now `vo_cast.py --probe`,
+which uses `take()` and keeps what it buys.
+
+**The lesson worth keeping:** iterate the SCRIPT against the funny critic, which
+is free, and synthesize once at the end. Audio is the expensive step and it was
+being spent on drafts.
+
+## The score trajectory, and what it actually says
+
+57 -> 58 -> 63 -> 69 -> 64 -> 63 across six blind reads.
+
+It peaked at 69 on the pass written to COMEDY_CRAFT.md, where
+`is_it_agreement_not_comedy` went false and `would_send_it` went true for the
+only time. The two passes after that applied the critic's notes serially and
+both REGRESSED, because each note is locally true and applying them one at a
+time thrashes: fixing a repeated trick introduced a line that re-told a stated
+fact, and fixing that reintroduced agreement.
+
+The critic said the real ceiling twice, in different words: "duplicate rows in a
+database is infuriating but not absurd, so the writing has to carry a premise it
+was never built to carry." **The story is the ceiling, not the craft.** Case 0002
+ended the same way. That is now two episodes where the writing was asked to
+rescue a subject that was never funny enough, and it is the single most valuable
+thing this session learned.

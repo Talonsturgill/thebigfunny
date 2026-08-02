@@ -59,7 +59,21 @@ const TAIL_AT = TOTAL - s(1.5);
 
 /** Shot ladder as CUE INDICES, never hand-typed seconds. A re-fit of the VO
  *  retimes the picture for free; see the note in Case0002. */
-const CUT_ON = [0, 3, 5, 7, 11, 14, 16, 17];
+const CUT_ON = [0, 3, 5, 6, 9, 11, 12, 14];
+
+/* CUT_ON is hand-maintained INDICES into a generated array, which is the one
+   seam the derived-timing system does not close: shortening the script silently
+   orphans a cut point, TypeScript cannot see an out-of-range index, and the
+   render dies mid-frame with "Cannot read properties of undefined". That is
+   exactly what happened when this script went from 19 lines to 16. Fail at
+   module load with a sentence that says what to do instead. */
+if (CUT_ON.some((c) => c >= CAPTIONS.length)) {
+  throw new Error(
+    `Case0003 CUT_ON references cue ${CUT_ON.filter((c) => c >= CAPTIONS.length).join(', ')} ` +
+    `but the script only has ${CAPTIONS.length} lines (0-${CAPTIONS.length - 1}). ` +
+    `The script was rewritten and the shot ladder was not. Update CUT_ON.`);
+}
+
 const at = (cue: number) => s(CAPTIONS[cue].start);
 const shot = (i: number) =>
   (i + 1 < CUT_ON.length ? at(CUT_ON[i + 1]) : TAIL_AT) - at(CUT_ON[i]);

@@ -666,6 +666,10 @@ def main():
     ap.add_argument("--fit", action="store_true",
                     help="synthesize (cached), measure, and rewrite the line timings "
                          "from the REAL take durations")
+    ap.add_argument("--probe", action="store_true",
+                    help="synthesize any UNCACHED line one at a time, naming the "
+                         "line that fails. Uses the cache, so a diagnostic run "
+                         "keeps the audio it paid for.")
     ap.add_argument("--self-test", action="store_true")
     a = ap.parse_args()
     if a.self_test:
@@ -674,6 +678,24 @@ def main():
     path = a.script or os.path.join(OUT, "script.json")
     script = load_script(path)
     planned = plan(script)
+
+    if a.probe:
+        # Every take is KEPT, unlike a bare synth() loop, which is how a
+        # diagnostic pass burned six of a hundred daily calls for nothing.
+        import wave as _w
+        bad = 0
+        for p_ in planned:
+            if os.path.exists(take_path(p_)):
+                continue
+            try:
+                take(p_, 44100)
+                print(f"  ok      {p_['who']:<12} {p_['text'][:52]}")
+            except Exception as e:
+                bad += 1
+                m = str(e)
+                kind = "BLOCKED" if "CONTENT BLOCK" in m or "PROHIBITED" in m else "FAIL"
+                print(f"  {kind:<7} {p_['who']:<12} {p_['text'][:52]}\n          {m.splitlines()[0][:150]}")
+        return 1 if bad else 0
 
     if a.fit:
         if not (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")):
