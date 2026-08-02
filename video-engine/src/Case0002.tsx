@@ -136,7 +136,7 @@ const SPEAKER_TINT: Record<string, string> = {
  * talking. The name and its tint answer that in the one place a muted viewer is
  * already looking.
  */
-const Caption: React.FC<{frame: number}> = ({frame}) => {
+const Caption: React.FC<{frame: number; onLight?: boolean}> = ({frame, onLight = false}) => {
   const t = frame / FPS;
   const cue = CAPTIONS.find((c) => t >= c.start && t <= c.end + 0.14);
   if (!cue) return null;
@@ -145,13 +145,20 @@ const Caption: React.FC<{frame: number}> = ({frame}) => {
     <div style={{position: 'absolute', left: 54, right: 54, top: 1476, textAlign: 'center'}}>
       <div style={{
         fontFamily: BODY, fontSize: 27, fontWeight: 700, letterSpacing: '0.28em',
-        color: tint, marginBottom: 10,
-        textShadow: '0 2px 0 rgba(16,20,35,0.95), 0 0 16px rgba(16,20,35,0.9)',
+        color: onLight ? 'rgba(16,20,35,0.66)' : tint, marginBottom: 10,
+        textShadow: onLight ? 'none' : '0 2px 0 rgba(16,20,35,0.95), 0 0 16px rgba(16,20,35,0.9)',
       }}>{cue.who}</div>
+      {/* The caption was authored for the NIGHT frames: paper-white text with a
+          dark halo. The button card is a full-bleed CREAM page, and white on
+          cream is barely legible. Restoring Ray's closing captions therefore
+          dropped them straight onto the one light ground in the episode, so the
+          fix for one legibility bug created another. Invert over paper. */}
       <div style={{
         fontFamily: HEAD, fontWeight: 900,
-        fontSize: 55, lineHeight: 1.14, color: BRAND.PAPER,
-        textShadow: '0 4px 0 rgba(16,20,35,0.92), 0 0 26px rgba(16,20,35,0.8)',
+        fontSize: 55, lineHeight: 1.14, color: onLight ? BRAND.INK : BRAND.PAPER,
+        textShadow: onLight
+          ? 'none'
+          : '0 4px 0 rgba(16,20,35,0.92), 0 0 26px rgba(16,20,35,0.8)',
         letterSpacing: '-0.01em',
       }}>{cue.text}</div>
     </div>
@@ -467,7 +474,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
       {/* No caption under the Institution: that character speaks as the PLATE,
           and a caption would duplicate it. Ray's closing lines get theirs back.
           The old cutoff was a frozen s(36.97) and killed the last 15 seconds. */}
-      {(frame < at(9) || frame >= at(10)) && <Caption frame={frame} />}
+      {(frame < at(9) || frame >= at(10)) && <Caption frame={frame} onLight={frame >= at(10)} />}
 
       {/* End card: case number and the promise. Nothing else. INK, not red. */}
       <Sequence from={TAIL_AT}>

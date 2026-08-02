@@ -325,12 +325,19 @@ export const Character: React.FC<CharacterProps> = ({
       case 'arms-crossed':
         return (
           <g>
-            <path d="M-52,278 q30,26 62,18 L52,282" fill="none" stroke={INK} strokeWidth={34} strokeLinecap="round" />
-            <path d="M-52,278 q30,26 62,18 L52,282" fill="none" stroke={c.main} strokeWidth={22} strokeLinecap="round" />
-            <path d="M52,294 q-30,24 -62,16 L-52,296" fill="none" stroke={INK} strokeWidth={34} strokeLinecap="round" />
-            <path d="M52,294 q-30,24 -62,16 L-52,296" fill="none" stroke={c.shade} strokeWidth={22} strokeLinecap="round" />
-            {hand(-54, 296, 90)}
-            {hand(54, 282, -90)}
+            {/* Two forearms, one clearly IN FRONT of the other, hands tucked at the
+                OPPOSITE elbow. The old version drew two near-mirrored arcs at almost
+                the same height with a hand at each far end, which closes into an oval
+                and reads as a rope loop across the belly rather than folded arms. This
+                is Ray's DEFAULT pose, so it was in most shots of the show.
+                Back arm first, front arm over it, and the front hand last so the
+                overlap is unambiguous. */}
+            <path d="M54,300 q-34,26 -74,20" fill="none" stroke={INK} strokeWidth={34} strokeLinecap="round" />
+            <path d="M54,300 q-34,26 -74,20" fill="none" stroke={c.shade} strokeWidth={22} strokeLinecap="round" />
+            {hand(-30, 322, 96, 14)}
+            <path d="M-54,268 q34,24 74,18" fill="none" stroke={INK} strokeWidth={34} strokeLinecap="round" />
+            <path d="M-54,268 q34,24 74,18" fill="none" stroke={c.main} strokeWidth={22} strokeLinecap="round" />
+            {hand(28, 290, -96, 14)}
           </g>
         );
       case 'point':
