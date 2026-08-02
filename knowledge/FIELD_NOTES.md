@@ -400,3 +400,65 @@ shot-plan defect I can fix with better shots", and identified that the schema
 would have routed the repair to the wrong phase. A fault injected by accident
 tested the failure path better than a fixture would have, because nobody wrote
 the fixture to be survivable.
+
+## The repo-wide review found 43 defects and 40 of them were one bug (2026-08-02)
+
+A full `/code-review` across `scripts/`, `video-engine/src/lib/` and the
+dispatch skill. It ran every gate against empty, blank-but-present and
+hollow-but-well-formed documents, and it mutation-tested each self-test by
+disabling one guard at a time to see whether the test noticed.
+
+The findings sort into two piles and one of them is enormous.
+
+**A CHECK THAT DID NOT RUN READS EXACTLY LIKE A CHECK THAT PASSED.** This is
+already written above as a lesson about missing inputs. The review found it in
+thirteen more places, in every layer, wearing different clothes each time:
+
+- `mux_and_verify.sh` discarded ffmpeg's exit code, so a failed mux measured the
+  file already at the output path, WHICH IS THE PREVIOUS EPISODE, and printed
+  MUX OK. Its own staleness guard was written `[ -f "$VIDEO" ] && [ -f "$AUDIO" ]
+  && ...`, so a MISSING input skipped the guard rather than failing it, and the
+  render not existing is the most common way for a render to fail.
+- `script_check` passed a script citing NOTHING against an EMPTY claims.json:
+  "0 distinct id(s), all found". Vacuous truth on the house's first law.
+- `coherence_check` had four rows inside `if a and b:` after I had fixed the
+  same hole in two others.
+- `vo_soundcheck` returned True on zero rows, dropped empty audio slices from
+  its own report so the DEAD verdict was unreachable, and returned 0 with
+  `--json` on a take it failed without it.
+- `visual_check` certified a board with no `staging` anywhere.
+- `contact_sheet` exited 0 when 11 of 12 stills failed.
+- `vo_qc`'s ship floor was a literal `pass` under a comment saying "only warn",
+  emitting no warning, plus a `report["warning"]` string no caller ever read.
+- `align_captions` warned about a 40%-wrong transcript and wrote its file anyway.
+- Two ledgers did `except Exception: return <empty>` and wrote non-atomically, so
+  a killed process created precisely the corruption the handler swallowed: the
+  TTS budget handed back a full daily quota and `retro` reported "PASS, every
+  repeat offender has an upgrade logged against it" with an unreadable ledger.
+
+**THE SELF-TESTS DID NOT PROVE WHAT THEY CLAIMED.** `face_check` stayed GREEN
+with two of its three guards neutered, because every red fixture also tripped
+the change counter and the assertion was `bool(problems)`. `render_gate`'s tiny
+encode fixture proved the parse row, not `MIN_BYTES`. `gen_captions_ts`'s
+staleness case asserted that `str.replace` works. `tts_budget`'s day-boundary
+case asserted that a date is ten characters long. And `coherence_check`'s
+self-contradiction guard was DEAD for every ban this repo actually writes, and
+stayed green because I had reworded the fixture to a verb that survived the
+filter instead of fixing the guard.
+
+That last one is the one to remember. **When a self-test goes red, the fixture
+is the suspect only after the guard has been cleared.** Changing the fixture
+until it passes is how a dead guard gets a green light and a comment saying it
+works.
+
+THE THIRD PILE, small and expensive: things that were never wired up at all.
+`run_guard.py` implemented the freshness invariant correctly and had NO CALLERS
+in the entire repo, while three separate opportunistic reads did exactly what it
+was written to prevent. `resume_render.sh` `cd`ed to another machine's path,
+failed, and exited 0 with a fake PID. Three hardcoded Alaska episode scripts
+were listed in SKILL.md as the live VO tools. A protection nobody calls, and a
+manifest that points at the wrong file, both read as working.
+
+**HOW TO USE THIS.** Two questions, cheap, and they found forty defects between
+them. Run the gate on `{}`. Then break the guard on purpose and check that the
+self-test notices.

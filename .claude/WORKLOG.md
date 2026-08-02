@@ -133,7 +133,8 @@ Everything below is downstream of that sentence.
 | 8 | asset-upgrader agent + kit mandate | DONE |
 | 9 | wire the routine prompt (3.7, 4.2, 4.4, gates, panel, retro) | DONE |
 | 10 | GitHub trending research, folded into this file | DONE |
-| 11 | ship an episode that clears the new gates | IN PROGRESS: dry run cleared 3, 3.7, 4, 4.2, 4.4, 4.5 end to end; count room is on pass 2 with real claims |
+| 11 | ship an episode that clears the new gates | IN PROGRESS: dry run cleared 3, 3.7, 4, 4.2, 4.5; 4.4 director running on the locked count-room script |
+| 12 | repo-wide code review, 100% of findings fixed | DONE: 4 critical, 9 high, 17 medium, 13 low. See the FIELD_NOTES entry; every gate self-tests green and mutation-sweeps red. |
 
 ## What the GitHub scan actually returned (2026-08-02)
 
@@ -206,6 +207,24 @@ lateral move from Remotion), any framework dependency at all.
   called robotic, so the machine cannot rank them and does not pretend to.
 - **TTS model:** temporarily overridden to 2.5-flash by env var after the daily
   quota exhausted on 3.1. This reverts by itself; the override is not in code.
+
+## The code review, 2026-08-02
+
+Ran across `scripts/`, `video-engine/src/lib/` and `.claude/skills/`. 43
+findings, all fixed. The headline is that 40 of them are ONE bug: a check that
+did not run reads exactly like a check that passed. Full account in
+`knowledge/FIELD_NOTES.md`; the three that would have cost an episode:
+
+1. `mux_and_verify.sh` would have shipped the PREVIOUS episode under today's
+   date, with MUX OK and exit 0, and passed `render_gate` on the way out.
+2. `script_check.py` green-lit a script citing nothing against an empty
+   claims.json, which is the house's first law certifying its own absence.
+3. Both ledgers reset to zero on a torn write and reported success, handing a
+   run a second full TTS quota and erasing the machine's cross-run memory.
+
+Also closed: `run_guard.py` had no callers at all, the four castability gaps
+this manifest had listed open for weeks, and ten SVG ids derived from POSITION
+rather than instance, which is the ghost-parka bug still live in ten components.
 
 ## Wrap
 
