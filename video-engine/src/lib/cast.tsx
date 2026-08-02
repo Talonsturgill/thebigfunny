@@ -62,9 +62,11 @@ export const Ray: React.FC<CastProps> = ({
     {...rest}
     pose={pose}
     emotion={emotion}
-    /* flannel: working-adult, unfussy, warm in the palette. Never a suit; a
-       suit reads as management and Ray is never management. */
-    outfit={outfitOverride ?? 'flannel'}
+    /* JEANS AND A TEE. Never a suit; a suit reads as management and Ray is never
+       management. The flannel was ported from an Alaska show and dressed
+       him for a plow; nothing about a national story needs cold-weather workwear,
+       and a coat sleeve is a tube by definition so it can never show an arm. */
+    outfit={outfitOverride ?? 'tee'}
     headgear="bare"
     /* ATHLETIC: wide shoulders tapering to a narrow waist, square jaw, planted
        stance. Ray was the same shapeless sack as everyone else, which is half of
@@ -84,9 +86,11 @@ export const Ray: React.FC<CastProps> = ({
  * DEE — the Straight Man. Upright and more vertical than Ray, angular but still
  * warm, because she is on his side and must never read as institutional.
  *
- * Glasses are her one fixed differentiator: she is the one who READ the
- * document, and the rig already ships glasses as a cast-differentiation prop.
- * Default emotion neutral, because her comedy is deadpan delivery of something
+ * Glasses USED to be her one fixed differentiator, from back when she and Ray
+ * shared a body and a face and there was nothing else to tell them apart. The
+ * silhouette does that job now, and far better, so the glasses are gone: they
+ * were the loudest shape on her face and they were solving a problem that no
+ * longer exists. Default emotion neutral, because her comedy is deadpan delivery of something
  * insane and a pre-loaded expression spends the crack early.
  */
 export const DEE_PALETTE = {
@@ -114,18 +118,18 @@ export const Dee: React.FC<CastProps> = ({
        Silhouette is what reads at thumbnail size; it decides who is speaking
        before a single feature is legible. */
     build="hourglass"
-    /* vest: reads competent and prepared without reading corporate. The quilted
-       panel is boxy by design, which is fine now that the SILHOUETTE under it
-       has a waist and the panel is clipped to it. */
-    outfit={outfitOverride ?? 'vest'}
+    /* A DRESS AND HEELS. The vest was a quilted box, which is the one garment
+       guaranteed to cancel a waist. */
+    outfit={outfitOverride ?? 'dress'}
     headgear="bare"
-    /* A BOB, not the cast's default crop. Silhouette is what reads at thumbnail
-       size, and with the shared crop Dee was Ray with glasses. */
-    hairstyle="bob"
+    /* LONG. Length is the cue, and the reference is consistent: the mass falls
+       well past the shoulder while leaving the whole face open. The earlier bob
+       covered the jawline, which is the one line that makes a face read female,
+       so it was actively cancelling the silhouette work underneath it. */
+    hairstyle="long"
     hair={DEE_PALETTE.hair}
     skin={DEE_PALETTE.skin}
     eyes={DEE_PALETTE.eyes}
-    glasses
     scale={scale * 1.02}
   />
 );

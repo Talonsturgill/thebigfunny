@@ -9,11 +9,17 @@
  * came out of it is that a new visual prop is not done until somebody has looked
  * at a PIXEL, so a silhouette change ships with the still that proves it.
  *
- * Column 1 is `broad`, the original path, and it is the control: if it ever
- * moves, a "safe default" refactor has silently redrawn the entire existing
- * library, which is the failure this composition is here to catch.
+ * `broad` was the CONTROL, and it no longer is: the 'stand' arms had to be
+ * re-authored (they attached at HALF the shoulder width, i.e. across the chest,
+ * which no amount of scaling could fix) and that moved every existing figure.
+ * Saying so here rather than leaving the label claiming a guarantee it stopped
+ * providing. Everything else about `broad` is still the original path.
  *
- *   bash scripts/render.sh still 30 CastSheet   (or open the Remotion studio)
+ * LAYOUT NOTE: a Character's local bbox is y -440..+10 centered on x=0. That is
+ * MEASURED off a render, not read off the source; reading the source and
+ * reasoning about the nested transforms got it wrong twice.
+ *
+ *   npx remotion still src/index.ts CastSheet out/castsheet.png --frame=30
  */
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame} from 'remotion';
@@ -21,7 +27,7 @@ import {Character, Build} from './lib/Character';
 import {Ray, Dee, RAY_PALETTE, DEE_PALETTE} from './lib/cast';
 
 const COLS: {build: Build; label: string; note: string}[] = [
-  {build: 'broad', label: 'broad', note: 'CONTROL. must not move.'},
+  {build: 'broad', label: 'broad', note: 'baseline. arms re-authored.'},
   {build: 'hourglass', label: 'hourglass', note: 'waist + hips + lashes'},
   {build: 'athletic', label: 'athletic', note: 'V-taper, square jaw'},
 ];
@@ -31,11 +37,11 @@ export const CastSheet: React.FC = () => {
   return (
     <AbsoluteFill style={{backgroundColor: '#efe7d8'}}>
       <svg width="1080" height="1920" viewBox="0 0 1080 1920">
-        <text x={540} y={90} textAnchor="middle" fontSize={54} fontFamily="Georgia, serif" fill="#1a1a22">
+        <text x={540} y={80} textAnchor="middle" fontSize={50} fontFamily="Georgia, serif" fill="#1a1a22">
           BUILD SILHOUETTES
         </text>
         {COLS.map((col, i) => (
-          <g key={col.build} transform={`translate(${200 + i * 340},420) scale(0.5)`}>
+          <g key={col.build} transform={`translate(${200 + i * 340},400) scale(0.46)`}>
             <Character
               frame={f}
               build={col.build}
@@ -50,34 +56,46 @@ export const CastSheet: React.FC = () => {
         ))}
         {COLS.map((col, i) => (
           <g key={`${col.build}-t`}>
-            <text x={200 + i * 340} y={490} textAnchor="middle" fontSize={34} fontFamily="Georgia, serif" fill="#1a1a22">
+            <text x={200 + i * 340} y={470} textAnchor="middle" fontSize={32} fontFamily="Georgia, serif" fill="#1a1a22">
               {col.label}
             </text>
-            <text x={200 + i * 340} y={524} textAnchor="middle" fontSize={22} fontFamily="Georgia, serif" fill="#5a5a66">
+            <text x={200 + i * 340} y={502} textAnchor="middle" fontSize={20} fontFamily="Georgia, serif" fill="#5a5a66">
               {col.note}
             </text>
           </g>
         ))}
         {/* THE CAST AS ACTUALLY LOCKED, which is the pair that has to read apart
             at thumbnail size. Same scale, same pose, side by side: if you cannot
-            tell them apart with the page squinted at, the silhouette work
-            failed and no amount of face detail will save it. */}
-        <text x={540} y={600} textAnchor="middle" fontSize={44} fontFamily="Georgia, serif" fill="#1a1a22">
+            tell them apart with the page squinted at, the silhouette work failed
+            and no amount of face detail will save it. */}
+        <text x={540} y={570} textAnchor="middle" fontSize={40} fontFamily="Georgia, serif" fill="#1a1a22">
           THE CAST
         </text>
-        <g transform="translate(320,1014) scale(0.85)">
+        <g transform="translate(300,990) scale(0.82)">
           <Ray frame={f} pose="stand" emotion="neutral" />
         </g>
-        <g transform="translate(760,1014) scale(0.85)">
+        <g transform="translate(780,990) scale(0.82)">
           <Dee frame={f} pose="stand" emotion="neutral" />
         </g>
-        <text x={320} y={1100} textAnchor="middle" fontSize={32} fontFamily="Georgia, serif" fill="#1a1a22">
+        <text x={300} y={1060} textAnchor="middle" fontSize={30} fontFamily="Georgia, serif" fill="#1a1a22">
           RAY (athletic)
         </text>
-        <text x={760} y={1100} textAnchor="middle" fontSize={32} fontFamily="Georgia, serif" fill="#1a1a22">
+        <text x={780} y={1060} textAnchor="middle" fontSize={30} fontFamily="Georgia, serif" fill="#1a1a22">
           DEE (hourglass)
         </text>
-        <text x={540} y={1150} textAnchor="middle" fontSize={20} fontFamily="Georgia, serif" fill="#5a5a66">
+        {/* FACES AT SIZE. The silhouette decides who is speaking; the face decides
+            whether you want to look at them. They fail independently, so they get
+            looked at independently, big enough to actually judge. */}
+        <text x={540} y={1160} textAnchor="middle" fontSize={40} fontFamily="Georgia, serif" fill="#1a1a22">
+          FACES
+        </text>
+        <g transform="translate(300,1800) scale(2.1)">
+          <Ray frame={f} pose="stand" emotion="neutral" />
+        </g>
+        <g transform="translate(780,1800) scale(2.1)">
+          <Dee frame={f} pose="stand" emotion="neutral" />
+        </g>
+        <text x={540} y={1900} textAnchor="middle" fontSize={18} fontFamily="Georgia, serif" fill="#5a5a66">
           {`ray ${RAY_PALETTE.skin} / dee ${DEE_PALETTE.skin}`}
         </text>
       </svg>
