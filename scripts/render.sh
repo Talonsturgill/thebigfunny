@@ -201,6 +201,15 @@ case "$MODE" in
           exit 1
         fi
       fi
+      # Same check for the mouth track, same reason: a stale envelope renders
+      # clean and the mouths move to the PREVIOUS cut's audio, which is the exact
+      # defect the owner caught by eye on 2026-08-02.
+      if [[ -f "src/case$(printf '%04d' "$n")_mouth.ts" && -f "../out/dispatch/vo.wav" ]]; then
+        if ! python3 ../scripts/vo_envelope.py --case "$n" --check; then
+          echo "render.sh: refusing to ship a final render against a stale mouth track." >&2
+          exit 1
+        fi
+      fi
     fi
     OUT="../out/dispatch/render/video_mute.mp4"; [[ -n "${3:-}" ]] && OUT="$(resolve_out "$3")"
     exec npx remotion render src/index.ts "$COMP" "$OUT" \
