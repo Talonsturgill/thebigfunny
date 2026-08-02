@@ -15,7 +15,24 @@
 # Usage: scripts/mux_and_verify.sh <silent_video.mp4> <master.wav> <out.mp4>
 # ============================================================================
 set -euo pipefail
-FF="${FFMPEG_BIN:-ffmpeg}"
+# Prefer a system ffmpeg, then fall back to the one REMOTION ALREADY SHIPS.
+# There is no system ffmpeg in every environment this runs in, and a mux that
+# cannot run means a silent episode that still passes a render check. Remotion
+# vendors a full ffmpeg n7.1 in its linux compositor package, so if the engine
+# is installed the mux is always available.
+_remotion_ff() {
+  for d in "$(dirname "$0")/../video-engine/node_modules/@remotion"/compositor-*/; do
+    [ -x "$d/ffmpeg" ] && printf '%s' "$d/ffmpeg" && return 0
+  done
+  return 1
+}
+FF="${FFMPEG_BIN:-}"
+if [ -z "$FF" ]; then
+  if command -v ffmpeg >/dev/null 2>&1; then FF=ffmpeg
+  elif FF="$(_remotion_ff)"; then :
+  else echo "no ffmpeg: install one, or npm install in video-engine/ (it vendors one)" >&2; exit 1
+  fi
+fi
 SILENCE_FLOOR_DB=-60
 
 if [ "$#" -ne 3 ]; then

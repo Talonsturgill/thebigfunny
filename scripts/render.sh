@@ -23,6 +23,19 @@ cd "$(dirname "$0")/../video-engine"
 export PLAYWRIGHT_BROWSERS_PATH="${PLAYWRIGHT_BROWSERS_PATH:-/opt/pw-browsers}"
 PROPS="${PROPS:-../out/dispatch/episode_props.json}"
 
+# Pass --props ONLY when the file is really there.
+#
+# Remotion hard-errors on a --props path that does not exist ("neither valid
+# JSON nor a file path to a valid JSON file"), which made every render abort for
+# a composition that does not take props. Case0001 is self-timed: its Sequences
+# carry their own frame numbers, so there is no episode_props.json and never
+# will be. A generic Episode built by scripts/build_scenes.py does take props,
+# and still gets them. One flag, conditional, instead of two render paths.
+PROPS_ARG=()
+if [[ -f "$PROPS" ]]; then
+  PROPS_ARG=(--props="$PROPS")
+fi
+
 resolve_out() {   # abs path -> unchanged; relative path -> resolved against the CALLER's cwd
   local p="$1"
   case "$p" in
@@ -34,22 +47,22 @@ resolve_out() {   # abs path -> unchanged; relative path -> resolved against the
 MODE="${1:?usage: render.sh draft|final|still ...}"
 case "$MODE" in
   draft)
-    COMP="${2:-Dispatch}"; OUT="../out/dispatch/render/draft.mp4"; [[ -n "${3:-}" ]] && OUT="$(resolve_out "$3")"
+    COMP="${2:-${BIGFUNNY_COMP:-Case0001}}"; OUT="../out/dispatch/render/draft.mp4"; [[ -n "${3:-}" ]] && OUT="$(resolve_out "$3")"
     exec npx remotion render src/index.ts "$COMP" "$OUT" \
-      --props="$PROPS" --codec=h264 --muted --concurrency=2 \
+      "${PROPS_ARG[@]}" --codec=h264 --muted --concurrency=2 \
       --scale=0.5 --crf=30 --every-nth-frame=1
     ;;
   final)
-    COMP="${2:-Dispatch}"; OUT="../out/dispatch/render/video_mute.mp4"; [[ -n "${3:-}" ]] && OUT="$(resolve_out "$3")"
+    COMP="${2:-${BIGFUNNY_COMP:-Case0001}}"; OUT="../out/dispatch/render/video_mute.mp4"; [[ -n "${3:-}" ]] && OUT="$(resolve_out "$3")"
     exec npx remotion render src/index.ts "$COMP" "$OUT" \
-      --props="$PROPS" --codec=h264 --muted --concurrency=2 --crf=19
+      "${PROPS_ARG[@]}" --codec=h264 --muted --concurrency=2 --crf=19
     ;;
   still)
-    FRAME="${2:?frame number}"; COMP="${3:-Dispatch}"
+    FRAME="${2:?frame number}"; COMP="${3:-${BIGFUNNY_COMP:-Case0001}}"
     OUT="../out/dispatch/probe/still_$FRAME.png"; [[ -n "${4:-}" && "${4:-}" != "--draft" ]] && OUT="$(resolve_out "$4")"
     SCALE=1
     if [[ "${5:-}" == "--draft" || "${4:-}" == "--draft" ]]; then SCALE=0.5; fi
-    exec npx remotion still src/index.ts "$COMP" "$OUT" --frame="$FRAME" --props="$PROPS" --scale="$SCALE"
+    exec npx remotion still src/index.ts "$COMP" "$OUT" --frame="$FRAME" "${PROPS_ARG[@]}" --scale="$SCALE"
     ;;
   *)
     echo "unknown mode: $MODE (draft|final|still)"; exit 2

@@ -131,6 +131,26 @@ def check(script, planned):
     return rows
 
 
+def cues(lines_out):
+    """captions.json, in the shape Episode.tsx's schema declares:
+    [{start, end, text}].
+
+    THIS CLOSES A REAL BREAK IN THE CHAIN. build_scenes.py READS
+    out/dispatch/captions.json and, before this, nothing in the repo wrote it:
+    align_captions.py emits words60.json in a different schema entirely, so the
+    first run with a working VO would have died on FileNotFoundError after
+    paying for every TTS call.
+
+    No forced alignment is needed at line level, and that is not a shortcut. The
+    start comes from the script (which the storyboard is also cut to) and the end
+    comes from the MEASURED duration of the take that was actually synthesized.
+    Both are real numbers, not the stacked approximations that desynced the
+    upstream show. Word-level karaoke timing would still want whisper; line-level
+    does not, and line-level is what this show burns in."""
+    return [{"start": l["start"], "end": l["end"], "text": l["text"]}
+            for l in lines_out]
+
+
 def synth_all(planned, script):
     sys.path.insert(0, SKILL)
     import numpy as np
@@ -167,7 +187,9 @@ def synth_all(planned, script):
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR)
         w.writeframes((track * 32767).astype("<i2").tobytes())
     json.dump({"lines": lines_out}, open(os.path.join(OUT, "vo_lines.json"), "w"), indent=2)
-    print(f"\nwrote {wav} ({total_s:.1f}s) and vo_lines.json")
+    json.dump(cues(lines_out), open(os.path.join(OUT, "captions.json"), "w"), indent=2)
+    print(f"\nwrote {wav} ({total_s:.1f}s), vo_lines.json, captions.json")
+    print("next: python3 scripts/build_scenes.py  then  bash scripts/render.sh draft")
     return 0
 
 
@@ -199,6 +221,16 @@ def self_test():
             fired = True
         print(f"  {'ok  ' if fired else 'FAIL'} catches: {name}")
         ok &= fired
+
+    sample = [{"idx": 0, "who": "RAY", "start": 0.0, "end": 2.1, "text": "One.",
+               "voice": "Algenib", "claims": []},
+              {"idx": 1, "who": "DEE", "start": 3.0, "end": 5.4, "text": "Two.",
+               "voice": "Schedar", "claims": []}]
+    c = cues(sample)
+    shape_ok = (len(c) == 2 and set(c[0]) == {"start", "end", "text"}
+                and c[0]["end"] == 2.1 and c[1]["text"] == "Two.")
+    print(f"  {'ok  ' if shape_ok else 'FAIL'} emits captions.json in Episode's schema")
+    ok &= shape_ok
 
     good = {"estimated_seconds": 30.0, "lines": [
         {"t": 0.0, "who": "RAY", "text": "Short line."},
