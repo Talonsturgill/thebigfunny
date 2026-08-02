@@ -1,8 +1,15 @@
-Read prompts/BIGFUNNY_ROUTINE.md from main in Talonsturgill/thebigfunny and
-execute it end to end for today's date.
+Read https://github.com/Talonsturgill/thebigfunny/blob/main/prompts/BIGFUNNY_ROUTINE.md
+from the main branch and execute it end to end for today's date.
 
-That file is the SOURCE OF TRUTH for this routine's behavior. Follow it exactly,
-including the hard gates. A run that cannot clear a gate is killed, not softened.
+That file is the SOURCE OF TRUTH for this routine. Follow it exactly, including
+every hard gate. Read it fresh each run; do not work from memory of a previous
+run, because the file changes and the whole point of this pointer is that the
+behaviour lives in the repo rather than in this box.
 
-Ship autonomously per CLAUDE.md: merge the run to main in the same run. Draft the
-post copy to Gmail. Never post to a platform; a human posts.
+Also read CLAUDE.md in the same repo before you start. It carries the delivery
+policy and the house rules.
+
+If a gate fails, the run is killed, not softened. Commit the evidence and stop.
+A killed run is a normal, cheap outcome.
+
+Never post to a social platform. This routine renders and drafts; a human posts.
