@@ -1,0 +1,133 @@
+{
+  "_spec": {
+    "purpose": "Every critic verdict, every run, so the machine can see its own repetition. A defect in REPEAT_AT or more distinct runs is escalated from a script problem to a PROCESS problem, and retro.py names the phase that owns it.",
+    "why": "The funny critic failed two consecutive episodes for the same reason and nothing counted, so each run re-learned it and moved on. Cross-run memory is the difference between a machine that improves and one that merely repeats.",
+    "entry_schema": {
+      "case": "int",
+      "run_date": "YYYY-MM-DD",
+      "critic": "funny|flow|...",
+      "score": "int",
+      "read": "which pass, 1-based",
+      "defects": [
+        "stable slugs, see retro.OWNER"
+      ],
+      "note": "the critic's own killer sentence, verbatim"
+    }
+  },
+  "entries": [
+    {
+      "case": 2,
+      "run_date": "2026-08-02",
+      "critic": "funny",
+      "score": 76,
+      "read": 1,
+      "defects": [
+        "agreement_not_comedy",
+        "carried_by_fact"
+      ],
+      "note": "Genuinely funny in two specific places and inert in between. It buries its own best joke behind a spreadsheet."
+    },
+    {
+      "case": 2,
+      "run_date": "2026-08-02",
+      "critic": "flow",
+      "score": 68,
+      "read": 1,
+      "defects": [
+        "button_doesnt_land"
+      ],
+      "note": "Hook's payload is in the back half of the sentence; runtime not earned."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-02",
+      "critic": "funny",
+      "score": 57,
+      "read": 1,
+      "defects": [
+        "agreement_not_comedy",
+        "carried_by_fact",
+        "ray_prompts",
+        "explaining_lines"
+      ],
+      "note": "The central absurdity is a duplicate row in a database, the most boring failure a computer can have."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-02",
+      "critic": "funny",
+      "score": 58,
+      "read": 2,
+      "defects": [
+        "agreement_not_comedy",
+        "carried_by_fact",
+        "aphorism",
+        "irony_wrong_way"
+      ],
+      "note": "A fifteen-year-old internet aphorism with a swear stapled on."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-02",
+      "critic": "funny",
+      "score": 63,
+      "read": 3,
+      "defects": [
+        "agreement_not_comedy",
+        "explaining_lines"
+      ],
+      "note": "The promised angle never becomes a line."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-02",
+      "critic": "funny",
+      "score": 69,
+      "read": 4,
+      "defects": [
+        "repeated_trick",
+        "aphorism",
+        "button_doesnt_land"
+      ],
+      "note": "The two funniest lines are the same joke about the same fact, twenty-eight seconds apart."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-02",
+      "critic": "funny",
+      "score": 64,
+      "read": 5,
+      "defects": [
+        "agreement_not_comedy",
+        "carried_by_fact",
+        "repeated_trick",
+        "aphorism",
+        "button_doesnt_land"
+      ],
+      "note": "The last fifteen seconds are the ending the viewer already had loaded at second forty."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-02",
+      "critic": "funny",
+      "score": 63,
+      "read": 6,
+      "defects": [
+        "carried_by_fact",
+        "repeated_trick",
+        "aphorism",
+        "button_doesnt_land"
+      ],
+      "note": "Duplicate rows in a database is infuriating but not absurd, so the writing has to carry a premise it was never built to carry."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-02",
+      "critic": "flow",
+      "score": 74,
+      "read": 1,
+      "defects": [],
+      "note": "Orbit invisible; 3.5s dead stretch."
+    }
+  ]
+}

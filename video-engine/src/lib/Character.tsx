@@ -119,6 +119,11 @@ export interface CharacterProps {
    *  Silhouette is what reads at thumbnail size, before colour and long before a
    *  face. Default 'crop' is the original path, so nothing already drawn moves. */
   hairstyle?: 'crop' | 'bob' | 'bun';
+  /** BODY SILHOUETTE. See the BUILDS table. Default 'broad' is the original
+   *  path, so every figure already drawn is pixel-identical until a scene opts
+   *  in. Hair was never going to fix a body: a bob on the shared sack still
+   *  reads as a man with long hair, which is exactly what the owner saw. */
+  build?: Build;
   /** round wire glasses (cast differentiation for officials/experts) */
   glasses?: boolean;
   /** per-figure multiplier on the idle weight-shift/sway amplitude (default 1). Lets a specific
@@ -127,6 +132,95 @@ export interface CharacterProps {
       pose==='stand' figure elsewhere in the cast. */
   idleGain?: number;
 }
+
+/**
+ * BODY BUILD — the silhouette, which is the ONLY thing that reads at thumbnail
+ * size and the thing this rig never had.
+ *
+ * Every figure in the show shared one torso path: shoulders at +/-92 flaring to
+ * a hem at +/-102. That is a SACK. It is wider at the bottom than at the
+ * shoulders, so it has no waist, no taper and no sex, and the only way to tell
+ * two characters apart was to read their faces at phone scale, where nobody can.
+ * Owner, 2026-08-02: Dee was "a dudes face, on a fat chick in a parka, with long
+ * hair, looking like a man with long hair." The hair fix (bob) was the right
+ * instinct aimed at the wrong layer; hair sits on top of a body, and the body
+ * was the problem.
+ *
+ * So build is a first-class prop with three silhouettes:
+ *   broad     — the original path, byte-identical. Every existing figure holds.
+ *   hourglass — narrow shoulders, a NIPPED WAIST, hip flare. Belt at the waist,
+ *               tapered chin, lashes, narrower stance.
+ *   athletic  — a V-taper: wide shoulders down to a narrow waist, no hip flare,
+ *               square jaw, wider stance.
+ *
+ * The house rule still applies over the top of all of it: this is silhouette
+ * design, not sexualization. Shapely reads at thumbnail size and survives a
+ * platform classifier. Anything past that is a channel-ender under the same
+ * clause that bans slurs, and it costs the show everything for nothing.
+ *
+ * HOW IT STAYS CHEAP: only the base silhouette, the two rim contours, the head
+ * and the jaw shade are per-build. Every costume overlay, core shade, sheen band
+ * and hem AO is CLIPPED to the silhouette, so eight outfits authored against the
+ * broad box conform to a nipped waist for free instead of being redrawn eight
+ * times.
+ */
+export type Build = 'broad' | 'hourglass' | 'athletic';
+
+const BUILDS: Record<Build, {
+  torso: string; shoulderRim: string; sideRim: string;
+  head: string | null; jaw: string;
+  legScale: number; armScale: number; browScale: number;
+  belt: boolean; lashes: boolean; lips: boolean;
+}> = {
+  broad: {
+    torso: 'M-92,-150 q6,-56 92,-56 q86,0 92,56 l10,144 q2,16 -16,16 h-172 q-18,0 -16,-16 Z',
+    shoulderRim: 'M-92,-150 q6,-56 92,-56',
+    sideRim: 'M-92,-148 q-8,74 -14,138',
+    head: null, // a plain r=56 circle, untouched
+    jaw: 'M-30,30 q30,20 60,2 q-8,24 -30,26 q-22,-1 -30,-28 Z',
+    legScale: 1, armScale: 1, browScale: 1,
+    belt: false, lashes: false, lips: false,
+  },
+  hourglass: {
+    // shoulders +/-72, waist pinched to +/-52 at y=-70, hips flaring back to
+    // +/-78. The waist is the whole read: two curves that come IN before they go
+    // back OUT is the difference between a person and a bag.
+    //
+    // PASS 2, off the still: v1 flared to +/-90 and hung the hem 12 units LOWER
+    // than broad, so the coat read as a triangular tent dress and buried the legs
+    // it was supposed to be setting off. The flare has to stay inside the leg
+    // line and the hem has to come UP: leg length is the cue, and a hem past the
+    // knee cancels a waist no matter how tightly you nip it.
+    torso: 'M-72,-150 q6,-52 72,-52 q66,0 72,52 ' +
+           'q-18,38 -20,80 q2,40 26,64 q4,14 -12,14 h-132 q-16,0 -12,-14 ' +
+           'q24,-24 26,-64 q-2,-42 -20,-80 Z',
+    shoulderRim: 'M-72,-150 q6,-52 72,-52',
+    sideRim: 'M-72,-148 q-16,36 -18,76',
+    // heart-shaped face: full cheekbones, tapering to a soft chin. Same overall
+    // head height as the circle so every facial-shading path still lands.
+    head: 'M-56,-6 a56,56 0 1 1 112,0 q-2,34 -22,50 c-14,16 -54,16 -68,0 q-20,-16 -22,-50 Z',
+    jaw: 'M-24,28 q24,18 48,2 q-6,22 -24,26 q-18,-2 -24,-28 Z',
+    legScale: 0.88, armScale: 0.8, browScale: 0.72,
+    belt: true, lashes: true, lips: true,
+  },
+  athletic: {
+    // shoulders +/-108 down to a +/-64 waist and STAY there. No hip flare: the
+    // taper is the whole shape, and a hem that flares back out reads as a gut.
+    // PASS 2: v1's +/-100 shoulders were only 8 units past the broad sack, which
+    // is invisible at phone scale. If a build change cannot be seen in the
+    // thumbnail it may as well not exist, so the taper got the amplitude the
+    // Orbit camera move needed for the same reason.
+    torso: 'M-108,-150 q6,-62 108,-62 q102,0 108,62 ' +
+           'q-30,54 -44,110 q4,28 6,54 q2,12 -12,12 h-116 q-14,0 -12,-12 ' +
+           'q6,-26 6,-54 q-14,-56 -44,-110 Z',
+    shoulderRim: 'M-108,-150 q6,-62 108,-62',
+    sideRim: 'M-108,-148 q-22,52 -34,102',
+    head: 'M-56,-6 a56,56 0 1 1 112,0 q0,30 -8,42 q-8,12 -48,12 q-40,0 -48,-12 q-8,-12 -8,-42 Z',
+    jaw: 'M-34,28 q34,20 68,2 q-4,22 -34,24 q-30,-1 -34,-26 Z',
+    legScale: 1.04, armScale: 1.0, browScale: 1.12,
+    belt: false, lashes: false, lips: false,
+  },
+};
 
 const OUTFITS: Record<Outfit, {main: string; shade: string; trim: string; pants: string}> = {
   parka: {main: '#c8542e', shade: '#a03e1f', trim: '#e8dcc8', pants: '#3a4a5c'},
@@ -159,10 +253,12 @@ export const Character: React.FC<CharacterProps> = ({
   walkPhase,
   eyes = '#41607d',
   hairstyle = 'crop',
+  build = 'broad',
   glasses = false,
   idleGain = 1,
 }) => {
   const c = OUTFITS[outfit];
+  const B = BUILDS[build];
   // breathing: a visible chest rise+fall. Bumped round 10 — the panel kept reading standers as
   // "frozen sprites" partly because the old amplitude was too small to register in a ~0.5s review
   // strip; a clearer breath (plus the weight-shift below) means any half-second window shows life.
@@ -231,6 +327,14 @@ export const Character: React.FC<CharacterProps> = ({
   const face = () => {
     const E = EYES[emotion] ?? EYES.neutral;
     const browY = E.browY;
+    // BROW WEIGHT by build. Brow thickness is a real cue and the whole cast wore
+    // the same 6-7px slab, which on a tapered face reads as a man wearing a wig.
+    // Scaled rather than re-authored so all seven emotion brows keep their shapes.
+    const bw = (n: number) => n * B.browScale;
+    // Lip colour, not lip geometry: TalkMouth already takes an ink, so a warmer
+    // mouth line is one token and no new shapes. New geometry over a mouth that
+    // is animating every frame is how you get a smear.
+    const lipInk = B.lips ? '#7d2f3f' : INK;
     return (
       <g>
         {/* eyes */}
@@ -263,51 +367,63 @@ export const Character: React.FC<CharacterProps> = ({
             {/* catchlight: a tiny lit-side highlight on each pupil so the eyes read as wet/alive, not flat dots */}
             <circle cx={-17 + 2 * facing} cy={-16} r={1.7} fill="#fff" opacity={0.9} />
             <circle cx={21 + 2 * facing} cy={-16} r={1.7} fill="#fff" opacity={0.9} />
+            {/* LASHES. A heavier upper line with an outward flick at the outer
+                corner. In a minimal house face this is the cheapest and most
+                legible feminine cue there is, and unlike hair it survives a hat.
+                Drawn to the eye's own geometry so it tracks every emotion. */}
+            {B.lashes && (
+              <g stroke={INK} strokeLinecap="round" fill="none">
+                <path d={`M${-17 - E.rx - 1},${-14 - E.ry * 0.72} q${E.rx},${-E.ry * 0.5} ${E.rx * 2 + 2},${E.ry * 0.16}`} strokeWidth={5} />
+                <path d={`M${19 - E.rx - 1},${-14 - E.ry * 0.72} q${E.rx},${-E.ry * 0.5} ${E.rx * 2 + 2},${E.ry * 0.16}`} strokeWidth={5} />
+                <path d={`M${-17 - E.rx - 1},${-14 - E.ry * 0.72} l-8,-5`} strokeWidth={4} />
+                <path d={`M${19 + E.rx + 1},${-14 - E.ry * 0.56} l8,-6`} strokeWidth={4} />
+              </g>
+            )}
           </g>
         )}
         {/* brows */}
         {emotion === 'angry' && (
           <g>
-            <path d="M-30,-34 L-6,-24" stroke={INK} strokeWidth={7} strokeLinecap="round" />
-            <path d="M32,-34 L8,-24" stroke={INK} strokeWidth={7} strokeLinecap="round" />
+            <path d="M-30,-34 L-6,-24" stroke={INK} strokeWidth={bw(7)} strokeLinecap="round" />
+            <path d="M32,-34 L8,-24" stroke={INK} strokeWidth={bw(7)} strokeLinecap="round" />
           </g>
         )}
         {emotion === 'worried' && (
           <g>
-            <path d="M-28,-26 q12,-8 22,-2" stroke={INK} strokeWidth={6} strokeLinecap="round" fill="none" />
-            <path d="M30,-26 q-12,-8 -22,-2" stroke={INK} strokeWidth={6} strokeLinecap="round" fill="none" />
+            <path d="M-28,-26 q12,-8 22,-2" stroke={INK} strokeWidth={bw(6)} strokeLinecap="round" fill="none" />
+            <path d="M30,-26 q-12,-8 -22,-2" stroke={INK} strokeWidth={bw(6)} strokeLinecap="round" fill="none" />
           </g>
         )}
         {emotion === 'shock' && (
           <g transform={`translate(0,${browY})`}>
-            <path d="M-28,-30 q11,-7 21,-3" stroke={INK} strokeWidth={6} strokeLinecap="round" fill="none" />
-            <path d="M30,-30 q-11,-7 -21,-3" stroke={INK} strokeWidth={6} strokeLinecap="round" fill="none" />
+            <path d="M-28,-30 q11,-7 21,-3" stroke={INK} strokeWidth={bw(6)} strokeLinecap="round" fill="none" />
+            <path d="M30,-30 q-11,-7 -21,-3" stroke={INK} strokeWidth={bw(6)} strokeLinecap="round" fill="none" />
           </g>
         )}
         {emotion === 'smug' && (
           <g>
-            <path d="M-28,-30 q12,-3 22,1" stroke={INK} strokeWidth={6} strokeLinecap="round" fill="none" />
-            <path d="M30,-36 q-12,-6 -22,-1" stroke={INK} strokeWidth={6} strokeLinecap="round" fill="none" />
+            <path d="M-28,-30 q12,-3 22,1" stroke={INK} strokeWidth={bw(6)} strokeLinecap="round" fill="none" />
+            <path d="M30,-36 q-12,-6 -22,-1" stroke={INK} strokeWidth={bw(6)} strokeLinecap="round" fill="none" />
           </g>
         )}
         {emotion === 'neutral' && (
           <g>
-            <path d="M-27,-29 q10,-4 20,-1" stroke={INK} strokeWidth={6} strokeLinecap="round" fill="none" />
-            <path d="M29,-29 q-10,-4 -20,-1" stroke={INK} strokeWidth={6} strokeLinecap="round" fill="none" />
+            <path d="M-27,-29 q10,-4 20,-1" stroke={INK} strokeWidth={bw(6)} strokeLinecap="round" fill="none" />
+            <path d="M29,-29 q-10,-4 -20,-1" stroke={INK} strokeWidth={bw(6)} strokeLinecap="round" fill="none" />
           </g>
         )}
         {/* flat: brows dead level. Nothing is happening behind this face. */}
         {emotion === 'flat' && (
           <g transform={`translate(0,${browY})`}>
-            <path d="M-29,-27 L-7,-27" stroke={INK} strokeWidth={6} strokeLinecap="round" />
-            <path d="M31,-27 L9,-27" stroke={INK} strokeWidth={6} strokeLinecap="round" />
+            <path d="M-29,-27 L-7,-27" stroke={INK} strokeWidth={bw(6)} strokeLinecap="round" />
+            <path d="M31,-27 L9,-27" stroke={INK} strokeWidth={bw(6)} strokeLinecap="round" />
           </g>
         )}
         {/* squint: one brow down and in, the other holding. Disbelief. */}
         {emotion === 'squint' && (
           <g transform={`translate(0,${browY})`}>
-            <path d="M-30,-31 L-7,-25" stroke={INK} strokeWidth={7} strokeLinecap="round" />
-            <path d="M31,-27 q-11,-5 -22,-1" stroke={INK} strokeWidth={6} strokeLinecap="round" fill="none" />
+            <path d="M-30,-31 L-7,-25" stroke={INK} strokeWidth={bw(7)} strokeLinecap="round" />
+            <path d="M31,-27 q-11,-5 -22,-1" stroke={INK} strokeWidth={bw(6)} strokeLinecap="round" fill="none" />
           </g>
         )}
         {/* nose (2026-07-21 parity pass): a small drawn nose over the round-9 plane shading, so the
@@ -332,7 +448,7 @@ export const Character: React.FC<CharacterProps> = ({
                 mouths read as a failed narration attempt; characters talk to each other, not for
                 the voiceover) */}
             <TalkMouth openness={mouth !== undefined ? mouth : (ambientMouth(talking, f, swayPhase) ?? 0)}
-                       spread={mouthSpread} w={36} ink={INK}
+                       spread={mouthSpread} w={36} ink={lipInk}
                        mood={emotion === 'angry' || emotion === 'worried' || emotion === 'squint' ? 'frown' : emotion === 'smug' ? 'smile' : 'neutral'} />
           </g>
         ) : (
@@ -495,10 +611,15 @@ export const Character: React.FC<CharacterProps> = ({
       <FormGradient id={`${uid}_pants`} t={tones(c.pants)} softness={0.55} />
       <g transform="translate(150,500)">
         {/* soft, light-direction contact shadow (AO) grounding the figure */}
-        <ContactShadow cx={0} cy={4} rx={96} ry={18} opacity={0.42} blur={10} />
+        <ContactShadow cx={0} cy={4} rx={96 * B.legScale} ry={18} opacity={0.42} blur={10} />
         {/* legs + boots grouped PER SIDE around each hip (pivot at the leg top, y=-160) so a walk
             swings each leg as a unit; the cloth crease + boot ride with their leg. Left and right
-            swing in opposition (legSwing / -legSwing) for a real alternating stride. */}
+            swing in opposition (legSwing / -legSwing) for a real alternating stride.
+            legScale narrows the whole STANCE and the leg mass together: a wide
+            planted stance is most of what made every figure read male, and it is
+            one transform rather than re-authoring two legs and four boot paths.
+            Scale is outside the rotates so the swing pivots scale with them. */}
+        <g transform={`scale(${B.legScale},1)`}>
         <g transform={`rotate(${legSwing} -23 -160)`}>
           <rect x={-40} y={-160} width={34} height={150} rx={16} fill={`url(#${uid}_pants)`} stroke={INK} strokeWidth={6} />
           {/* leg volume: lit highlight down the sun-facing edge + shade down the shadow edge, so
@@ -521,6 +642,7 @@ export const Character: React.FC<CharacterProps> = ({
           <path d="M4,-14 h20 v16 h-26 a8,8 0 0 1 -8,-8 q0,-8 14,-8 Z" fill="#fff" opacity={0.14} />
           <path d="M-6,-3 h52" stroke={INK} strokeWidth={2.4} opacity={0.45} strokeLinecap="round" />
         </g>
+        </g>{/* /stance */}
         {/*
           UPPER BODY — ONE motion for torso, arms and head.
 
@@ -546,10 +668,16 @@ export const Character: React.FC<CharacterProps> = ({
         {/* torso (breath) */}
         <g transform={`translate(0,-160) scale(1,${breath}) translate(0,160)`}>
           <g transform="translate(0,-160)">
-            <path d="M-92,-150 q6,-56 92,-56 q86,0 92,56 l10,144 q2,16 -16,16 h-172 q-18,0 -16,-16 Z" fill={`url(#${uid}_body)`} stroke={INK} strokeWidth={7} strokeLinejoin="round" />
+            {/* THE SILHOUETTE. Everything painted after it is CLIPPED to it (see
+                the BUILDS comment): the costume overlays were all authored
+                against the broad box, and clipping is what lets a nipped waist
+                cost one path instead of eight redrawn outfits. */}
+            <clipPath id={`${uid}_torsoclip`}><path d={B.torso} /></clipPath>
+            <path d={B.torso} fill={`url(#${uid}_body)`} stroke={INK} strokeWidth={7} strokeLinejoin="round" />
+            <g clipPath={`url(#${uid}_torsoclip)`}>
             {/* core shade on the shadow side + rim light on the sun-facing (left) contour */}
             <path d="M34,-200 q52,10 58,50 l10,144 q2,16 -16,16 h-52 Z" fill={tMain.shade} opacity={0.88} />
-            <RimLight d="M-92,-150 q6,-56 92,-56" w={6} opacity={0.85} />
+            <RimLight d={B.shoulderRim} w={6} opacity={0.85} />
             <path d="M-78,-178 q12,-14 34,-18 l-6,70 q-20,-4 -32,-14 Z" fill="#ffffff" opacity={0.24} />
             {/* fabric sheen band + under-shade so the jacket reads as material, not a fill */}
             <path d="M-60,-120 q60,18 120,4 l0,26 q-60,14 -120,-4 Z" fill="#ffffff" opacity={0.08} />
@@ -661,17 +789,43 @@ export const Character: React.FC<CharacterProps> = ({
                 garment to the light and the head to the body — a left-contour rim on the lit edge,
                 the head's cast shadow on the chest (under-chin AO), and a stitched hem. Drawn over
                 the outfit overlays so they read on every costume. */}
-            <RimLight d="M-92,-148 q-8,74 -14,138" w={4} opacity={0.4} />
+            <RimLight d={B.sideRim} w={4} opacity={0.4} />
             <ellipse cx={0} cy={-146} rx={42} ry={10} fill={INK} opacity={0.14} />
             <path d="M-84,-2 q84,22 168,0" fill="none" stroke={INK} strokeWidth={2.5} strokeDasharray="7 6" opacity={0.3} />
+            {/* WAIST BELT. A cinch line at the narrowest point is the single
+                strongest waist cue in cartoon design, and it costs two shapes.
+                Without it a nipped contour still reads as a coat that happens to
+                be cut in; with it the figure reads as having a waist ON PURPOSE.
+                Clipped like everything else, so it ends exactly at the contour. */}
+            {B.belt && (
+              <g>
+                <path d="M-56,-84 q56,16 112,0 l0,26 q-56,16 -112,0 Z" fill={INK} opacity={0.62} />
+                <path d="M-56,-84 q56,16 112,0" fill="none" stroke="#fff" opacity={0.12} strokeWidth={4} />
+                <rect x={-11} y={-78} width={22} height={19} rx={4} fill="#d8c48a" stroke={INK} strokeWidth={3.5} />
+              </g>
+            )}
+            {/* chest/lat break for the V-taper: the shape only reads if the torso
+                shows WHY it narrows, so the lat line does the job the missing
+                hip flare used to do. */}
+            {build === 'athletic' && (
+              <g>
+                <path d="M-92,-180 q30,52 40,116" fill="none" stroke={INK} strokeWidth={4} opacity={0.16} />
+                <path d="M92,-180 q-30,52 -40,116" fill="none" stroke={INK} strokeWidth={4} opacity={0.2} />
+                <path d="M0,-186 v58" stroke={INK} strokeWidth={3.5} opacity={0.14} />
+              </g>
+            )}
+            </g>{/* /clipped to silhouette */}
             {/* arms attach at shoulder height inside torso group (pose coords are authored
                 around y~260-360; shift them up to chest height in torso space). During a walk the
-                whole arm mass counter-swings the legs for upper-body follow-through. */}
-            <g transform={`translate(0,-360) rotate(${-armSwing * 0.5} 0 0)`}>{arms()}</g>
+                whole arm mass counter-swings the legs for upper-body follow-through.
+                armScale brings the arm mass in to meet a narrower shoulder (or out
+                to a wider one) — pose paths are authored once against the broad
+                box and every build reuses them. NOT clipped: arms leave the body. */}
+            <g transform={`translate(0,-360) rotate(${-armSwing * 0.5} 0 0) scale(${B.armScale},1)`}>{arms()}</g>
             {/* shoulder-joint AO where the arm mass meets the torso — the joint reads attached,
                 not floating (part of the light-wrap pass) */}
-            <ellipse cx={-47} cy={-96} rx={13} ry={9} fill={INK} opacity={0.13} />
-            <ellipse cx={47} cy={-96} rx={13} ry={9} fill={INK} opacity={0.13} />
+            <ellipse cx={-47 * B.armScale} cy={-96} rx={13} ry={9} fill={INK} opacity={0.13} />
+            <ellipse cx={47 * B.armScale} cy={-96} rx={13} ry={9} fill={INK} opacity={0.13} />
           </g>
         </g>
         {/* head — everyday Alaskan headgear (never the Native-coded fur ruff).
@@ -712,7 +866,16 @@ export const Character: React.FC<CharacterProps> = ({
                 <ellipse cx={56} cy={2} rx={10} ry={13} fill={skin} stroke={INK} strokeWidth={5} />
                 <path d="M-58,-2 q4,4 3,9" stroke={skinShade} strokeWidth={3} opacity={0.6} fill="none" strokeLinecap="round" />
                 <path d="M58,-2 q-4,4 -3,9" stroke={skinShade} strokeWidth={3} opacity={0.6} fill="none" strokeLinecap="round" />
-                <circle r={56} fill={`url(#${uid}_headlit)`} stroke={INK} strokeWidth={6} />
+                {/* HEAD SHAPE. Everyone had the identical r=56 ball, so the only
+                    thing telling two characters apart was a face nobody can read
+                    at phone scale. The per-build path keeps the SAME head height
+                    and the same cheek width at eye level, so every facial-shading
+                    path, the eyes, the glasses and the hair all still land; only
+                    the JAW changes, which is the part that carries sex in a
+                    stylized face. broad keeps the exact circle. */}
+                {B.head
+                  ? <path d={B.head} fill={`url(#${uid}_headlit)`} stroke={INK} strokeWidth={6} strokeLinejoin="round" />
+                  : <circle r={56} fill={`url(#${uid}_headlit)`} stroke={INK} strokeWidth={6} />}
                 {/* whole shadow-side cheek falls into core shade — the single biggest read of a lit
                     face, strengthened round 9 (2 judges still read the face as a flat disc through
                     round 8; the prior planes were too faint to register at phone scale). */}
@@ -729,8 +892,11 @@ export const Character: React.FC<CharacterProps> = ({
                   <path d="M-2,-8 q-3,11 -1,20" fill="none" stroke={LIGHT.key} strokeWidth={3} opacity={0.4} strokeLinecap="round" style={{mixBlendMode: 'screen'}} />
                   {/* brow/eye-socket shadow the eyes sit beneath, giving the upper face a plane break */}
                   <path d="M-34,-26 q34,-12 66,-2 l0,9 q-33,-9 -66,3 Z" fill={skinShade} opacity={0.24} />
-                  {/* jaw / chin under-shadow (form turning away at the bottom of the face) */}
-                  <path d="M-30,30 q30,20 60,2 q-8,24 -30,26 q-22,-1 -30,-28 Z" fill={skinShade} opacity={0.34} />
+                  {/* jaw / chin under-shadow (form turning away at the bottom of the face).
+                      Per-build: a tapered chin needs a narrower shadow or the
+                      shading paints a square jaw back onto a face that hasn't got
+                      one, and the silhouette work is undone by its own lighting. */}
+                  <path d={B.jaw} fill={skinShade} opacity={0.34} />
                 </g>
                 {/* rim on the sun-facing cheek */}
                 <path d="M-40,-40 a56,56 0 0 0 -14,44" fill="none" stroke={LIGHT.rim} strokeWidth={3.5} opacity={0.5} strokeLinecap="round" style={{mixBlendMode: 'screen'}} />

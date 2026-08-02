@@ -8,7 +8,8 @@
         "..."
       ],
       "verified_by": "how it was proven",
-      "commit": "sha"
+      "commit": "sha",
+      "addresses": "optional list of retro.py defect slugs this upgrade FIXES. This is how a repeat offender is closed out: by shipping a change that claims it, never by editing the detector."
     }
   },
   "entries": [
@@ -131,6 +132,22 @@
       ],
       "verified_by": "Rendered and inspected, not asserted. The rebuilt episode renders clean at 1080x1920, 48.87s, and the caption cue file now carries `who` per cue with speakerAt(t) exported from one place, so the tint, the label and the talk pose cannot disagree with each other. The storyboard critic's blocker from the shipped run (a dark-red arc across Ray's legs, root-caused to the flannel plaid's third stripe drawn outside the coat silhouette) was fixed in the RIG in lib/Character.tsx, so it is fixed for every flannel character in every future episode rather than for one shot.",
       "commit": "2114e21"
+    },
+    {
+      "run_date": "2026-08-02",
+      "upgrade": "THE FUNNY GATE WAS IN THE WRONG PHASE. scripts/retro.py gives the machine cross-run memory of every critic verdict and escalates any defect seen in 2+ runs from a script problem to a PROCESS problem, naming the phase that OWNS the decision. scripts/story_check.py is the upgrade that finding demanded: a PHASE 3 gate that refuses a story whose absurdity cannot be written down as a mechanism.",
+      "files": [
+        "scripts/retro.py",
+        "scripts/story_check.py",
+        "ledger/verdicts.json",
+        "prompts/BIGFUNNY_ROUTINE.md"
+      ],
+      "verified_by": "retro.py --self-test exit 0, six cases, including RED for an unaddressed repeat offender and GREEN only once a shipped upgrade claims it. story_check.py --self-test exit 0, six cases, five RED. Backfilled all nine real verdicts from cases 0002 and 0003, which is what turned 'the critic keeps complaining' into evidence: agreement_not_comedy, carried_by_fact and button_doesnt_land each appear in BOTH runs. Run against case 0003's story as it was actually conceived, story_check FAILS on 'the company' not being a person to act out and on 'it is unfair' not being a reason. The act-out requirement is not arbitrary: 'somebody hit paste twice' was the only line either critic called a real joke across six reads, and requiring a PERSON at Phase 3 forces that framing before a script exists.",
+      "addresses": [
+        "agreement_not_comedy",
+        "carried_by_fact"
+      ],
+      "commit": "PENDING"
     }
   ]
 }

@@ -66,6 +66,12 @@ export const Ray: React.FC<CastProps> = ({
        suit reads as management and Ray is never management. */
     outfit={outfitOverride ?? 'flannel'}
     headgear="bare"
+    /* ATHLETIC: wide shoulders tapering to a narrow waist, square jaw, planted
+       stance. Ray was the same shapeless sack as everyone else, which is half of
+       why the cast read as one person in different jackets. The taper also does
+       real staging work: it points Ray's shape-language AT the Institution's
+       rectilinear bulk instead of echoing it. */
+    build="athletic"
     hair={RAY_PALETTE.hair}
     skin={RAY_PALETTE.skin}
     eyes={RAY_PALETTE.eyes}
@@ -100,7 +106,17 @@ export const Dee: React.FC<CastProps> = ({
     {...rest}
     pose={pose}
     emotion={emotion}
-    /* vest: reads competent and prepared without reading corporate. */
+    /* HOURGLASS: narrow shoulders, a belted waist, hip flare, tapered chin,
+       lashes, narrow stance. The bob was the right instinct at the wrong layer.
+       Hair sits on top of a BODY, and the body was the shared sack, so a bob on
+       it read exactly as the owner put it (2026-08-02): "a dudes face, on a fat
+       chick in a parka, with long hair, looking like a man with long hair."
+       Silhouette is what reads at thumbnail size; it decides who is speaking
+       before a single feature is legible. */
+    build="hourglass"
+    /* vest: reads competent and prepared without reading corporate. The quilted
+       panel is boxy by design, which is fine now that the SILHOUETTE under it
+       has a waist and the panel is clipped to it. */
     outfit={outfitOverride ?? 'vest'}
     headgear="bare"
     /* A BOB, not the cast's default crop. Silhouette is what reads at thumbnail
