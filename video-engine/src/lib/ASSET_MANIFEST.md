@@ -384,3 +384,37 @@ NONE. The 2026-07-20 library session banked all 14 gap species + SledDogTeam pro
   deferrals with plans in `ledger/upgrades.json`): fauna Salmon spine-follow swim deform;
   Character rig micro-texture pass behind a `detail` prop; word-level kinetic captions driven
   by words.json.
+
+## EXISTENCE IS THE CHEAP HALF OF CASTABILITY (2026-08-02)
+
+The manifest-drift rule guards whether an asset EXISTS. That is the cheap half,
+and this repo has now paid for the expensive half separately.
+
+A production designer verifying a plan against the actual `lib/` files, rather
+than against this manifest, found four assets that exist, are registered, have
+correct paths, and cannot do the job they were cast for:
+
+- **`kit.MachineShadow` has no tint or livery prop.** Its colours are module
+  constants plus a hardcoded gradient. "The Institution, re-liveried per
+  episode" is doctrine the code does not implement, and every plan that casts it
+  that way is casting something that cannot be delivered.
+- **`FX.PaperStorm` is hardcoded to 44x60 white rects.** No size, no colour. In
+  a world whose thesis is that a document is furniture, it emits letter-size
+  office paper and contradicts the film.
+- **`paper.Sheet`'s shadow is a fixed 2px edge and a 4-down drop at 22%.** On a
+  sheet filling a third of a 1080x1920 frame that is invisible and the sheet
+  reads as a flat rectangle.
+- **`props.TallyCounter` rolled the ones digit only** (now fixed), so 09 to 10
+  rendered as the ones wheel turning while the tens digit jumped, on the prop
+  that was carrying an episode's entire mechanism.
+
+**So casting an asset means checking its PROPS, not its path.** Before a plan
+says "composes X", open X and confirm the parameter it needs is real. An asset
+that exists and cannot be parameterised for the shot is worse than a missing
+one, because a missing asset gets budgeted and a mis-cast one gets discovered at
+the render.
+
+**Also a live import hazard:** `brand.Stamp` and `kit.Stamp` are two different
+components with the same name and incompatible props. Import one, get the other,
+and the failure is a prop-type error at best and a silently wrong mark at worst.
+Always import them qualified.
