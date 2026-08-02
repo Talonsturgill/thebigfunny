@@ -385,6 +385,52 @@ NONE. The 2026-07-20 library session banked all 14 gap species + SledDogTeam pro
   Character rig micro-texture pass behind a `detail` prop; word-level kinetic captions driven
   by words.json.
 
+## THE COUNT ROOM (case 0003, NEW 2026-08-02)
+
+The first set built to the world-of-the-story law rather than shopped off the
+shelf. `video-engine/src/lib/countroom.tsx`. Read the file header for why it
+exists; the short version is that the shelf is a PLACE and the stories are
+national, so every board cast an Alaska set for a story that had nothing to do
+with Alaska, and once the set is inert the only thing left is two people talking.
+
+| export | kind | what |
+| --- | --- | --- |
+| `CountRoomBG` | set | THE INSTITUTION AS A WALL. Full-bleed teal enamel with brass at every joint: four tiled steps to a lit intake slot upper left, an odometer boss at centre, a hinged panel painted shut on the right flank, a working chute lower centre and a plated dead chute at the lower right EDGE. `light`/`pile`/`intake`/`panel` 0..1. ONE registered practical; everything else falls to black. ACTIVE |
+| `DocketCard` | prop | The court case as FURNITURE. A plywood-proportioned 2:1 SLAB with a real extruded edge, exactly TWO legible strings at fixed fractional cap heights, everything else ruled noise. `differs` swaps ONE word at ONE fixed position. ACTIVE |
+| `CardChute` | prop | ONE component, TWO states. `running` cams a card out; `plated` bolts a cover over THE SAME MOUTH. ACTIVE |
+| `VerifyDie` | prop | The brass die that embosses VERIFIED on a copy. A die, not a stamp: a stamp puts ink ON something and reads as annotation, a die presses INTO it and reads as manufacture. ACTIVE |
+| `FilingPlate` | prop | The button. The FTC filing flat over the two contradicting cards, one highlighted line, the word ALLEGED. ACTIVE |
+
+**Three rules in here that a later run will be tempted to undo, and must not.**
+
+**The chute is ONE component with two states, deliberately.** The board's only
+reveal is that the dead chute is visibly the same machine as the working one.
+Split it into two components and they drift, and the drift silently deletes the
+reveal without failing anything.
+
+**`FilingPlate.alleged` defaults TRUE.** c4 and c5 are ALLEGATIONS and this film
+depicts them happening, so a scene has to work to turn the disclaimer OFF rather
+than work to turn it on. That is the correct direction for a default to fail in.
+
+**`DocketCard` cap heights are FRACTIONS of the card, never px.** The legibility
+gate wants two on-screen instances within 15% of each other in glyph height, and
+fractional sizing holds that for two cards at two depths with nobody hand-tuning
+a font size per shot.
+
+### Why this is not MachineShadow re-liveried
+
+CAST_BIBLE says "same silhouette, new livery" and this deviates, on a director's
+ruling recorded in the board. A tower standing behind the intake puts something
+BEHIND the process, and this case's thesis is that nothing is. A tapered tower
+reads as a BODY, and an eye looks for a face on a body; the antenna array is a
+broadcast affordance this story does not have.
+
+The deviation is BOUND rather than free: the wall is authored to MachineShadow's
+tone triple, so it is the same material in a different form, and it inherits the
+rule that never bends. **No face. No aperture is paired, symmetric about centre,
+or above the odometer boss.** Give the Institution an expression and it becomes
+something you could negotiate with.
+
 ## EXISTENCE IS THE CHEAP HALF OF CASTABILITY (2026-08-02)
 
 The manifest-drift rule guards whether an asset EXISTS. That is the cheap half,
