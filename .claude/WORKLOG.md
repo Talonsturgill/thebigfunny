@@ -153,7 +153,7 @@ Fonts: explicit `fontWeight: 900` plus a stack naming an installed face.
 | 5b | caption.txt + first_comment.txt, caption_check | DONE, gate PASS |
 | 6 | Hard gates + panel, ship threshold 78 | DONE. 79.65, ship true. All 8 hard gates pass. |
 | 7 | runs/2026-08-02/, ledgers, commit, push, PR ready, MERGE | DONE. PR #4 merged to main. Gmail draft written. |
-| 8 | Retro + upgrades on a SEPARATE branch off fresh main | IN PROGRESS on upgrade/2026-08-02. |
+| 8 | Retro + upgrades on a SEPARATE branch off fresh main | DONE. PR #5 merged. Three upgrades: render.sh comp resolution, scripts/script_check.py, and the routine's two build paths. |
 
 ### The story, and what the gate killed
 
