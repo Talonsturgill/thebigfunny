@@ -153,6 +153,44 @@ PY
   "$0" "$d/v.mp4" "$d/tone.wav" "$d/stale.mp4" >/dev/null 2>&1
   if [ $? -ne 0 ]; then echo "  ok   refuses a video OLDER than its audio (the 2026-08-02 stale mux)"; else echo "  FAIL refuses a video OLDER than its audio (the 2026-08-02 stale mux)"; ok=1; fi
 
+  # RED on purpose, and the reason $OUT is deleted before the mux: point the
+  # script at inputs that are not there, WITH A REAL PREVIOUS EPISODE ALREADY AT
+  # THE OUTPUT PATH. Before 2026-08-02 both of these printed MUX OK and exited 0
+  # while measuring that previous episode, which is how a stale picture would
+  # have shipped under a new date. The fixture must carry the stale file, or the
+  # case proves nothing: with no file at $OUT, ffmpeg's failure is caught by
+  # accident when the measurement finds nothing to measure.
+  cp "$d/tone.mp4" "$d/carryover.mp4" 2>/dev/null
+  "$0" "$d/does_not_exist.mp4" "$d/tone.wav" "$d/carryover.mp4" >/dev/null 2>&1
+  rc=$?
+  if [ "$rc" -ne 0 ] && [ -s "$d/carryover.mp4" ]; then
+    echo "  ok   refuses a MISSING video and leaves the old output untouched"
+  else
+    echo "  FAIL refuses a MISSING video and leaves the old output untouched (rc=$rc)"; ok=1
+  fi
+
+  cp "$d/tone.mp4" "$d/carryover2.mp4" 2>/dev/null
+  "$0" "$d/v.mp4" "$d/does_not_exist.wav" "$d/carryover2.mp4" >/dev/null 2>&1
+  if [ $? -ne 0 ]; then echo "  ok   refuses a MISSING audio track"; else echo "  FAIL refuses a MISSING audio track"; ok=1; fi
+
+  # And the layer under that: inputs that EXIST and are not decodable, so the
+  # guard above passes and ffmpeg itself is what fails. Nothing may survive at
+  # the output path.
+  # A FRESH copy of the audio, because the stale-mux case above pushed
+  # `tone.wav`'s mtime into the future on purpose. Reusing it here would trip the
+  # staleness guard instead, and this case would pass for the wrong reason while
+  # ffmpeg never ran at all.
+  cp "$d/tone.wav" "$d/tone3.wav"
+  printf 'not an mp4' > "$d/junk.mp4"
+  cp "$d/tone.mp4" "$d/carryover3.mp4" 2>/dev/null
+  "$0" "$d/junk.mp4" "$d/tone3.wav" "$d/carryover3.mp4" >/dev/null 2>&1
+  rc=$?
+  if [ "$rc" -ne 0 ] && [ ! -f "$d/carryover3.mp4" ]; then
+    echo "  ok   a FAILED ffmpeg leaves no output to measure (the carryover bug)"
+  else
+    echo "  FAIL a FAILED ffmpeg leaves no output to measure (the carryover bug) (rc=$rc)"; ok=1
+  fi
+
   rm -rf "$d"
   echo ""
   [ "$ok" -eq 0 ] && echo "self-test: both directions correct, as designed" || echo "self-test: THE GATE IS WRONG"
@@ -177,7 +215,24 @@ VIDEO="$1"; AUDIO="$2"; OUT="$3"
 #
 # A stale picture with fresh audio is the single most expensive failure this
 # pipeline can produce: it looks finished. So compare mtimes and refuse.
-if [ -f "$VIDEO" ] && [ -f "$AUDIO" ] && [ "$AUDIO" -nt "$VIDEO" ]; then
+# BOTH INPUTS MUST EXIST, and this check comes first.
+#
+# 2026-08-02, found by a repo-wide review: the staleness rule below was written
+# `[ -f "$VIDEO" ] && [ -f "$AUDIO" ] && ...`, so a MISSING input skipped the
+# guard entirely rather than failing it. The render not existing at all is the
+# most common way for the render to fail, which means the guard was absent for
+# exactly the case it was written for. An absent input is not a passing input.
+for f in "$VIDEO" "$AUDIO"; do
+  if [ ! -s "$f" ]; then
+    echo "MUX REFUSED: input missing or empty: $f" >&2
+    echo "  The step that was supposed to write it did not run, or it failed." >&2
+    echo "  Fix that step. Do not mux around it: ffmpeg fails, \$OUT keeps whatever" >&2
+    echo "  the LAST run left there, and a previous episode ships under this date." >&2
+    exit 1
+  fi
+done
+
+if [ "$AUDIO" -nt "$VIDEO" ]; then
   echo "MUX REFUSED: the video is OLDER than the audio." >&2
   echo "  video: $VIDEO  ($(date -r "$VIDEO" '+%H:%M:%S'))" >&2
   echo "  audio: $AUDIO  ($(date -r "$AUDIO" '+%H:%M:%S'))" >&2
@@ -187,9 +242,32 @@ if [ -f "$VIDEO" ] && [ -f "$AUDIO" ] && [ "$AUDIO" -nt "$VIDEO" ]; then
   exit 1
 fi
 
-"$FF" -y -i "$VIDEO" -i "$AUDIO" \
+# DELETE THE OUTPUT BEFORE WRITING IT, and CHECK FFMPEG'S EXIT CODE.
+#
+# The same 2026-08-02 review found the deepest version of the stale-picture bug
+# living in these four lines. `set -uo pipefail` has no `-e`, ffmpeg's status was
+# discarded, and stderr went to /dev/null. So when the mux failed, the script
+# walked straight into `_verify "$OUT"` and measured a file ffmpeg had never
+# opened: LAST RUN'S EPISODE, still sitting at that path. It is megabytes, it is
+# 1080x1920, it carries audio and it is under 60 seconds, so it printed MUX OK,
+# exited 0, and passed render_gate too.
+#
+# That is the whole failure mode this file was written to make impossible,
+# reappearing one layer down. Removing $OUT first means a failed mux leaves
+# NOTHING to measure, which is the only honest state for a step that did not run.
+rm -f "$OUT"
+if ! "$FF" -y -i "$VIDEO" -i "$AUDIO" \
   -map 0:v:0 -map 1:a:0 \
-  -c:v copy -c:a aac -b:a 192k -ar 48000 -movflags +faststart -shortest "$OUT" >/dev/null 2>&1
+  -c:v copy -c:a aac -b:a 192k -ar 48000 -movflags +faststart -shortest "$OUT" 2>"${OUT}.ffmpeg.log"; then
+  echo "MUX FAILED: ffmpeg exited non-zero. $OUT was NOT written." >&2
+  echo "  video: $VIDEO" >&2
+  echo "  audio: $AUDIO" >&2
+  sed -n '$p;x' "${OUT}.ffmpeg.log" 2>/dev/null | sed 's/^/  ffmpeg: /' >&2
+  echo "  full ffmpeg stderr: ${OUT}.ffmpeg.log" >&2
+  rm -f "$OUT"
+  exit 1
+fi
+rm -f "${OUT}.ffmpeg.log"
 
 _verify "$OUT"
 exit $?

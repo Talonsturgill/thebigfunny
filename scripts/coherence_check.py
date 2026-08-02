@@ -128,6 +128,13 @@ def check(plan, world):
         row("both documents name the SAME world", bool(shared),
             f"'{pw[:34]}' / '{ww[:34]}'" if shared else
             f"plan says '{pw[:34]}', world says '{ww[:34]}'. These are different films.")
+    else:
+        row("both documents name the SAME world", False,
+            f"only ONE document names a world (plan: '{pw[:34]}', world: '{ww[:34]}')."
+            if (pw or ww) else
+            "NEITHER document names a world. The whole point of Phase 4.2 is that the "
+            "world of the story becomes the set, and two documents that never say what "
+            "the world IS have not agreed on it, they have skipped it.")
 
     # -- 2. THE TURN ---------------------------------------------------------
     # The turn is the single most load-bearing beat in a 60 second episode and
@@ -217,6 +224,11 @@ def check(plan, world):
             f"A claim the world says it stages and does not is a promise to the "
             f"fact-checker the board cannot keep, and the room will discuss it as "
             f"though it were on the page.")
+    else:
+        row("every claim the world names is staged in a shot or a gag", False,
+            "the world names NO claim ids at all. The set is what makes the fact "
+            "visible, so a world bound to no cleared claim is decoration, and this "
+            "row can only certify staging for claims somebody wrote down.")
 
     # -- 6. THE GAG COUNT AGREES --------------------------------------------
     # The plan asserted four gags surviving their claim guards; the world carried
@@ -232,6 +244,14 @@ def check(plan, world):
             f"plan claims {claimed} surviving gags, world carries {len(actual)}. A "
             f"producer who believes he has {claimed} will not commission the "
             f"{int(claimed) - len(actual)} that are missing.")
+    else:
+        row("the plan's gag count matches the gags the world actually has", False,
+            ("only ONE document has an opinion about the sight gags "
+             f"(plan count={claimed!r}, world list={'absent' if actual is None else actual})")
+            if (claimed is not None or actual is not None) else
+            "NEITHER document declares a sight gag. An episode whose two artifacts "
+            "both forgot to say what is FUNNY ON SCREEN is the talking-heads defect "
+            "arriving through the front door.")
 
     # -- 7. THE WORLD DOES NOT CONTRADICT ITSELF ----------------------------
     # world.json's turn said the pile FANS across the floor and its own
@@ -244,8 +264,20 @@ def check(plan, world):
     # out of "never a face", then searched for a bare "a" in the turn text, which
     # matches essentially any sentence. A guard whose first live run fires on a
     # stopword teaches the room to ignore it, which is worse than not having it.
-    forbidden = [v for v in re.findall(r"never (\w+)", ban)
-                 if len(v) >= 4 and v not in STOP and v not in HOUSE]
+    #
+    # THE SECOND CUT WAS WORSE AND LOOKED FINE. It read ONE word after "never"
+    # and then filtered that word through HOUSE, and a ban is written as a PHRASE:
+    # "never shown closing", "never hold on the pile", "never close the gate". The
+    # first word of a staging ban is almost always a staging verb, which is what
+    # HOUSE is a list of, so the guard discarded nearly every real ban and stayed
+    # green because the fixture had been quietly reworded to a verb that survived
+    # the filter. HOUSE exists to stop two DIFFERENT documents matching on house
+    # style; this row compares one document against ITSELF, where house-style
+    # verbs are the entire content. So it does not apply here, and the phrase is
+    # read whole.
+    forbidden = {w for phrase in re.findall(r"never ([\w ]{3,40})", ban)
+                 for w in re.findall(r"[a-z]{3,}", phrase)
+                 if w not in STOP}
     self_broken = sorted({v for v in forbidden if re.search(rf"\b{v}", turn_txt)})
     row("the world does not forbid on one line what it stages on another",
         not self_broken,
@@ -260,6 +292,13 @@ def check(plan, world):
             f"both {ps}" if ps == ws else
             f"plan says shippable={ps}, world says {ws}. One of them is about to hand "
             f"a later phase something it must not build.")
+    else:
+        row("both documents agree on whether this is shippable", False,
+            f"only ONE document declares shippability (plan={ps!r}, world={ws!r})."
+            if (ps is not None or ws is not None) else
+            "NEITHER document declares shippability. Both schemas require the field, "
+            "and a phase that never says whether its output may be built hands the "
+            "decision to whoever reads it next.")
 
     return rows
 
@@ -297,6 +336,7 @@ def self_test():
         "world": {"name": "the ten day mail chute", "new_props": ["DayLampPanel"]},
         "the_turn": {"what_gets_worse": "the gate shuts and the lamps keep going out while the envelope sits still"},
         "the_button": {"image": "the notice lying in the bin at the end of the chute"},
+        "sight_gags_surviving_claim_guards": 2,
     }
     good_world = {
         "shippable": True,
@@ -304,6 +344,13 @@ def self_test():
         "the_turn": {"what_gets_worse": "the envelope sits still and the lamps keep going out past the shut gate"},
         "the_button": {"image": "the notice face up in the bin, one dark lamp above it"},
         "cast_from_kit": [{"primitive": "Passage", "status": "substituted"}],
+        # A complete world binds itself to cleared claims and stages every one of
+        # them. The fixture carries what a real world carries, or the rows that
+        # certify those fields are being tested against a document that would
+        # never reach them.
+        "mechanism": {"claim_ids": ["c4"]},
+        "shots": [{"visual": "the envelope enters the chute, licensed by c4"}],
+        "sight_gags": [{"gag": "the lamp"}, {"gag": "the bin"}],
     }
     rows = check(good_plan, good_world)
     clean = all(o for _, o, _ in rows)
@@ -349,6 +396,22 @@ def self_test():
                          the_turn={"what_gets_worse":
                              "the gate shuts and the lamps keep going out while the "
                              "envelope sits still, and the copies scatter across the floor"})),
+        # THE LIVE BAN, WORD FOR WORD, off this file's own docstring. The guard
+        # read one word after "never", so the ban became "shown", which is house
+        # vocabulary and was discarded. Every real staging ban in this repo starts
+        # with a staging verb, so the guard was dead for its entire working life
+        # and its fixture had been reworded to a verb that happened to survive.
+        ("catches: a ban whose verb is house vocabulary", ["forbid on one line"],
+         good_plan, dict(good_world, handoff_to_board=["never shown closing"],
+                         the_turn={"what_gets_worse":
+                             "the gate is shown closing while the envelope sits still"})),
+        # And a three letter one, because the length filter was the other half of
+        # the same bug.
+        ("catches: a ban shorter than the old length filter", ["forbid on one line"],
+         good_plan, dict(good_world, handoff_to_board=["never fan the pile"],
+                         the_turn={"what_gets_worse":
+                             "the gate shuts and the lamps keep going out while the "
+                             "copies fan across the floor"})),
         ("catches: one document saying ship and the other saying do not", ["shippable"],
          good_plan, dict(good_world, shippable=False)),
         ("catches: only one document declaring a turn at all", ["THE TURN"],
@@ -361,6 +424,22 @@ def self_test():
         ("catches: NEITHER document declaring a button", ["THE BUTTON"],
          {k: v for k, v in good_plan.items() if k != "the_button"},
          {k: v for k, v in good_world.items() if k != "the_button"}),
+        # THE SAME HOLE, FOUR MORE TIMES. The turn and the button were fixed to
+        # refuse silence and the other four rows kept scoring it as agreement, so
+        # a pair of documents that simply never mentioned the world, the claims,
+        # the gags or shippability collected four green rows for saying nothing.
+        # A row that is not emitted is indistinguishable from a row that passed.
+        ("catches: NEITHER document naming a world", ["SAME world"],
+         {k: v for k, v in good_plan.items() if k != "world"},
+         {k: v for k, v in good_world.items() if k != "world"}),
+        ("catches: a world bound to no cleared claim at all", ["claim the world names"],
+         good_plan, {k: v for k, v in good_world.items() if k != "mechanism"}),
+        ("catches: NEITHER document declaring a sight gag", ["gag count"],
+         {k: v for k, v in good_plan.items() if k != "sight_gags_surviving_claim_guards"},
+         {k: v for k, v in good_world.items() if k != "sight_gags"}),
+        ("catches: NEITHER document declaring shippability", ["shippable"],
+         {k: v for k, v in good_plan.items() if k != "shippable"},
+         {k: v for k, v in good_world.items() if k != "shippable"}),
     ]
     for name, want, p, w in cases:
         rows = check(p, w)

@@ -161,10 +161,37 @@ def check(script, claims_doc):
         rows.append((n, ok, d))
         return ok
 
-    lines = script["lines"]
+    lines = script.get("lines")
+    if not isinstance(lines, list) or not lines:
+        # A verdict, not a traceback. `script["lines"]` on a malformed document
+        # raised KeyError and printed a stack trace where a FAIL row belongs, and
+        # a gate that crashes has not failed the work, it has failed to run.
+        row("the script document has lines", False,
+            "no `lines` array, or it is empty. There is nothing to check, which is "
+            "not the same as nothing being wrong.")
+        return rows
+
     idx = claim_index(claims_doc)
 
+    # THE CLAIM SET MUST EXIST BEFORE IT CAN RESOLVE.
+    #
+    # 2026-08-02, repo-wide review: a script citing NOTHING, checked against an
+    # EMPTY claims.json, printed `ok  every claim-id resolves  0 distinct id(s),
+    # all found` and exited 0. Vacuous truth read as a pass on the house's first
+    # law. The set being empty is the failure; resolution is the second question.
+    row("claims.json carries a cleared claim set", bool(idx),
+        f"{len(idx)} cleared claim(s)" if idx else
+        "claims.json yielded ZERO claims. Phase 2 either did not run or cleared "
+        "nothing, and every citation row below is vacuously true against it.")
+
     cited = [(l, c) for l in lines for c in l.get("claims", [])]
+    row("the script cites its sources at all", bool(cited),
+        f"{len(cited)} citation(s) across {len({id(l) for l, _ in cited})} line(s)"
+        if cited else
+        "NOT ONE line carries a claim-id. `No claim without a source` is the "
+        "first house rule, and a script that cites nothing satisfies every "
+        "citation check by having nothing to check.")
+
     dangling = sorted({c for _, c in cited if c not in idx})
     row("every claim-id resolves in claims.json", not dangling,
         f"{len(dangling)} dangling: {dangling[:4]}" if dangling
@@ -296,12 +323,29 @@ def self_test():
         ("a script with no Ray in it at all", "never gone longer|middle third",
          script([{"t": 0.0, "who": "DEE", "text": "All mine.", "claims": ["c1"]},
                  {"t": 30.0, "who": "INSTITUTION", "text": "Ours.", "claims": ["c2"]}])),
+        # THE VACUOUS PASS. A script that cites NOTHING, against an EMPTY claim
+        # set, printed `ok  every claim-id resolves  0 distinct id(s), all found`
+        # and exited 0 before 2026-08-02. Both halves are tested, because either
+        # one alone is a different failure: no citations is a writer defect, no
+        # cleared claims is a Phase 2 defect, and the pair is the one that was
+        # certifying itself.
+        ("a script that cites no source at all", "cites its sources",
+         script([dict(l, claims=[]) for l in good["lines"]])),
+        # Not isolable, and it declares both: a script that cites properly
+        # against an EMPTY claim set has ids that cannot resolve by definition.
+        # The point of the new row is that the empty set is named as the cause,
+        # instead of the run reading four dangling ids as a writer's typo.
+        ("a claims.json that cleared nothing", "carries a cleared claim set|resolves",
+         good, {"claims": []}),
+        ("a document with no lines at all", "has lines", {"lines": []}),
     ]
 
     ok = True
-    for name, guards, s in cases:
+    for case in cases:
+        name, guards, s = case[0], case[1], case[2]
+        case_claims = case[3] if len(case) > 3 else claims
         want = guards.split("|")
-        rows = check(s, claims)
+        rows = check(s, case_claims)
         missed = [g for g in want
                   if not any(g in n and not o for n, o, _ in rows)]
         others = [n for n, o, _ in rows
