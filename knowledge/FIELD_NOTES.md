@@ -381,3 +381,22 @@ would have flagged all three as suspects and been wrong about two of them.
 
 A gate whose comment is a lie is worse than one with no comment, because the
 comment is what the next author trusts instead of testing.
+
+## Launching an agent and writing its inputs in the same block is a race (2026-08-02)
+
+The Phase 4.4 dry run reported that the script and the world staged two
+different mechanisms, and it was right about the bytes on disk and wrong about
+the cause. `script.json` was written in the SAME tool block that launched the
+director, and the launch went first, so the agent read the previous run's
+script. The mismatch was self-inflicted.
+
+WRITE THE INPUTS, THEN LAUNCH. An agent starts reading immediately, and "same
+message" is not "before".
+
+What makes this worth writing down rather than just fixing: the director's
+BEHAVIOUR under the fault was exactly right, and that is real evidence. It
+detected the mismatch, refused to blame the writer, said plainly "that is not a
+shot-plan defect I can fix with better shots", and identified that the schema
+would have routed the repair to the wrong phase. A fault injected by accident
+tested the failure path better than a fixture would have, because nobody wrote
+the fixture to be survivable.

@@ -191,3 +191,40 @@ Strict JSON. No prose outside it.
   "verdict": "board-it | fix-these-shots | reject-to-writers-room | split"
 }
 ```
+
+## Four spec fixes the first dry run earned
+
+**1. `returns_to` is now part of the verdict, and it is the serious one.** The
+schema had `unillustratable_lines`, which blames the WRITER, and
+`hard_rule_failures`, which blames the BOARD. The first dry run's actual defect
+belonged to neither: every line came back `accompanies` because the world staged
+a different mechanism than the script. The director nearly filed all thirteen
+lines as unillustratable, which would have sent a serviceable script back to the
+writers room for a PRODUCER's error and cost a rewrite that fixes nothing.
+
+So a reject names where it goes:
+  `returns_to: "writers-room" | "producer" | "fact-check" | "designer"`
+If the lines cannot be illustrated because the WORLD is staging a different
+mechanism, that is `producer`, and say so. Sending the right work to the wrong
+phase is worse than sending none, because the wrong phase will do the work.
+
+**2. A non-empty `what_the_picture_knows_that_the_line_does_not` is not a pass.**
+The field can be full and the shot can be worse than empty, because a picture
+can know the WRONG thing. The dry run's sharpest case: a lamp going out on Dee
+is a beautiful, well-directed shot whose count runs DOWN under a line whose
+count runs UP. The field was full. The shot contradicted its own line. Any
+downstream tool checking for a non-empty string reads that as directed.
+So when a picture knows something that CONTRADICTS its line, open the field with
+`CONTRADICTS:` and treat the shot as a failure, not a pass.
+
+**3. The event budget has a denominator.** "12 to 16 visual events" is stated for
+SIXTY SECONDS. On a 39 second cut a literal reading passes 17 events, which is
+nearly double rate, and a less suspicious director would have reported that
+green. The band is **0.20 to 0.27 events per second**. Convert, always, and
+report the rate alongside the count.
+
+**4. Zero sight gags must be sayable.** `named_sight_gag` is typed
+`string | null` with the surrounding prose written as though null is a bug, and
+the honest answer to the dry run's central question was zero. Report
+`sight_gags_surviving_claim_guards` as an INTEGER next to it. A count of zero is
+a finding, and it is the finding `beautiful_and_unfunny` is made of.
