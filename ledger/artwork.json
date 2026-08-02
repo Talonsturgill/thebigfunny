@@ -29,6 +29,17 @@
         "lib/brand.tsx",
         "lib/cast.tsx (both registered in ASSET_MANIFEST.md)"
       ]
+    },
+    {
+      "run_date": "2026-08-02",
+      "episode_no": 2,
+      "hero_structure": "exterior night street in one-point recession, the pair small on the road, the Institution a cold monolith at the vanishing point, resolving to two stacked federal records",
+      "atmosphere": "night exterior, rationed practical light: warm shop windows behind, cold ambient on the road, nothing registered on the monolith",
+      "palette_family": "night steel / sodium amber",
+      "continuity_device": "camera:one unbroken push down the street that STOPS on the document",
+      "camera_language": "push",
+      "set": "MainStreetBG (dusk 0.72, banner off) under NightGrade",
+      "new_assets": []
     }
   ]
 }

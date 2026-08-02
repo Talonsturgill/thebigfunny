@@ -1,0 +1,150 @@
+{
+  "_spec": {
+    "case": 2,
+    "run_date": "2026-08-02",
+    "rule": "This file is the ONLY source of facts the script may use. If it is not in here, it does not go in the script. Every VERIFIED claim was re-fetched and checked verbatim by the fact-checker against the primary document.",
+    "story": "ford-28-speakers",
+    "beat": "cross-cutting",
+    "target": "Ford Motor Company"
+  },
+
+  "claims": [
+    {
+      "id": "c1",
+      "text": "Ford is recalling 66,383 vehicles: certain 2024-2027 Lincoln Nautilus Hybrid and 2025-2027 Explorer Hybrid. NHTSA campaign 26V415000.",
+      "verbatim": "Ford Motor Company (Ford) is recalling certain 2024-2027 Lincoln Nautilus Hybrid and 2025-2027 Explorer Hybrid vehicles.",
+      "source_url": "https://api.nhtsa.gov/recalls/campaignNumber?campaignNumber=26V415000",
+      "source_title": "NHTSA Recalls, campaign 26V415000, Ford Motor Company",
+      "doc_date": "2026-06-30",
+      "second_source_url": "https://www.cars.com/articles/more-than-66000-ford-lincoln-hybrid-suvs-recalled-for-pedestrian-warning-sound-526846/",
+      "status": "VERIFIED",
+      "guard": "Model years are NOT interchangeable. Nautilus 2024-2027, Explorer 2025-2027. cars.com prints 'more than 66,300', not the exact digits, so 66,383 rests on the NHTSA record."
+    },
+    {
+      "id": "c2",
+      "text": "The defect is a software error that may stop the vehicle making the pedestrian warning sound at certain speeds.",
+      "verbatim": "A software error may prevent the vehicle from making the pedestrian warning sound at certain speeds.",
+      "source_url": "https://api.nhtsa.gov/recalls/campaignNumber?campaignNumber=26V415000",
+      "source_title": "NHTSA Recalls, campaign 26V415000, Summary field",
+      "doc_date": "2026-06-30",
+      "second_source_url": "https://www.cars.com/articles/more-than-66000-ford-lincoln-hybrid-suvs-recalled-for-pedestrian-warning-sound-526846/",
+      "status": "VERIFIED",
+      "guard": "The verb is 'making' in 2026. The 2025 predecessor used 'emitting'. Do not cross them. NHTSA does not use the word 'required' in this sentence."
+    },
+    {
+      "id": "c3",
+      "text": "The fix that exists today applies only to Nautilus Hybrids that have 28 speakers.",
+      "verbatim": "Dealers will replace the digital signal processing module in Nautilus Hybrid vehicles equipped with 28 speakers, free of charge.",
+      "source_url": "https://api.nhtsa.gov/recalls/campaignNumber?campaignNumber=26V415000",
+      "source_title": "NHTSA Recalls, campaign 26V415000, Remedy field",
+      "doc_date": "2026-06-30",
+      "second_source_url": "https://www.cars.com/articles/more-than-66000-ford-lincoln-hybrid-suvs-recalled-for-pedestrian-warning-sound-526846/",
+      "status": "VERIFIED",
+      "guard": "Exact, including the numeral 28. Two-source. This is the sorting key in the federal record, NOT a claim that the speakers failed. See c11."
+    },
+    {
+      "id": "c4",
+      "text": "For every other affected vehicle there is no fix yet.",
+      "verbatim": "The remedy is currently under development for all other Nautilus and Explorer Hybrid vehicles affected by this recall.",
+      "source_url": "https://api.nhtsa.gov/recalls/campaignNumber?campaignNumber=26V415000",
+      "source_title": "NHTSA Recalls, campaign 26V415000, Remedy field",
+      "doc_date": "2026-06-30",
+      "second_source_url": "https://www.cars.com/articles/more-than-66000-ford-lincoln-hybrid-suvs-recalled-for-pedestrian-warning-sound-526846/",
+      "status": "VERIFIED",
+      "guard": "The document does NOT state how many of the 66,383 fall in each bucket. Do not assert a split or say 'most owners get nothing'."
+    },
+    {
+      "id": "c5",
+      "text": "This recall is an expansion of the earlier one, and cars already repaired under it must be repaired again.",
+      "verbatim": "Note: This is an expansion of Recall 25V691. Any vehicles previously repaired under 25V691 must have the new remedy completed.",
+      "source_url": "https://api.nhtsa.gov/recalls/campaignNumber?campaignNumber=26V415000",
+      "source_title": "NHTSA Recalls, campaign 26V415000, Remedy field",
+      "doc_date": "2026-06-30",
+      "second_source_url": "https://api.nhtsa.gov/recalls/campaignNumber?campaignNumber=25V691000",
+      "status": "VERIFIED",
+      "guard": "'Expansion' is NHTSA's own word. Safe to say the earlier repair did not hold. UNSAFE to say Ford lied or knew."
+    },
+    {
+      "id": "c6",
+      "text": "Ford filed the report on 30 June 2026. Ford's number for the recall is 26S51.",
+      "verbatim": "Ford's number for this recall is 26S51.",
+      "source_url": "https://api.nhtsa.gov/recalls/campaignNumber?campaignNumber=26V415000",
+      "source_title": "NHTSA Recalls, campaign 26V415000, ReportReceivedDate and Component",
+      "doc_date": "2026-06-30",
+      "second_source_url": "https://www.cars.com/articles/more-than-66000-ford-lincoln-hybrid-suvs-recalled-for-pedestrian-warning-sound-526846/",
+      "status": "VERIFIED",
+      "guard": "The API returns the date as 30/06/2026, DD/MM/YYYY. It is 30 June 2026. Component: BACK OVER PREVENTION:WARNINGS:EXTERNAL/PEDESTRIAN ALERT."
+    },
+    {
+      "id": "c7",
+      "text": "Interim letters telling owners about the safety risk are expected to be mailed 3 August 2026. A second set of letters comes once a fix exists.",
+      "verbatim": "Interim letters notifying owners of the safety risk are expected to be mailed August 03, 2026. Additional letters will be sent once the remedy is available.",
+      "source_url": "https://api.nhtsa.gov/recalls/campaignNumber?campaignNumber=26V415000",
+      "source_title": "NHTSA Recalls, campaign 26V415000, Remedy field",
+      "doc_date": "2026-06-30",
+      "second_source_url": "https://www.cars.com/articles/more-than-66000-ford-lincoln-hybrid-suvs-recalled-for-pedestrian-warning-sound-526846/",
+      "status": "VERIFIED",
+      "guard": "These are INTERIM letters. There is no owner notification letter date, because for most vehicles there is nothing to notify yet. Do not write 'owners will be told how to get it fixed on August 3'."
+    },
+    {
+      "id": "c8",
+      "text": "Federal law requires hybrids and electric vehicles to make a pedestrian alert sound, so that people can hear them coming. It is Federal Motor Vehicle Safety Standard No. 141.",
+      "verbatim": "Standard No. 141; Minimum Sound Requirements for Hybrid and Electric Vehicles",
+      "source_url": "https://www.govinfo.gov/content/pkg/CFR-2024-title49-vol6/xml/CFR-2024-title49-vol6-sec571-141.xml",
+      "source_title": "49 CFR 571.141",
+      "doc_date": "2024-10-01",
+      "second_source_url": "https://www.federalregister.gov/documents/2016/12/14/2016-28804/federal-motor-vehicle-safety-standards-minimum-sound-requirements-for-hybrid-and-electric-vehicles",
+      "status": "VERIFIED",
+      "guard": "HARD LIMIT ON DEE'S LINE. This is a LOW SPEED standard, roughly up to 19 mph, because above that tire and wind noise carries. Dee may say the law requires the car to make a noise so pedestrians can hear it coming. Dee may NOT say 'at all times', 'at any speed', or 'on the highway'."
+    },
+    {
+      "id": "c9",
+      "text": "Ford recalled these SUVs for the same defect in October 2025, fixed it with a software update, and mailed owner letters on 5 November 2025.",
+      "verbatim": "The audio control module and digital signal processing module software will be updated by a dealer, or through an over-the-air (OTA) update, free of charge. Owner notification letters were mailed November 5, 2025.",
+      "source_url": "https://api.nhtsa.gov/recalls/campaignNumber?campaignNumber=25V691000",
+      "source_title": "NHTSA Recalls, campaign 25V691000, Ford Motor Company",
+      "doc_date": "2025-10-10",
+      "second_source_url": "https://api.nhtsa.gov/recalls/campaignNumber?campaignNumber=26V415000",
+      "status": "VERIFIED",
+      "guard": "The 2025 recall covered 2024-2026 Nautilus Hybrid and 2025 Explorer hybrid POLICE vehicles, and used the verb 'emitting'."
+    },
+    {
+      "id": "c10",
+      "text": "The first recall covered 43,438 vehicles. The expansion covers 66,383.",
+      "verbatim": "PotentialNumberofUnitsAffected: 43438",
+      "source_url": "https://api.nhtsa.gov/recalls/campaignNumber?campaignNumber=25V691000",
+      "source_title": "NHTSA Recalls, campaigns 25V691000 and 26V415000",
+      "doc_date": "2025-10-10",
+      "second_source_url": "https://api.nhtsa.gov/recalls/campaignNumber?campaignNumber=26V415000",
+      "status": "VERIFIED",
+      "guard": "DO NOT SUBTRACT. The two populations are not a clean superset, so any derived figure is CUT. State the two totals side by side and let the viewer do the arithmetic."
+    },
+
+    {
+      "id": "c11",
+      "text": "None of the 28 speakers could produce the pedestrian warning sound.",
+      "verbatim": null,
+      "source_url": "https://api.nhtsa.gov/recalls/campaignNumber?campaignNumber=26V415000",
+      "source_title": "NHTSA Recalls, campaign 26V415000",
+      "doc_date": "2026-06-30",
+      "second_source_url": null,
+      "status": "CUT",
+      "guard": "OVERREACH, and the exact line a writer reaches for. The document never says the 28 speakers failed, and the external pedestrian emitter is generally not part of the cabin audio array. The script may place the speaker count and the missing sound beside each other as two separately true facts, but must NEVER assert that the 28 speakers are what failed. Also CUT: naming any audio brand, which the document does not do."
+    }
+  ],
+
+  "killed_candidates": [
+    {
+      "candidate": "google-play-48-hour-window",
+      "why": "The angle WAS the change, and the change is what could not be proven. Both texts verify individually, but Google's own archive page returned a third effective date (March 15, 2023), the July 1 2024 page reads as a stale mirror on the legacy domain rather than the true predecessor, two years separate the dated pages, and web.archive.org snapshot bodies were unfetchable so the edit could not be dated with a visible timestamp. Softening to 'recently doubled' is the move that ends channels, so it was cut rather than hedged."
+    },
+    {
+      "candidate": "subaru-mails-you-a-sticker",
+      "why": "Not killed, not chosen. The 541,237 count is single-sourced to NHTSA because search engines were unreachable from this environment, and its pending-remedy beat duplicates Ford's, so the two must not share an episode."
+    },
+    {
+      "candidate": "tsa-confirm-id-45-dollar",
+      "why": "Not killed, not chosen. Every quote exact and nothing retracted, but both notices are from Nov and Dec 2025 with no 2026 development, so there is no peg. Also the researcher's 'proposed $18' was wrong: both were effective notices."
+    }
+  ]
+}

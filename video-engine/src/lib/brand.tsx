@@ -47,7 +47,13 @@ export const Stamp: React.FC<{
   color?: string;
   x?: number; y?: number;
   scale?: number;
-}> = ({frame, fps = 30, children, rotate = -7, color = STAMP, x = 0, y = 0, scale = 1}) => {
+  /** Ink bleeding into paper is a MULTIPLY, which is right on a light ground and
+   *  wrong on a dark one: multiply can only darken, so a pale stamp on a night
+   *  frame disappears entirely. An episode set at night passes 'normal' so the
+   *  wordmark still reads without having to spend the red token on it. */
+  blend?: 'multiply' | 'normal';
+}> = ({frame, fps = 30, children, rotate = -7, color = STAMP, x = 0, y = 0, scale = 1,
+       blend = 'multiply'}) => {
   const s = spring({frame, fps, config: {damping: 9, mass: 0.55, stiffness: 190}});
   // Overshoot from big to settled: the hit.
   const k = interpolate(s, [0, 1], [2.2, 1]) * scale;
@@ -61,7 +67,7 @@ export const Stamp: React.FC<{
       /* Ink bleed: a stamp is never crisp. Two offset shadows in the same hue
          read as ink spreading into paper tooth. */
       textShadow: `0.5px 0.5px 0 ${color}, -0.5px 0.5px 0 ${color}`,
-      mixBlendMode: 'multiply',
+      mixBlendMode: blend,
     }}>{children}</div>
   );
 };
@@ -72,9 +78,12 @@ export const Stamp: React.FC<{
  * It is NOT at the top of the episode. Branding before the hook is how a
  * short-form video loses the audience, and no brand survives not being watched.
  */
-export const Wordmark: React.FC<{frame: number; fps?: number; x?: number; y?: number; scale?: number}> =
-({frame, fps = 30, x = 540, y = 960, scale = 1}) => (
-  <Stamp frame={frame} fps={fps} x={x} y={y} scale={scale} rotate={-6}>
+export const Wordmark: React.FC<{
+  frame: number; fps?: number; x?: number; y?: number; scale?: number; color?: string;
+  blend?: 'multiply' | 'normal';
+}> =
+({frame, fps = 30, x = 540, y = 960, scale = 1, color = STAMP, blend = 'multiply'}) => (
+  <Stamp frame={frame} fps={fps} x={x} y={y} scale={scale} rotate={-6} color={color} blend={blend}>
     <div style={{textAlign: 'center', lineHeight: 0.86}}>
       <div style={{fontSize: 74, letterSpacing: '0.06em'}}>THE BIG</div>
       <div style={{fontSize: 128, letterSpacing: '-0.03em'}}>FUNNY</div>
@@ -136,8 +145,16 @@ export const Highlighter: React.FC<{
  * is the flex, and a show whose whole pitch is "we have the receipt" should not
  * end by begging.
  */
-export const EndCard: React.FC<{n: number; frame: number; fps?: number}> =
-({n, frame, fps = 30}) => {
+/**
+ * `color` exists so an episode can HONOUR the one-stamp rule instead of merely
+ * asserting it. Wordmark and EndCard both render through Stamp, which defaults
+ * to STAMP red, so an episode that also stamps its receipt was spending the red
+ * token three times and halving it twice over. Pass INK here and keep the red
+ * for the thing that matters most. The default is unchanged so nothing already
+ * shipped moves.
+ */
+export const EndCard: React.FC<{n: number; frame: number; fps?: number; color?: string}> =
+({n, frame, fps = 30, color = STAMP}) => {
   const fade = interpolate(frame, [0, 6], [0, 1], {extrapolateRight: 'clamp'});
   return (
     <div style={{
@@ -145,7 +162,7 @@ export const EndCard: React.FC<{n: number; frame: number; fps?: number}> =
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center', gap: 26,
     }}>
-      <Wordmark frame={frame} fps={fps} x={540} y={860} scale={0.82} />
+      <Wordmark frame={frame} fps={fps} x={540} y={860} scale={0.82} color={color} />
       <div style={{
         position: 'absolute', top: 1120, width: '100%', textAlign: 'center',
         fontFamily: BODY, fontSize: 25, letterSpacing: '0.20em',

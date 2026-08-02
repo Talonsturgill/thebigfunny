@@ -1,0 +1,153 @@
+{
+  "case": 2,
+  "run_date": "2026-08-02",
+  "beat": "cross-cutting",
+  "target": "Ford Motor Company",
+  "angle_type": "ratio",
+  "angle": "Ford recalled 43,438 of these SUVs in October for a sound they would not make, updated the software and mailed the letters; in June the same recall came back covering 66,383, and the cars they already fixed have to be fixed again.",
+  "title": "CASE No. 0002 - They Fixed It In October. It Came Back Bigger.",
+  "button_document": "The two NHTSA records stacked on PAPER: 25V691000 (OCT 2025, 43,438) above 26V415000 (JUN 2026, 66,383), same type size, no arrow and no arithmetic between them, with the Remedy sentence 'Any vehicles previously repaired under 25V691 must have the new remedy completed' set beneath. Document type at 34-46px, legible at 1080x1920 and at speed. STAMP lands once, on the June record.",
+  "timing_basis": "Line slots are sized from MEASURED per-voice delivery rates, not from an assumed reading speed: RAY 1.85 words/sec, DEE 2.81, INSTITUTION 2.24, measured on this exact cast and style on 2026-08-02 after silence trimming. The first cut of this script assumed 3.6 w/s and Ray's opening line overran its slot by three seconds.",
+  "lines": [
+    {
+      "t": 0.0,
+      "who": "RAY",
+      "text": "Ford recalled its hybrid SUVs over a noise they're required to make.",
+      "claims": [
+        "c1",
+        "c2",
+        "c8"
+      ]
+    },
+    {
+      "t": 5.31,
+      "who": "DEE",
+      "text": "It doesn't always play. That's the recall.",
+      "claims": [
+        "c2"
+      ]
+    },
+    {
+      "t": 9.54,
+      "who": "DEE",
+      "text": "They did, in October. Software update, letters mailed November fifth.",
+      "claims": [
+        "c9"
+      ]
+    },
+    {
+      "t": 16.14,
+      "who": "DEE",
+      "text": "Forty-three thousand, four hundred thirty-eight.",
+      "claims": [
+        "c10"
+      ]
+    },
+    {
+      "t": 19.72,
+      "who": "DEE",
+      "text": "It's back. Sixty-six thousand, three hundred eighty-three.",
+      "claims": [
+        "c1",
+        "c10"
+      ]
+    },
+    {
+      "t": 24.73,
+      "who": "DEE",
+      "text": "NHTSA calls it an expansion. The ones they fixed have to be fixed again.",
+      "claims": [
+        "c5"
+      ]
+    },
+    {
+      "t": 30.51,
+      "who": "RAY",
+      "text": "So the repair needs a repair.",
+      "claims": [
+        "c5"
+      ]
+    },
+    {
+      "t": 34.03,
+      "who": "DEE",
+      "text": "The only fix they have is for the Nautilus with twenty-eight speakers.",
+      "claims": [
+        "c3",
+        "c4"
+      ]
+    },
+    {
+      "t": 39.17,
+      "who": "RAY",
+      "text": "Twenty-eight speakers. That's how they decide who gets fixed.",
+      "claims": [
+        "c3"
+      ]
+    },
+    {
+      "t": 44.26,
+      "who": "INSTITUTION",
+      "text": "Interim letters notifying owners of the safety risk are expected to be mailed August third.",
+      "claims": [
+        "c7"
+      ]
+    },
+    {
+      "t": 50.54,
+      "who": "RAY",
+      "text": "That's tomorrow.",
+      "claims": [
+        "c7"
+      ]
+    },
+    {
+      "t": 52.15,
+      "who": "RAY",
+      "text": "I still have the first letter.",
+      "claims": [
+        "c9"
+      ]
+    },
+    {
+      "t": 51.3,
+      "who": "ONSCREEN",
+      "text": "25V691000  -  OCT 2025  -  43,438",
+      "claims": [
+        "c9",
+        "c10"
+      ]
+    },
+    {
+      "t": 52.1,
+      "who": "ONSCREEN",
+      "text": "26V415000  -  JUN 2026  -  66,383",
+      "claims": [
+        "c1",
+        "c10"
+      ]
+    },
+    {
+      "t": 52.9,
+      "who": "ONSCREEN",
+      "text": "PREVIOUSLY REPAIRED VEHICLES MUST HAVE THE NEW REMEDY COMPLETED",
+      "claims": [
+        "c5"
+      ]
+    }
+  ],
+  "estimated_seconds": 54.79,
+  "word_count": 118,
+  "funniest_line_intended": "Twenty-eight speakers. That's how they decide who gets fixed.",
+  "craft_notes": {
+    "one_stamp": "STAMP red is spent ONCE, on the button, landing on the June record (26V415000). Nothing else in the episode is stamped.",
+    "highlighter": "The single marker swipe goes on 66,383 at t=19.0. 43,438 at t=16.6 stays unmarked and identical in weight, so the viewer does the arithmetic and the show never does.",
+    "ray_ladder": "angry at 0.0 (he has already found out), shock at 27.8 ('the repair needs a repair'), smug at 35.6 ('that's how they decide who gets fixed'), then deflated at 51.3 where he loses.",
+    "dee_crack": "DEE_CRACK at t=31.4. She holds composure through both counts and the agency's own word for it, and breaks only when she has to read the twenty-eight speakers line out loud.",
+    "institution": "Emitted, never a character. ONE line, verbatim from c7, as policy text on a cold plate over an automated read. It answers a question nobody asked, politely, and does not budge. No face, ever. Two things are deliberately NOT spoken by it: the c4 sentence, which costs eight seconds of a sixty second show and which Dee can carry accurately in five words, and the c5 campaign-number sentence, because '25V691' is a reading artifact that belongs on the button card rather than mangled aloud.",
+    "ratio_discipline": "Place the two numbers and shut up. 43,438 at t=16.6 and 66,383 at t=19.0 sit next to each other with only 'It's back' between them. Nobody says 'more', nobody subtracts, no percentage appears. The weight then rests on NHTSA's OWN word at t=22.2 ('NHTSA calls it an expansion') and on the verbatim requirement that repaired cars be repaired again, never on the counts implying causation.",
+    "tonal_line": "No impact, no injury, no near miss, no pedestrian in frame, no car in motion anywhere in the episode. The joke lives entirely on the paperwork, the two counts and the voided repair.",
+    "guard_c11": "Nothing here says or implies the 28 speakers failed. Dee states the record's own sorting (the fix that exists is for 28-speaker Nautilus Hybrids) and Ray's verdict is about the SORTING, not the speakers.",
+    "guard_c8": "Dee says the law requires a noise so people hear them coming. She never says at any speed, at all times, or on the highway."
+  }
+}

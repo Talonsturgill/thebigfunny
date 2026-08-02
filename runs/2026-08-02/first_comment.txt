@@ -1,0 +1,26 @@
+Sources, for the first comment. NEVER paste these into the caption body.
+
+NHTSA campaign 26V415000, Ford, 66,383 vehicles, filed 30 June 2026
+"A software error may prevent the vehicle from making the pedestrian warning sound at certain speeds."
+"Dealers will replace the digital signal processing module in Nautilus Hybrid vehicles equipped with 28 speakers, free of charge. The remedy is currently under development for all other Nautilus and Explorer Hybrid vehicles affected by this recall."
+"Note: This is an expansion of Recall 25V691. Any vehicles previously repaired under 25V691 must have the new remedy completed."
+"Interim letters notifying owners of the safety risk are expected to be mailed August 03, 2026."
+https://api.nhtsa.gov/recalls/campaignNumber?campaignNumber=26V415000
+
+NHTSA campaign 25V691000, the October 2025 recall, 43,438 vehicles
+"The audio control module and digital signal processing module software will be updated by a dealer, or through an over-the-air (OTA) update, free of charge. Owner notification letters were mailed November 5, 2025."
+https://api.nhtsa.gov/recalls/campaignNumber?campaignNumber=25V691000
+
+The federal requirement, 49 CFR 571.141
+"Standard No. 141; Minimum Sound Requirements for Hybrid and Electric Vehicles"
+https://www.govinfo.gov/content/pkg/CFR-2024-title49-vol6/xml/CFR-2024-title49-vol6-sec571-141.xml
+
+Independent confirmation of the count, the 28 speaker remedy and the August 3 letters
+https://www.cars.com/articles/more-than-66000-ford-lincoln-hybrid-suvs-recalled-for-pedestrian-warning-sound-526846/
+
+Not claimed, and why. The record never says the 28 speakers are what failed, and the
+external pedestrian alert emitter is generally not part of the cabin audio array, so
+this episode places the speaker count and the missing sound beside each other as two
+separately true facts and never asserts one caused the other. We also do not subtract
+43,438 from 66,383: the two campaigns cover different model year ranges, so the
+difference is not a count of newly added vehicles. Both totals are stated as filed.
