@@ -81,6 +81,53 @@ def check(text):
     return all(o for _, o, _ in rows), rows
 
 
+def check_first_comment(text, body=""):
+    """THE OTHER HALF OF THE DELIVERABLE.
+
+    CLAUDE.md: "the deliverable is the mp4 AND the post copy: caption.txt (the
+    body) plus first_comment.txt (the sources, which NEVER go in the body). A
+    video with no caption is half a deliverable."
+
+    Nothing checked it. `grep -rn first_comment` found it in prose only, so the
+    file the body's URL ban PUSHES every source into was the one file in the
+    pipeline nobody verified existed, was non-empty, or actually carried the
+    sources. The ban and this gate are two halves of one rule: forbidding URLs in
+    the body without requiring them here just deletes the sourcing.
+    """
+    rows = []
+
+    def row(n, ok, d):
+        rows.append((n, ok, d)); return ok
+
+    t = (text or "").strip()
+    row("first_comment.txt has content", bool(t),
+        f"{len(t)} chars" if t else
+        "EMPTY. The body is forbidden from carrying URLs, so this is where every "
+        "source lives. Empty means the episode ships unsourced.")
+    if not t:
+        return False, rows
+
+    urls = re.findall(r"https?://\S+", t)
+    row("carries at least one source URL", bool(urls),
+        f"{len(urls)} url(s)" if urls else
+        "no http(s) URL anywhere. `No claim without a source` is the first house "
+        "rule and this file is where the audience can check it.")
+
+    # House rules apply to everything a viewer reads.
+    row("no emoji", not EMOJI.search(t), "clean" if not EMOJI.search(t) else "found")
+    row("no em or en dashes", not DASHES.search(t),
+        "clean" if not DASHES.search(t) else "found")
+
+    # It is a SEPARATE block, not a second copy of the post.
+    if body.strip():
+        shared = {l.strip() for l in t.splitlines() if len(l.strip()) > 30}
+        dupe = sorted(shared & {l.strip() for l in body.splitlines() if len(l.strip()) > 30})
+        row("is not a duplicate of the caption body", not dupe,
+            f"{dupe[:1]} appears in BOTH. The upstream failure was sources pasted "
+            f"into the body and duplicated." if dupe else "distinct")
+    return all(o for _, o, _ in rows), rows
+
+
 def self_test():
     good = ("The FAQ about the price increase has no prices in it.\n"
             "Microsoft called it a packaging and pricing update. CASE No. 0001\n"
@@ -108,6 +155,33 @@ def self_test():
             if not o:
                 print(f"        why: {n} -> {d}")
     ok &= passed
+
+    # The first comment, both directions.
+    good_fc = ("Sources:\n"
+               "FTC v. RentGrow, Inc., No. 1:26-cv-02415 (D.D.C. filed July 9, 2026)\n"
+               "https://www.ftc.gov/legal-library/browse/cases-proceedings/222-3002\n")
+    fc_bads = [
+        ("an empty first comment", ""),
+        ("a first comment with no source URL", "Sources: the FTC filing.\n"),
+        ("an em dash in the first comment", good_fc.replace("Sources:", "Sources —")),
+    ]
+    for name, t in fc_bads:
+        passed_fc = check_first_comment(t)[0]
+        print(f"  {'FAIL' if passed_fc else 'ok  '} rejects: {name}")
+        ok &= not passed_fc
+    # And a first comment that is just the caption again.
+    dupe_body = "The report wrote the same eviction case out again and again.\n"
+    passed_fc = check_first_comment(good_fc + dupe_body, dupe_body)[0]
+    print(f"  {'FAIL' if passed_fc else 'ok  '} rejects: a first comment that repeats the body")
+    ok &= not passed_fc
+    passed_fc, fc_rows = check_first_comment(good_fc, dupe_body)
+    print(f"  {'ok  ' if passed_fc else 'FAIL'} accepts: a clean first comment")
+    if not passed_fc:
+        for n, o, d in fc_rows:
+            if not o:
+                print(f"        why: {n} -> {d}")
+    ok &= passed_fc
+
     print("\nself-test: " + ("both directions correct, as designed" if ok else "THE GATE IS WRONG"))
     return 0 if ok else 1
 
@@ -115,6 +189,8 @@ def self_test():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("path", nargs="?")
+    ap.add_argument("--first-comment",
+                    help="default: first_comment.txt beside the caption")
     ap.add_argument("--self-test", action="store_true")
     a = ap.parse_args()
     if a.self_test:
@@ -124,10 +200,30 @@ def main():
     if not os.path.exists(a.path):
         print(f"caption_check: no such file {a.path}", file=sys.stderr)
         return 1
-    ok, rows = check(open(a.path, encoding="utf-8").read())
+    body = open(a.path, encoding="utf-8").read()
+    ok, rows = check(body)
     for n, good, d in rows:
         print(f"  {'ok  ' if good else 'FAIL'} {n:<40} {d}")
-    print("\ncaption: " + ("PASS" if ok else "FAIL"))
+
+    # THE OTHER HALF. Checked next to the body by default, because the two files
+    # enforce one rule between them and grading only the body means the URL ban
+    # quietly deletes the sourcing.
+    fc_path = a.first_comment or os.path.join(os.path.dirname(a.path) or ".",
+                                              "first_comment.txt")
+    print(f"\n  {os.path.basename(fc_path)}")
+    if not os.path.exists(fc_path):
+        print(f"  FAIL {'first_comment.txt exists':<40} missing at {fc_path}")
+        print("       CLAUDE.md: the deliverable is the mp4 AND the post copy. The "
+              "body is\n       forbidden from carrying URLs, so with no first "
+              "comment the episode\n       ships with nowhere to check it.")
+        ok = False
+    else:
+        fc_ok, fc_rows = check_first_comment(open(fc_path, encoding="utf-8").read(), body)
+        for n, good, d in fc_rows:
+            print(f"  {'ok  ' if good else 'FAIL'} {n:<40} {d}")
+        ok = ok and fc_ok
+
+    print("\npost copy: " + ("PASS" if ok else "FAIL"))
     return 0 if ok else 1
 
 

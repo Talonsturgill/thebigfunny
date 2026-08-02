@@ -25,6 +25,7 @@ torch 2.6.0+cpu all live there). Under system python the imports fail.
     python vo_qc.py "line to speak" out.wav   # audition + print the report
 """
 import os
+import sys as _sys
 import re
 import numpy as np
 
@@ -153,9 +154,13 @@ def synth_qc(text, n_candidates=4, max_attempts=8):
         return vo_gemini.synth_qc(text)
     norm = normalize_for_tts(text)
     if len(norm) > MAX_CHARS:
-        # Keep whole sentences together; only warn — do NOT chop mid-sentence and
-        # never atempo. A genuinely over-long line is a SCRIPT problem to trim upstream.
-        pass
+        # A literal `pass` under a comment saying "only warn", emitting no warning.
+        # The over-long line is real and the comment is right about the remedy: do
+        # NOT chop mid-sentence and never atempo, because it is a SCRIPT problem
+        # to trim upstream. So say so, loudly, where a run can act on it.
+        print(f"vo_qc: WARNING line is {len(norm)} chars, over the {MAX_CHARS} "
+              f"ship length. Trim it in the script; do not chop or atempo the "
+              f"audio.\n  {norm[:90]}...", file=_sys.stderr)
 
     results = []
     attempts = 0
@@ -192,7 +197,15 @@ def synth_qc(text, n_candidates=4, max_attempts=8):
         "warning": warning,
         "seed": best["seed"],
         "n_passing": len(passing),
+        # THE FLOOR HAD TO BE READ TO MEAN ANYTHING. `warning` is a string no
+        # caller in the repo ever looked at, so a take below the accent-drift
+        # floor shipped in silence. This is a boolean a caller can branch on, and
+        # the warning is printed as well as returned.
+        "below_ship_floor": bool(best["sim"] < SIM_FLOOR),
+        "sim_floor": SIM_FLOOR,
     }
+    if warning:
+        print(f"vo_qc: WARNING {warning}", file=_sys.stderr)
     return best["audio"], report
 
 

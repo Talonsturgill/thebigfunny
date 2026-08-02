@@ -466,6 +466,21 @@ def check(sb):
         f"the label." if unstated else "stated")
 
     # -- 6. SCREEN-SIDE CONTINUITY ------------------------------------------
+    #
+    # `staging` IS REQUIRED, and both rows below used to pass when it was absent.
+    # `s.get("staging") or {}` turned a shot that never declared where anybody
+    # stands into a shot with no bad sides and no flips, so stripping staging
+    # from every shot of the good fixture left the board PASSING. The schema
+    # header declares shots[].staging required, and a continuity check that
+    # certifies a board with no staging in it certifies nothing.
+    missing_staging = [str(s.get("id")) for s in ss
+                       if not isinstance(s.get("staging"), dict) or not s.get("staging")]
+    row("every shot declares where the cast STAND", not missing_staging,
+        f"{len(missing_staging)} shot(s) have no `staging`: {missing_staging[:4]}. "
+        f"Screen-side continuity cannot be checked on a board that never says "
+        f"which side anybody is on, and it silently PASSED both rows below."
+        if missing_staging else f"all {len(ss)} shot(s)")
+
     bad_side, flips = [], []
     for i, s in enumerate(ss):
         stg = s.get("staging") or {}
@@ -791,6 +806,14 @@ def self_test():
          _board(swap(g, 2, events=g[2]["events"] + [_ev(19.0, "vibe")]))),
         ("an event timed outside its own shot", ["inside its own shot"],
          _board(swap(g, 2, events=g[2]["events"] + [_ev(48.0, "prop")]))),
+        # RED on purpose: a board with NO staging anywhere used to collect two
+        # green continuity rows for saying nothing, on a field the schema header
+        # declares required.
+        ("a board that never says which side anybody is on", ["where the cast STAND"],
+         _board([{k: v for k, v in sh.items() if k != "staging"} for sh in g])),
+        ("one shot that forgot its staging", ["where the cast STAND"],
+         _board([{k: v for k, v in sh.items() if k != "staging"} if i == 2 else sh
+                 for i, sh in enumerate(g)])),
     ]
 
     for name, want, board in cases:

@@ -48,7 +48,14 @@ MIN_REACTIONS = 2
 
 
 def analyse(script):
-    lines = script["lines"]
+    # A verdict, not a traceback. `script["lines"]` on a malformed document
+    # raised KeyError and printed a stack trace where a FAIL line belongs, and a
+    # gate that crashes has not failed the work, it has failed to run.
+    lines = script.get("lines") if isinstance(script, dict) else None
+    if not isinstance(lines, list) or not lines:
+        return (["no `lines` array in the script document, or it is empty. There is "
+                 "nothing to check, which is not the same as nothing being wrong."],
+                [])
     end = float(script.get("estimated_seconds")
                 or max(float(l["t"]) for l in lines) + 3.0)
     tracks = build(lines)
@@ -177,6 +184,14 @@ def self_test():
          ["is not a register", "holds", "expression change", "listener reaction"],
          script([{"t": 0.0, "who": "RAY", "face": {"RAY": "livid"}}], 10.0)),
     ]
+    # RED on purpose: a malformed document gets a verdict, not a KeyError.
+    for bad, label in (({}, "a document with no lines at all"),
+                       ({"lines": []}, "a document whose lines are empty")):
+        got, _ = analyse(bad)
+        good_ = bool(got) and "lines" in got[0]
+        print(f"  {'ok  ' if good_ else 'FAIL'} catches: {label}")
+        ok &= good_
+
     for name, want, s in cases:
         p, _ = analyse(s)
         blob = " | ".join(p)
