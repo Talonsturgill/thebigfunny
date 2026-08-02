@@ -49,6 +49,8 @@ Three things follow from that sentence and they are the whole file:
 1. The set is BUILT for the story, never shopped for. The shelf supplies parts,
    not places. A world assembled from primitives that has never existed before
    beats a beautiful boreal night that has nothing to do with anything.
+   `knowledge/WORLD_KIT.md` is the parts catalogue and the assembly rules; this
+   file decides WHAT to build and that one is how it gets built.
 2. The world does comedy work the dialogue cannot, which is the only way out of
    `carried_by_fact`. A joke that lives entirely in the dialogue is a joke that
    could have been a tweet, and `AUDIENCE.md` is explicit that this show is

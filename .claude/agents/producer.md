@@ -36,6 +36,8 @@ You decide it on purpose instead.
 - `out/dispatch/story.json` if it exists (the Phase 3 mechanism statement)
 - `knowledge/DIRECTING.md` (the world-of-the-story law, the six visual moves,
   the shot rhythm numbers, the room protocol)
+- `knowledge/WORLD_KIT.md` (what the shelf can actually assemble, so the world
+  you pick is one that can be built in one run)
 - `knowledge/CAST_BIBLE.md` (the cast, the 60 second shape, the Institution rule)
 - `knowledge/COMEDY_CRAFT.md` (the six moves, the anti-patterns)
 - `knowledge/AUDIENCE.md` (18 to 34, muted, no earnestness)

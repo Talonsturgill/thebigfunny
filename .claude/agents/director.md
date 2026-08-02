@@ -30,6 +30,7 @@ the words leave you nothing to carry, you send them back.
   stage the world it named, you do not substitute a different one
 - `out/dispatch/claims.json` (a picture asserts as loudly as a line)
 - `knowledge/DIRECTING.md` (the law you enforce)
+- `knowledge/WORLD_KIT.md` (the parts and the assembly rules)
 - `video-engine/src/lib/ASSET_MANIFEST.md` (the shelf, and what it is a shelf OF)
 - `knowledge/CAST_BIBLE.md` (shape language, the Institution rule)
 - `ledger/artwork.json` (divergence: hero structure, atmosphere, palette family,
