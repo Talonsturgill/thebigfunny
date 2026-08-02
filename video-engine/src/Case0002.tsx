@@ -294,7 +294,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
         {night}
 
         {/* 43,438 lands first, on paper, and is NEVER marked. */}
-        <Page frame={frame - s(13.66)} top={286} rot={-1.1}>
+        <Page frame={frame - at(4)} top={286} rot={-1.1}>
           <div style={{fontFamily: BODY, fontSize: 26, letterSpacing: '0.2em', opacity: 0.62}}>
             CAMPAIGN 25V691000, OCTOBER 2025
           </div>
@@ -304,12 +304,12 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
         {/* 66,383 lands beneath it at the SAME size and weight. The episode's one
             and only highlighter swipe goes here, on the worse number. */}
         <Sequence from={at(5) - at(CUT_ON[2])}>
-          <Page frame={frame - s(16.59)} top={606} rot={0.9}>
+          <Page frame={frame - at(5)} top={606} rot={0.9}>
             <div style={{fontFamily: BODY, fontSize: 26, letterSpacing: '0.2em', opacity: 0.62}}>
               CAMPAIGN 26V415000, JUNE 2026
             </div>
             <div style={{position: 'relative', display: 'inline-block', marginTop: 6}}>
-              <Highlighter frame={frame - s(17.9)} width={430} height={78} x={-10} y={16} />
+              <Highlighter frame={frame - at(5) - s(1.31)} width={430} height={78} x={-10} y={16} />
               <div style={{position: 'relative', fontFamily: HEAD, fontWeight: 900, fontSize: 96}}>
                 66,383
               </div>
@@ -344,7 +344,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
         </Art>
         {night}
 
-        <Page frame={frame - s(27.54)} top={430} rot={-0.7} delay={s(0.5)}>
+        <Page frame={frame - at(7)} top={430} rot={-0.7} delay={s(0.5)}>
           <div style={{fontFamily: BODY, fontSize: 25, letterSpacing: '0.2em', opacity: 0.6}}>
             REMEDY, BY VEHICLE
           </div>
@@ -384,7 +384,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
         </Art>
         {night}
         <InstitutionPlate
-          frame={frame - s(36.97)}
+          frame={frame - at(9)}
           text={'"Interim letters notifying owners of the safety risk are expected to be mailed August 03, 2026. Additional letters will be sent once the remedy is available."'}
         />
       </Sequence>
@@ -415,7 +415,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
           <div style={{position: 'absolute', left: 74, right: 74, top: 610}}>
             <div style={{
               borderLeft: `10px solid ${BRAND.CARBON}`, paddingLeft: 26,
-              opacity: interpolate(frame - s(43.54), [4, 12], [0, 1],
+              opacity: interpolate(frame - at(10), [4, 12], [0, 1],
                 {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
             }}>
               <div style={{fontFamily: BODY, fontSize: 27, letterSpacing: '0.18em', color: BRAND.INK, opacity: 0.62}}>
@@ -429,7 +429,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
 
             <div style={{
               marginTop: 44, borderLeft: `10px solid ${BRAND.CARBON}`, paddingLeft: 26,
-              opacity: interpolate(frame - s(43.54), [16, 24], [0, 1],
+              opacity: interpolate(frame - at(10), [16, 24], [0, 1],
                 {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
             }}>
               <div style={{fontFamily: BODY, fontSize: 27, letterSpacing: '0.18em', color: BRAND.INK, opacity: 0.62}}>
@@ -447,14 +447,14 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
           <div style={{
             position: 'absolute', left: 74, right: 74, top: 1170,
             fontFamily: BODY, fontSize: 46, lineHeight: 1.4, color: BRAND.INK,
-            opacity: interpolate(frame - s(43.54), [26, 34], [0, 0.9],
+            opacity: interpolate(frame - at(10), [26, 34], [0, 0.9],
               {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
           }}>
             "Any vehicles previously repaired under 25V691 must have the new remedy completed."
           </div>
 
           {/* THE ONE STAMP. The only BRAND.STAMP red in the episode. */}
-          <Stamp frame={frame - s(45.2)} fps={fps} x={742} y={790} rotate={-12}>
+          <Stamp frame={frame - at(10) - s(1.66)} fps={fps} x={742} y={790} rotate={-12}>
             <div style={{fontSize: 66, border: '8px solid currentColor', padding: '8px 24px'}}>
               AGAIN
             </div>
@@ -464,14 +464,17 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
 
       {/* Captions ride everything except the button and the end card: the receipt
           is evidence and must not be covered by burned-in type. */}
-      {frame < s(36.97) && <Caption frame={frame} />}
+      {/* No caption under the Institution: that character speaks as the PLATE,
+          and a caption would duplicate it. Ray's closing lines get theirs back.
+          The old cutoff was a frozen s(36.97) and killed the last 15 seconds. */}
+      {(frame < at(9) || frame >= at(10)) && <Caption frame={frame} />}
 
       {/* End card: case number and the promise. Nothing else. INK, not red. */}
       <Sequence from={TAIL_AT}>
-        <EndCard n={2} frame={frame - s(47.37)} fps={fps} color={BRAND.INK} />
+        <EndCard n={2} frame={frame - TAIL_AT} fps={fps} color={BRAND.INK} />
       </Sequence>
 
-      {frame < s(43.54) && <CaseNumber n={2} y={92} color={BRAND.PAPER} />}
+      {frame < at(10) && <CaseNumber n={2} y={92} color={BRAND.PAPER} />}
     </AbsoluteFill>
   );
 };

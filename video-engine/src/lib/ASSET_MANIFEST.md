@@ -98,7 +98,7 @@ freshness comes from staging, camera and set, never from changing the cast. See
   silhouette, new livery — ACTIVE
 
 ## Characters (people)
-- `Character` — human rig — Character.tsx — poses: stand/arms-crossed/point/panic/raise (raise NEW 2026-07-20b: one arm thrust high w/ micro-sway, scenes mount a prop at the raised hand); emotions: neutral/angry/worried/shock/smug; outfits: parka/suit/worker/puffer/flannel/vest/referee (referee NEW 2026-07-20b: cream shirt w/ ink official stripes + collar + brass whistle on a lanyard); headgear: bare/beanie/cap/trapper/hood (bands raised off the eyes 2026-07-18b, no more 'burglar mask'); `talking` prop = ambient chat cycle (amplitude discarded); form-shaded + rim + contact shadow — ACTIVE
+- `Character` — human rig — Character.tsx — poses: stand/arms-crossed/point/panic/raise (raise NEW 2026-07-20b: one arm thrust high w/ micro-sway, scenes mount a prop at the raised hand, local (150,500)-space approx (150+105*facing, 22); widened 2026-08-02 so the forearm clears the skull); emotions: neutral/angry/worried/shock/smug; outfits: parka/suit/worker/puffer/flannel/vest/referee (referee NEW 2026-07-20b: cream shirt w/ ink official stripes + collar + brass whistle on a lanyard); headgear: bare/beanie/cap/trapper/hood (bands raised off the eyes 2026-07-18b, no more 'burglar mask'); `talking` prop = ambient chat cycle (amplitude discarded); form-shaded + rim + contact shadow — ACTIVE
   - **`mouth` + `accent` props (NEW 2026-08-02)** — the speaker's OWN voice drives
     the rig. `mouth` is per-frame openness and `accent` is onset strength, both
     from `scripts/vo_envelope.py`, which generates `caseNNNN_mouth.ts` from the

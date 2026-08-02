@@ -172,7 +172,11 @@ export const Character: React.FC<CharacterProps> = ({
   const legSwing = walking ? 22 * Math.sin(stridePh) : 0;         // deg, +left/-right leg
   const walkBob = walking ? -7 * Math.abs(Math.sin(stridePh)) : 0; // lift on mid-stride
   const armSwing = walking ? 16 * Math.sin(stridePh) : 0;         // arms counter-swing the legs
-  const blink = ((f + 11) % 92) < 5;
+  // Per-figure blink phase. This was `((f + 11) % 92) < 5` for everyone, so every
+  // character in a scene blinked on the SAME frame, which no real pair of people
+  // does and which reads as one puppet with two bodies. swayPhase already exists
+  // to desync figures; reuse it rather than invent a second hash.
+  const blink = ((f + 11 + Math.floor(swayPhase * 13)) % 92) < 5;
   const skinShade = '#c99268';
   // per-instance ids so each figure's form-shading gradients stay unique in the doc
   const uid = `ch${Math.round(x)}_${Math.round(y)}_${outfit}_${facing}`;
@@ -249,7 +253,12 @@ export const Character: React.FC<CharacterProps> = ({
         <ellipse cx={33} cy={7} rx={7.5} ry={4.5} fill="#c96f4a" opacity={0.17} />
         {/* mouth — when `talking` is provided (0..1 from lib/voice), the mouth
             FLAPS with the narration instead of holding the static emotion shape */}
-        {talking !== undefined ? (
+        {/* `mouth` counts as much as `talking`. This condition read `talking !==
+            undefined` alone, so passing ONLY the real per-frame openness fell
+            straight through to the static emotion mouth and the speaker never
+            opened their mouth at all. The prop typechecked, the render
+            succeeded, and nothing moved. Verify a new prop changes a PIXEL. */}
+        {(talking !== undefined || mouth !== undefined) ? (
           <g transform="translate(2,15)">
             {/* narrower mouth (round 10), and the openness comes from ambientMouth — a slow chat
                 cycle, NEVER the narrator's per-word amplitude (2026-07-21 owner rule: word-synced
@@ -362,9 +371,16 @@ export const Character: React.FC<CharacterProps> = ({
             <path d="M-46,266 q-16,44 -8,84" fill="none" stroke={c.shade} strokeWidth={22} strokeLinecap="round" />
             {hand(-54, 352, 0, 14)}
             {/* raised arm, nearly vertical with a live micro-sway */}
-            <path d={`M46,258 q26,-70 ${12 + 2 * Math.sin(f / 10)},-140`} fill="none" stroke={INK} strokeWidth={34} strokeLinecap="round" />
-            <path d={`M46,258 q26,-70 ${12 + 2 * Math.sin(f / 10)},-140`} fill="none" stroke={c.main} strokeWidth={22} strokeLinecap="round" />
-            {hand(58 + 2 * Math.sin(f / 10), 118, 180)}
+            {/* The raised arm ends OUTBOARD of the skull. It used to land at x=58
+                while the head has a ~78 radius, so on a bare-headed figure the
+                forearm lay straight across the face and read as a banana glued to
+                her head (owner, 2026-08-02). Raised now means up AND out, which is
+                also what the gesture looks like on a real person holding
+                something up. Nothing mounts a prop at this hand today; the
+                manifest's mount coordinate is updated with it. */}
+            <path d={`M46,258 q44,-64 ${59 + 2 * Math.sin(f / 10)},-140`} fill="none" stroke={INK} strokeWidth={34} strokeLinecap="round" />
+            <path d={`M46,258 q44,-64 ${59 + 2 * Math.sin(f / 10)},-140`} fill="none" stroke={c.main} strokeWidth={22} strokeLinecap="round" />
+            {hand(105 + 2 * Math.sin(f / 10), 118, 165)}
           </g>
         );
       default: // stand
@@ -449,7 +465,7 @@ export const Character: React.FC<CharacterProps> = ({
           group with its own small term. Do not give it a second copy of the
           body's motion.
         */}
-        <g transform={`translate(0,${bob + walkBob + accent * 7}) rotate(${accent * 1.8} 0 0)`}>
+        <g transform={`translate(0,${bob + walkBob + accent * 2.6}) rotate(${accent * 0.6} 0 0)`}>
         {/* torso (breath) */}
         <g transform={`translate(0,-160) scale(1,${breath}) translate(0,160)`}>
           <g transform="translate(0,-160)">
@@ -583,7 +599,7 @@ export const Character: React.FC<CharacterProps> = ({
         </g>
         {/* head — everyday Alaskan headgear (never the Native-coded fur ruff).
             Offset is CONSTANT. The bob it shares with the torso is on the parent. */}
-        <g transform={`translate(0,${-368 - accent * 4}) rotate(${accent * 2.6} 0 40)`}>
+        <g transform={`translate(0,${-368 - accent * 1.4}) rotate(${accent * 0.9} 0 40)`}>
           {(() => {
             const hg = outfit === 'parka' ? 'trapper' : headgear;
             const beanieCol = c.main;
