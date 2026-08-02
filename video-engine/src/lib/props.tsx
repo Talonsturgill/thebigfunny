@@ -193,7 +193,8 @@ export const TallyCounter: React.FC<{
   count?: string; spin?: number; roll?: number; tag?: string;
 }> = ({x, y, s = 1, f, variant = 'clicker', count = '0001', spin = 1, roll = 0, tag}) => {
   const tB = tones(BRASS);
-  const uid = `tally${Math.round(x)}_${Math.round(y)}_${variant}`;
+  // Per instance, never per position. See ASSET_MANIFEST.
+  const uid = `tally${React.useId().replace(/:/g, '')}`;
   if (variant === 'clicker') {
     const k = Math.max(0, Math.min(1, spin));
     // needle whirls fast early, settles hard at the end (eased lock)
@@ -295,7 +296,7 @@ export const VideoWeir: React.FC<{
   const p = Math.max(0, Math.min(1, plant));
   const drop = (1 - p) * -60;
   const tW = tones(WOOD);
-  const uid = `weir${Math.round(x)}_${Math.round(y)}`;
+  const uid = `weir${React.useId().replace(/:/g, '')}`;
   return (
     <g transform={`translate(${x},${y + drop}) scale(${s})`} opacity={Math.min(1, p * 1.5)}>
       <FormGradient id={`${uid}_w`} t={tW} />

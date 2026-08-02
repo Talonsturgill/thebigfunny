@@ -394,19 +394,44 @@ A production designer verifying a plan against the actual `lib/` files, rather
 than against this manifest, found four assets that exist, are registered, have
 correct paths, and cannot do the job they were cast for:
 
-- **`kit.MachineShadow` has no tint or livery prop.** Its colours are module
-  constants plus a hardcoded gradient. "The Institution, re-liveried per
-  episode" is doctrine the code does not implement, and every plan that casts it
-  that way is casting something that cannot be delivered.
-- **`FX.PaperStorm` is hardcoded to 44x60 white rects.** No size, no colour. In
-  a world whose thesis is that a document is furniture, it emits letter-size
-  office paper and contradicts the film.
-- **`paper.Sheet`'s shadow is a fixed 2px edge and a 4-down drop at 22%.** On a
-  sheet filling a third of a 1080x1920 frame that is invisible and the sheet
-  reads as a flat rectangle.
-- **`props.TallyCounter` rolled the ones digit only** (now fixed), so 09 to 10
-  rendered as the ones wheel turning while the tens digit jumped, on the prop
-  that was carrying an episode's entire mechanism.
+**ALL FOUR ARE NOW CLOSED (2026-08-02).** They are kept here because the LESSON
+is the section, not the list, and because a closed gap that nobody records gets
+reopened by the next person who reads the old note.
+
+- **`kit.MachineShadow` had no tint or livery prop.** Its colours were module
+  constants plus a hardcoded three-stop gradient. "The Institution, re-liveried
+  per episode" was doctrine the code did not implement, and the count-room world
+  blocked on exactly this. FIXED: `tint?: string`, derived through
+  `lighting.tones` so the lit face, the body and the shade all move together.
+  Omit it and the graphite monolith renders byte-identical.
+- **`FX.PaperStorm` was hardcoded to 44x60 rects in `#f4efe4`.** No size, no
+  colour. In a world whose thesis is that a document is furniture, it emitted
+  letter-size office paper and contradicted the film. FIXED: `sheetW`, `sheetH`,
+  `paper`, with the rule lines placed as FRACTIONS of the sheet so a docket card
+  or a receipt carries its own ruling. Defaults are the original numbers.
+- **`paper.Sheet`'s shadow was a fixed `x=4 y=6` drop at 22%, independent of `w`
+  and `h`.** On a sheet filling a third of a 1080x1920 frame it was a hairline;
+  at card scale it sat entirely under the sheet and was invisible. The shadow is
+  the only thing making paper read as a solid, and it silently stopped doing
+  that outside one size. FIXED: proportional, with a floor, and a `shadow`
+  override for a shot that wants a harder cast.
+- **`props.TallyCounter` rolled the ones digit only**, so 09 to 10 rendered as
+  the ones wheel turning while the tens digit jumped, on the prop that was
+  carrying an episode's entire mechanism. FIXED.
+
+### SVG ids derived from POSITION, not from the instance
+
+`kit.MachineShadow` built its gradient id as `msLit-${x}-${y}` and
+`kit.SatelliteEye` built its defs as `sat${x}_${y}`. Two instances at the same
+coordinates in one frame therefore shared a definition, and the second silently
+took the first's colours. This is the same class as the ghost-parka bug, where a
+position-derived id had two figures sharing a clip path across every episode
+with two matching characters, and it took a dumped SVG and three wrong guesses
+from reading source to find. Both now use `React.useId()`, which is
+Remotion-deterministic.
+
+**The rule: an SVG id is per INSTANCE, never per position.** Position is not
+identity. Two of a thing in one frame is the normal case in this show.
 
 **So casting an asset means checking its PROPS, not its path.** Before a plan
 says "composes X", open X and confirm the parameter it needs is real. An asset
