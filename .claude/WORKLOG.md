@@ -133,7 +133,7 @@ Everything below is downstream of that sentence.
 | 8 | asset-upgrader agent + kit mandate | DONE |
 | 9 | wire the routine prompt (3.7, 4.2, 4.4, gates, panel, retro) | DONE |
 | 10 | GitHub trending research, folded into this file | DONE |
-| 11 | ship an episode that clears the new gates | TODO |
+| 11 | ship an episode that clears the new gates | IN PROGRESS: dry run cleared 3, 3.7, 4, 4.2, 4.4, 4.5 end to end; count room is on pass 2 with real claims |
 
 ## What the GitHub scan actually returned (2026-08-02)
 

@@ -162,6 +162,29 @@
       "addresses": [
         "button_doesnt_land"
       ]
+    },
+    {
+      "run_date": "2026-08-02",
+      "upgrade": "THE FIRST END-TO-END DRY RUN OF THE NEW ROOMS, and it paid for itself in defects found. Ran Phase 3 -> 3.7 -> 4 -> 4.2 -> 4.4 -> 4.5 against a fixture, then re-ran 3.7 against the real cleared claims. Every phase fired, and every phase found something the phase before it got wrong. Shipped fixes: (1) scripts/coherence_check.py, a new gate catching the plan and the world describing different films, which two agents found independently and no human noticed; it shipped WITH the bug of passing on silence and was fixed the same run. (2) visual_check crashed on a world written as a string instead of an object, which is the shorthand a human writes; a gate that crashes is worse than one that misses because it prints a traceback instead of a report. (3) WORLD_KIT's warning that zero of thirteen primitives are built was one buried line and the producer walked straight into it, budgeting three props for 100 percent new construction; hoisted to the top of the file. (4) A KILL is now a WORK LIST that re-enters an editing loop, per the owner, matching the show's own law that a gate failure ends an attempt and never the run. (5) A reject now names where it goes; the director nearly sent thirteen serviceable lines back to the writers room for a producer's error. (6) Two new retro slugs, beautiful_and_unfunny and artifacts_fork, because the taxonomy could not name a set that is doing everything and still is not funny. (7) Schema fixes in producer, designer, writer and director specs, all found by the agents in their own specs, the most important being beats[].claims, since a beat with no claim binding is a beat nobody can check and that is the exact failure that already cost this show an episode.",
+      "files": [
+        "scripts/coherence_check.py",
+        "scripts/visual_check.py",
+        "scripts/retro.py",
+        "knowledge/WORLD_KIT.md",
+        "knowledge/FIELD_NOTES.md",
+        "prompts/BIGFUNNY_ROUTINE.md",
+        ".claude/agents/producer.md",
+        ".claude/agents/production-designer.md",
+        ".claude/agents/director.md",
+        ".claude/agents/devils-advocate.md",
+        ".claude/agents/writer.md",
+        "knowledge/examples/"
+      ],
+      "verified_by": "Every gate self-tests both directions and every gate verified against an EMPTY document, which is how the coherence bug was caught: story_check, visual_check, coherence_check all exit 1 on empty and on blank-but-present. visual_check verified on real content in both directions: 11 red rows on a talking-heads board, 16 of 16 green on a good one, both kept in knowledge/examples/. retro --check exits 0. refs_check clean, 29 files.",
+      "addresses": [
+        "artifacts_fork",
+        "beautiful_and_unfunny"
+      ]
     }
   ]
 }
