@@ -493,3 +493,31 @@ The corollary, for the file it writes: write it ONCE and complete. A
 half-written `storyboard.json` at the right path is byte-for-byte
 indistinguishable from a finished one, and `build_scenes.py` will derive a scene
 map from it without knowing.
+
+## Editing an agent's frontmatter does not affect the running session (2026-08-02)
+
+Phase 4.4 died because the director had `tools: Read` and could not write the
+board it was asked for. I added `Write` to `.claude/agents/director.md`,
+committed it, and relaunched. **The relaunched agent still had no Write.** It did
+the whole job again, twenty-five minutes of it, and reported the same blocker.
+
+The agent registry is read once, at session start. A frontmatter edit is
+correct, it is durable, and it applies to the NEXT session, not this one. Two
+identical failures for one root cause, and the second one was avoidable.
+
+WHAT TO DO INSTEAD, when a capability is missing mid-run and the work is already
+done: do not relaunch, and do not rewrite the agent's job around the gap. RESUME
+it and change the CHANNEL. A resumed agent still has everything in context, so
+ask for the artifact in numbered chunks, one per reply, and persist each chunk
+yourself. Three round trips beat redoing the thinking, and the chunking also
+happens to fix the original stall, because no single message has to carry the
+whole board.
+
+The general shape, which is worth more than the specific fact: **a config change
+and a runtime change are not the same change.** Committing the config is not
+deploying it. Ask what is loaded RIGHT NOW, not what the file says.
+
+And the corollary that cost the second run: when a fix does not take, the next
+step is to verify the fix took, not to assume the tool was flaky and retry. I
+relaunched on the assumption the first death was a fluke. It was not, and the
+agent told me so precisely and immediately both times.
