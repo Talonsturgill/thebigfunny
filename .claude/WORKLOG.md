@@ -133,7 +133,7 @@ Everything below is downstream of that sentence.
 | 8 | asset-upgrader agent + kit mandate | DONE |
 | 9 | wire the routine prompt (3.7, 4.2, 4.4, gates, panel, retro) | DONE |
 | 10 | GitHub trending research, folded into this file | DONE |
-| 11 | ship an episode that clears the new gates | IN PROGRESS: dry run cleared 3, 3.7, 4, 4.2, 4.5; 4.4 director running on the locked count-room script |
+| 11 | ship an episode that clears the new gates | IN PROGRESS: THE WHOLE CHAIN CLEARS. 3 -> 3.7 -> 4 -> 4.2 -> 4.4 -> 4.5 on real cleared claims. visual_check 18/18 green on first submission: 27 events in 56.0s (28.9/60s against a floor of 18), longest hold 4.0s, 0% talking heads, 3 gags in 3 shots. Remaining: build the 5 new assets, render, panel, ship. |
 | 12 | repo-wide code review, 100% of findings fixed | DONE: 4 critical, 9 high, 17 medium, 13 low. See the FIELD_NOTES entry; every gate self-tests green and mutation-sweeps red. |
 
 ## What the GitHub scan actually returned (2026-08-02)
@@ -225,6 +225,53 @@ did not run reads exactly like a check that passed. Full account in
 Also closed: `run_guard.py` had no callers at all, the four castability gaps
 this manifest had listed open for weeks, and ten SVG ids derived from POSITION
 rather than instance, which is the ghost-parka bug still live in ten components.
+
+## The board, case 0003 (2026-08-02)
+
+18 shots, 0.0 to 56.0, continuous, no gaps. Written by the director agent and
+assembled here in three chunks because the agent had no Write in this session
+(see FIELD_NOTES: an agent frontmatter edit does not reach the running session).
+
+The four things the phase was asked to decide:
+
+1. **The Institution's body: option (i).** CountRoomBG IS the Institution for
+   this case. The MachineShadow tower is NOT stood behind the intake even though
+   `tint` now exists, because a tower through the slot puts something BEHIND the
+   process and this case's thesis is that nothing is. A tapered tower reads as a
+   body and an eye looks for a face on a body. The deviation from CAST_BIBLE's
+   "same silhouette" is bound by building CountRoomBG on MachineShadow's tone
+   triple for its shade and joint values, enamel as livery over them.
+2. **While the machine speaks:** 32.6s the intake lip taking one card, 37.0s
+   DEE'S FACE. Its only line with a reaction shot, and the reaction belongs to
+   the listener. That is where her one `shock` is spent.
+3. **27 events in 56.0s.** Longest hold 4.0s, 0% talking heads, 3 gags in S4,
+   S6, S11, one reveal at 43.4s.
+4. **A doc/gate contradiction it found and ruled on** rather than picking one
+   silently: DIRECTING.md said 12 to 16 events per 60s, visual_check refuses
+   under 18. Ruled for the gate, reported itself amber against the doc. The doc
+   is fixed.
+
+Verdict `board-it`, with one note to the writers room: line 6, "Somebody got
+paid to do that", cannot be illustrated because c6 licenses a failure to
+disclose sources and not a payment, so drawing it would assert an uncleared
+transaction. S6 stages the painted-shut door and the line rides on audio.
+
+**DO NOT CUT, recorded because a later pace pass will want to:**
+- S7 and S8 are ONE move. Highest camera in the film and lowest, back to back,
+  the fall itself as the measurement. Cutting either strands the other.
+- S11 lands the punchline BEFORE the euphemism S12 answers. That order is the
+  joke.
+- S5 is the only true-human-size object in the film. Without it the scale
+  conceit is invisible.
+- S14 is the only still wheel, in the matched framing of second 2.6.
+
+**Five new assets to build and register in the same commit:** CountRoomBG,
+DocketCard, CardChute, VerifyDie, FilingPlate.
+
+**Known and correct:** `build_scenes.py` reports 12 scene boundaries against
+Episode.tsx's 9 SCENE_COMPONENTS. That is the generic path; case 0003 renders
+through Case0003.tsx. The gate reporting the mismatch instead of raising
+KeyError is the 2026-08-02 fix working.
 
 ## Wrap
 
