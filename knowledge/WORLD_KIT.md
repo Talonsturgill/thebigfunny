@@ -3,6 +3,49 @@
 The shelf is a KIT, not a PLACE. Every episode BUILDS the world of its story out
 of parts. It does not go shopping for a location that already exists.
 
+## STOP. NOTHING IN THIS KIT IS BUILT YET. (2026-08-02)
+
+Every primitive named below is a PROP-SHAPE SKETCH. Zero of thirteen exist as
+`.tsx`. `Volume`, `Passage`, `Rotor`, `Piston`, `Conveyor`, `Flow`, `Stack`,
+`Queue`, `Grid`, `Signage`, `Paperwork`, `ScaleFrame` and `WorldRig` are all
+absent from `video-engine/src/lib/`, and ASSET_MANIFEST carries no entry for any
+of them.
+
+This was buried in one line under the primitives heading, and the first dry run
+walked straight into it: the producer budgeted "one new set component and three
+props" for a world that in truth was 100 percent new construction wearing the
+word "cast". A cost that reads as small and is not is worse than no estimate,
+because it converts a two-week decision into an afternoon one.
+
+**So until a build run lands them: a world costs what it costs to BUILD, and
+"cast from the kit" is a claim you must check against `lib/` before you make
+it.** The designer's adjudication is the required move, and it has a real
+answer, because most primitives turn out not to be needed:
+
+- What DOES exist and is genuinely reusable: `lib/draw.ts` (`ribbon`, `band`,
+  `bent`, `spline`, `edge`), `lib/stage3d.tsx` (`Stage3D`, `Plane`, `Extrude`,
+  `Card`, `Atmosphere`, `CastShadow3D`, `CameraMoves`), `lib/paper.tsx`,
+  `lib/kit.tsx`, `lib/props.tsx`, plus lighting, materials, motion and FX.
+- `WorldRig` lighting presets are mostly `NightGrade` with different arguments.
+- `ScaleFrame`'s only real contract is that a size reference is REQUIRED in
+  frame. That is a review rule, enforced at handoff. It is not a component.
+- `Signage` and `Paperwork` already have working stand-ins in `kit.BoxLabel`,
+  `props.SwingSign`, `paper.Sheet` and `PaperFiber`.
+- Note that `stage3d.tsx` has never been wired into the Episode pipeline. First
+  use carries an integration cost that is real and must be budgeted once.
+
+A world that needs a true swept tube surface with the camera inside it is a
+TWO-WEEK WORLD. A ribbon gives a silhouette, not a surface with a UV. Kill such
+a world at the plan, not after a week of building it.
+
+### The ratio ambiguity, resolved
+
+"Ratio 0.06" and "shorter than a postage stamp" are not the same world and the
+first dry run tripped on it. Against a human, 0.06 is 105mm and taller than any
+stamp; against a #10 envelope's long edge, 241mm, it is 14mm and shorter than a
+25mm stamp. **A cast-to-world ratio is measured against the LONG EDGE of the
+object the cast is standing on, never against a person.** State the object.
+
 ## Why this file exists
 
 The art library was ported from `alaska-ai-weekly`, an educational weekly about

@@ -136,6 +136,8 @@ Write `out/dispatch/world.json` and return the same object.
 ```json
 {
   "designable": true,
+  "shippable": false,
+  "blocked_on": ["why this set must not be built, rendered or published yet"],
   "missing_inputs": [],
   "mechanism": {"sentence": "", "claim_ids": []},
   "rejected_worlds": [{"world": "", "killed_because": ""}],
@@ -155,11 +157,16 @@ Write `out/dispatch/world.json` and return the same object.
   },
   "palette": {"key": "", "fill": "", "shade": "", "ink": "", "accent": "", "family": ""},
   "lighting_rig": "one of WORLD_KIT WorldLight",
-  "cast_from_kit": [{"primitive": "", "file": "", "used_as": ""}],
+  "cast_from_kit": [
+    {"primitive": "", "status": "exists|substituted|not_required|NOT_BUILT",
+     "file": "the real path, or null", "substituted_by": "what you used instead",
+     "used_as": ""}
+  ],
   "new_assets": [
     {"name": "", "kind": "set | prop", "file": "", "prop_shape": "", "manifest_line": ""}
   ],
-  "sight_gags": [{"gag": "", "plays_with_sound_off": true, "beat": ""}],
+  "sight_gags": [{"gag": "", "requires_claim_shape": "the claim this gag needs cleared, or null if it asserts nothing",
+     "plays_with_sound_off": true, "beat": ""}],
   "shots": [
     {"beat": 0, "on_screen": "", "camera": "", "world_is_doing": "", "changed_since_last": ""}
   ],
@@ -167,3 +174,17 @@ Write `out/dispatch/world.json` and return the same object.
   "handoff_to_board": ["at most 5 lines the storyboard must honour"]
 }
 ```
+
+## Two rules the first dry run added
+
+**When the producer has already chosen a world, your job is to TEST that choice,
+not to ratify it.** Propose your three and kill two on the record anyway. If you
+think the producer's world is wrong, say so and say why: your dissent is worth
+more to the run than your agreement, and a spec that merely permits testing will
+be read as permitting rubber-stamping by a tired agent at the end of a long run.
+
+**Run divergence against WORLD_KIT's five worked examples, not only against
+`ledger/artwork.json`.** With two entries in the ledger, "differs from the last
+four" is trivially true and certifies nothing. The worked examples are the real
+prior art, and the first dry run's chute was genuinely close to example 3, the
+Pitch Shaft, which no rule asked anybody to check.
