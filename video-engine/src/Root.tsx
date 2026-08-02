@@ -27,6 +27,7 @@ import { FishShowcase } from './FishShowcase';
 import { CityShowcase } from './CityShowcase';
 import { StationLook } from './StationLook';
 import { MaterialShowcase } from './MaterialShowcase';
+import { CastSheet } from './CastSheet';
 import { z } from 'zod';
 
 const standoffSchema = z.object({
@@ -67,6 +68,16 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
         schema={case0003Schema}
         defaultProps={{}}
+      />
+      {/* Character sheet. Look-dev only: a silhouette change is not done until a
+          human has looked at the pixels, and `broad` is the control column. */}
+      <Composition
+        id="CastSheet"
+        component={CastSheet}
+        durationInFrames={90}
+        fps={30}
+        width={1080}
+        height={1920}
       />
       {/* THE BIG FUNNY, case 0001. 57.5s at 30fps = 1725 frames, inside the
           60.0s hard gate with room. */}

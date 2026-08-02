@@ -222,8 +222,22 @@ export const Character: React.FC<CharacterProps> = ({
   // to desync figures; reuse it rather than invent a second hash.
   const blink = ((f + 11 + Math.floor(swayPhase * 13)) % 92) < 5;
   const skinShade = '#c99268';
-  // per-instance ids so each figure's form-shading gradients stay unique in the doc
-  const uid = `ch${Math.round(x)}_${Math.round(y)}_${outfit}_${facing}`;
+  // PER-INSTANCE ids. This USED to be `ch${x}_${y}_${outfit}_${facing}`, which is
+  // not an instance id at all: it is a hash of four props, and two figures that
+  // share them collide. That is not a corner case, it is the NORMAL case, because
+  // scenes position figures with a parent transform and leave x/y at their 0
+  // defaults, so any two figures in the same outfit facing the same way got the
+  // SAME id for all three of their form gradients. In SVG a duplicate id means
+  // first-definition-wins for every reference in the document, so one figure
+  // silently rendered with another figure's jacket gradient. It has been in every
+  // shot with two matching figures and nothing could have caught it: the markup
+  // is valid, the types are fine and every gate stayed green.
+  //
+  // useId is React's actual answer: unique per component INSTANCE, stable across
+  // renders, and deterministic for a given tree, which is what Remotion needs to
+  // render frame N in isolation and get the same picture every time. Colons are
+  // legal in an id but not in a url(#...) reference, so they are stripped.
+  const uid = `ch${React.useId().replace(/:/g, '')}`;
   const tMain = tones(c.main);
   const tSkin = tones(skin);
 
