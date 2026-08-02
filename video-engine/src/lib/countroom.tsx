@@ -79,6 +79,24 @@ export const COUNTROOM = {
   cardShade: '#9C917B',
 } as const;
 
+/**
+ * FIT TEXT TO ITS BOX. The general fix for a defect the proof sheet found twice
+ * in one render: "EVICTION ACTION" ran past the card's right edge and the
+ * filing's caption ran past the plate's.
+ *
+ * Both had the same cause, and it is the kind that recurs forever if you fix it
+ * with a tuned number. The font size was a fraction of the CONTAINER and never a
+ * function of the STRING, so it is correct for whatever text happened to be
+ * there when somebody eyeballed it and wrong for the next string. A case number
+ * one character longer, an institution with a longer name, and it spills.
+ *
+ * Barlow Condensed averages about 0.44 em per character at these weights,
+ * measured off the failing render rather than looked up. Return the size that
+ * fits, capped at the design size so short strings do not balloon.
+ */
+export const fitText = (text: string, boxW: number, designSize: number, em = 0.44) =>
+  Math.min(designSize, boxW / Math.max(1, text.length * em));
+
 /** The card is 2:1, plywood-proportioned. One number, everywhere. */
 export const CARD_ASPECT = 0.5;
 
@@ -176,9 +194,10 @@ export const DocketCard: React.FC<{
         ))}
       </g>
 
-      {/* STRING ONE: the head line. */}
-      <text x={w * 0.07} y={h * 0.17} fontSize={headCap / 0.7} fontWeight={800}
-            fill={INK} letterSpacing={w * 0.004}
+      {/* STRING ONE: the head line. FITTED, never merely scaled. */}
+      <text x={w * 0.07} y={h * 0.17}
+            fontSize={fitText(head, w * 0.86, headCap / 0.7)} fontWeight={800}
+            fill={INK} letterSpacing={w * 0.003}
             style={{fontFamily: 'Barlow Condensed, Impact, sans-serif'}}>
         {head}
       </text>
@@ -187,8 +206,9 @@ export const DocketCard: React.FC<{
           larger than the head line on purpose: it is the string the eye is being
           asked to match card to card, and the gate wants it at 22% or more of
           the long edge. */}
-      <text x={w * 0.07} y={h * 0.325} fontSize={noCap / 0.7} fontWeight={900}
-            fill={INK} letterSpacing={w * 0.008}
+      <text x={w * 0.07} y={h * 0.325}
+            fontSize={fitText(caseNo, w * 0.86, noCap / 0.7)} fontWeight={900}
+            fill={INK} letterSpacing={w * 0.006}
             style={{fontFamily: 'Barlow Condensed, Impact, sans-serif'}}>
         {caseNo}
       </text>
@@ -198,8 +218,9 @@ export const DocketCard: React.FC<{
           which is what makes S16's overhead readable in under a second without a
           line asking the viewer to compare. */}
       {differs && (
-        <text x={w * 0.07} y={h * 0.94} fontSize={(h * 0.135) / 0.7} fontWeight={900}
-              fill={INK} letterSpacing={w * 0.006}
+        <text x={w * 0.07} y={h * 0.94}
+              fontSize={fitText(differs, w * 0.5, (h * 0.135) / 0.7)} fontWeight={900}
+              fill={INK} letterSpacing={w * 0.005}
               style={{fontFamily: 'Barlow Condensed, Impact, sans-serif'}}>
           {differs}
         </text>
@@ -209,6 +230,71 @@ export const DocketCard: React.FC<{
       {L > 0.02 && (
         <RimLight d={`M0,0 L${w},0`} w={w * 0.006} color="#FFF6E2" opacity={0.5 * L} />
       )}
+    </g>
+  );
+};
+
+/**
+ * CardPile — THE ANSWER TO STILL A, and the reason it is a component.
+ *
+ * The first proof render stacked three cards at an 11px offset and produced ONE
+ * card with a thick edge, carrying exactly one case number. The legibility gate
+ * wants at least TWO case numbers visible simultaneously, because that is the
+ * only way a viewer can tell SAME from MANY, and SAME is the entire thesis: the
+ * machine copied one court case, it did not find several.
+ *
+ * The resolution is that FLUSH and READABLE are two different shots, not a
+ * contradiction to be split the difference on:
+ *
+ *   `flush` (the turn, S4) is the gag. Cards land edge-exact so the picture on
+ *   the floor does not change at all, and the only thing that moves in frame is
+ *   the height of the man standing on it.
+ *
+ *   `stacked` (the establishing image, and STILL A) offsets each card by enough
+ *   to expose the PRINTED BAND of the one beneath, so the same string appears
+ *   again and again down the pile at the same offset within each card. Eight
+ *   repetitions of one string is a pattern. Eight different documents is a mess.
+ *   The eye can tell those apart instantly and no caption is needed.
+ *
+ * `reveal` is the fraction of a card's height that the next one leaves showing.
+ * Below about 0.34 the case number is clipped and the pile silently goes back to
+ * failing the gate, so it is floored rather than trusted to a caller.
+ */
+export const CardPile: React.FC<{
+  x: number; y: number; w: number;
+  count?: number;
+  mode?: 'flush' | 'stacked';
+  head?: string;
+  caseNo?: string;
+  /** Fraction of card height left showing. Floored at the legible minimum. */
+  reveal?: number;
+  light?: number;
+}> = ({
+  x, y, w, count = 3, mode = 'stacked',
+  head = 'EVICTION ACTION', caseNo = 'C-2026-4417', reveal = 0.42, light = 0.9,
+}) => {
+  const h = w * CARD_ASPECT;
+  // The printed band runs to 0.34 of the card height. Anything tighter clips the
+  // case number, which is the one string the whole gate is about.
+  const step = mode === 'flush' ? w * 0.018 : h * Math.max(0.36, reveal);
+  return (
+    <g>
+      {/* Bottom card first, so each one laps over the one beneath and the pile
+          reads as a stack rather than as a fan. */}
+      {Array.from({length: count}).map((_, i) => {
+        const k = count - 1 - i;
+        return (
+          <DocketCard
+            key={k}
+            x={x}
+            y={y - k * step}
+            w={w}
+            head={head}
+            caseNo={caseNo}
+            light={Math.max(0.35, light - k * 0.06)}
+          />
+        );
+      })}
     </g>
   );
 };
@@ -341,19 +427,24 @@ export const VerifyDie: React.FC<{
           <stop offset="100%" stopColor={COUNTROOM.brassLo} />
         </linearGradient>
       </defs>
-      {/* THE EMBOSS, which stays. Drawn first, under the die, and it does not
-          fade: nothing in this room is ever corrected. */}
+      {/* THE EMBOSS, which stays. It does not fade, because nothing in this room
+          is ever corrected.
+          
+          IT SITS BELOW THE DIE'S TRAVEL, which the first proof render got wrong:
+          the emboss was centred under the die face, so at press the block landed
+          on top of it and VERIFIED rendered as "VI....D". A die that hides its
+          own impression is a brass rectangle. The impression is offset clear of
+          the block and the type is FITTED, so a longer label cannot spill. */}
       {p > 0.3 && (
-        <g opacity={Math.min(1, (p - 0.3) * 5)}>
-          <text x={w * 0.5} y={h * 2.02} textAnchor="middle"
-                fontSize={w * 0.3} fontWeight={900} fill={COUNTROOM.cardShade}
-                letterSpacing={w * 0.02}
+        <g opacity={Math.min(1, (p - 0.3) * 5)}
+           transform={`translate(${w * 1.22},${h * 1.02})`}>
+          <text x={0} y={2} fontSize={fitText(label, w * 1.5, w * 0.3)} fontWeight={900}
+                fill={COUNTROOM.cardShade} letterSpacing={w * 0.012}
                 style={{fontFamily: 'Barlow Condensed, Impact, sans-serif'}}>
             {label}
           </text>
-          <text x={w * 0.5} y={h * 2.0} textAnchor="middle"
-                fontSize={w * 0.3} fontWeight={900} fill="#FFFDF6" opacity={0.7}
-                letterSpacing={w * 0.02}
+          <text x={0} y={0} fontSize={fitText(label, w * 1.5, w * 0.3)} fontWeight={900}
+                fill="#FFFDF6" opacity={0.72} letterSpacing={w * 0.012}
                 style={{fontFamily: 'Barlow Condensed, Impact, sans-serif'}}>
             {label}
           </text>
@@ -584,7 +675,8 @@ export const FilingPlate: React.FC<{
             fill={COUNTROOM.card} stroke={INK} strokeWidth={w * 0.006} />
 
       {/* The caption, the only thing set large. */}
-      <text x={w * 0.11} y={h * 0.2} fontSize={w * 0.052} fontWeight={900} fill={INK}
+      <text x={w * 0.11} y={h * 0.2}
+            fontSize={fitText(caption, w * 0.78, w * 0.052)} fontWeight={900} fill={INK}
             letterSpacing={w * 0.002}
             style={{fontFamily: 'Barlow Condensed, Impact, sans-serif'}}>
         {caption}
@@ -605,7 +697,8 @@ export const FilingPlate: React.FC<{
               fill="#F2D45A" opacity={0.62}
               transform={`rotate(-0.5 ${w * 0.105} ${h * 0.484})`} />
       )}
-      <text x={w * 0.11} y={h * 0.503} fontSize={w * 0.034} fontWeight={700} fill={INK}
+      <text x={w * 0.11} y={h * 0.503}
+            fontSize={fitText(line, w * 0.72, w * 0.034)} fontWeight={700} fill={INK}
             style={{fontFamily: 'Barlow Condensed, Impact, sans-serif'}}>
         {line}
       </text>

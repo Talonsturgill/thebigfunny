@@ -33,7 +33,7 @@
  */
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame} from 'remotion';
-import {CountRoomBG, DocketCard, CardChute, VerifyDie, FilingPlate, COUNTROOM, CAST_TO_CARD} from './lib/countroom';
+import {CountRoomBG, DocketCard, CardPile, CardChute, VerifyDie, FilingPlate, COUNTROOM, CAST_TO_CARD, CARD_ASPECT} from './lib/countroom';
 import {Ray, Dee} from './lib/cast';
 import {TallyCounter} from './lib/props';
 
@@ -57,40 +57,58 @@ export const CountRoomSheet: React.FC = () => {
     <AbsoluteFill style={{background: '#0A0D14'}}>
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
         {/* ---- PANEL 1: the set, full bleed, with the cast at real scale ---- */}
-        <CountRoomBG f={f} w={W} h={H} light={1} pile={0.55} intake={0.4} panel={0} />
+        <CountRoomBG f={f} w={W} h={H} light={1} pile={0.85} intake={0.4} panel={0} />
 
         {/* The odometer, cast into the boss. The count may only ever show the
             number of cards visible in the same frame: this is the ALLEGED guard
             drawn rather than written down, so the wheel captions the picture and
             asserts nothing beyond it. Three cards below, so the wheel reads 3. */}
+        {/* THE ODOMETER, IN its boss. Two measurements off the failing render,
+            neither of them guessable: CountRoomBG mounts the boss at h*0.42 and
+            not at the sheet's own guess of h*0.52, and TallyCounter draws from
+            its x as a LEFT EDGE rather than from its centre. */}
         <g transform={`translate(${W * 0.5},${H * 0.42})`}>
-          <TallyCounter x={-92} y={-34} s={0.62} f={f} variant="odometer" count="0003" />
+          <TallyCounter x={-62} y={-22} s={0.78} f={f} variant="odometer" count="0004" />
         </g>
 
-        {/* THE PILE. Three cards landed dead flush, edges exactly aligned, which
-            is the entire gag: the picture on the floor does not change, and the
-            only thing that moves is the height of the man standing on it. */}
-        {[0, 1, 2].map((i) => (
-          <DocketCard
-            key={i}
-            x={W * 0.5 - CARD_W / 2}
-            y={H * 0.80 - i * (CARD_W * 0.018)}
-            w={CARD_W}
-            head="EVICTION ACTION"
-            caseNo="C-2026-4417"
-            light={0.85 - i * 0.05}
-          />
-        ))}
+        {/* THE PILE, in `stacked` mode, which is STILL A.
+            
+            The first render of this sheet put three cards at an 11px offset and
+            produced ONE card with a thick edge and exactly one case number. The
+            gate wants TWO numbers visible at once, because that is the only way
+            an eye can tell SAME from MANY, and SAME is the whole thesis: the
+            machine copied one court case, it did not find several. */}
+        <CardPile x={W * 0.5 - CARD_W / 2} y={H * 0.80} w={CARD_W} count={4}
+                  mode="stacked" head="EVICTION ACTION" caseNo="C-2026-4417" />
 
-        {/* The cast at the size law: crown at 0.72 of a card's long edge. */}
-        <g transform={`translate(${W * 0.22},${H * 0.79}) scale(${(CARD_W * CAST_TO_CARD) / 680})`}>
-          <Ray frame={f} emotion="angry" pose="arms-crossed" />
-        </g>
-        <g transform={`translate(${W * 0.78},${H * 0.79}) scale(${(CARD_W * CAST_TO_CARD) / 680})`}>
-          <Dee frame={f} emotion="flat" pose="stand" />
-        </g>
+        {/* THE CAST AT THE SIZE LAW: crown at 0.72 of a card's long edge.
+        
+            FIGURE'S ORIGIN IS THE CROWN, NOT THE FEET. lib/Figure.tsx line 59:
+            Y = {crown: 0, ... ground: 680}, so it draws DOWNWARD from its own
+            origin and a full body is 680 local units tall.
+            
+            The first render of this sheet assumed a -440..+10 bbox, which is
+            Character's, the retired crowd rig, and put both of them off the
+            bottom of frame with only their heads showing. Measured, not read:
+            k = wanted crown height / 680, and the translate is the GROUND line
+            minus that height so the feet land on the tile. */}
+        {(() => {
+          const crown = CARD_W * CAST_TO_CARD;      // 446px at CARD_W 620
+          const k = crown / 680;
+          const ground = H * 0.955;
+          return (
+            <>
+              <g transform={`translate(${W * 0.135},${ground - crown}) scale(${k})`}>
+                <Ray frame={f} emotion="angry" pose="arms-crossed" />
+              </g>
+              <g transform={`translate(${W * 0.875},${ground - crown}) scale(${k})`}>
+                <Dee frame={f} emotion="flat" pose="stand" />
+              </g>
+            </>
+          );
+        })()}
 
-        <Label x={28} y={44} text="1. THE SET, cast at the size law: one court case is 1.39x a man" />
+        <Label x={28} y={44} text="1. THE SET. Four cards, four case numbers, one man 0.72 of a card" />
       </svg>
     </AbsoluteFill>
   );
@@ -120,10 +138,13 @@ export const CountRoomProps: React.FC = () => {
         <CardChute f={f} x={60} y={470} w={420} state="running" emit={0.55} />
         <CardChute f={f} x={580} y={470} w={420} state="plated" open={0} />
 
-        <Label x={28} y={900} text="4. THE DIE. A die presses IN; a stamp puts ink ON." />
-        <VerifyDie x={120} y={950} w={220} press={0.5} />
-        <DocketCard x={420} y={1000} w={520} head="EVICTION ACTION" caseNo="C-2026-4417"
+        <Label x={28} y={900} text="4. THE DIE, pressing a card. A die presses IN; a stamp puts ink ON." />
+        {/* The die has to be ON the card it embosses. The first render floated it
+            beside one, and worse, centred the emboss under the block so VERIFIED
+            rendered as "VI....D": a die hiding its own impression. */}
+        <DocketCard x={60} y={950} w={620} head="EVICTION ACTION" caseNo="C-2026-4417"
                     light={0.95} />
+        <VerifyDie x={110} y={1075} w={150} press={0.5} />
 
         <Label x={28} y={1320} text="5. THE BUTTON. ALLEGED is on by default." />
         <g transform="translate(180,1330) scale(0.36)">
