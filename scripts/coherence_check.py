@@ -50,11 +50,33 @@ STOP = {
     "then", "into", "out", "up", "down", "over", "one", "two", "their", "them",
     "they", "he", "she", "his", "her", "not", "no", "but", "so", "which",
 }
+
+# HOUSE-STYLE VOCABULARY, excluded from every comparison.
+#
+# Caught on the gate's second live run: the BUTTON row PASSED on the shared
+# words ['filling', 'flat', 'frame', 'mark', 'plate'] while the plan described a
+# count room and the world described a mail chute. Two completely different
+# films matched, because EVERY episode of this show ends on a flat plate filling
+# frame with one red mark on it. That is the brand's button format, so it is
+# shared by construction and proves nothing.
+#
+# These words describe HOW a thing is shot. The test is about WHAT the thing IS,
+# and a similarity test that matches on house style will pass any two documents
+# this studio ever produces.
+HOUSE = {
+    "flat", "plate", "frame", "filling", "fills", "mark", "stamp", "red",
+    "legible", "held", "hold", "holds", "camera", "shot", "close", "wide",
+    "macro", "locked", "cut", "cuts", "screen", "image", "picture", "viewer",
+    "sees", "beat", "second", "seconds", "shows", "show", "square", "off",
+    "single", "only", "first", "last", "final", "under", "above", "beside",
+    "behind", "across", "through", "past", "between", "against", "around",
+}
 MIN_SHARED = 2
 
 
 def words(t):
-    return {w for w in re.findall(r"[a-z]{3,}", str(t).lower()) if w not in STOP}
+    return {w for w in re.findall(r"[a-z]{3,}", str(t).lower())
+            if w not in STOP and w not in HOUSE}
 
 
 def load(path):
@@ -247,6 +269,13 @@ def self_test():
          good_plan,
          dict(good_world, the_button={"image":
               "a receipt filling frame with the brand stamp landing on it"})),
+        # THE SECOND LIVE-RUN BUG. Two different films, endings that share only
+        # the brand's button format, which every episode has by construction.
+        ("catches: endings matching only on house style", ["THE BUTTON"],
+         dict(good_plan, the_button={"image":
+              "flat plate filling frame, the notice legible, one red stamp mark off-square"}),
+         dict(good_world, the_button={"image":
+              "flat plate filling frame, the receipt legible, one red stamp mark off-square"})),
         ("catches: two different worlds", ["SAME world"],
          good_plan, dict(good_world, world={"name": "a municipal swimming pool"})),
         ("catches: a prop the plan needs and the world dropped", ["silently dropped"],
