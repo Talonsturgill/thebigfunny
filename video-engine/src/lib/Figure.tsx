@@ -98,7 +98,7 @@ const SPEC: Record<Sex, Spec> = {
     // a caricature, and silhouette is the one place caricature is right.
     shoulder: 144, bust: 154, underbust: 108, waist: 90, upperHip: 146, hip: 168,
     neckW: 33,                       // 0.50 of head width
-    armW: [37, 28, 20], legW: [72, 45, 27],
+    armW: [37, 28, 20], legW: [78, 41, 51, 22],
     shoulderJoint: 66, hipJoint: 32,
     // Palpebral fissure LENGTH is not dimorphic (2.71 vs 2.73 cm, ns). What
     // differs is roundness and tilt, so the eye is not enlarged here; the face
@@ -114,7 +114,7 @@ const SPEC: Record<Sex, Spec> = {
     // no flare at the bottom: a V that widens again at the hip reads as a gut.
     shoulder: 211, bust: 194, underbust: 156, waist: 132, upperHip: 142, hip: 145,
     neckW: 45,                       // 0.65 of head width
-    armW: [56, 42, 29], legW: [84, 55, 34],
+    armW: [56, 42, 29], legW: [90, 50, 62, 29],
     shoulderJoint: 88, hipJoint: 30,
     eyeRx: 9.2, eyeRy: 3.7, eyeX: 18, tilt: 3,
     browGap: 8.5, browW: 4.4,        // neat and CLEAR of the eye, not a shelf over it
@@ -279,9 +279,12 @@ export const Figure: React.FC<FigureProps> = ({
     const hipX = side * s.hipJoint + shift * 0.5 + (weight ? -1 : 2);
     const kneeX = side * (s.hipJoint + (weight ? 3 : -5));
     const ankleX = side * (s.hipJoint + (weight ? 1 : 9));
+    const kneeY = Y.knee + (weight ? 0 : -6);
     return [
       [hipX, Y.hip - 10 + (weight ? -hipTilt : hipTilt)],
-      [kneeX, Y.knee + (weight ? 0 : -6)],
+      [kneeX, kneeY],
+      // calf belly, a third of the way down the shin
+      [kneeX + side * (weight ? 3 : 4), kneeY + (Y.ankle - kneeY) * 0.34],
       [ankleX, Y.ankle],
     ];
   };
@@ -420,8 +423,8 @@ export const Figure: React.FC<FigureProps> = ({
           of things being in front of other things. */}
       <Limb spine={legSpine(1)} w={s.legW} fill={INK} shadow />
       <Limb spine={legSpine(-1)} w={s.legW} fill={INK} />
-      <Foot at={legSpine(1)[2]} side={1} col={wear.accent ?? INK} heel={garment === 'skirt'} shadow />
-      <Foot at={legSpine(-1)[2]} side={-1} col={wear.accent ?? INK} heel={garment === 'skirt'} />
+      <Foot at={legSpine(1)[3]} side={1} col={wear.accent ?? INK} heel={garment === 'skirt'} shadow />
+      <Foot at={legSpine(-1)[3]} side={-1} col={wear.accent ?? INK} heel={garment === 'skirt'} />
 
       {/* FAR ARM behind the torso, near arm in front of it. */}
       <Limb spine={armSpine(1)} w={s.armW} fill={INK} shadow />
@@ -522,8 +525,8 @@ export const Figure: React.FC<FigureProps> = ({
           of things being in front of other things. */}
       <Limb spine={legSpine(1)} w={s.legW} fill={garment === 'skirt' ? `url(#${uid}_skin)` : wear.bottom} shadow />
       <Limb spine={legSpine(-1)} w={s.legW} fill={garment === 'skirt' ? `url(#${uid}_skin)` : wear.bottom} />
-      <Foot at={legSpine(1)[2]} side={1} col={wear.accent ?? INK} heel={garment === 'skirt'} shadow />
-      <Foot at={legSpine(-1)[2]} side={-1} col={wear.accent ?? INK} heel={garment === 'skirt'} />
+      <Foot at={legSpine(1)[3]} side={1} col={wear.accent ?? INK} heel={garment === 'skirt'} shadow />
+      <Foot at={legSpine(-1)[3]} side={-1} col={wear.accent ?? INK} heel={garment === 'skirt'} />
 
       {/* FAR ARM behind the torso, near arm in front of it. */}
       <Limb spine={armSpine(1)} w={s.armW} fill={`url(#${uid}_skin)`} shadow />

@@ -43,7 +43,7 @@ type CastProps = Omit<FigureProps, 'sex' | 'skin' | 'hair' | 'eyes' | 'wear' | '
  * cold rectilinear bulk instead of echoing it.
  */
 export const RAY = {
-  skin: '#f0c4a0',
+  skin: '#dda274',
   hair: '#3a2418',
   eyes: '#4a6f57',
   wear: {top: '#4a7fa3', bottom: '#2f3a52', accent: '#3a3128'},
@@ -79,7 +79,7 @@ export const Ray: React.FC<CastProps> = ({
  * never did.
  */
 export const DEE = {
-  skin: '#eec2a2',
+  skin: '#e3ac7e',
   hair: '#26191c',
   eyes: '#3b5f7a',
   wear: {top: '#a8355a', bottom: '#7a2440', accent: '#e6d9c4'},
