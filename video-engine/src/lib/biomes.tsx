@@ -983,3 +983,157 @@ export const AnchorageSkylineBG: React.FC<{
     </svg>
   );
 };
+
+// ===========================================================================
+// StairwellBG — NET-NEW 2026-08-02 (case 0003, the-landlord beat).
+//
+// WHY IT EXISTS. The shelf had no housing interior at all: PaperOfficeBG is a
+// records room and every other biome is Alaska landscape or an exterior street.
+// `the-landlord` is a STANDING beat, so the gap was real and will recur.
+//
+// WHY A STAIRWELL AND NOT A CORRIDOR. ledger/artwork.json forbids repeating a
+// hero structure from the last four episodes. Case 0001 was a flat-on interior
+// wall and case 0002 was a one-point horizontal recession to a vanishing point;
+// a corridor of receding doors is case 0002's structure wearing a hat. So the
+// emphasis here is VERTICAL: the shaft climbs away behind the pair, the light
+// falls DOWN it from a skylight, and the recession is up rather than back. It
+// also keeps the cast near the camera and large, which matters now that faces
+// carry the performance.
+//
+// This is the place you stand when you have been let into the building but not
+// into the apartment.
+//
+//   f       frame
+//   light   0..1 how hard the skylight bars fall (default 0.8)
+//   doorNo  the number on the landing door. The episode's edge-tease.
+// ===========================================================================
+export const StairwellBG: React.FC<{f: number; light?: number; doorNo?: string}> = ({
+  f, light = 0.8, doorNo = '4C',
+}) => {
+  const L = Math.max(0, Math.min(1, light));
+  const INKC = '#1b1b22';
+  const WALL = '#8f9a86';        // putty green, the colour of every rented hallway
+  const WALL_D = '#6d7767';
+  const WALL_L = '#a7b09c';
+  const DOOR = '#7a2f2c';        // oxblood
+  const DOOR_D = '#5c211f';
+  const BRASS = '#c9a24a';
+  const drift = Math.sin(f / 90) * 5;
+
+  // one flight of stairs climbing to the right, drawn as a stepped silhouette
+  // A staircase seen from the side is a stepped TOP over a DIAGONAL soffit that
+  // runs parallel to the nosings. Closing it with a flat bottom (as pass 1 did)
+  // makes a wedge whose top zigzags and whose base is level, which reads as a
+  // jagged mountain rather than stairs. Verified by rendering a still.
+  const flight = (x0: number, y0: number, w: number, h: number, steps: number, dir: number) => {
+    const sw = w / steps, sh = h / steps;
+    const th = sh * 1.5;                       // soffit thickness
+    let d = `M${x0},${y0}`;
+    for (let i = 0; i < steps; i++) d += ` v${-sh} h${dir * sw}`;
+    d += ` v${th} L${x0},${y0 + th} Z`;        // diagonal underside back to the start
+    return d;
+  };
+
+  /** Rail + posts riding the nosing line of a flight, so it is attached to
+   *  something instead of floating diagonally in space. */
+  const rail = (x0: number, y0: number, w: number, h: number, dir: number, op = 1) => {
+    const rise = 92;
+    const x1 = x0 + dir * w, y1 = y0 - h;
+    const posts = [0, 0.34, 0.68, 1];
+    return (
+      <g opacity={op}>
+        {posts.map((u, i) => (
+          <line key={i}
+                x1={x0 + (x1 - x0) * u} y1={y0 + (y1 - y0) * u}
+                x2={x0 + (x1 - x0) * u} y2={y0 + (y1 - y0) * u - rise}
+                stroke={INKC} strokeWidth={5} strokeLinecap="round" opacity={0.75} />
+        ))}
+        <line x1={x0} y1={y0 - rise} x2={x1} y2={y1 - rise}
+              stroke={BRASS} strokeWidth={10} strokeLinecap="round" />
+        <line x1={x0} y1={y0 - rise} x2={x1} y2={y1 - rise}
+              stroke={INKC} strokeWidth={2.6} opacity={0.35} strokeLinecap="round" />
+      </g>
+    );
+  };
+
+  return (
+    <g>
+      <defs>
+        <linearGradient id="sw_wall" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={WALL_L} />
+          <stop offset="55%" stopColor={WALL} />
+          <stop offset="100%" stopColor={WALL_D} />
+        </linearGradient>
+        <linearGradient id="sw_shaft" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#e8e2c8" stopOpacity={0.9 * L} />
+          <stop offset="100%" stopColor="#e8e2c8" stopOpacity={0} />
+        </linearGradient>
+        <linearGradient id="sw_door" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor={DOOR} />
+          <stop offset="70%" stopColor={DOOR_D} />
+        </linearGradient>
+      </defs>
+
+      <rect x={0} y={0} width={1080} height={1920} fill="url(#sw_wall)" />
+
+      {/* the shaft: the ceiling opens and the light comes DOWN it */}
+      <path d="M250,0 L830,0 L760,690 L320,690 Z" fill="#5f6a5b" />
+      <path d="M250,0 L830,0 L760,690 L320,690 Z" fill="url(#sw_shaft)" />
+      {/* skylight frame at the top of the shaft */}
+      <g opacity={0.9}>
+        <rect x={352} y={-6} width={376} height={54} fill="#cfd6c4" stroke={INKC} strokeWidth={7} />
+        <line x1={540} y1={-6} x2={540} y2={48} stroke={INKC} strokeWidth={6} />
+      </g>
+
+      {/* hard light bars falling down the shaft onto the landing */}
+      <g opacity={0.5 * L}>
+        <path d={`M372,40 L${470 + drift},1180 L${610 + drift},1180 L520,40 Z`} fill="#fff3cf" />
+        <path d={`M624,40 L${742 + drift},1180 L${812 + drift},1180 L700,40 Z`} fill="#fff3cf" opacity={0.7} />
+      </g>
+
+      {/* flights climbing away behind the landing, with a brass rail */}
+      <g>
+        <path d={flight(286, 700, 330, 286, 8, 1)} fill={WALL_D} stroke={INKC} strokeWidth={6} strokeLinejoin="round" />
+        {rail(286, 700, 330, 286, 1)}
+        <path d={flight(1010, 660, 250, 216, 6, -1)} fill="#5f6a5b" stroke={INKC} strokeWidth={6} strokeLinejoin="round" />
+        {rail(1010, 660, 250, 216, -1, 0.6)}
+      </g>
+
+      {/* the landing floor */}
+      <rect x={0} y={1180} width={1080} height={740} fill="#6a6f60" />
+      <rect x={0} y={1180} width={1080} height={22} fill={INKC} opacity={0.35} />
+      {/* worn tile grid, perspective-free: this floor is FLAT to camera on purpose */}
+      <g opacity={0.16} stroke={INKC} strokeWidth={3}>
+        {[0, 1, 2, 3, 4, 5].map((i) => <line key={i} x1={0} y1={1260 + i * 118} x2={1080} y2={1260 + i * 118} />)}
+        {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => <line key={`v${i}`} x1={70 + i * 140} y1={1180} x2={70 + i * 140} y2={1920} />)}
+      </g>
+
+      {/* THE DOOR. Rectilinear, shut, and it is the thing the episode is about. */}
+      <g>
+        <rect x={624} y={706} width={330} height={492} fill="url(#sw_door)" stroke={INKC} strokeWidth={9} />
+        <rect x={652} y={738} width={124} height={196} fill="none" stroke={INKC} strokeWidth={6} opacity={0.55} />
+        <rect x={802} y={738} width={124} height={196} fill="none" stroke={INKC} strokeWidth={6} opacity={0.55} />
+        <rect x={652} y={966} width={124} height={198} fill="none" stroke={INKC} strokeWidth={6} opacity={0.55} />
+        <rect x={802} y={966} width={124} height={198} fill="none" stroke={INKC} strokeWidth={6} opacity={0.55} />
+        <circle cx={648} cy={962} r={15} fill={BRASS} stroke={INKC} strokeWidth={5} />
+        <circle cx={789} cy={790} r={9} fill="#2a2a30" stroke={BRASS} strokeWidth={4} />
+        {/* the number. The edge-tease continuity device points at the NEXT one. */}
+        <rect x={742} y={676} width={96} height={44} fill="#d8d2bd" stroke={INKC} strokeWidth={5} />
+        <text x={790} y={710} textAnchor="middle" fill={INKC}
+              style={{font: '800 30px Arial Black, DejaVu Sans, sans-serif', letterSpacing: '2px'}}>{doorNo}</text>
+      </g>
+
+      {/* baseboard + the wall/floor contact, so the pair have something to stand ON */}
+      <rect x={0} y={1150} width={1080} height={34} fill={WALL_D} stroke={INKC} strokeWidth={5} />
+
+      {/* dust in the light: the second disjoint motion region */}
+      <g opacity={0.5 * L}>
+        {Array.from({length: 22}).map((_, i) => {
+          const px = 380 + ((i * 137) % 380) + drift * (0.4 + (i % 3) * 0.3);
+          const py = 120 + ((i * 311 + f * (0.6 + (i % 4) * 0.25)) % 1040);
+          return <circle key={i} cx={px} cy={py} r={2 + (i % 3)} fill="#fff8e2" opacity={0.5} />;
+        })}
+      </g>
+    </g>
+  );
+};
