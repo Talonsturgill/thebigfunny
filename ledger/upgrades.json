@@ -15,23 +15,33 @@
     {
       "run_date": "2026-08-02",
       "upgrade": "scripts/script_check.py: Gate 0's mechanical half. Hard-fails a dangling claim-id, a line citing a CUT claim, Ray gone longer than one whole beat, and Ray absent from the middle third.",
-      "files": ["scripts/script_check.py", "prompts/BIGFUNNY_ROUTINE.md"],
+      "files": [
+        "scripts/script_check.py",
+        "prompts/BIGFUNNY_ROUTINE.md"
+      ],
       "verified_by": "python3 scripts/script_check.py --self-test -> exit 0, all 6 cases ok. Each guard broken in turn on a patched copy (MAX_RAY_GAP_S=999, NOT_USABLE=(), inside=[1], dangling=[]) -> exit 1 'THE GATE IS WRONG' every time, and the case naming that guard is the one that goes red. Against the real artifacts: runs/2026-08-01/script.json exit 0 (longest Ray silence 11.4s), runs/2026-08-02/script.json exit 1 (longest silence 27.9s from 9.5s, NONE in 17.7-35.4s), which is the defect the flow critic and the scorer found after a full render.",
-      "commit": "pending: the upgrade(2026-08-02) commit on upgrade/2026-08-02"
+      "commit": "f02c0e1"
     },
     {
       "run_date": "2026-08-02",
       "upgrade": "scripts/render.sh: the composition default was hardcoded Case0001, so the routine's own documented 'render.sh draft' would have rendered the PREVIOUS episode and passed every objective gate. It now derives the highest-numbered CaseNNNN from Root.tsx, prints the choice and the reason for it, and fails loudly on an unregistered comp.",
-      "files": ["scripts/render.sh", "prompts/BIGFUNNY_ROUTINE.md"],
+      "files": [
+        "scripts/render.sh",
+        "prompts/BIGFUNNY_ROUTINE.md"
+      ],
       "verified_by": "bash scripts/render.sh --self-test -> exit 0, 7 cases (newest-case resolution, single-case, BIGFUNNY_COMP override, argument override, no-case-registered fails loudly, unregistered comp fails loudly, real Root.tsx resolves Case0002). Reintroduced the bug in place (c=\"Case0001\") -> 'FAIL picks the NEWEST case ... wanted Case0003, got Case0001', exit 1, then restored byte-identical. End to end: 'bash scripts/render.sh still 900 \"\" out.png --draft' with no comp printed 'composition Case0002 [default: highest CaseNNNN in src/Root.tsx]' and rendered a 692KB frame stamped CASE No. 0002; the same frame forced to Case0001 rendered 257KB of different art. Frame inspected, not just the exit code.",
-      "commit": "pending: the upgrade(2026-08-02) commit on upgrade/2026-08-02"
+      "commit": "f02c0e1"
     },
     {
       "run_date": "2026-08-02",
       "upgrade": "The routine now describes BOTH build paths (self-timed CaseNNNN vs Episode.tsx plus build_scenes.py props) and mandates vo_cast.py --fit before synthesis; vo_cast's own 'next:' line stopped printing the props path as if it were the only one.",
-      "files": ["prompts/BIGFUNNY_ROUTINE.md", "scripts/vo_cast.py", "knowledge/FIELD_NOTES.md"],
+      "files": [
+        "prompts/BIGFUNNY_ROUTINE.md",
+        "scripts/vo_cast.py",
+        "knowledge/FIELD_NOTES.md"
+      ],
       "verified_by": "The claims the text makes were run, not read. render.sh omits --props with no episode_props.json present (still 900 rendered clean). build_scenes.py guards still fire on the path it now documents: a 62.0s VO fixture -> 'FAIL sixty_seconds ... 63.50s', SCENE_START_LINE 7 vs Episode.tsx SCENE_COMPONENTS 9 -> 'FAIL scene_count', and a 9-entry patch of the same input -> exit 0, 1245f. python3 scripts/refs_check.py -> exit 0, 23 files, every referenced path exists. python3 scripts/vo_cast.py --self-test -> exit 0.",
-      "commit": "pending: the upgrade(2026-08-02) commit on upgrade/2026-08-02"
+      "commit": "f02c0e1"
     }
   ]
 }
