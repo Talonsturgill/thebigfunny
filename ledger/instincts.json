@@ -35,6 +35,29 @@
         "Render a still at Gate 0, before writing the rest of the composition.",
         "Give Ray and Dee more of the frame; the two-shot leaves dead space in the middle third."
       ]
+    },
+    {
+      "run_date": "2026-08-02",
+      "case": 2,
+      "shipped": true,
+      "weighted_score": 79.65,
+      "what_landed": [
+        "The fact gate earned its keep again: it killed google-play outright because the angle WAS the change and the change could not be dated. Two for two on the gate killing a story rather than a run.",
+        "Gate 0 caught a board that would have taught viewers a false thing (a lone '28 SPEAKERS' badge reads as a callout on the broken part). Fixing it before a frame rendered cost nothing.",
+        "The button scored highest of any criterion (87). Two federal records at identical weight, one stamp, the verbatim sentence, and Ray losing while holding the letter."
+      ],
+      "what_did_not": [
+        "The angle type was declared 'ratio' but the ratio is the inert half. The claims file forbids subtracting the counts, so the taxonomy's promise that the viewer does the math never cashes out. Two critics converged on the spine being misplaced.",
+        "Ray was silent for 27.9 seconds and physically out of frame for the entire ratio beat, in a show whose premise is Ray finding out. The cast bible names t20-40 'Ray finds out. The show.'",
+        "Eight of eleven frames were the same head-on eye-level camera varying only in scale. The one deliberate camera move was called the poster frame, which proves the engine can stage and makes the rest a choice.",
+        "Dee held one pose for her entire performance and never held the document the cast bible assigns her."
+      ],
+      "would_do_differently": "Pick the spine by asking which single VERIFIED fact is funniest, then build the episode to arrive at it, rather than picking an angle TYPE first and fitting facts to it. Here the funniest fact (the fix exists only for the 28-speaker version) was demoted to the fourth item in a data block because the declared type wanted two counts placed side by side.",
+      "machine_lessons": [
+        "Measured TTS delivery is 1.85-2.81 w/s and varies BY LINE; the static check assumed 3.6. Guessing a rate does not converge. Measure, cache, then place.",
+        "A gate that fails for the wrong reason is worse than no gate: mux_and_verify used a filter the vendored ffmpeg does not ship, so its documented fallback could never pass.",
+        "Manifest drift bit again, on the one asset the show cannot ship without."
+      ]
     }
   ]
 }

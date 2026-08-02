@@ -1,0 +1,28 @@
+{
+  "case": 2,
+  "run_date": "2026-08-02",
+  "ship": true,
+  "weighted_score": 79.65,
+  "ship_threshold": 78,
+  "arithmetic": "funny 76 x0.35=26.60 | angle 79 x0.25=19.75 | ray 83 x0.15=12.45 | craft 81 x0.15=12.15 | button 87 x0.10=8.70 => 79.65",
+  "criteria": {
+    "funny": 76,
+    "angle": 79,
+    "ray": 83,
+    "craft": 81,
+    "button": 87
+  },
+  "hard_gates": {
+    "sourced": "PASS",
+    "sixty_seconds": "PASS",
+    "punch_direction": "PASS",
+    "platform_survivable": "PASS",
+    "not_partisan": "PASS",
+    "institution_faceless": "PASS",
+    "variety": "PASS",
+    "renders_clean": "PASS"
+  },
+  "margin": "clears by 1.65. A thin pass, not comfort.",
+  "carry_forward": "Rebuild the spine on the 28-speaker sorting key instead of the count-to-count ratio. Open on 'the only fix that exists is for the version with twenty-eight speakers', then reveal the voided October repair as the escalation. That one change resolves four independent findings: the funny critic's 'it buries its own best joke behind a spreadsheet', the flow critic's hook payload sitting in the back half of the sentence, the t11.6-18.1 dead stretch, and Ray's 27.9 seconds off screen through the beat named after him.",
+  "scorer_assessment": "Ships at 79.65 against 78, a thin pass. The episode's real problem is not its writing, sourcing or render, all of which are sound, but that it was built on the weaker half of its own story: the declared ratio is inert, the funniest verified fact is the fourth item on a list at t32, and Ray is out of frame for the middle third of a show premised on Ray finding out. Funny at 76 is the honest ceiling here and the number to beat, because a 76 that clears by 1.65 is one soft angle away from not clearing at all."
+}
