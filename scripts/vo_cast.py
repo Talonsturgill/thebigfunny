@@ -306,9 +306,20 @@ def check(script, planned):
     # And the model the run will REALLY use, read back rather than asserted. A
     # stale override in this file silently outranked the newer default for the
     # whole of case 0002 and the run reported the model it did not use.
+    # A DELIBERATE downgrade is allowed; a SILENT one is not. The gate exists
+    # because vo_cast once set an older model at module scope and the run
+    # reported the newer one for a whole episode. Requiring a stated REASON keeps
+    # that protection while letting a run legitimately fall back, e.g. when the
+    # preferred model's daily quota is exhausted and another still has budget.
+    reason = os.environ.get("BIGFUNNY_TTS_MODEL_OVERRIDE_REASON", "").strip()
     try:
         m = resolved_model()
-        row(f"TTS model is {EXPECTED_TTS_MODEL}", m == EXPECTED_TTS_MODEL, m)
+        if m != EXPECTED_TTS_MODEL and reason:
+            row("TTS model OVERRIDDEN, on purpose", True, f"{m}  <- {reason}")
+        else:
+            row(f"TTS model is {EXPECTED_TTS_MODEL}", m == EXPECTED_TTS_MODEL,
+                m if m == EXPECTED_TTS_MODEL else
+                f"{m}. Set BIGFUNNY_TTS_MODEL_OVERRIDE_REASON to do this on purpose.")
     except Exception as e:
         row(f"TTS model is {EXPECTED_TTS_MODEL}", False, f"could not resolve: {e}")
 
@@ -687,7 +698,7 @@ def main():
         import tts_budget
         uncached = sum(1 for p_ in planned if not os.path.exists(take_path(p_)))
         if uncached and not a.dry_run:
-            okb, msg = tts_budget.preview(uncached, "this pass")
+            okb, msg = tts_budget.preview(uncached, "this pass", model=resolved_model())
             print(msg)
             if not okb:
                 return 1

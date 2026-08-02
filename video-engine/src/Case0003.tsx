@@ -59,7 +59,7 @@ const TAIL_AT = TOTAL - s(1.5);
 
 /** Shot ladder as CUE INDICES, never hand-typed seconds. A re-fit of the VO
  *  retimes the picture for free; see the note in Case0002. */
-const CUT_ON = [0, 3, 5, 6, 9, 11, 12, 14];
+const CUT_ON = [0, 3, 5, 6, 8, 9, 11, 12];
 
 /* CUT_ON is hand-maintained INDICES into a generated array, which is the one
    seam the derived-timing system does not close: shortening the script silently

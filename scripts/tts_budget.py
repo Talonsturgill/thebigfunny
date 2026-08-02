@@ -216,11 +216,17 @@ def check(n=1, day=None, model=None):
             f"quota actually went up.")
 
 
-def preview(uncached, label="synthesis"):
-    """Price a pass BEFORE it runs. Returns (ok, message)."""
-    r = remaining()
-    lines = [f"TTS budget: {label} needs {uncached} call(s); {spent()} spent today, "
-             f"{r} left of a {SOFT_CAP} working cap."]
+def preview(uncached, label="synthesis", model=None):
+    """Price a pass BEFORE it runs. Returns (ok, message).
+
+    Takes a MODEL. The first cut asked the global counter, which is the very bug
+    the per-model rewrite existed to kill: it refused a pass on a model with
+    plenty of budget because a DIFFERENT model was exhausted."""
+    r = remaining(model=model)
+    cap = caps(model)["rpd"] - reserve_for(model) if model else SOFT_CAP
+    lines = [f"TTS budget: {label} needs {uncached} call(s) on "
+             f"{model or 'the default model'}; {spent(model=model)} spent on it today, "
+             f"{r} left of a {cap} working cap."]
     if uncached > WARN_PER_RUN:
         lines.append(
             f"  WARNING: {uncached} uncached lines is more than one episode's worth "

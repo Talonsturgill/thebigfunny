@@ -129,6 +129,11 @@ PY
   "$FF" -y -loop 1 -i "$d/f.png" -t 2 -r 30 -c:v libx264 -pix_fmt yuv420p "$d/v.mp4" >/dev/null 2>&1
   "$FF" -y -f lavfi -i "sine=frequency=440:duration=2" -c:a pcm_s16le "$d/tone.wav" >/dev/null 2>&1
   "$FF" -y -f lavfi -i "anullsrc=r=44100:cl=mono:d=2" -c:a pcm_s16le "$d/silent.wav" >/dev/null 2>&1
+  # The fixtures are built audio-first, so touch the video AFTER them: in a real
+  # run the render happens after the VO, and the staleness rule added 2026-08-02
+  # correctly refuses the other order. A self-test whose fixtures could never
+  # occur in production is testing the wrong thing.
+  sleep 1; touch "$d/v.mp4"
   if [ ! -s "$d/v.mp4" ] || [ ! -s "$d/tone.wav" ] || [ ! -s "$d/silent.wav" ]; then
     echo "  FAIL could not build the self-test fixtures (ffmpeg: $FF)"; rm -rf "$d"; exit 1
   fi
@@ -143,6 +148,11 @@ PY
   # filter the vendored ffmpeg does not ship.
   if [ -n "$(_mean_db "$d/tone.mp4")" ]; then echo "  ok   measures without volumedetect (vendored-ffmpeg safe)"; else echo "  FAIL measures without volumedetect (vendored-ffmpeg safe)"; ok=1; fi
 
+  # RED on purpose: the failure that shipped a stale picture with fresh audio.
+  touch -d "@$(( $(date +%s) + 5 ))" "$d/tone.wav" 2>/dev/null || touch "$d/tone.wav"
+  "$0" "$d/v.mp4" "$d/tone.wav" "$d/stale.mp4" >/dev/null 2>&1
+  if [ $? -ne 0 ]; then echo "  ok   refuses a video OLDER than its audio (the 2026-08-02 stale mux)"; else echo "  FAIL refuses a video OLDER than its audio (the 2026-08-02 stale mux)"; ok=1; fi
+
   rm -rf "$d"
   echo ""
   [ "$ok" -eq 0 ] && echo "self-test: both directions correct, as designed" || echo "self-test: THE GATE IS WRONG"
@@ -155,6 +165,27 @@ if [ "$#" -ne 3 ]; then
   exit 2
 fi
 VIDEO="$1"; AUDIO="$2"; OUT="$3"
+
+# ---------------------------------------------------------------------------
+# THE VIDEO MUST BE NEWER THAN THE AUDIO.
+#
+# 2026-08-02: a render FAILED (a composition threw at module load), and this
+# script cheerfully muxed the previous run's silent video onto the new voice
+# track. The result parsed, carried both streams, was 1080x1920, and sailed
+# through render_gate, because every one of those checks asks about the FILE and
+# none of them asks whether the picture belongs to this cut.
+#
+# A stale picture with fresh audio is the single most expensive failure this
+# pipeline can produce: it looks finished. So compare mtimes and refuse.
+if [ -f "$VIDEO" ] && [ -f "$AUDIO" ] && [ "$AUDIO" -nt "$VIDEO" ]; then
+  echo "MUX REFUSED: the video is OLDER than the audio." >&2
+  echo "  video: $VIDEO  ($(date -r "$VIDEO" '+%H:%M:%S'))" >&2
+  echo "  audio: $AUDIO  ($(date -r "$AUDIO" '+%H:%M:%S'))" >&2
+  echo "  The render did not run, or it failed after the VO was rebuilt." >&2
+  echo "  Re-render before muxing; a stale picture with fresh audio passes every" >&2
+  echo "  downstream gate, because they all ask about the file and not the cut." >&2
+  exit 1
+fi
 
 "$FF" -y -i "$VIDEO" -i "$AUDIO" \
   -map 0:v:0 -map 1:a:0 \
