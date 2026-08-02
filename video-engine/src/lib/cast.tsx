@@ -103,6 +103,9 @@ export const Dee: React.FC<CastProps> = ({
     /* vest: reads competent and prepared without reading corporate. */
     outfit={outfitOverride ?? 'vest'}
     headgear="bare"
+    /* A BOB, not the cast's default crop. Silhouette is what reads at thumbnail
+       size, and with the shared crop Dee was Ray with glasses. */
+    hairstyle="bob"
     hair={DEE_PALETTE.hair}
     skin={DEE_PALETTE.skin}
     eyes={DEE_PALETTE.eyes}

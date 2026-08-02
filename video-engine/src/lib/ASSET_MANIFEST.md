@@ -108,6 +108,14 @@ freshness comes from staging, camera and set, never from changing the cast. See
     used to bob independently (`bob` vs `bob * 1.4`), so the skull slid in and out
     of its own collar every 2.5s at up to several px, worse the closer the shot.
     Both now share one upper-body group; the head does not inherit `breath`.
+  - **`hairstyle` prop (NEW 2026-08-02)** — `crop` (default, the original path) /
+    `bob` / `bun`. `hair` had only ever been a COLOUR, so the entire cast wore one
+    short cap and read as the same person in different jackets. Dee was Ray with
+    glasses and a 2% scale bump, which is why the owner said she "looks like a
+    dude, and has a girl voice": the voice was fine, the silhouette was the bug.
+    A bob draws a mass BEHIND the head plus front curtains past the cheekbone.
+    Silhouette is what reads at thumbnail size, before colour and long before a
+    face. Dee is locked to `bob` in cast.tsx.
   - **`stand` right-arm paint order (FIXED 2026-08-02)** — ink was stroked AFTER
     the colour and 12px wider, so the default pose's right arm rendered as a solid
     black bar with a detached-looking hand, in nearly every shot ever made.

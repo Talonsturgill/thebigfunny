@@ -110,6 +110,15 @@ export interface CharacterProps {
   walkPhase?: number;
   /** iris color (2026-07-21 parity pass — eyes gained a colored iris under the pupil) */
   eyes?: string;
+  /** HAIR SILHOUETTE. `hair` was only ever a COLOUR, so every character in the
+   *  show wore the same short cap and the whole cast read as the same person in
+   *  different jackets. Dee is Ray with glasses and a 2% scale bump, which is
+   *  exactly why the owner said she "looks like a dude, and has a girl voice"
+   *  (2026-08-02): the voice was not wrong, the silhouette was.
+   *
+   *  Silhouette is what reads at thumbnail size, before colour and long before a
+   *  face. Default 'crop' is the original path, so nothing already drawn moves. */
+  hairstyle?: 'crop' | 'bob' | 'bun';
   /** round wire glasses (cast differentiation for officials/experts) */
   glasses?: boolean;
   /** per-figure multiplier on the idle weight-shift/sway amplitude (default 1). Lets a specific
@@ -149,6 +158,7 @@ export const Character: React.FC<CharacterProps> = ({
   walking = false,
   walkPhase,
   eyes = '#41607d',
+  hairstyle = 'crop',
   glasses = false,
   idleGain = 1,
 }) => {
@@ -673,6 +683,19 @@ export const Character: React.FC<CharacterProps> = ({
             const capCol = c.shade;
             return (
               <g>
+                {/* BACK HAIR, behind the head so the face is never covered. This is
+                    the half that actually changes the silhouette: a bob falls past
+                    the jaw and reads female at thumbnail size, where a face does
+                    not read at all. */}
+                {(hg === 'bare' || hg === 'cap') && hairstyle === 'bob' && (
+                  <g>
+                    <path d="M-70,-16 a70,70 0 0 1 140,0 l4,74 q-8,20 -30,14 q6,-44 -6,-70 l-76,0 q-12,26 -6,70 q-22,6 -30,-14 Z"
+                          fill={hair} stroke={INK} strokeWidth={5} strokeLinejoin="round" />
+                  </g>
+                )}
+                {(hg === 'bare' || hg === 'cap') && hairstyle === 'bun' && (
+                  <circle cx={0} cy={-74} r={30} fill={hair} stroke={INK} strokeWidth={5} />
+                )}
                 {/* hood (plain, behind head) */}
                 {hg === 'hood' && (
                   <path d="M-78,20 a78,86 0 0 1 156,0 q0,-96 -78,-96 q-78,0 -78,96 Z" fill={c.shade} stroke={INK} strokeWidth={6} />
@@ -715,6 +738,14 @@ export const Character: React.FC<CharacterProps> = ({
                 {(hg === 'bare' || hg === 'cap' || hg === 'hood') && (
                   <g>
                     <path d="M-56,-4 a56,56 0 0 1 112,0 q-18,-36 -56,-36 q-38,0 -56,36 Z" fill={hair} stroke={INK} strokeWidth={5} />
+                    {/* the bob's front curtains: they come DOWN past the cheekbone at
+                        the temples, which is the line that separates it from a crop. */}
+                    {hairstyle === 'bob' && (
+                      <g>
+                        <path d="M-56,-10 q-8,34 -2,58 q-16,4 -20,-8 q-6,-30 4,-52 Z" fill={hair} stroke={INK} strokeWidth={5} strokeLinejoin="round" />
+                        <path d="M56,-10 q8,34 2,58 q16,4 20,-8 q6,-30 -4,-52 Z" fill={hair} stroke={INK} strokeWidth={5} strokeLinejoin="round" />
+                      </g>
+                    )}
                     {/* hair shine + part line — hair as a lit material, not a flat cap */}
                     <path d="M-34,-32 q16,-12 40,-9" stroke="#fff" strokeWidth={5} opacity={0.22} fill="none" strokeLinecap="round" />
                     <path d={`M${-10 * facing},-46 q${6 * facing},14 ${4 * facing},24`} stroke={INK} strokeWidth={2.4} opacity={0.35} fill="none" strokeLinecap="round" />
