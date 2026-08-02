@@ -51,10 +51,10 @@ So: **B first (the expression engine), then A (a new episode that uses it).**
 | A1 | Research the three unused beats | DONE — the-landlord wins |
 | A2 | Fact-check to primary documents, produce claims.json | DONE — 9 VERIFIED, 3 CUT |
 | A3 | Angle: who-benefits, one step | DONE — awaiting owner read |
-| A4 | Script: Dee has a POINT OF VIEW, not a printout. Faces authored per line. | TODO |
-| A5 | Storyboard + gate 0 | TODO |
-| A6 | VO, soundcheck, envelope | TODO |
-| A7 | Render, look at frames, panel, score | TODO |
+| A4 | Script: 19 lines, 55.7s, Dee has a POV, faces on every line | DONE |
+| A5 | StairwellBG + Case0003, 8-shot ladder from cue indices, stills checked | DONE |
+| A6 | VO fitted, soundcheck PASS (refused one SEDATED line), 3 tracks generated | DONE |
+| A7 | Render, look at frames, panel, score | IN PROGRESS |
 | A8 | Ship: runs/ artifacts, caption, ledgers, PR, merge | TODO |
 
 ## PHASE B design
