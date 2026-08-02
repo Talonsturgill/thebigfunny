@@ -192,3 +192,33 @@ be read as permitting rubber-stamping by a tired agent at the end of a long run.
 four" is trivially true and certifies nothing. The worked examples are the real
 prior art, and the first dry run's chute was genuinely close to example 3, the
 Pitch Shaft, which no rule asked anybody to check.
+
+## Three more spec fixes, from pass 2
+
+**Require CONTENT, not a FILENAME.** The spec said to read `angle.json` and to
+return `designable: false` if an expected file is missing. Both dry runs hit the
+same wall: the angle CONTENT was on disk under different keys in `story.json`,
+so a literal reading kills a run over a filename while the artifact is present,
+and a loose reading lets a tired agent wave through a genuinely absent input.
+
+What you actually require is a MECHANISM SENTENCE SOURCED TO CLEARED CLAIMS.
+Find it wherever it lives, name the file you found it in, and keep the hard
+refusal for when the CONTENT is absent. The same defect applies to any step that
+names a file rather than the thing the file is supposed to contain.
+
+**`not_required` and `NOT_BUILT` are different signals.** The status enum
+resolves what the procedure text does not, so it is written down here:
+- `not_required` means absent AND UNWANTED. The world does not need it. This is
+  good news and costs a build run nothing.
+- `NOT_BUILT` means absent AND I WANTED IT. This is debt, and a build run has to
+  see it as debt.
+Pass 1 had to invent this distinction mid-flight. Do not make the next agent
+invent it again.
+
+**Casting means checking an asset's PROPS, not its path.** Before writing
+"composes X", open X and confirm the parameter you need is real. Pass 2 found
+four assets that exist, are registered, have correct paths and cannot do the job
+they were cast for, including one whose defect was live in shipped code. See the
+CASTABILITY section in ASSET_MANIFEST.md. An asset that exists and cannot be
+parameterised is worse than a missing one: a missing asset gets budgeted and a
+mis-cast one gets discovered at the render.
