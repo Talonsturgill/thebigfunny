@@ -35,7 +35,7 @@
  *     side. This is what carries light in ink drawing.
  */
 import React from 'react';
-import {Pt, ribbon, edge, spline, bent, lerp} from './draw';
+import {Pt, ribbon, edge, band, spline, bent, lerp} from './draw';
 
 export type Emotion =
   | 'neutral' | 'angry' | 'worried' | 'shock' | 'smug' | 'flat' | 'squint';
@@ -96,7 +96,7 @@ const SPEC: Record<Sex, Spec> = {
     // SHORT span, then a hip wider than the shoulder. Waist-to-hip lands at
     // 0.62, tighter than the 0.70 average-preference figure on purpose: this is
     // a caricature, and silhouette is the one place caricature is right.
-    shoulder: 144, bust: 154, underbust: 108, waist: 90, upperHip: 146, hip: 168,
+    shoulder: 142, bust: 158, underbust: 100, waist: 78, upperHip: 150, hip: 178,
     neckW: 33,                       // 0.50 of head width
     armW: [37, 28, 20], legW: [78, 41, 51, 22],
     shoulderJoint: 66, hipJoint: 32,
@@ -274,6 +274,7 @@ export const Figure: React.FC<FigureProps> = ({
 
   /* ---- LEGS. The weight leg carries the body and stays near-straight; the free
      leg bends and its knee falls inward. Both feet stay on the ground line. */
+  const heels = garment === 'skirt';
   const legSpine = (side: 1 | -1): Pt[] => {
     const weight = side < 0;
     const hipX = side * s.hipJoint + shift * 0.5 + (weight ? -1 : 2);
@@ -285,7 +286,8 @@ export const Figure: React.FC<FigureProps> = ({
       [kneeX, kneeY],
       // calf belly, a third of the way down the shin
       [kneeX + side * (weight ? 3 : 4), kneeY + (Y.ankle - kneeY) * 0.34],
-      [ankleX, Y.ankle],
+      // In heels the ankle sits well ABOVE the ground and the shoe spans the gap.
+      [ankleX, heels ? Y.ankle - 32 : Y.ankle],
     ];
   };
 
@@ -295,6 +297,7 @@ export const Figure: React.FC<FigureProps> = ({
   /* ---- FACE ------------------------------------------------------------- */
   const face = () => {
     const eyeY = 50, rx = s.eyeRx, ry = s.eyeRy * E.open;
+    const hw = s.headW / 2;
     const lidDrop = ry * E.lid;
     const browY = eyeY - ry - s.browGap - E.brow;
     const eye = (side: 1 | -1) => {
@@ -339,6 +342,39 @@ export const Figure: React.FC<FigureProps> = ({
     };
     return (
       <g>
+        <clipPath id={`${uid}_headclip`}><path d={spline(outline, true, s.headTension)} /></clipPath>
+        <g clipPath={`url(#${uid}_headclip)`}>
+          {/* THE SHADOW SIDE. One hard-edged shape whose boundary follows the
+              form: out over the cheekbone, in under it, out again at the jaw.
+              That boundary IS the drawing; a soft gradient in the same place
+              reads as a stain. */}
+          <path d={spline([[hw * 0.26, -10], [hw * 0.66, 34], [hw * 0.46, 70],
+                           [hw * 0.12, 104], [hw * 3, 104], [hw * 3, -10]], true)}
+                fill={INK} opacity={0.13} />
+          {/* reflected light at the very edge of the shadow side, where the form
+              turns back toward the room */}
+          <path d={spline([[hw * 0.9, 6], [hw * 1.02, 52], [hw * 0.72, 92],
+                           [hw * 3, 92], [hw * 3, 6]], true)} fill="#fff" opacity={0.09} />
+          {/* CAST SHADOW OF THE HAIR onto the forehead. Hair sits ON a head and
+              blocks light; without this the hairline reads as a sticker. */}
+          <path d={spline([[-hw * 3, -30], [hw * 3, -30], [hw * 3, 4],
+                           [hw * 0.5, 24], [-hw * 0.5, 17], [-hw * 3, 2]], true)}
+                fill={INK} opacity={0.15} />
+          {/* brow ridge: a shelf the eyes sit under */}
+          <path d={spline([[-hw * 0.85, 40], [0, 45], [hw * 0.85, 40],
+                           [hw * 0.85, 33], [0, 37], [-hw * 0.85, 33]], true)}
+                fill={INK} opacity={0.08} />
+          {/* the lit cheekbone, the single plane that says the skull has one */}
+          <ellipse cx={-hw * 0.46} cy={50} rx={hw * 0.42} ry={11} fill="#fff" opacity={0.17}
+                   transform={`rotate(-12 ${-hw * 0.46} 50)`} />
+          {/* nose plane on the shadow side, and the shelf under the lower lip */}
+          <path d={spline([[facing * 3, 56], [facing * 11, 71], [facing * 2, 77]], true)}
+                fill={INK} opacity={0.13} />
+          <ellipse cx={0} cy={81 + s.lipMass * 1.5} rx={s.mouthHalf * 0.72} ry={3.4}
+                   fill={INK} opacity={0.11} />
+          {/* temple hollow, which is what stops a forehead reading as a dome */}
+          <ellipse cx={hw * 0.74} cy={30} rx={9} ry={13} fill={INK} opacity={0.08} />
+        </g>
         {/* cheekbone contour: a shade running down and IN under the cheek, with a
             lit plane above it. Only works on a narrowed skull; on a circle the
             same shape reads as a smudge. */}
@@ -436,10 +472,15 @@ export const Figure: React.FC<FigureProps> = ({
         {/* LINE WEIGHT. A heavier stroke down the shadow side of the torso and a
             lighter one down the lit side. Uniform ink is the loudest tell of
             clip art, and this is two paths. */}
+        <path d={band(spine, torsoW, -1, 0.22, 1)} fill={INK} opacity={0.19} />
+        <path d={band(spine, torsoW, -1, 0.84, 1)} fill="#fff" opacity={0.09} />
+        <path d={band(spine, torsoW, 1, 0.26, 0.72)} fill="#fff" opacity={0.13} />
         <path d={edge(spine, torsoW, -1)} fill="none" stroke={INK} strokeWidth={7}
               opacity={0.5} strokeLinecap="round" />
-        <path d={edge(spine, torsoW, 1, 0, 0.55)} fill="none" stroke="#fff" strokeWidth={3.5}
-              opacity={0.2} strokeLinecap="round" />
+        {/* CAST SHADOW of the head onto the chest. Contact shadows are what tell
+            you two forms are touching rather than merely overlapping, and a
+            figure has the same two every time: head on chest, arm on body. */}
+        <ellipse cx={2} cy={Y.shoulder + 26} rx={s.neckW * 1.5} ry={16} fill={INK} opacity={0.16} />
         {sex === 'f' && (
           // Bust and waist as the garment's own seams. The silhouette already
           // carries the shape; this is the fabric acknowledging it.
@@ -538,10 +579,15 @@ export const Figure: React.FC<FigureProps> = ({
         {/* LINE WEIGHT. A heavier stroke down the shadow side of the torso and a
             lighter one down the lit side. Uniform ink is the loudest tell of
             clip art, and this is two paths. */}
+        <path d={band(spine, torsoW, -1, 0.22, 1)} fill={INK} opacity={0.19} />
+        <path d={band(spine, torsoW, -1, 0.84, 1)} fill="#fff" opacity={0.09} />
+        <path d={band(spine, torsoW, 1, 0.26, 0.72)} fill="#fff" opacity={0.13} />
         <path d={edge(spine, torsoW, -1)} fill="none" stroke={INK} strokeWidth={7}
               opacity={0.5} strokeLinecap="round" />
-        <path d={edge(spine, torsoW, 1, 0, 0.55)} fill="none" stroke="#fff" strokeWidth={3.5}
-              opacity={0.2} strokeLinecap="round" />
+        {/* CAST SHADOW of the head onto the chest. Contact shadows are what tell
+            you two forms are touching rather than merely overlapping, and a
+            figure has the same two every time: head on chest, arm on body. */}
+        <ellipse cx={2} cy={Y.shoulder + 26} rx={s.neckW * 1.5} ry={16} fill={INK} opacity={0.16} />
         {sex === 'f' && (
           // Bust and waist as the garment's own seams. The silhouette already
           // carries the shape; this is the fabric acknowledging it.
@@ -630,6 +676,14 @@ const Limb: React.FC<{spine: Pt[]; w: readonly number[]; fill: string; shadow?: 
 }) => (
   <g opacity={shadow ? 0.82 : 1}>
     <path d={ribbon(sp, w)} fill={fill} stroke={INK} strokeWidth={4} strokeLinejoin="round" />
+    {/* CORE SHADOW, hard-edged, along the form's own axis. */}
+    <path d={band(sp, w, -1, 0.24, 1)} fill={INK} opacity={0.2} />
+    {/* REFLECTED LIGHT outboard of it. Without this the core shadow runs all the
+        way to the outline and the limb reads as a flat shape with a dirty edge
+        instead of a cylinder turning away. */}
+    <path d={band(sp, w, -1, 0.82, 1)} fill="#fff" opacity={0.1} />
+    {/* the key-light band on the lit side, kept narrow and off the centre line */}
+    <path d={band(sp, w, 1, 0.3, 0.78)} fill="#fff" opacity={0.15} />
     {/* the heavy edge goes on the shadow side only. One extra path per limb, and
         it is the difference between an inked drawing and an outline. */}
     <path d={edge(sp, w, -1, 0.08, 0.94)} fill="none" stroke={INK} strokeWidth={6}
@@ -660,11 +714,16 @@ const Foot: React.FC<{at: Pt; side: 1 | -1; col: string; heel?: boolean; shadow?
       // functional part: it is what visually lengthens a leg, which is the whole
       // reason heels read the way they do.
       <g>
-        <path d={spline([[-13, -4], [-17, 12], [4, 26], [30, 24], [34, 14], [15, -2]], true)}
-              fill={shadow ? shade(col, 0.82) : col} stroke={INK} strokeWidth={3.4} strokeLinejoin="round" />
-        <path d="M-15,10 l-3,22 h9 l1,-20 Z" fill={shadow ? shade(col, 0.8) : col}
-              stroke={INK} strokeWidth={3} strokeLinejoin="round" />
-        <path d="M-6,-1 q14,4 22,10" fill="none" stroke="#fff" strokeWidth={2.6} opacity={0.32} strokeLinecap="round" />
+        {/* the arched foot: topline at the ankle, vamp sweeping forward and DOWN
+            to a pointed toe on the floor, sole running back to the heel seat */}
+        <path d={spline([[-13, -8], [-11, 10], [4, 30], [24, 46], [42, 55],
+                         [46, 49], [30, 28], [13, 6], [9, -9]], true)}
+              fill={shadow ? shade(col, 0.82) : col} stroke={INK} strokeWidth={3.2} strokeLinejoin="round" />
+        {/* the spike. Thin is the point: a thick heel is a boot. */}
+        <path d="M1,38 L-7,57 L-1,58 L9,41 Z" fill={shadow ? shade(col, 0.75) : shade(col, 0.9)}
+              stroke={INK} strokeWidth={2.6} strokeLinejoin="round" />
+        {/* patent highlight down the vamp */}
+        <path d="M-4,2 q12,12 22,26" fill="none" stroke="#fff" strokeWidth={3} opacity={0.3} strokeLinecap="round" />
       </g>
     ) : (
       <g>
@@ -692,8 +751,12 @@ const Hair: React.FC<{style: string; s: Spec; col: string; back?: boolean}> = ({
                          [w * 0.74, 18], [w * 0.2, 26], [-w * 0.26, 10],
                          [-w * 0.66, 24], [-w * 0.9, 18]], true)}
               fill={col} stroke={INK} strokeWidth={4} strokeLinejoin="round" />
-        <path d={spline([[-w * 0.5, 4], [w * 0.2, 0], [w * 0.72, 8]])}
-              fill="none" stroke="#fff" strokeWidth={4} opacity={0.14} strokeLinecap="round" />
+        <path d={spline([[-w * 0.86, 2], [-w * 0.2, -18], [w * 0.6, -10], [w * 0.78, 4],
+                         [w * 0.1, -6], [-w * 0.7, 14]], true)} fill="#fff" opacity={0.19} />
+        <path d={spline([[-w * 0.98, 20], [-w * 0.3, 2], [w * 0.72, 12], [w * 0.9, 28],
+                         [w * 0.1, 16], [-w * 0.86, 34]], true)} fill={INK} opacity={0.2} />
+        <path d={spline([[-w * 0.5, 0], [w * 0.2, -6], [w * 0.72, 4]])}
+              fill="none" stroke="#fff" strokeWidth={4} opacity={0.24} strokeLinecap="round" />
       </g>
     );
   }
@@ -723,10 +786,21 @@ const Hair: React.FC<{style: string; s: Spec; col: string; back?: boolean}> = ({
                        [w * 1.16, 34], [w * 1.06, 62],
                        [w * 0.72, 30], [w * 0.18, 16], [-w * 0.36, 24], [-w * 0.78, 46]], true)}
             fill={col} stroke={INK} strokeWidth={4} strokeLinejoin="round" />
+      {/* specular band across the crown, plus a dark root under it */}
+      <path d={spline([[-w * 0.78, 10], [-w * 0.1, -12], [w * 0.72, 0], [w * 0.86, 12],
+                       [w * 0.2, 1], [-w * 0.6, 22]], true)} fill="#fff" opacity={0.2} />
+      <path d={spline([[-w * 0.95, 26], [-w * 0.2, 8], [w * 0.7, 18], [w * 0.9, 34],
+                       [w * 0.1, 22], [-w * 0.82, 40]], true)} fill={INK} opacity={0.22} />
       <path d={spline([[-w * 0.5, -2], [w * 0.2, -10], [w * 0.86, 6]])}
-            fill="none" stroke="#fff" strokeWidth={5} opacity={0.17} strokeLinecap="round" />
-      <path d={spline([[w * 1.24, 70], [w * 1.36, 132], [w * 1.2, 182]])}
-            fill="none" stroke="#fff" strokeWidth={6} opacity={0.12} strokeLinecap="round" />
+            fill="none" stroke="#fff" strokeWidth={4} opacity={0.28} strokeLinecap="round" />
+      {/* the fall: a broad sheen down the lit side of the mass, a dark seam down
+          the inner side where it turns away, and lighter tips */}
+      <path d={spline([[w * 1.14, 62], [w * 1.34, 118], [w * 1.28, 176], [w * 1.06, 172],
+                       [w * 1.14, 116], [w * 0.98, 66]], true)} fill="#fff" opacity={0.16} />
+      <path d={spline([[w * 0.9, 74], [w * 0.98, 132], [w * 0.94, 184], [w * 0.82, 176],
+                       [w * 0.86, 128], [w * 0.8, 76]], true)} fill={INK} opacity={0.2} />
+      <path d={spline([[w * 1.44, 156], [w * 1.5, 186], [w * 1.2, 202], [w * 1.32, 172]], true)}
+            fill="#fff" opacity={0.1} />
     </g>
   );
 };

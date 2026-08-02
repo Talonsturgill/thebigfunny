@@ -166,3 +166,41 @@ export function bent(a: Pt, b: Pt, bend: number, samples = 5): Pt[] {
   }
   return out;
 }
+
+/**
+ * A BAND across part of a ribbon's width, as a closed path.
+ *
+ * This is the shading primitive, and it exists because gradients alone cannot
+ * light a form. A linear gradient makes a shape lighter on one side, which reads
+ * as a tinted flat, not as a cylinder. What actually reads as volume in flat art
+ * is a HARD-EDGED core shadow that follows the form's own axis, with a sliver of
+ * REFLECTED LIGHT outboard of it where the surface turns back toward the
+ * environment. Every appealing flat-vector style does this and it is why their
+ * limbs look round and ours looked like tape.
+ *
+ * `from` and `to` are fractions across the half-width: 0 is the centre line, 1
+ * is the outline. So a core shadow is band(..., -1, 0.3, 1) and the reflected
+ * light that keeps it from looking like a bruise is band(..., -1, 0.85, 1).
+ *
+ * Because the band follows the same spine, it tapers with the form for free: the
+ * shadow on a bicep is wide and on a wrist is narrow, without anybody saying so.
+ */
+export function band(
+  spine: readonly Pt[],
+  widths: readonly number[],
+  side: 1 | -1,
+  from: number,
+  to: number,
+): string {
+  const n = spine.length;
+  if (n < 2) return '';
+  const w = (i: number) => (widths[Math.min(i, widths.length - 1)] ?? 0) / 2;
+  const tan: Pt[] = spine.map((p, i) => {
+    const back = i > 0 ? norm(sub(p, spine[i - 1])) : null;
+    const fwd = i < n - 1 ? norm(sub(spine[i + 1], p)) : null;
+    if (back && fwd) return norm(add(back, fwd));
+    return (back ?? fwd) as Pt;
+  });
+  const at = (t: number) => spine.map((p, i) => add(p, mul(perp(tan[i]), w(i) * t * side)));
+  return spline([...at(from), ...at(to).reverse()], true);
+}
