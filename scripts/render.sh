@@ -56,7 +56,15 @@ fi
 ROOT_TSX="${ROOT_TSX:-src/Root.tsx}"
 
 registered_comps() {   # every composition id registered in Root.tsx
-  grep -oE 'id="[A-Za-z0-9_]+"' "$ROOT_TSX" 2>/dev/null | sed -E 's/^id="(.*)"$/\1/' || true
+  # Anchored on <Composition ... id="..."> rather than any id= attribute in the
+  # file. The loose form would pick up an id on any JSX element or SVG node that
+  # happened to live in Root.tsx and offer it as a renderable composition.
+  # <Composition and its id= sit on separate lines in Root.tsx, so this reads
+  # the id that FOLLOWS a Composition tag rather than any id= in the file.
+  awk '/<Composition/ {want=1; next}
+       want && match($0, /id="[A-Za-z0-9_]+"/) {
+         s = substr($0, RSTART + 4, RLENGTH - 5); print s; want = 0
+       }' "$ROOT_TSX" 2>/dev/null || true
 }
 
 highest_case_comp() {  # CaseNNNN with the biggest N, or empty. Fixed width, so lexical sort is numeric.
@@ -195,6 +203,24 @@ case "$MODE" in
     # VO is re-fitted is a normal thing to do.
     if [[ "$COMP" =~ ^Case([0-9]{4})$ ]]; then
       n="$((10#${BASH_REMATCH[1]}))"
+      # A GENERATED SIDECAR WITHOUT ITS SOURCE IS THE STALE CASE, NOT AN EXEMPT
+      # ONE. All three checks below were written `[[ -f <generated> && -f
+      # <source> ]]`, so a cleaned scratch dir or a run resumed in a fresh
+      # container skipped every one of them and shipped the committed track. The
+      # generated file existing IS the claim that a source produced it; if the
+      # source is gone, nothing can say whether the claim is still true.
+      _need_source() {   # $1 generated, $2 source it was generated from
+        if [[ -f "$1" && ! -f "$2" ]]; then
+          echo "render.sh: $1 is committed and $2 is MISSING, so nothing can tell" >&2
+          echo "  whether it still matches this cut. That is the stale case, not an" >&2
+          echo "  exempt one. Re-run the VO, or delete the generated file." >&2
+          exit 1
+        fi
+      }
+      _need_source "src/case$(printf '%04d' "$n")_captions.ts" "../out/dispatch/vo_lines.json"
+      _need_source "src/case$(printf '%04d' "$n")_mouth.ts"    "../out/dispatch/vo.wav"
+      _need_source "src/case$(printf '%04d' "$n")_faces.ts"    "../out/dispatch/script.json"
+
       if [[ -f "src/case$(printf '%04d' "$n")_captions.ts" && -f "../out/dispatch/vo_lines.json" ]]; then
         if ! python3 ../scripts/gen_captions_ts.py --case "$n" --check; then
           echo "render.sh: refusing to ship a final render against stale captions." >&2
