@@ -108,7 +108,7 @@ const SPEC: Record<Sex, Spec> = {
     // differs is roundness and tilt, so the eye is not enlarged here; the face
     // around it is smaller. h/w 0.47, at the round end of the adult band (over
     // 0.55 reads infantile, which is where the old rig sat at 1.16).
-    eyeRx: 9.2, eyeRy: 4.4, eyeX: 18, tilt: 7,
+    eyeRx: 10.2, eyeRy: 6.3, eyeX: 18, tilt: 7,
     browGap: 9.0, browW: 2.7,        // 0.048 H measured, same correction
     noseHalf: 7.5, mouthHalf: 13.5, lipMass: 6.2,
     jawRatio: 0.72, chinW: 0.2, headTension: 0, neckDrop: 24,
@@ -347,7 +347,11 @@ export const Figure: React.FC<FigureProps> = ({
                   open-eyed. */}
               <path d={`M${cx - rx - 1},${eyeY - ry * 0.35} q${rx},${-ry * 1.5} ${rx * 2 + (sex === 'f' ? 3 : 1)},${-ry * 0.1}`}
                     fill="none" stroke={INK} strokeLinecap="round"
-                    strokeWidth={sex === 'f' ? 3.4 : 2.2} />
+                    strokeWidth={sex === 'f' ? 3.8 : 2.2} />
+              {sex === 'f' && (
+                <path d={`M${cx + rx + 1.6},${eyeY - ry * 0.45} q${3.4},${-1.6} ${5},${-3.8}`}
+                      fill="none" stroke={INK} strokeWidth={3} strokeLinecap="round" />
+              )}
               {sex === 'm' && (
                 <path d={`M${cx - rx * 0.7},${eyeY + ry * 0.85} q${rx * 0.7},${ry * 0.5} ${rx * 1.4},0`}
                       fill="none" stroke={INK} strokeWidth={1.2} opacity={0.5} strokeLinecap="round" />
@@ -381,9 +385,29 @@ export const Figure: React.FC<FigureProps> = ({
               value, under the brow, instead of lying white on the surface. The
               male socket is deeper; hers stays soft or it reads tired. */}
           {[-1, 1].map((sd) => (
-            <ellipse key={sd} cx={sd * s.eyeX} cy={eyeY - 2}
-                     rx={rx + (sex === 'm' ? 7 : 5)} ry={ry + (sex === 'm' ? 8 : 6)}
-                     fill={sk(sex === 'm' ? 0.87 : 0.93)} />
+            <g key={sd}>
+              {sex === 'm' ? (
+                <ellipse cx={sd * s.eyeX} cy={eyeY - 2} rx={rx + 7} ry={ry + 8}
+                         fill={sk(0.87)} />
+              ) : (
+                <>
+                  {/* the crease shadow ABOVE the eye only; below it stays LIGHT.
+                      Dark under an eye is what tired literally is, and every
+                      reference face is bright there. */}
+                  <ellipse cx={sd * s.eyeX} cy={eyeY - ry * 0.9} rx={rx + 5} ry={ry * 0.9}
+                           fill={sk(0.92)} />
+                  <ellipse cx={sd * s.eyeX} cy={eyeY + ry + 3} rx={rx * 0.8} ry={3.4}
+                           fill={sk(1.07)} />
+                </>
+              )}
+            </g>
+          ))}
+          {/* BLUSH. Warmth high on the cheek, outboard of the nose. Its colour is
+              the skin pushed toward rose, not a paint dab. */}
+          {sex === 'f' && [-1, 1].map((sd) => (
+            <ellipse key={sd} cx={sd * hw * 0.52} cy={64} rx={hw * 0.26} ry={7.5}
+                     fill="#d9808a" opacity={0.3}
+                     transform={`rotate(${sd * -10} ${sd * hw * 0.52} 64)`} />
           ))}
           {/* lit planes: forehead, near cheekbone, chin. Warm light, never white. */}
           <ellipse cx={-hw * 0.18} cy={20} rx={hw * 0.5} ry={13} fill={sk(1.1)} />
@@ -430,22 +454,29 @@ export const Figure: React.FC<FigureProps> = ({
         {/* cheekbone contour: a shade running down and IN under the cheek, with a
             lit plane above it. Only works on a narrowed skull; on a circle the
             same shape reads as a smudge. */}
-        <path d={spline([[-s.headW / 2 + 2, 48], [-s.headW * 0.30, 66], [-s.headW * 0.22, 76]])}
-              fill="none" stroke={INK} strokeWidth={3} opacity={0.1} strokeLinecap="round" />
-        <path d={spline([[s.headW / 2 - 2, 48], [s.headW * 0.30, 66], [s.headW * 0.22, 76]])}
-              fill="none" stroke={INK} strokeWidth={3.4} opacity={0.14} strokeLinecap="round" />
+        {sex === 'm' && (
+          <path d={spline([[s.headW / 2 - 2, 48], [s.headW * 0.30, 66], [s.headW * 0.22, 76]])}
+                fill="none" stroke={INK} strokeWidth={3} opacity={0.12} strokeLinecap="round" />
+        )}
         {[-1, 1].map((sd) => eye(sd as 1 | -1))}
         {/* BROWS. The GAP is the cue, not the bar: a clean 0.048H of skin between
             brow and lid reads instantly at tile scale where a thin arched line
             does not. Female bar is thin and arched with its apex over the outer
             third; male bar is heavy and essentially flat. */}
         {[-1, 1].map((sd) => (
-          <path key={sd}
-                d={sex === 'f'
-                  ? `M${sd * (s.eyeX - 11)},${browY + 2.5} q${sd * 7},${-4.5} ${sd * 21},${-0.5}`
-                  : `M${sd * (s.eyeX - 12)},${browY + 1} L${sd * (s.eyeX + 11)},${browY - 0.5}`}
-                fill="none" stroke={INK} strokeWidth={s.browW} strokeLinecap="round"
-                transform={`rotate(${sd * E.browTilt} ${sd * s.eyeX} ${browY})`} />
+          sex === 'f' ? (
+            <path key={sd}
+                  d={`M${sd * (s.eyeX - 12)},${browY + 3}
+                      Q${sd * (s.eyeX - 2)},${browY - 4} ${sd * (s.eyeX + 8)},${browY - 2.5}
+                      L${sd * (s.eyeX + 13)},${browY - 0.5}
+                      Q${sd * (s.eyeX + 2)},${browY - 0.5} ${sd * (s.eyeX - 12)},${browY + 4.6} Z`}
+                  fill="#241a18" transform={`rotate(${sd * E.browTilt} ${sd * s.eyeX} ${browY})`} />
+          ) : (
+            <path key={sd}
+                  d={`M${sd * (s.eyeX - 12)},${browY + 1} L${sd * (s.eyeX + 11)},${browY - 0.5}`}
+                  fill="none" stroke={INK} strokeWidth={s.browW} strokeLinecap="round"
+                  transform={`rotate(${sd * E.browTilt} ${sd * s.eyeX} ${browY})`} />
+          )
         ))}
         {/* NOSE. Two marks, never a bridge line. A drawn bridge on an otherwise
             flat face is a detail-density mismatch, and over-defined noses and
@@ -455,10 +486,10 @@ export const Figure: React.FC<FigureProps> = ({
         {/* MOUTH */}
         {mouth !== undefined || talking ? (
           <TalkingMouth open={mouth ?? 0} spread={mouthSpread} half={s.mouthHalf}
-                        lip={sex === 'f' ? '#8d3347' : INK} full={sex === 'f'} />
+                        lip={sex === 'f' ? '#a63a55' : INK} full={sex === 'f'} />
         ) : (
           <StaticMouth emotion={emotion} half={s.mouthHalf} mass={s.lipMass}
-                       lip={sex === 'f' ? '#8d3347' : INK} full={sex === 'f'} />
+                       lip={sex === 'f' ? '#a63a55' : INK} full={sex === 'f'} />
         )}
       </g>
     );
@@ -1001,11 +1032,16 @@ const StaticMouth: React.FC<{emotion: Emotion; half: number; mass: number; lip: 
     // contrast, which IS a finding and which flips perceived sex on its own.
     return (
       <g>
-        <path d={spline([[-half, y], [-half * 0.4, y - mass * 0.55], [0, y - mass * 0.3],
-                         [half * 0.4, y - mass * 0.55], [half, y],
+        <path d={spline([[-half, y], [-half * 0.45, y - mass * 0.6], [-half * 0.18, y - mass * 0.7],
+                         [0, y - mass * 0.42], [half * 0.18, y - mass * 0.7], [half * 0.45, y - mass * 0.6],
+                         [half, y],
                          [half * 0.45, y + mass * 0.9 + curve * 0.4], [0, y + mass * 1.05 + curve * 0.5],
                          [-half * 0.45, y + mass * 0.9 + curve * 0.4]], true)}
               fill={lip} stroke={INK} strokeWidth={1.8} strokeLinejoin="round" />
+        {/* gloss on the lower lip: the single highlight that makes a lip read
+            full instead of painted on */}
+        <ellipse cx={half * 0.1} cy={y + mass * 0.62} rx={half * 0.34} ry={mass * 0.24}
+                 fill="#fff" opacity={0.4} />
         <path d={spline([[-half * 0.9, y + 0.5], [0, y + curve * 0.35], [half * 0.9, y + 0.5]])}
               fill="none" stroke={INK} strokeWidth={1.8} opacity={0.7} />
         <path d={spline([[-half * 0.25, y + mass * 0.72], [half * 0.2, y + mass * 0.72]])}
