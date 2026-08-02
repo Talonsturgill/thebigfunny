@@ -41,11 +41,33 @@ export interface CharacterProps {
   scale?: number;
   x?: number;
   y?: number; // feet anchor in scene coords
-  /** pass useVoice().opennessAt(globalFrame) to mark this figure as a speaker in the
-      scene. NOTE (2026-07-21 owner rule): the rig does NOT lip-sync this value — it is
-      routed through ambientMouth(), which renders a slow word-independent chat cycle,
-      because narrator-synced mouth flapping reads as a failed narration attempt. */
+  /** Mark this figure as CHATTING in the scene. The value is discarded: it is routed
+      through ambientMouth(), a slow word-independent cycle. Use it for background
+      figures and for anyone talking under someone else's line. See `mouth` for a
+      figure who is actually saying the words we can hear. */
   talking?: number;
+  /** THIS figure's own speech, 0..1 per frame, from scripts/vo_envelope.py.
+      When set it drives the mouth DIRECTLY and overrides `talking`.
+
+      This is not the thing the 2026-07-21 rule bans. That rule is "characters never
+      lip-sync THE NARRATOR", written for a show where a narrator talked over the
+      scene and a bystander mouthing along "looked like they were trying to narrate".
+      The Big Funny has no narrator: the speaker is in frame saying their own line, and
+      the owner's 2026-08-02 note was that the mouths did not look like anyone was
+      speaking. Gate this with speakerAt() so a LISTENER still never moves, which is
+      the part of the old rule that was always right. */
+  mouth?: number;
+  /** Onset strength 0..1 from scripts/vo_envelope.py's ACCENT track: where this
+      figure's own voice PUSHES. The body hits it with a small head nod and a
+      forward torso lean, then settles.
+
+      This is the half that makes a figure look like it is talking. Everything
+      else in this rig moves on free-running sines that do not know a word is
+      happening, and continuous motion unrelated to speech reads as drift rather
+      than performance (owner, 2026-08-02: "floating around aimlessly"). An
+      accent is the animation principle of the same name: the gesture lands ON
+      the stressed syllable and the body is otherwise still. */
+  accent?: number;
   /** true = play an articulated walk cycle (alternating leg swing around the hips,
       a step-synced body bob, and an arm counter-swing) instead of standing still.
       Optional `walkPhase` lets a scene drive the cycle from real travel distance so
@@ -88,6 +110,8 @@ export const Character: React.FC<CharacterProps> = ({
   x = 0,
   y = 0,
   talking,
+  mouth,
+  accent = 0,
   walking = false,
   walkPhase,
   eyes = '#41607d',
@@ -231,7 +255,7 @@ export const Character: React.FC<CharacterProps> = ({
                 cycle, NEVER the narrator's per-word amplitude (2026-07-21 owner rule: word-synced
                 mouths read as a failed narration attempt; characters talk to each other, not for
                 the voiceover) */}
-            <TalkMouth openness={ambientMouth(talking, f, swayPhase) ?? 0} w={36} ink={INK}
+            <TalkMouth openness={mouth !== undefined ? mouth : (ambientMouth(talking, f, swayPhase) ?? 0)} w={36} ink={INK}
                        mood={emotion === 'angry' || emotion === 'worried' ? 'frown' : emotion === 'smug' ? 'smile' : 'neutral'} />
           </g>
         ) : (
@@ -348,8 +372,17 @@ export const Character: React.FC<CharacterProps> = ({
           <g>
             <path d={`M-46,266 q-14,46 -6,${88 + 2 * Math.sin(f / 13)}`} fill="none" stroke={INK} strokeWidth={34} strokeLinecap="round" />
             <path d={`M-46,266 q-14,46 -6,${88 + 2 * Math.sin(f / 13)}`} fill="none" stroke={c.main} strokeWidth={22} strokeLinecap="round" />
-            <path d={`M46,266 q14,46 6,${88 - 2 * Math.sin(f / 13)}`} fill="none" stroke={c.shade} strokeWidth={22} strokeLinecap="round" />
+            {/* INK UNDER, COLOUR OVER. These two were swapped, and only here: the
+                34px ink stroke was painted AFTER the 22px colour stroke and is
+                12px wider, so it covered the colour completely and the right arm
+                rendered as a solid black bar with a detached hand at the end of
+                it. Every other pose in this switch has the order right; 'stand'
+                is the DEFAULT pose, so the one place it was wrong is the one
+                that shows up in nearly every shot of every episode.
+                Owner, 2026-08-02: "the bodies aren't even aligned ... just kind
+                of floating around aimlessly". */}
             <path d={`M46,266 q14,46 6,${88 - 2 * Math.sin(f / 13)}`} fill="none" stroke={INK} strokeWidth={34} strokeLinecap="round" />
+            <path d={`M46,266 q14,46 6,${88 - 2 * Math.sin(f / 13)}`} fill="none" stroke={c.shade} strokeWidth={22} strokeLinecap="round" />
             {hand(-52, 358, 0, 14)}
             {hand(52, 356, 0, 14)}
           </g>
@@ -395,8 +428,30 @@ export const Character: React.FC<CharacterProps> = ({
           <path d="M4,-14 h20 v16 h-26 a8,8 0 0 1 -8,-8 q0,-8 14,-8 Z" fill="#fff" opacity={0.14} />
           <path d="M-6,-3 h52" stroke={INK} strokeWidth={2.4} opacity={0.45} strokeLinecap="round" />
         </g>
-        {/* torso (breath + walk bob) */}
-        <g transform={`translate(0,${-160 + bob + walkBob}) scale(1,${breath}) translate(0,160)`}>
+        {/*
+          UPPER BODY — ONE motion for torso, arms and head.
+
+          These used to bob SEPARATELY: the torso by `bob` and the head by
+          `bob * 1.4`. That makes the head's offset from the shoulders
+          `-208 + 0.4*bob`, a number that changes every frame, so the skull slid
+          in and out of its own collar forever on a 2.5s cycle. A rigid body has
+          a CONSTANT offset. At the scales an episode actually uses (case 0002
+          goes to 3.1x) the slide is several pixels and reads exactly as the
+          owner described it on 2026-08-02: heads and mouths floating around,
+          bodies not aligned with the speaking.
+
+          The head must not inherit `breath` either, which scales the torso
+          vertically: a person breathing does not have a squashing skull. So the
+          bob lives on THIS group, which both parts share, and the breath scale
+          stays on the torso alone.
+
+          If you want the head to lead or lag the body, animate it INSIDE this
+          group with its own small term. Do not give it a second copy of the
+          body's motion.
+        */}
+        <g transform={`translate(0,${bob + walkBob + accent * 7}) rotate(${accent * 1.8} 0 0)`}>
+        {/* torso (breath) */}
+        <g transform={`translate(0,-160) scale(1,${breath}) translate(0,160)`}>
           <g transform="translate(0,-160)">
             <path d="M-92,-150 q6,-56 92,-56 q86,0 92,56 l10,144 q2,16 -16,16 h-172 q-18,0 -16,-16 Z" fill={`url(#${uid}_body)`} stroke={INK} strokeWidth={7} strokeLinejoin="round" />
             {/* core shade on the shadow side + rim light on the sun-facing (left) contour */}
@@ -526,8 +581,9 @@ export const Character: React.FC<CharacterProps> = ({
             <ellipse cx={47} cy={-96} rx={13} ry={9} fill={INK} opacity={0.13} />
           </g>
         </g>
-        {/* head — everyday Alaskan headgear (never the Native-coded fur ruff) */}
-        <g transform={`translate(0,${-368 + bob * 1.4 + walkBob})`}>
+        {/* head — everyday Alaskan headgear (never the Native-coded fur ruff).
+            Offset is CONSTANT. The bob it shares with the torso is on the parent. */}
+        <g transform={`translate(0,${-368 - accent * 4}) rotate(${accent * 2.6} 0 40)`}>
           {(() => {
             const hg = outfit === 'parka' ? 'trapper' : headgear;
             const beanieCol = c.main;
@@ -620,6 +676,7 @@ export const Character: React.FC<CharacterProps> = ({
             );
           })()}
         </g>
+        </g>{/* /upper body */}
       </g>
     </g>
   );

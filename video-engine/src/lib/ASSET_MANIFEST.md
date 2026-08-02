@@ -98,7 +98,19 @@ freshness comes from staging, camera and set, never from changing the cast. See
   silhouette, new livery — ACTIVE
 
 ## Characters (people)
-- `Character` — human rig — Character.tsx — poses: stand/arms-crossed/point/panic/raise (raise NEW 2026-07-20b: one arm thrust high w/ micro-sway, scenes mount a prop at the raised hand); emotions: neutral/angry/worried/shock/smug; outfits: parka/suit/worker/puffer/flannel/vest/referee (referee NEW 2026-07-20b: cream shirt w/ ink official stripes + collar + brass whistle on a lanyard); headgear: bare/beanie/cap/trapper/hood (bands raised off the eyes 2026-07-18b, no more 'burglar mask'); `talking` prop = TalkMouth lip-flap; form-shaded + rim + contact shadow — ACTIVE
+- `Character` — human rig — Character.tsx — poses: stand/arms-crossed/point/panic/raise (raise NEW 2026-07-20b: one arm thrust high w/ micro-sway, scenes mount a prop at the raised hand); emotions: neutral/angry/worried/shock/smug; outfits: parka/suit/worker/puffer/flannel/vest/referee (referee NEW 2026-07-20b: cream shirt w/ ink official stripes + collar + brass whistle on a lanyard); headgear: bare/beanie/cap/trapper/hood (bands raised off the eyes 2026-07-18b, no more 'burglar mask'); `talking` prop = ambient chat cycle (amplitude discarded); form-shaded + rim + contact shadow — ACTIVE
+  - **`mouth` + `accent` props (NEW 2026-08-02)** — the speaker's OWN voice drives
+    the rig. `mouth` is per-frame openness and `accent` is onset strength, both
+    from `scripts/vo_envelope.py`, which generates `caseNNNN_mouth.ts` from the
+    synthesized `vo.wav`. Gate both with `speakerAt()` so a LISTENER never moves.
+    Use `talking` only for background figures chatting under someone else's line.
+  - **Head is rigidly attached to the torso (FIXED 2026-08-02)** — head and torso
+    used to bob independently (`bob` vs `bob * 1.4`), so the skull slid in and out
+    of its own collar every 2.5s at up to several px, worse the closer the shot.
+    Both now share one upper-body group; the head does not inherit `breath`.
+  - **`stand` right-arm paint order (FIXED 2026-08-02)** — ink was stroked AFTER
+    the colour and 12px wider, so the default pose's right arm rendered as a solid
+    black bar with a detached-looking hand, in nearly every shot ever made.
 
 ## Characterized objects (heroes with a face / bespoke silhouette)
 - `ServerMachine` — the data-center/AI antagonist — kit.tsx — emotions: greedy/focused/nervous/shock/ghost; tints: steel/copper; `talking` prop = lip-flap — ACTIVE

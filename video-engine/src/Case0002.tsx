@@ -51,6 +51,7 @@ import {MainStreetBG} from './lib/biomes';
 import {MachineShadow} from './lib/kit';
 import {NightGrade, GradeLayer} from './lib/lighting';
 import {CAPTIONS, speakerAt, TOTAL as TOTAL_S} from './case0002_captions';
+import {openAt, accentAt} from './case0002_mouth';
 
 export const case0002Schema = z.object({total: z.number().optional()});
 
@@ -211,8 +212,22 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
      used only as a binary: the speaker's mouth moves, the listener's does not.
      Nothing has to stay in sync per word, which is the whole point. */
   const who = speakerAt(frame / FPS);
-  const rayTalks = who === 'RAY' ? 1 : undefined;
-  const deeTalks = who === 'DEE' ? 1 : undefined;
+
+  /* The SPEAKER's mouth runs on their own voice (scripts/vo_envelope.py), their
+     body hits the onsets, and they carry full idle. The LISTENER's mouth is shut
+     and their idle is damped to a third, so at any instant the only real motion
+     in frame belongs to whoever is talking. That is what makes a two-shot
+     legible without lip-sync accuracy, and it is the half the first cut was
+     missing: everything moved all the time, on sines that did not know a word
+     was happening. */
+  const rayMouth = who === 'RAY' ? openAt(frame) : undefined;
+  const deeMouth = who === 'DEE' ? openAt(frame) : undefined;
+  const rayAccent = who === 'RAY' ? accentAt(frame) : 0;
+  const deeAccent = who === 'DEE' ? accentAt(frame) : 0;
+  const rayIdle = who === 'RAY' ? 1 : 0.32;
+  const deeIdle = who === 'DEE' ? 1 : 0.32;
+  const rayVoice = {mouth: rayMouth, accent: rayAccent, idleGain: rayIdle};
+  const deeVoice = {mouth: deeMouth, accent: deeAccent, idleGain: deeIdle};
 
   /* The night street, lit only by what the scene DECLARES. NightGrade blooms
      only at registered sources by design, so the warm shop windows are the one
@@ -246,7 +261,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
       <Sequence from={at(CUT_ON[0])} durationInFrames={shot(0)}>
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
-          <Ray frame={frame} x={540} y={1470} scale={1.5} emotion="angry" pose="arms-crossed" talking={rayTalks} />
+          <Ray frame={frame} x={540} y={1470} scale={1.5} emotion="angry" pose="arms-crossed" {...rayVoice} />
         </Art>
         {night}
       </Sequence>
@@ -263,9 +278,9 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
           <Ray frame={frame} x={348} y={1486} scale={1.32} facing={1} emotion="angry"
-               pose={frame >= s(7.77) ? 'point' : 'stand'} talking={rayTalks} />
+               pose={frame >= at(2) ? 'point' : 'stand'} {...rayVoice} />
           <Dee frame={frame} x={744} y={1468} scale={1.3}
-               pose={frame >= s(9.18) ? 'raise' : 'stand'} talking={deeTalks} />
+               pose={frame >= at(3) ? 'raise' : 'stand'} {...deeVoice} />
         </Art>
         {night}
       </Sequence>
@@ -274,7 +289,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
       <Sequence from={at(CUT_ON[2])} durationInFrames={shot(2)}>
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
-          <Dee frame={frame} x={648} y={1690} scale={1.86} talking={deeTalks} />
+          <Dee frame={frame} x={648} y={1690} scale={1.86} {...deeVoice} />
         </Art>
         {night}
 
@@ -288,7 +303,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
 
         {/* 66,383 lands beneath it at the SAME size and weight. The episode's one
             and only highlighter swipe goes here, on the worse number. */}
-        <Sequence from={s(2.93)}>
+        <Sequence from={at(5) - at(CUT_ON[2])}>
           <Page frame={frame - s(16.59)} top={606} rot={0.9}>
             <div style={{fontFamily: BODY, fontSize: 26, letterSpacing: '0.2em', opacity: 0.62}}>
               CAMPAIGN 26V415000, JUNE 2026
@@ -308,8 +323,8 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
           <Ray frame={frame} x={498} y={1858} scale={2.52}
-               emotion={frame >= s(21.28) ? 'shock' : 'angry'}
-               pose={frame >= s(21.28) ? 'panic' : 'arms-crossed'} talking={rayTalks} />
+               emotion={frame >= at(6) ? 'shock' : 'angry'}
+               pose={frame >= at(6) ? 'panic' : 'arms-crossed'} {...rayVoice} />
         </Art>
         {night}
       </Sequence>
@@ -322,10 +337,10 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
           <Dee frame={frame} x={760} y={1606} scale={1.62} pose="raise"
-               emotion={frame < s(31.74) ? DEE_CRACK : 'neutral'} talking={deeTalks} />
+               emotion={frame < at(8) ? DEE_CRACK : 'neutral'} {...deeVoice} />
           <Ray frame={frame} x={318} y={1628} scale={1.7} facing={1}
-               emotion={frame >= s(31.74) ? 'smug' : 'angry'}
-               pose={frame >= s(31.74) ? 'arms-crossed' : 'point'} talking={rayTalks} />
+               emotion={frame >= at(8) ? 'smug' : 'angry'}
+               pose={frame >= at(8) ? 'arms-crossed' : 'point'} {...rayVoice} />
         </Art>
         {night}
 
@@ -364,8 +379,8 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
           <MachineShadow x={540} y={1180} scale={3.1} f={frame} grow={1} />
         </Art>
         <Art frame={frame} rate={0.2}>
-          <Ray frame={frame} x={286} y={1742} scale={0.72} facing={1} emotion="angry" pose="stand" talking={rayTalks} />
-          <Dee frame={frame} x={806} y={1734} scale={0.7} talking={deeTalks} />
+          <Ray frame={frame} x={286} y={1742} scale={0.72} facing={1} emotion="angry" pose="stand" {...rayVoice} />
+          <Dee frame={frame} x={806} y={1734} scale={0.7} {...deeVoice} />
         </Art>
         {night}
         <InstitutionPlate
