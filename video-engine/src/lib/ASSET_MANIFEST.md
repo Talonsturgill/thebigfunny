@@ -49,6 +49,15 @@ component is a fact. Reasoning in `knowledge/BRAND_BIBLE.md`.
 - `EndCard` — brand.tsx — case number plus the promise, nothing else. No
   subscribe animation, no end-screen clutter: a show whose pitch is "we have the
   receipt" should not end by begging — ACTIVE
+- `Stamp` / `Wordmark` / `EndCard` GAINED `color` and `blend` — brand.tsx —
+  UPGRADED 2026-08-02 (case 0002), registered in the same commit. Both props
+  exist so the one-stamp rule can be HONOURED rather than asserted. Wordmark and
+  EndCard render through Stamp, which defaults to STAMP red, so any episode that
+  also stamped its receipt was spending the red token three times and halving it
+  twice. `blend` exists because ink-into-paper is a multiply, which is correct on
+  a light ground and invisible on a dark one: a pale wordmark on a night frame
+  disappeared completely until it could ask for 'normal'. Defaults are unchanged,
+  so nothing already shipped moves — ACTIVE
 - Palette `BRAND` = INK / MANILA / CARBON / STAMP / HIGHLIGHT / PAPER. Built ON
   existing library tokens (INK from Character.tsx, HIGHLIGHT from FX.tsx, CARBON
   is PaperOfficeBG's dark anchor) rather than beside them, so brand and art
@@ -93,7 +102,12 @@ freshness comes from staging, camera and set, never from changing the cast. See
 
 ## Characterized objects (heroes with a face / bespoke silhouette)
 - `ServerMachine` — the data-center/AI antagonist — kit.tsx — emotions: greedy/focused/nervous/shock/ghost; tints: steel/copper; `talking` prop = lip-flap — ACTIVE
-- `MachineShadow` — faceless institutional monolith (no face, deliberately cold) — Episode.tsx (2026-07-18) — form-shaded + brushed metal + rim + contact shadow — ACTIVE
+- `MachineShadow` — faceless institutional monolith (no face, deliberately cold) — **kit.tsx** (built 2026-07-18 in Episode.tsx, PROMOTED to kit.tsx 2026-07-22) — form-shaded + brushed metal + rim + contact shadow — ACTIVE
+  - PATH CORRECTED 2026-08-02 (case 0002). This entry still read "Episode.tsx"
+    three weeks after the promotion, while Episode.tsx had been overwritten twice
+    and no longer contained it. Gate 0 caught it as a blocker on the one asset
+    the show cannot ship without. That is the manifest-drift bug class this file
+    warns about twice over, committed by the manifest itself.
 - `Sourdough` — NET-NEW 2026-07-19 — personified regional power plant hero, warm/rounded/blocky (deliberate shape-language OPPOSITE of ServerMachine/MachineShadow's cold rectilinear institutions) — kit.tsx — emotions: proud/confident/faltering/frozen; `glow` 0..1 drives his furnace-window-chest emotional tell (dims at a story's turn); `accent` 0..1 for VO-emphasis reactivity; form-shaded + rim + contact shadow — ACTIVE
 - `Cell` — NET-NEW 2026-07-19 — battery-storage sidekick on sled runners, a genuine parallel-bet visual (grid-modernization hedge) — kit.tsx — `chargeLevel` 0/1/2 charge-bar face; form-shaded + rim + contact shadow — ACTIVE
 - `SatelliteEye` — NET-NEW 2026-07-23 — the imaging-satellite AI-presence hero for "Counting Belugas From Orbit" (NOAA GAIA machine-vision). Deliberate shape language: a compact, boxy, wide-winged, EARNEST little worker looking down at Earth, the opposite of a cold institutional monolith. A single DOWNWARD camera-EYE is the emotional tell (iris dilates while `searching`, squints under `strain`, CLAMPS small+bright when `found` with lock ticks, cyan scanning to amber found). `emotion` searching/straining/found/waiting; `eyeLock` 0..1; `accent` 0..1 VO-reactivity; `scanCone` 0..1 fades a downward imaging cone; `strain` 0..1 a comic squint + faint sweat bead (satellite only, NEVER the whale). Indigo solar wings w/ cell grid + sun-glint, high-gain dish, blinking lights, thruster nozzles. Built to the depth bar (tones/FormGradient/RimLight/ContactShadow) with idle bob + blink + panel shimmer — kit.tsx — ACTIVE

@@ -151,18 +151,140 @@ def cues(lines_out):
             for l in lines_out]
 
 
+def trim_silence(a, sr, thr_db=-42.0, keep=0.06):
+    """Strip the dead air Gemini pads onto every take.
+
+    MEASURED 2026-08-02 across all three voices: each take carries about 0.25s
+    of leading and 0.30s of trailing silence. Untrimmed, a 16 line episode
+    spends nearly nine seconds saying nothing, which on a show with a HARD 60
+    second ceiling is most of a beat wasted. Worse, the padding lands INSIDE the
+    line's slot, so a take that fits perfectly well overruns and fails the run
+    for a reason that has nothing to do with the writing.
+
+    It also makes captions.json honest: the cue's end is the end of the SPEECH,
+    not the end of the file, so a burned-in caption does not hang on screen over
+    silence.
+
+    Deliberately conservative. The threshold is low (-42 dBFS), the envelope is
+    smoothed over 20ms so a single tick cannot defeat the trim, and `keep`
+    leaves a little air on each end so a plosive onset is never clipped. If the
+    take is silent end to end it is returned untouched rather than reduced to
+    nothing, because an empty array downstream would be a much harder failure to
+    read than a silent line.
+    """
+    import numpy as np
+    thr = 10 ** (thr_db / 20.0)
+    w = max(1, int(0.02 * sr))
+    sm = np.convolve(np.abs(a), np.ones(w) / w, mode="same")
+    idx = np.where(sm > thr)[0]
+    if len(idx) == 0:
+        return a
+    pad = int(keep * sr)
+    i0 = max(0, idx[0] - pad)
+    i1 = min(len(a), idx[-1] + 1 + pad)
+    return a[i0:i1]
+
+
+TAKES = os.path.join(OUT, "takes")
+# Breathing room between lines. Small, because a sixty second show cannot afford
+# air, but non-zero because two takes butted together sound like one person
+# gasping.
+GAP = 0.26
+
+
+def take(p, sr):
+    """Synthesize one line, trimmed, CACHED on disk by (voice, style, text).
+
+    The cache is the point. Before it, fitting a script meant guessing a
+    words-per-second rate, failing on the first overrun, editing, and paying for
+    every take again. Rates are not stable enough for that to converge: measured
+    on 2026-08-02 the same voice ran 2.07 w/s on one line and 2.43 on another,
+    because a full stop mid-line buys a pause the word count cannot see. So
+    measure once, keep the audio, and lay the timeline out from what the takes
+    ACTUALLY are.
+    """
+    import hashlib
+    import wave as _wave
+    import numpy as np
+    import vo_gemini
+
+    style = CAST[p["who"]]["style"]
+    key = hashlib.sha1(f"{p['voice']}|{style}|{p['text']}".encode()).hexdigest()[:16]
+    path = os.path.join(TAKES, f"{key}.wav")
+    if os.path.exists(path):
+        with _wave.open(path, "rb") as w:
+            return np.frombuffer(w.readframes(w.getnframes()), dtype="<i2").astype("float32") / 32767.0
+    # Gemini TTS sometimes answers HTTP 200 with finishReason OTHER and no audio
+    # at all. vo_gemini retries 429/500/503 but not that, so a single random
+    # empty response would kill a whole run after most of the takes were already
+    # paid for. Observed live on 2026-08-02. Retry it here; it is transient.
+    a = None
+    for attempt in range(4):
+        try:
+            a = trim_silence(vo_gemini.synth(p["text"], voice=p["voice"], style=style), sr)
+            break
+        except RuntimeError as e:
+            if "no audio in response" not in str(e) or attempt == 3:
+                raise
+            print(f"    retry {attempt + 1}/3 ({p['who']}, empty TTS response)")
+    os.makedirs(TAKES, exist_ok=True)
+    with _wave.open(path, "wb") as w:
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr)
+        w.writeframes((np.clip(a, -1, 1) * 32767).astype("<i2").tobytes())
+    return a
+
+
+def fit(script, planned, path):
+    """Lay the timeline out from MEASURED take durations and write it back.
+
+    This does NOT weaken the rule that the picture follows the script rather
+    than the audio. It sets the script's numbers ONCE, from the real takes, and
+    then everything downstream (storyboard, scene bounds, captions) is cut to
+    those same frozen numbers. One source of truth, chosen with the facts in
+    hand instead of guessed.
+    """
+    sys.path.insert(0, SKILL)
+    from vo_backends import SR
+
+    cursor, rows = 0.0, []
+    for p in planned:
+        dur = len(take(p, SR)) / SR
+        rows.append((p, round(cursor, 2), dur))
+        cursor += dur + GAP + float(p.get("hold", 0.0))
+    end = cursor - GAP
+    total = end + TAIL
+
+    for p, t0, dur in rows:
+        print(f"  {p['who']:<12} {t0:>5.2f}s  {dur:>5.2f}s  {p['text'][:46]}")
+    print(f"\n  spoken ends {end:.2f}s, +{TAIL}s tail = {total:.2f}s")
+
+    if total > MAX_TOTAL_S:
+        over = total - MAX_TOTAL_S
+        print(f"\nfit: FAIL. {over:.2f}s over the {MAX_TOTAL_S}s law. CUT roughly "
+              f"{int(over * 2.2)} words. Do NOT raise the ceiling; it is a law.",
+              file=sys.stderr)
+        return 1
+
+    by_idx = {id(p): t0 for p, t0, _ in rows}
+    spoken = [l for l in script["lines"] if l["who"] in SPOKEN]
+    for l, p in zip(spoken, planned):
+        l["t"] = by_idx[id(p)]
+    script["estimated_seconds"] = round(end, 2)
+    json.dump(script, open(path, "w"), indent=2)
+    print(f"\nfit: wrote {len(spoken)} timings to {path}. estimated_seconds={end:.2f}")
+    return 0
+
+
 def synth_all(planned, script):
     sys.path.insert(0, SKILL)
     import numpy as np
-    import vo_gemini
     from vo_backends import SR
 
     total_s = script["estimated_seconds"] + TAIL
     track = np.zeros(int(total_s * SR), dtype="float32")
     lines_out = []
     for p in planned:
-        style = CAST[p["who"]]["style"]
-        a = vo_gemini.synth(p["text"], voice=p["voice"], style=style)
+        a = take(p, SR)
         dur = len(a) / SR
         if dur > p["slot"] + 0.35:
             raise SystemExit(
@@ -248,13 +370,23 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--script", help="default out/dispatch/script.json")
     ap.add_argument("--dry-run", action="store_true", help="casting + timing, no API")
+    ap.add_argument("--fit", action="store_true",
+                    help="synthesize (cached), measure, and rewrite the line timings "
+                         "from the REAL take durations")
     ap.add_argument("--self-test", action="store_true")
     a = ap.parse_args()
     if a.self_test:
         return self_test()
 
-    script = load_script(a.script)
+    path = a.script or os.path.join(OUT, "script.json")
+    script = load_script(path)
     planned = plan(script)
+
+    if a.fit:
+        if not (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")):
+            print("\nvo_cast --fit needs GEMINI_API_KEY to measure the takes.", file=sys.stderr)
+            return 1
+        return fit(script, planned, path)
     rows = check(script, planned)
     for n, ok, d in rows:
         print(f"  {'ok  ' if ok else 'FAIL'} {n:<44} {d}")

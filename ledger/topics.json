@@ -18,6 +18,14 @@
       "subject": "microsoft-365-packaging-and-pricing-update",
       "target": "Microsoft",
       "summary": "Price rise called a 'packaging and pricing update'; the official FAQ contains no prices."
+    },
+    {
+      "run_date": "2026-08-02",
+      "episode_no": 2,
+      "beat": "cross-cutting",
+      "subject": "ford-pedestrian-alert-recall-expansion-26V415000",
+      "target": "Ford Motor Company",
+      "summary": "Recalled 43,438 in Oct 2025 for a pedestrian warning sound, fixed by software, letters mailed Nov 5; in Jun 2026 the same recall came back covering 66,383 and the repaired cars must be repaired again."
     }
   ]
 }

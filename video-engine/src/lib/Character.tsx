@@ -458,7 +458,16 @@ export const Character: React.FC<CharacterProps> = ({
             {outfit === 'flannel' && (
               <g>
                 <path d="M0,-200 L0,4" stroke={INK} strokeWidth={5} />
-                {[-70, -20, 30].map((yy, i) => (
+                {/* BUG FIX 2026-08-02 (case 0002 panel, hard blocker): the third
+                    horizontal plaid stripe was at y=30. The coat silhouette bottoms
+                    out at y=10 (the body path ends `q2,16 -16,16`), and the stripe
+                    is drawn UNCLIPPED and AFTER the legs, so it painted a dark red
+                    arc in c.shade across the thighs of every flannel character in
+                    every shot. It read as a stray line cutting through the figure,
+                    and on a show whose law is one red per episode it also put an
+                    unintended STAMP-adjacent red on screen for the whole runtime.
+                    Same 50-unit spacing, moved inside the silhouette. */}
+                {[-120, -70, -20].map((yy, i) => (
                   <path key={`h${i}`} d={`M-90,${yy} q90,16 180,0`} fill="none" stroke={c.shade} strokeWidth={6} opacity={0.6} />
                 ))}
                 {[-50, 0, 50].map((xx, i) => (
