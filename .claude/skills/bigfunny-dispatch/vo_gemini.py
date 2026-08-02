@@ -171,8 +171,14 @@ def synth(text, voice=None, style=None, direction=None):
             raise RuntimeError(f"Gemini TTS {last}")
     else:
         raise RuntimeError(f"Gemini TTS still failing after retries. Last: {last}. "
-                           f"A persistent 429 means the key's TTS quota is exhausted (free tier caps the "
-                           f"preview TTS model very low); enable full billing or wait for the quota to reset.")
+                           f"A persistent 429 means the DAILY TTS quota for this model is exhausted.\n"
+                           f"  Do NOT assume this is the free tier. The rate-limit docs do not publish\n"
+                           f"  per-day limits for TTS models at all, and a PAID Tier 1 project hit a\n"
+                           f"  100/day wall on this preview model on 2026-08-02. Preview TTS is capped\n"
+                           f"  far tighter than the stable text models.\n"
+                           f"  Real limits: https://aistudio.google.com/rate-limit\n"
+                           f"  Tier 2 (the next lever) needs $100 paid AND 3 days elapsed, so it is\n"
+                           f"  time-gated as well as spend-gated and cannot be bought same-day.")
     try:
         b64 = resp["candidates"][0]["content"]["parts"][0]["inlineData"]["data"]
     except (KeyError, IndexError):

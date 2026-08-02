@@ -42,8 +42,14 @@ from datetime import datetime, timezone
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 LEDGER = os.path.join(REPO, "ledger", "tts_spend.json")
 
-# The provider's real daily ceiling for the preview TTS model. Not a guess: it
-# is the number in the 429 the run actually hit.
+# The daily ceiling observed on this account. Not a guess: it is the number in
+# the 429 the run actually hit, on a PAID project, not the free tier.
+#
+# Google does not publish per-day limits for TTS models in the rate-limit docs
+# (they list batch token limits only), so the live number lives at
+# https://aistudio.google.com/rate-limit and nowhere else. Preview TTS models are
+# capped far tighter than the stable text models. The next lever is Tier 2,
+# which requires $100 paid AND 3 days elapsed, so it cannot be bought same-day.
 HARD_CAP = int(os.environ.get("BIGFUNNY_TTS_DAILY_CAP", "100"))
 # Stop here instead, so a run always keeps enough headroom to finish ONE clean
 # synthesis of a whole episode after whatever it has already spent. An episode
