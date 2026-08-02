@@ -56,7 +56,7 @@ export const case0002Schema = z.object({total: z.number().optional()});
 
 const FPS = 30;
 const s = (sec: number) => Math.round(sec * FPS);
-const TOTAL = s(43.70);
+const TOTAL = s(48.87);
 
 const HEAD = 'Arial Black, DejaVu Sans, FreeSans, sans-serif';
 const BODY = 'Arial, DejaVu Sans, FreeSans, sans-serif';
@@ -219,7 +219,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
     <AbsoluteFill style={{background: '#0D141C'}}>
 
       {/* ---------- S1  the hook. cold open, NO logo. 0.00 - 6.54 ---------- */}
-      <Sequence from={0} durationInFrames={s(3.46)}>
+      <Sequence from={0} durationInFrames={s(4.63)}>
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
           <Ray frame={frame} x={540} y={1470} scale={1.5} emotion="angry" pose="arms-crossed" talking={rayTalks} />
@@ -235,19 +235,19 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
       </Sequence>
 
       {/* ---------- S2  the turn. Dee arrives with the printout. 6.54 - 17.88 ---------- */}
-      <Sequence from={s(3.46)} durationInFrames={s(8.47)}>
+      <Sequence from={s(4.63)} durationInFrames={s(9.03)}>
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
           <Ray frame={frame} x={348} y={1486} scale={1.32} facing={1} emotion="angry"
-               pose={frame >= s(6.46) ? 'point' : 'stand'} talking={rayTalks} />
+               pose={frame >= s(7.77) ? 'point' : 'stand'} talking={rayTalks} />
           <Dee frame={frame} x={744} y={1468} scale={1.3}
-               pose={frame >= s(7.54) ? 'raise' : 'stand'} talking={deeTalks} />
+               pose={frame >= s(9.18) ? 'raise' : 'stand'} talking={deeTalks} />
         </Art>
         {night}
       </Sequence>
 
       {/* ---------- S3  THE RATIO. two counts, placed, no commentary. 17.88 - 26.48 ---------- */}
-      <Sequence from={s(11.93)} durationInFrames={s(7.02)}>
+      <Sequence from={s(13.66)} durationInFrames={s(7.62)}>
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
           <Dee frame={frame} x={648} y={1690} scale={1.86} talking={deeTalks} />
@@ -255,7 +255,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
         {night}
 
         {/* 43,438 lands first, on paper, and is NEVER marked. */}
-        <Page frame={frame - s(11.93)} top={286} rot={-1.1}>
+        <Page frame={frame - s(13.66)} top={286} rot={-1.1}>
           <div style={{fontFamily: BODY, fontSize: 26, letterSpacing: '0.2em', opacity: 0.62}}>
             CAMPAIGN 25V691000, OCTOBER 2025
           </div>
@@ -264,13 +264,13 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
 
         {/* 66,383 lands beneath it at the SAME size and weight. The episode's one
             and only highlighter swipe goes here, on the worse number. */}
-        <Sequence from={s(3.03)}>
-          <Page frame={frame - s(14.96)} top={606} rot={0.9}>
+        <Sequence from={s(2.93)}>
+          <Page frame={frame - s(16.59)} top={606} rot={0.9}>
             <div style={{fontFamily: BODY, fontSize: 26, letterSpacing: '0.2em', opacity: 0.62}}>
               CAMPAIGN 26V415000, JUNE 2026
             </div>
             <div style={{position: 'relative', display: 'inline-block', marginTop: 6}}>
-              <Highlighter frame={frame - s(16.06)} width={430} height={78} x={-10} y={16} />
+              <Highlighter frame={frame - s(17.9)} width={430} height={78} x={-10} y={16} />
               <div style={{position: 'relative', fontFamily: HEAD, fontWeight: 900, fontSize: 96}}>
                 66,383
               </div>
@@ -280,12 +280,12 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
       </Sequence>
 
       {/* ---------- S4  Ray finds out. performance, not graphics. 26.48 - 35.77 ---------- */}
-      <Sequence from={s(18.95)} durationInFrames={s(5.69)}>
+      <Sequence from={s(21.28)} durationInFrames={s(6.26)}>
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
           <Ray frame={frame} x={498} y={1858} scale={2.52}
-               emotion={frame >= s(18.95) ? 'shock' : 'angry'}
-               pose={frame >= s(18.95) ? 'panic' : 'arms-crossed'} talking={rayTalks} />
+               emotion={frame >= s(21.28) ? 'shock' : 'angry'}
+               pose={frame >= s(21.28) ? 'panic' : 'arms-crossed'} talking={rayTalks} />
         </Art>
         {night}
       </Sequence>
@@ -294,18 +294,18 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
           Gate 0 blocker: draw the SORTING, never the speakers. Two rows, both
           verbatim from the record, so the picture states the eligibility rule
           rather than pointing at a part. */}
-      <Sequence from={s(24.64)} durationInFrames={s(7.53)}>
+      <Sequence from={s(27.54)} durationInFrames={s(9.43)}>
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
           <Dee frame={frame} x={760} y={1606} scale={1.62} pose="raise"
-               emotion={frame < s(29.22) ? DEE_CRACK : 'neutral'} talking={deeTalks} />
+               emotion={frame < s(31.74) ? DEE_CRACK : 'neutral'} talking={deeTalks} />
           <Ray frame={frame} x={318} y={1628} scale={1.7} facing={1}
-               emotion={frame >= s(29.22) ? 'smug' : 'angry'}
-               pose={frame >= s(29.22) ? 'arms-crossed' : 'point'} talking={rayTalks} />
+               emotion={frame >= s(31.74) ? 'smug' : 'angry'}
+               pose={frame >= s(31.74) ? 'arms-crossed' : 'point'} talking={rayTalks} />
         </Art>
         {night}
 
-        <Page frame={frame - s(24.64)} top={430} rot={-0.7} delay={s(0.5)}>
+        <Page frame={frame - s(27.54)} top={430} rot={-0.7} delay={s(0.5)}>
           <div style={{fontFamily: BODY, fontSize: 25, letterSpacing: '0.2em', opacity: 0.6}}>
             REMEDY, BY VEHICLE
           </div>
@@ -334,7 +334,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
           the monolith exceeds the top of frame and the pair are small at the
           bottom edge. Its shape language is "too large for frame", and eye level
           down a road made it read as a distant building. */}
-      <Sequence from={s(32.17)} durationInFrames={s(7.40)}>
+      <Sequence from={s(36.97)} durationInFrames={s(6.57)}>
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.5}>
           <MachineShadow x={540} y={1180} scale={3.1} f={frame} grow={1} />
@@ -345,7 +345,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
         </Art>
         {night}
         <InstitutionPlate
-          frame={frame - s(32.17)}
+          frame={frame - s(36.97)}
           text={'"Interim letters notifying owners of the safety risk are expected to be mailed August 03, 2026. Additional letters will be sent once the remedy is available."'}
         />
       </Sequence>
@@ -355,7 +355,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
           what makes it read as evidence. It sits OUTSIDE NightGrade on purpose:
           the cold cast and black floor would drag PAPER to muddy blue-grey on
           the one frame that has to look like real paper. */}
-      <Sequence from={s(39.57)} durationInFrames={s(3.33)}>
+      <Sequence from={s(43.54)} durationInFrames={s(3.83)}>
         <AbsoluteFill style={{background: BRAND.PAPER}}>
           <div style={{
             position: 'absolute', left: 74, right: 74, top: 372,
@@ -376,7 +376,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
           <div style={{position: 'absolute', left: 74, right: 74, top: 610}}>
             <div style={{
               borderLeft: `10px solid ${BRAND.CARBON}`, paddingLeft: 26,
-              opacity: interpolate(frame - s(39.57), [4, 12], [0, 1],
+              opacity: interpolate(frame - s(43.54), [4, 12], [0, 1],
                 {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
             }}>
               <div style={{fontFamily: BODY, fontSize: 27, letterSpacing: '0.18em', color: BRAND.INK, opacity: 0.62}}>
@@ -390,7 +390,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
 
             <div style={{
               marginTop: 44, borderLeft: `10px solid ${BRAND.CARBON}`, paddingLeft: 26,
-              opacity: interpolate(frame - s(39.57), [16, 24], [0, 1],
+              opacity: interpolate(frame - s(43.54), [16, 24], [0, 1],
                 {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
             }}>
               <div style={{fontFamily: BODY, fontSize: 27, letterSpacing: '0.18em', color: BRAND.INK, opacity: 0.62}}>
@@ -408,14 +408,14 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
           <div style={{
             position: 'absolute', left: 74, right: 74, top: 1170,
             fontFamily: BODY, fontSize: 46, lineHeight: 1.4, color: BRAND.INK,
-            opacity: interpolate(frame - s(39.57), [26, 34], [0, 0.9],
+            opacity: interpolate(frame - s(43.54), [26, 34], [0, 0.9],
               {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
           }}>
             "Any vehicles previously repaired under 25V691 must have the new remedy completed."
           </div>
 
           {/* THE ONE STAMP. The only BRAND.STAMP red in the episode. */}
-          <Stamp frame={frame - s(41.1)} fps={fps} x={742} y={790} rotate={-12}>
+          <Stamp frame={frame - s(45.2)} fps={fps} x={742} y={790} rotate={-12}>
             <div style={{fontSize: 66, border: '8px solid currentColor', padding: '8px 24px'}}>
               AGAIN
             </div>
@@ -425,14 +425,14 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
 
       {/* Captions ride everything except the button and the end card: the receipt
           is evidence and must not be covered by burned-in type. */}
-      {frame < s(32.17) && <Caption frame={frame} />}
+      {frame < s(36.97) && <Caption frame={frame} />}
 
       {/* End card: case number and the promise. Nothing else. INK, not red. */}
-      <Sequence from={s(42.90)}>
-        <EndCard n={2} frame={frame - s(42.90)} fps={fps} color={BRAND.INK} />
+      <Sequence from={s(47.37)}>
+        <EndCard n={2} frame={frame - s(47.37)} fps={fps} color={BRAND.INK} />
       </Sequence>
 
-      {frame < s(39.57) && <CaseNumber n={2} y={92} color={BRAND.PAPER} />}
+      {frame < s(43.54) && <CaseNumber n={2} y={92} color={BRAND.PAPER} />}
     </AbsoluteFill>
   );
 };

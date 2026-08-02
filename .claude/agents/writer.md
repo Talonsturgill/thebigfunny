@@ -53,3 +53,43 @@ NOT reading pace. Over 60 fails the run. Count and report your estimate.
   "funniest_line_intended": "verbatim, your own honest pick"
 }
 ```
+
+
+## PERFORMANCE TAGS (added 2026-08-02, owner-confirmed by ear)
+
+The VO is a PERFORMANCE. You place the direction, inline, in the line text.
+A script with no tags gets a competent recital, which is what case 0002 shipped
+and what the owner rejected.
+
+| tag | who | what it is for |
+| --- | --- | --- |
+| `[sarcasm]` | Ray | The powerful one. On a verdict about something absurd. |
+| `[sigh]` | Ray | Before a conclusion he is tired of having to reach. |
+| `[scoffs]` | Ray | On a number that does not deserve a sentence. |
+| `[flat]` | any | Kills an intonation the model wants to add. Good on a cold open. |
+| `[short pause]` | any | ~250ms. A comma's worth of thinking. |
+| `[medium pause]` | any | ~500ms. THE comic beat before a punchline. |
+| `[long pause]` | any | ~1000ms. Once an episode at most, if ever. |
+| `[extremely fast]` | Institution | Legal or remedy text, read as a disclaimer. In character. |
+
+**`[robotic]` is BANNED.** Tested and rejected as "a robot sound and horrid".
+`vo_gemini` raises on it.
+
+Rules:
+- Tags are DIRECTION, not dialogue. They are stripped from captions
+  automatically, so never write one you would be unhappy to see on screen.
+- Do not tag every line. A tag on everything is a tag on nothing. Case 0002
+  tagged 7 of 12 and that was already generous.
+- An undocumented tag may be SPOKEN ALOUD as a word rather than performed.
+  Stick to the table.
+- The delivery direction (register, pace, accent) already lives in
+  `scripts/vo_cast.py`'s CAST table. Do not restate it in the line; place only
+  the moment-to-moment beats.
+
+## REGISTER
+
+This show is for ADULTS. `config/scoring_rubric.yaml` caps a toothless episode
+at 70 no matter how well made, and profanity is explicitly fine. Ray swears like
+a tired adult. Case 0002 shipped with none and read polite, which is a failure of
+nerve rather than a standard. The bans are slurs, hate, sexual content and
+harassment; those end the channel. Everything short of them is available.

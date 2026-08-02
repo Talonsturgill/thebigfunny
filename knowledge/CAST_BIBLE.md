@@ -134,6 +134,26 @@ and the thing no competitor does, because no competitor has a fact-check gate.
 
 ---
 
+## How the cast is PERFORMED
+
+The voice is not a rendering step, it is casting. Locked 2026-08-02 after A/B on
+real takes.
+
+- Ray is **Algenib**, Dee is **Schedar**, the Institution is **Despina**, on
+  `gemini-3.1-flash-tts-preview`.
+- Each carries a full director's brief in `scripts/vo_cast.py`: an audio profile,
+  a scene, and notes split into style, pace and accent. A bare style string
+  produces a reading rather than a performance, which is the defect the owner
+  caught in case 0002.
+- Fluctuation comes from PERFORMANCE TAGS placed in the script: `[sarcasm]`,
+  `[sigh]`, `[scoffs]`, `[flat]`, `[short pause]`, `[medium pause]`, and
+  `[extremely fast]` for the Institution's clauses. The full table is in
+  `.claude/agents/writer.md`.
+- **`[robotic]` is banned.** It makes a prebuilt voice sound synthetic, which is
+  precisely the thing this show had to fix.
+- `scripts/vo_soundcheck.py` gates the built VO for malfunction. It cannot judge
+  tone, and its header explains, with data, why nobody should ask it to.
+
 ## Casting a fourth
 
 Do not, without a real reason. Every added character dilutes the two who work

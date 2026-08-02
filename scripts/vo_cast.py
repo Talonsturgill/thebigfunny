@@ -62,43 +62,81 @@ CAST = {
     "RAY": {
         # Gravelly. Ray is a tired adult who has already found out, not an
         # excited one. A bright voice makes him a ranter and the register dies.
-        #
-        # PACE REWRITTEN 2026-08-02. The old direction was "in a flat, tired,
-        # matter-of-fact voice ... Land on the last word and stop", and it was
-        # doing two kinds of damage at once. It ran him at 2.33 words/sec, about
-        # 140wpm, against 150-190 for ordinary American speech, so he sounded
-        # robotic. And "flat, tired" is a note for a man who has given up, not
-        # one who is annoyed, which made a show billed as savage sound polite.
-        # Measured on the same line and the same voice, this direction runs 3.75
-        # w/s. Ray is ANNOYED and IN A HURRY, not sedated.
         "voice": "Algenib",
-        "style": ("fast and clipped, the way someone talks when they are annoyed "
-                  "and in a hurry. Flat, unimpressed, almost throwaway. Run the "
-                  "sentences together. Absolutely no pauses"),
+        "name": "Ray",
+        "scene": ("A quiet street at night. Ray has just read a federal filing. He is "
+                  "not shocked and he is not performing outrage; he found out ten "
+                  "minutes ago and already reached his verdict. He is a tired working "
+                  "adult who is annoyed and wants the conversation over with."),
+        "style": ("Flat, unimpressed, deadpan American, and genuinely irritated. The "
+                  "contempt points UPWARD at the institution and never at the person "
+                  "he is talking to. He is RIGHT and he knows it. He arrives at "
+                  "verdicts, he never rants, and he never explains the joke. Let real "
+                  "annoyance colour the words rather than volume. He swears like a "
+                  "tired adult, never like an excited teenager."),
+        "pace": ("Fast and clipped. Run the sentences together. No dramatic pauses "
+                 "except where the transcript marks one, no drawn-out words, no "
+                 "announcer cadence."),
+        "accent": "General American, working class.",
+        # Kept so --dry-run and older callers still work.
+        "style_legacy": "fast and clipped, annoyed and unimpressed",
     },
     "DEE": {
         # Even. Her comedy is total deadpan delivery of something insane, so the
-        # voice must not lift at the end of a sentence. Same pace correction as
-        # Ray: she was reading at 1.84 w/s, which is dictation, not deadpan.
-        # Deadpan is a REFUSAL to react, and it is delivered at normal speed.
+        # voice must not lift at the end of a sentence.
         "voice": "Schedar",
-        "style": ("at a brisk natural conversational pace, precise and completely "
-                  "deadpan, reading off a document. No rising intonation. Do not "
-                  "pause between sentences"),
+        "name": "Dee",
+        "scene": ("The same street. Dee is holding the printout and reading from it. "
+                  "She has already checked the numbers twice and none of it surprises "
+                  "her any more."),
+        "style": ("Precise, dry, completely deadpan, reading off a document. Deadpan is "
+                  "a REFUSAL to react, not sleepiness. No rising intonation at the end "
+                  "of a sentence. She cites; she does not editorialise. She is allowed "
+                  "exactly one crack in composure per episode and the transcript will "
+                  "mark it."),
+        "pace": ("Brisk and natural, the speed of someone reading a fact they find "
+                 "unremarkable. Do not pause between sentences unless the transcript "
+                 "marks it."),
+        "accent": "General American.",
+        "style_legacy": "precise, dry and completely deadpan, reading from a document",
     },
     "INSTITUTION": {
         # Smooth. The politeness is the menace, so it must sound HELPFUL, never
         # threatening. This is hold music with a mouth.
         "voice": "Despina",
-        # Also paced up, but LESS than the other two on purpose. A recorded
-        # phone menu speaks at normal speed; it is the evenness that menaces,
-        # not the slowness. Dragging just made it sound broken instead of calm.
-        "style": ("in a smooth, pleasant, automated corporate voice at a normal "
-                  "announcement pace, unfailingly polite and slightly too even, "
-                  "like a recorded phone menu. Do not slow down for emphasis"),
+        "name": "The Institution",
+        "scene": ("An automated telephone system reading a policy clause to a customer "
+                  "who has been on hold. Nobody is present. Nothing is being decided."),
+        "style": ("Smooth, pleasant, unfailingly polite corporate automation. The "
+                  "POLITENESS is the menace, never threat. It does not acknowledge the "
+                  "question it was asked. It has no opinion because it is a process "
+                  "working exactly as designed. NEVER use the [robotic] tag: it is "
+                  "banned in vo_gemini and it makes this sound broken rather than calm."),
+        "pace": ("Normal announcement pace, slightly too even. A recorded menu does not "
+                 "drag. Legal and remedy clauses may be marked [extremely fast] in the "
+                 "transcript, which reads as a disclaimer and is in character."),
+        "accent": "General American, corporate neutral.",
+        "style_legacy": "smooth, pleasant and automated, unfailingly polite",
     },
 }
 
+# THE TAG VOCABULARY, and which character may use what. Confirmed by owner A/B on
+# 2026-08-02: tagged takes were the ones described as having "real fluctuation",
+# and untagged director-notes takes still read as competent reading. Tags are how
+# this show gets a performance instead of a recital.
+#
+#   [sarcasm]        Ray. Documented as a powerful modifier and it lands.
+#   [sigh]           Ray, before a verdict he is tired of reaching.
+#   [scoffs]         Ray, on an absurd number.
+#   [short pause]    ~250ms, a comma's worth of thinking.
+#   [medium pause]   ~500ms. THE comic beat before a punchline.
+#   [long pause]     ~1000ms. Use once an episode at most.
+#   [extremely fast] The Institution, on legal or remedy text. Reads as a
+#                    disclaimer, which is exactly what it is.
+#   [flat]           Any character, to kill an intonation the model wants to add.
+#
+# BANNED: [robotic]. Tested and rejected by the owner as "a robot sound and
+# horrid"; vo_gemini raises on it rather than trusting anyone to remember.
 SPOKEN = set(CAST)          # ONSCREEN lines are text, never voiced.
 
 
@@ -176,6 +214,17 @@ def check(script, planned):
     return rows
 
 
+def strip_tags(t):
+    """Remove performance tags from anything a VIEWER reads.
+
+    The tags are direction for the voice model, not dialogue. Left in, the
+    burned-in caption says "[sarcasm] Twenty-eight speakers", which is both
+    nonsense on screen and a backstage note shown to the audience. Stripped here,
+    at the one place captions are produced, so no scene can forget."""
+    import re as _re
+    return _re.sub(r"\s*\[[^\]]{1,20}\]\s*", " ", t).strip()
+
+
 def cues(lines_out):
     """captions.json, in the shape Episode.tsx's schema declares:
     [{start, end, text}].
@@ -192,7 +241,7 @@ def cues(lines_out):
     Both are real numbers, not the stacked approximations that desynced the
     upstream show. Word-level karaoke timing would still want whisper; line-level
     does not, and line-level is what this show burns in."""
-    return [{"start": l["start"], "end": l["end"], "text": l["text"]}
+    return [{"start": l["start"], "end": l["end"], "text": strip_tags(l["text"])}
             for l in lines_out]
 
 
@@ -201,8 +250,11 @@ def cached_duration(p):
     synthesized yet. Lets the guards check against fact instead of a constant."""
     import hashlib
     import wave as _wave
-    style = CAST[p["who"]]["style"]
-    key = hashlib.sha1(f"{p['voice']}|{style}|{p['text']}".encode()).hexdigest()[:16]
+    c = CAST[p["who"]]
+    # Cache key covers the WHOLE brief, so changing a director's note busts it.
+    key = hashlib.sha1(
+        f"{p['voice']}|{c.get('scene','')}|{c.get('style','')}|{c.get('pace','')}"
+        f"|{c.get('accent','')}|{p['text']}".encode()).hexdigest()[:16]
     path = os.path.join(TAKES, f"{key}.wav")
     if not os.path.exists(path):
         return None
@@ -270,8 +322,11 @@ def take(p, sr):
     import numpy as np
     import vo_gemini
 
-    style = CAST[p["who"]]["style"]
-    key = hashlib.sha1(f"{p['voice']}|{style}|{p['text']}".encode()).hexdigest()[:16]
+    c = CAST[p["who"]]
+    # Cache key covers the WHOLE brief, so changing a director's note busts it.
+    key = hashlib.sha1(
+        f"{p['voice']}|{c.get('scene','')}|{c.get('style','')}|{c.get('pace','')}"
+        f"|{c.get('accent','')}|{p['text']}".encode()).hexdigest()[:16]
     path = os.path.join(TAKES, f"{key}.wav")
     if os.path.exists(path):
         with _wave.open(path, "rb") as w:
@@ -281,9 +336,11 @@ def take(p, sr):
     # empty response would kill a whole run after most of the takes were already
     # paid for. Observed live on 2026-08-02. Retry it here; it is transient.
     a = None
+    direction = {k: c[k] for k in ("name", "scene", "style", "pace", "accent") if k in c}
     for attempt in range(4):
         try:
-            a = trim_silence(vo_gemini.synth(p["text"], voice=p["voice"], style=style), sr)
+            a = trim_silence(vo_gemini.synth(p["text"], voice=p["voice"],
+                                             direction=direction), sr)
             break
         except RuntimeError as e:
             if "no audio in response" not in str(e) or attempt == 3:
