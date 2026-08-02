@@ -97,11 +97,43 @@ OWNER = {
 }
 
 
+class LedgerCorrupt(RuntimeError):
+    """Present and unreadable. Never confused with absent."""
+
+
 def _load():
+    """The verdict ledger, or a fresh one IF AND ONLY IF the file is absent.
+
+    2026-08-02, repo-wide review: this was `except Exception: return <empty>`
+    and `_save` wrote non-atomically to the final path, so a process killed
+    mid-write produced exactly the corruption this handler swallowed. Verified
+    against a truncated file: `retro: no verdicts recorded yet.` then `retro:
+    PASS. Every repeat offender has an upgrade logged against it.` exit 0, and
+    the next --record OVERWROTE THE WHOLE HISTORY with one entry.
+
+    This ledger is the machine's only memory of its own repetition. Silently
+    forgetting it and reporting PASS is worse than crashing, because the whole
+    point of the file is that a defect seen twice gets escalated.
+    """
+    if not os.path.exists(LEDGER):
+        return _blank()
     try:
-        return json.load(open(LEDGER))
-    except Exception:
-        return {
+        with open(LEDGER) as fh:
+            doc = json.load(fh)
+    except Exception as e:
+        raise LedgerCorrupt(
+            f"{LEDGER} exists and cannot be parsed ({e}). This is the machine's "
+            f"cross-run memory and it is unreadable, so no repeat offender can be "
+            f"detected this run and --record would overwrite the history with one "
+            f"entry. Restore it from git before recording anything."
+        ) from e
+    if not isinstance(doc, dict) or not isinstance(doc.get("entries"), list):
+        raise LedgerCorrupt(f"{LEDGER} parsed but has no `entries` array.")
+    return doc
+
+
+def _blank():
+    return {
             "_spec": {
                 "purpose": "Every critic verdict, every run, so the machine can see "
                            "its own repetition. A defect in REPEAT_AT or more distinct "
@@ -123,9 +155,16 @@ def _load():
 
 
 def _save(doc):
+    # ATOMIC, because a torn write here is the corruption _load now refuses, and
+    # this file is appended to on every recorded verdict.
     os.makedirs(os.path.dirname(LEDGER), exist_ok=True)
-    json.dump(doc, open(LEDGER, "w"), indent=2, ensure_ascii=False)
-    open(LEDGER, "a").write("\n")
+    tmp = LEDGER + ".tmp"
+    with open(tmp, "w") as fh:
+        json.dump(doc, fh, indent=2, ensure_ascii=False)
+        fh.write("\n")
+        fh.flush()
+        os.fsync(fh.fileno())
+    os.replace(tmp, LEDGER)
 
 
 def record(entry):
@@ -135,15 +174,37 @@ def record(entry):
     return len(doc["entries"])
 
 
+def run_key(e):
+    """What makes two verdicts come from DIFFERENT runs.
+
+    2026-08-02, repo-wide review: this was `e.get("case")`, so every entry that
+    omitted `case` collapsed into the single key None. Two genuine repeats from
+    two different runs counted as one, and a standing repeat offender went
+    undetected by the one function whose whole job is detecting it. The run_date
+    disambiguates re-runs of the same case, and an entry carrying NEITHER cannot
+    be attributed to a run at all, so it is refused rather than merged.
+    """
+    case, date = e.get("case"), e.get("run_date")
+    if case is None and not date:
+        raise ValueError(
+            "a verdict entry carries neither `case` nor `run_date`, so it cannot "
+            "be attributed to a run. Entries like this used to collapse into one "
+            "key and hide repeats: " + json.dumps(e)[:200])
+    return (case, date)
+
+
 def repeat_offenders(entries=None, threshold=REPEAT_AT):
-    """-> {defect: {"runs": [case...], "count": n}} for defects across >=N runs."""
+    """-> {defect: {"runs": [label...], "count": n}} for defects across >=N runs."""
     ent = entries if entries is not None else _load()["entries"]
     seen = {}
     for e in ent:
+        k = run_key(e)
         for d in e.get("defects", []):
-            seen.setdefault(d, set()).add(e.get("case"))
-    return {d: {"runs": sorted(c), "count": len(c)}
-            for d, c in seen.items() if len(c) >= threshold}
+            seen.setdefault(d, set()).add(k)
+    return {d: {"runs": [f"{c if c is not None else '?'}@{dt or '?'}"
+                         for c, dt in sorted(k, key=lambda x: (str(x[0]), str(x[1])))],
+                "count": len(k)}
+            for d, k in seen.items() if len(k) >= threshold}
 
 
 def report(entries=None):
@@ -233,6 +294,49 @@ def self_test():
     # ...and closing it requires a SHIPPED upgrade that claims it.
     checks.append(("passes once an upgrade claims it",
                    check(two, addressed={"agreement_not_comedy"}) == 0))
+
+    # RED: two verdicts from two different runs that both omit `case` used to
+    # collapse into the single key None and count as ONE run, so a genuine
+    # repeat offender was invisible to the function that exists to find it.
+    dateless = [{"run_date": "2026-08-01", "critic": "funny",
+                 "defects": ["carried_by_fact"]},
+                {"run_date": "2026-08-02", "critic": "funny",
+                 "defects": ["carried_by_fact"]}]
+    checks.append(("two runs with no case number are still TWO runs",
+                   "carried_by_fact" in repeat_offenders(dateless)))
+    # And the same case re-scored on the same day is still ONE run.
+    same = [{"case": 3, "run_date": "2026-08-02", "critic": "funny", "read": 1,
+             "defects": ["carried_by_fact"]},
+            {"case": 3, "run_date": "2026-08-02", "critic": "funny", "read": 2,
+             "defects": ["carried_by_fact"]}]
+    checks.append(("the same case re-read on the same day is ONE run",
+                   not repeat_offenders(same)))
+    try:
+        repeat_offenders([{"critic": "funny", "defects": ["x"]}])
+        checks.append(("refuses a verdict that belongs to no run", False))
+    except ValueError:
+        checks.append(("refuses a verdict that belongs to no run", True))
+
+    # RED: the ledger PRESENT and unreadable must never report "no verdicts yet"
+    # and pass. That state also let --record overwrite the whole history.
+    import tempfile
+    global LEDGER
+    keep = LEDGER
+    try:
+        with tempfile.TemporaryDirectory() as d:
+            LEDGER = os.path.join(d, "verdicts.json")
+            _save({"entries": list(two)})
+            open(LEDGER, "w").write('{"entries": [{"case": 2')   # truncated
+            try:
+                report()
+                checks.append(("refuses a CORRUPT ledger instead of reporting none", False))
+            except LedgerCorrupt:
+                checks.append(("refuses a CORRUPT ledger instead of reporting none", True))
+            os.remove(LEDGER)
+            checks.append(("an ABSENT ledger is still an empty one",
+                           report() == ["retro: no verdicts recorded yet."]))
+    finally:
+        LEDGER = keep
 
     for name, good in checks:
         print(f"  {'ok  ' if good else 'FAIL'} {name}")
