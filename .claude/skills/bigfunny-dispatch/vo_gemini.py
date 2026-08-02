@@ -124,6 +124,15 @@ def synth(text, voice=None, style=None, direction=None):
         )
     else:
         prompt = f"Say {st}: {spoken}" if st else spoken
+    # THE ONE PLACE A CALL IS BILLED, so it is the one place the budget is
+    # enforced. Cached takes never reach here and cost nothing.
+    try:
+        sys.path.insert(0, os.path.join(HERE, "..", "..", "..", "scripts"))
+        import tts_budget
+        tts_budget.check(1)
+    except ImportError:
+        tts_budget = None
+
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
     body = {
         "contents": [{"parts": [{"text": prompt}]}],
@@ -149,6 +158,8 @@ def synth(text, voice=None, style=None, direction=None):
         if d:
             time.sleep(d)
         try:
+            if tts_budget is not None:
+                tts_budget.record(MODEL, 1)     # billed on the REQUEST, not the result
             with urllib.request.urlopen(req, timeout=120, context=ctx) as r:
                 resp = json.loads(r.read().decode("utf-8"))
             break

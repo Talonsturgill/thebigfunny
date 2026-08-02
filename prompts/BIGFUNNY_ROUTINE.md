@@ -243,6 +243,30 @@ Failing Gate 0 is cheap. Failing after a render is not.
      captions automatically, so never write a tag you would be happy to see
      burned into the frame.
 
+1b. **AUDIO IS THE ONLY EXPENSIVE STEP. SPEND IT ONCE.**
+
+   `python3 scripts/tts_budget.py` shows what today has cost. The daily TTS cap
+   is ~100 calls and one episode is 13 to 20, so there is room for roughly ONE
+   clean synthesis plus fixes, not for iterating.
+
+   **Iterate the SCRIPT, not the audio.** `script_check`, `face_check` and the
+   funny critic are FREE and catch nearly everything. On 2026-08-02 six
+   re-synthesis passes exhausted the whole daily quota and the run then could not
+   render the cut it had just written; the funny score across those passes went
+   57, 58, 63, 69, 64, 63, so most of that audio was paid for on drafts that
+   scored WORSE than an earlier one.
+
+   The machine now refuses rather than warns: `vo_cast.py` prices a pass before
+   running it, holds back 25 calls so a finished episode is always renderable,
+   and will not synthesize a script whose free gates are red. If you need to find
+   a line the TTS is blocking, use `vo_cast.py --probe`, which KEEPS the takes it
+   pays for.
+
+   A brief change in `vo_cast.CAST` busts the cache for EVERY line. That is
+   correct (different brief, different audio) but it means editing one word in a
+   director's note costs a whole episode of calls. The preview warns when a pass
+   is bigger than one episode; believe it.
+
 2. **GATE: `python3 scripts/vo_soundcheck.py --episode` must exit 0.**
    It measures the built VO line by line and hard-fails dead audio, clipping,
    delivery that is sedated or gabbling, and a take whose duration says it

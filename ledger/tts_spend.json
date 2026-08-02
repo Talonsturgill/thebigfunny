@@ -1,0 +1,15 @@
+{
+  "_spec": {
+    "purpose": "TTS call ledger. Every real API call is counted here so a run can be refused BEFORE it hits a 429 and loses the episode it was in the middle of.",
+    "written_by": "scripts/tts_budget.py, called from vo_gemini.synth",
+    "note": "Cached takes cost nothing and are never counted."
+  },
+  "days": {
+    "2026-08-02": {
+      "calls": 100,
+      "by_model": {
+        "gemini-3.1-flash-tts-preview": 100
+      }
+    }
+  }
+}

@@ -679,6 +679,30 @@ def main():
     script = load_script(path)
     planned = plan(script)
 
+    # PRICE THE PASS BEFORE PAYING FOR IT. On 2026-08-02 six re-synthesis passes
+    # exhausted the whole daily quota and the run only found out at the 429, by
+    # which point it could no longer render the cut it had just written.
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    try:
+        import tts_budget
+        uncached = sum(1 for p_ in planned if not os.path.exists(take_path(p_)))
+        if uncached and not a.dry_run:
+            okb, msg = tts_budget.preview(uncached, "this pass")
+            print(msg)
+            if not okb:
+                return 1
+            # Audio is the ONLY expensive step here. The script gates are free,
+            # so they go first, always.
+            probs = tts_budget.enforce_order(path)
+            if probs:
+                print("\nvo_cast: REFUSING to spend on an unvetted script.")
+                for pr in probs:
+                    print("  - " + pr)
+                print("  The gates are free and audio is not. Fix the script, then synthesize.")
+                return 1
+    except ImportError:
+        pass
+
     if a.probe:
         # Every take is KEPT, unlike a bare synth() loop, which is how a
         # diagnostic pass burned six of a hundred daily calls for nothing.
