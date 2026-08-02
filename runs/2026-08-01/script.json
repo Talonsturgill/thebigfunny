@@ -1,0 +1,39 @@
+{
+  "case": 1,
+  "run_date": "2026-08-01",
+  "beat": "the-fee",
+  "target": "Microsoft",
+  "angle_type": "euphemism",
+  "angle": "Microsoft raised the price of Office, called it a 'packaging and pricing update', and the official FAQ explaining it contains no prices.",
+  "title": "CASE No. 0001 - The Pricing Update With No Pricing In It",
+  "button_document": "Microsoft's own licensing FAQ page, title bar visible, scrolled to show no price figures. STAMP lands on it.",
+  "lines": [
+    {"t": 0.0,  "who": "RAY",         "text": "Microsoft put the price of Office up.", "claims": ["c2"]},
+    {"t": 2.2,  "who": "RAY",         "text": "They're calling it a packaging and pricing update.", "claims": ["c1", "c2"]},
+    {"t": 5.4,  "who": "DEE",         "text": "That's the actual title. Packaging and Pricing Updates for Microsoft 365 Commercial Suites. Public FAQs.", "claims": ["c1"]},
+    {"t": 11.6, "who": "DEE",         "text": "Live July first.", "claims": ["c4"]},
+    {"t": 13.4, "who": "RAY",         "text": "Fine. How much.", "claims": []},
+    {"t": 15.2, "who": "DEE",         "text": "It doesn't say.", "claims": ["c5"]},
+    {"t": 16.8, "who": "RAY",         "text": "What?", "claims": []},
+    {"t": 17.9, "who": "DEE",         "text": "The FAQ about the price increase has no prices in it. It links to a table.", "claims": ["c5"]},
+    {"t": 23.2, "who": "RAY",         "text": "It's a pricing update with no pricing in it.", "claims": ["c5"]},
+    {"t": 26.4, "who": "RAY",         "text": "That's not an FAQ. That's a hostage video.", "claims": []},
+    {"t": 30.0, "who": "DEE",         "text": "E3 went from twenty-three dollars a seat to twenty-six.", "claims": ["c6"]},
+    {"t": 34.2, "who": "RAY",         "text": "So somebody sat down, wrote the whole explanation, and took the number out.", "claims": ["c5"]},
+    {"t": 39.0, "who": "RAY",         "text": "That's not an oversight. That's a craft.", "claims": []},
+    {"t": 42.0, "who": "INSTITUTION", "text": "This change reflects the significant innovation delivered over the last several years, and the expanded value customers will gain.", "claims": ["c3"]},
+    {"t": 50.4, "who": "RAY",         "text": "I gained a bill.", "claims": []},
+    {"t": 52.4, "who": "ONSCREEN",    "text": "PACKAGING AND PRICING UPDATES", "claims": ["c1"]},
+    {"t": 54.0, "who": "ONSCREEN",    "text": "microsoft.com  -  no prices on this page", "claims": ["c5"]}
+  ],
+  "estimated_seconds": 55.4,
+  "word_count": 131,
+  "funniest_line_intended": "That's not an FAQ. That's a hostage video.",
+  "craft_notes": {
+    "one_stamp": "STAMP red is spent ONCE, on the button, landing on the FAQ page.",
+    "highlighter": "The single swipe goes on 'twenty-three to twenty-six' at t=30.0, the only number in the episode.",
+    "ray_ladder": "angry at 0.0, shock at 16.8 (What?), smug at 39.0 (That's a craft.)",
+    "dee_crack": "t=15.2 'It doesn't say.' is played flat; the crack is at 17.9 when she has to explain it out loud.",
+    "institution": "Delivered verbatim from c3. No face. Emitted as on-screen policy text plus automated read, never as a character speaking."
+  }
+}

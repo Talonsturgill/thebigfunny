@@ -10,5 +10,14 @@
       "summary": "one line"
     }
   },
-  "entries": []
+  "entries": [
+    {
+      "run_date": "2026-08-01",
+      "episode_no": 1,
+      "beat": "the-fee",
+      "subject": "microsoft-365-packaging-and-pricing-update",
+      "target": "Microsoft",
+      "summary": "Price rise called a 'packaging and pricing update'; the official FAQ contains no prices."
+    }
+  ]
 }

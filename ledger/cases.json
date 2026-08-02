@@ -11,6 +11,15 @@
       "killed_reason": "null unless shipped is false"
     }
   },
-  "next_case": 1,
-  "entries": []
+  "next_case": 2,
+  "entries": [
+    {
+      "case": 1,
+      "run_date": "2026-08-01",
+      "shipped": false,
+      "title": "CASE No. 0001 - The Pricing Update With No Pricing In It",
+      "beat": "the-fee",
+      "killed_reason": "Run incomplete, not a quality failure. Script, claims, composition and brand all cleared their gates and render correctly, but there is no VO (the voice stack needs .venv-voice, and it speaks one voice for three characters) so no audio, no aligned captions and no final mp4. The case number is consumed regardless, per the never-skip rule."
+    }
+  ]
 }

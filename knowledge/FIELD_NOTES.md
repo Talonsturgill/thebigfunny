@@ -79,6 +79,37 @@ ruling became this show's hardest rule: **the Institution has no face, ever.**
 
 *(Phase 8 appends below. Newest first. One entry per run, pass or fail.)*
 
+### Case 0001 (2026-08-01): the mounting contract nobody wrote down
+
+**Everything in `src/lib/` returns SVG and MUST be inside an
+`<svg viewBox="0 0 1080 1920">`.** `brand.tsx` is the opposite: those are HTML
+divs and must stay OUTSIDE it.
+
+Case 0001's first render was a nearly empty frame. Ray, Dee and the whole office
+set drew nothing, because they were mounted in plain `<div>`s. React renders SVG
+elements into an HTML context perfectly happily: no warning, no error, `tsc`
+exits 0, `remotion still` exits 0, and the PNG is blank where the art should be.
+The only signal was the file size, 230KB instead of 900KB.
+
+This is the sharpest possible version of a lesson already in this file twice
+over: a thing that typechecks is not a thing that works, and verification has to
+use the tool that will actually be used. Nothing short of looking at the frame
+would have caught it. Use `Art` in `Case0001.tsx` as the reference mount.
+
+**No Arial on the render host.** fontconfig has DejaVu and FreeSans only, so
+`Arial Black` silently fell back to a regular weight and every caption rendered
+thin. Always pair the family with an explicit `fontWeight: 900` and a stack that
+names an installed face. Silent font fallback is invisible in code review and
+obvious on screen.
+
+**Two stories died at the fact-check gate, and that is the gate working.**
+A real estate "junk fees" report was dropped because its primary PDF used
+multiple subset fonts with different CMaps and could not be quoted verbatim, and
+the trade press described it as "based largely on anecdotal evidence". Then the
+widely repeated "Microsoft 365 prices up to 43 percent" was cut because it had
+one source and CONFLICTED with a per-SKU table attributed to Microsoft showing a
+maximum of 14. The episode is stronger without it. Killing a number is cheap.
+
 ### Before the first run: what we expect to get wrong
 
 Written in advance so we can check our own predictions honestly rather than
