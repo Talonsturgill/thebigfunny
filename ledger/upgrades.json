@@ -42,6 +42,54 @@
       ],
       "verified_by": "The claims the text makes were run, not read. render.sh omits --props with no episode_props.json present (still 900 rendered clean). build_scenes.py guards still fire on the path it now documents: a 62.0s VO fixture -> 'FAIL sixty_seconds ... 63.50s', SCENE_START_LINE 7 vs Episode.tsx SCENE_COMPONENTS 9 -> 'FAIL scene_count', and a 9-entry patch of the same input -> exit 0, 1245f. python3 scripts/refs_check.py -> exit 0, 23 files, every referenced path exists. python3 scripts/vo_cast.py --self-test -> exit 0.",
       "commit": "f02c0e1"
+    },
+    {
+      "run_date": "2026-08-02",
+      "upgrade": "vo_gemini.py uses the newest TTS model and sends STRUCTURED direction instead of a bare style string. Every take now carries an Audio Profile, a Scene, Director's Notes and a TRANSCRIPT heading, with an explicit instruction that only the transcript is spoken. Inline performance tags are validated against a known set and the tag that caused the original complaint is banned outright.",
+      "files": [
+        ".claude/skills/bigfunny-dispatch/vo_gemini.py",
+        "scripts/vo_cast.py",
+        ".claude/agents/writer.md",
+        "knowledge/CAST_BIBLE.md",
+        "prompts/BIGFUNNY_ROUTINE.md"
+      ],
+      "verified_by": "Re-synthesized all 12 lines of case 0002 on gemini-3.1-flash-tts-preview with per-character briefs and 7 tagged lines. vo_soundcheck --episode PASSED all 12 with zero overruns, which is the proof the model PERFORMED the direction rather than reading it aloud: a take that speaks its own notes runs long and trips OVERRUN, and the soundcheck self-test has a fixture for exactly that case. Episode rebuilt end to end: 48.87s, mux -20.2 dB, render gate PASS at 1080x1920. The banned tag raises on construction; an undocumented tag warns rather than failing, so a new tag costs a warning and not a dead run.",
+      "commit": "PENDING"
+    },
+    {
+      "run_date": "2026-08-02",
+      "upgrade": "scripts/vo_soundcheck.py: a listening gate, so voice quality stops depending on a human playing the file back. Measures duration, gross and articulation rate, F0 variance and range, dynamics, pauses, peak and slot overrun per line and for a whole episode.",
+      "files": [
+        "scripts/vo_soundcheck.py",
+        "prompts/BIGFUNNY_ROUTINE.md"
+      ],
+      "verified_by": "python3 scripts/vo_soundcheck.py --self-test -> exit 0, six fixtures, five of them RED on purpose (sedated, gabbling, dead, clipping, and a take that read its direction as dialogue) and one clean case green. IMPORTANT, and the reason this gate is deliberately narrow: an earlier cut judged PROSODY, and measurement against the owner's own ranking FALSIFIED it. The take called horrid scored the HIGHEST pitch variance (3.79 semitones) and the widest dynamics (18.1 dB); the take the owner liked scored the LOWEST on both (1.42, 10.7). A slower take (1.92 w/s) was also preferred over a faster one (2.83). So the gate now hard-fails only measurable MALFUNCTION and prints prosody as information it refuses to grade. The falsification table is in the file header so the next engineer cannot re-derive the thresholds that were already disproven.",
+      "commit": "PENDING"
+    },
+    {
+      "run_date": "2026-08-02",
+      "upgrade": "Editorial register: the show is written for adults. Three standing beats added (the-grift, the-vice, the-landlord), sources.yaml gained a WHAT A STORY HAS TO HAVE (TEETH) section, and the funny gate now asks whether an episode has teeth and CAPS AT 70 when it does not. The hard line is stated in the same breath as the licence, so pushing to it does not read as permission to cross it.",
+      "files": [
+        "config/sources.yaml",
+        "config/scoring_rubric.yaml",
+        "knowledge/ANGLE_TAXONOMY.md",
+        "knowledge/BRAND_BIBLE.md",
+        "knowledge/CAST_BIBLE.md",
+        ".claude/agents/writer.md"
+      ],
+      "verified_by": "Both config files parse (python3 -c yaml.safe_load on sources.yaml and scoring_rubric.yaml). The ban list is restated verbatim and unchanged in all three knowledge files: no slurs, no hate, no sexual content, no harassment, institutions and public figures only, never private individuals or protected classes. UNPROVEN AS OF THIS COMMIT: the three new beats have never sourced a story. Case 0003 is their first test and the thing to watch is whether teeth arrives as a real sourced claim or as an adjective the writer reaches for.",
+      "commit": "PENDING"
+    },
+    {
+      "run_date": "2026-08-02",
+      "upgrade": "Staging and speaker identification in video-engine/src/Case0002.tsx: a per-speaker caption tint plus a speaker label, binary talk poses driven by speakerAt(), a seven-beat shot ladder replacing the head-on two-shot the storyboard critic flagged eight times, and a parallax rate so the push reads as a camera move.",
+      "files": [
+        "video-engine/src/Case0002.tsx",
+        "video-engine/src/case0002_captions.ts",
+        "video-engine/src/Root.tsx"
+      ],
+      "verified_by": "Rendered and inspected, not asserted. The rebuilt episode renders clean at 1080x1920, 48.87s, and the caption cue file now carries `who` per cue with speakerAt(t) exported from one place, so the tint, the label and the talk pose cannot disagree with each other. The storyboard critic's blocker from the shipped run (a dark-red arc across Ray's legs, root-caused to the flannel plaid's third stripe drawn outside the coat silhouette) was fixed in the RIG in lib/Character.tsx, so it is fixed for every flannel character in every future episode rather than for one shot.",
+      "commit": "PENDING"
     }
   ]
 }

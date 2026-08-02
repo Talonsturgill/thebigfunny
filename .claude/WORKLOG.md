@@ -278,3 +278,58 @@ Ray finding out.
 **The lesson for case 0003, now in instincts.json:** pick the spine by asking
 which single VERIFIED fact is funniest, then build the episode to arrive at it.
 Do not pick an angle TYPE first and fit the facts to it.
+
+---
+
+## Owner review pass, 2026-08-02 (post-ship)
+
+Case 0002 shipped and the owner watched it. Three defects and one editorial note,
+all of them things no gate in this machine was looking for. Fixed on
+`fix/voice-pace-and-staging` and enforced in the rules, because a standard that
+lives in a conversation dies with the conversation.
+
+**1. The voices sounded robotic and slow.** Root cause was not the voice picks.
+`vo_gemini.py` was sending a bare style string to an older model, so every line
+got the same flat read. It now sends structured direction (Audio Profile, Scene,
+Director's Notes, TRANSCRIPT) on `gemini-3.1-flash-tts-preview`, with per-character
+briefs in `vo_cast.py`'s CAST table and inline performance tags in the script.
+The preamble that makes tags safe is the one that says only the text under
+TRANSCRIPT is spoken aloud; without it the model reads its own notes.
+
+**2. Nothing was happening on screen.** The storyboard critic had already said
+this from the other direction: eight of eleven sampled frames were the same
+head-on eye-level camera. Case0002.tsx now runs a seven-beat shot ladder and a
+parallax rate, so the push is a camera move and not a crop-zoom.
+
+**3. You could not tell who was speaking.** Solved without mouth animation, which
+the owner correctly flagged as hard to keep consistent. `case0002_captions.ts`
+now carries `who` per cue and exports `speakerAt(t)`; the caption tint, the
+speaker label and the binary talk pose all read from that one function, so they
+cannot drift apart.
+
+**4. Register.** "Not a boring publication. Real, raw. Find the borders and push
+them." Three beats added, and the funny gate now caps at 70 for toothless. The
+hard line did not move and is restated next to the licence in every file that
+grants it: institutions and public figures acting in public, never private
+individuals, never protected classes, and the ban list is a ban list.
+
+### The soundcheck, and the thresholds that were wrong
+
+`scripts/vo_soundcheck.py` exists so voice quality stops depending on a human
+playing the file back. Its first cut graded PROSODY, and measuring the owner's
+own ranking of six takes FALSIFIED it: the take called "horrid" scored the
+HIGHEST pitch variance and the WIDEST dynamics, and a slower take was preferred
+over a faster one. So the gate hard-fails only measurable malfunction (sedated,
+gabbling, overrun, clipping, dead) and prints prosody as information it refuses
+to grade. The falsification table is in the file header on purpose, so the next
+engineer does not re-derive thresholds that have already been disproven.
+
+**Status: all four DONE and merged to main.** Open from the original list: C
+(Institution costume system), D (funny-gate self-test, which the Phase 8 engineer
+declined as unverifiable and which should stay declined until someone can state
+what a red case would look like), E (trigger config, outside this repo).
+
+**Unproven and the thing to watch on case 0003:** the three new beats have never
+sourced a story, and "teeth" is easy to write as an adjective and hard to earn as
+a claim. If the next episode's teeth are in the writer's word choice rather than
+in a document, the register change failed and it failed quietly.
