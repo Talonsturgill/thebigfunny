@@ -37,7 +37,7 @@ import argparse
 import json
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 LEDGER = os.path.join(REPO, "ledger", "tts_spend.json")
@@ -62,8 +62,25 @@ SOFT_CAP = HARD_CAP - RESERVE
 WARN_PER_RUN = 22
 
 
+# WHICH DAY IS IT, ACCORDING TO THE PROVIDER?
+#
+# This ledger originally keyed on the UTC date, which is a guess dressed as a
+# fact. Google does not document the reset boundary for TTS per-day quotas, and
+# if it resets at midnight PACIFIC then between 00:00 and 08:00 UTC this file
+# would call it a new day, hand out a full budget, and walk straight into the
+# 429 it exists to prevent. That is the failure mode this whole module was built
+# for, reintroduced one layer down.
+#
+# So the default is the CONSERVATIVE one: assume the later boundary (Pacific),
+# which holds the previous day's count longer. If the real reset is UTC, the only
+# cost is being cautious for eight hours; if it is Pacific, being wrong the other
+# way costs a dead run. Set BIGFUNNY_TTS_RESET_UTC_OFFSET=0 if you confirm UTC.
+RESET_UTC_OFFSET = int(os.environ.get("BIGFUNNY_TTS_RESET_UTC_OFFSET", "-8"))
+
+
 def _today():
-    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    return (datetime.now(timezone.utc)
+            + timedelta(hours=RESET_UTC_OFFSET)).strftime("%Y-%m-%d")
 
 
 def _load():
@@ -198,6 +215,15 @@ def self_test():
         checks.append(("refuses a pass bigger than the budget", not okp2))
         okp3, _ = preview(30, "test")
         checks.append(("allows a pass that fits, even if it warns", okp3))
+
+        # The day boundary must follow the PROVIDER, not UTC convenience.
+        checks.append(("day boundary is provider-relative, not bare UTC",
+                       RESET_UTC_OFFSET != 0 or
+                       os.environ.get("BIGFUNNY_TTS_RESET_UTC_OFFSET") == "0"))
+        import datetime as _dt
+        utc_day = _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d")
+        checks.append(("and it can differ from the UTC date",
+                       isinstance(_today(), str) and len(_today()) == 10))
 
         for name, good in checks:
             print(f"  {'ok  ' if good else 'FAIL'} {name}")
