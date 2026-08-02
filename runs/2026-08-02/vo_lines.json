@@ -37,8 +37,8 @@
       "idx": 3,
       "who": "DEE",
       "start": 11.55,
-      "end": 17.889,
-      "text": "They did, in October. Software update, letters mailed November fifth.",
+      "end": 17.789,
+      "text": "They did. Software update in October, letters mailed November fifth.",
       "voice": "Schedar",
       "claims": [
         "c9"
@@ -47,8 +47,8 @@
     {
       "idx": 4,
       "who": "DEE",
-      "start": 18.14,
-      "end": 21.46,
+      "start": 18.05,
+      "end": 21.37,
       "text": "Forty-three thousand, four hundred thirty-eight.",
       "voice": "Schedar",
       "claims": [
@@ -58,8 +58,8 @@
     {
       "idx": 5,
       "who": "DEE",
-      "start": 21.72,
-      "end": 26.475,
+      "start": 21.62,
+      "end": 26.375,
       "text": "It's back. Sixty-six thousand, three hundred eighty-three.",
       "voice": "Schedar",
       "claims": [
@@ -70,8 +70,8 @@
     {
       "idx": 6,
       "who": "DEE",
-      "start": 26.74,
-      "end": 32.251,
+      "start": 26.64,
+      "end": 32.151,
       "text": "NHTSA calls it an expansion. The ones they fixed have to be fixed again.",
       "voice": "Schedar",
       "claims": [
@@ -81,8 +81,8 @@
     {
       "idx": 7,
       "who": "DEE",
-      "start": 32.51,
-      "end": 37.247,
+      "start": 32.41,
+      "end": 37.147,
       "text": "The only fix they have is for the version with twenty-eight speakers.",
       "voice": "Schedar",
       "claims": [
@@ -93,8 +93,8 @@
     {
       "idx": 8,
       "who": "RAY",
-      "start": 37.51,
-      "end": 42.34,
+      "start": 37.41,
+      "end": 42.24,
       "text": "Twenty-eight speakers. That's how they decide who gets fixed.",
       "voice": "Algenib",
       "claims": [
@@ -104,8 +104,8 @@
     {
       "idx": 9,
       "who": "INSTITUTION",
-      "start": 42.6,
-      "end": 48.622,
+      "start": 42.5,
+      "end": 48.522,
       "text": "Interim letters notifying owners of the safety risk are expected to be mailed August third.",
       "voice": "Despina",
       "claims": [
@@ -115,8 +115,8 @@
     {
       "idx": 10,
       "who": "RAY",
-      "start": 48.88,
-      "end": 50.23,
+      "start": 48.78,
+      "end": 50.13,
       "text": "That's tomorrow.",
       "voice": "Algenib",
       "claims": [
@@ -126,8 +126,8 @@
     {
       "idx": 11,
       "who": "RAY",
-      "start": 50.49,
-      "end": 53.128,
+      "start": 50.39,
+      "end": 53.028,
       "text": "I still have the first letter.",
       "voice": "Algenib",
       "claims": [

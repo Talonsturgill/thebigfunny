@@ -36,13 +36,13 @@
     {
       "t": 11.55,
       "who": "DEE",
-      "text": "They did, in October. Software update, letters mailed November fifth.",
+      "text": "They did. Software update in October, letters mailed November fifth.",
       "claims": [
         "c9"
       ]
     },
     {
-      "t": 18.14,
+      "t": 18.05,
       "who": "DEE",
       "text": "Forty-three thousand, four hundred thirty-eight.",
       "claims": [
@@ -50,7 +50,7 @@
       ]
     },
     {
-      "t": 21.72,
+      "t": 21.62,
       "who": "DEE",
       "text": "It's back. Sixty-six thousand, three hundred eighty-three.",
       "claims": [
@@ -59,7 +59,7 @@
       ]
     },
     {
-      "t": 26.74,
+      "t": 26.64,
       "who": "DEE",
       "text": "NHTSA calls it an expansion. The ones they fixed have to be fixed again.",
       "claims": [
@@ -67,7 +67,7 @@
       ]
     },
     {
-      "t": 32.51,
+      "t": 32.41,
       "who": "DEE",
       "text": "The only fix they have is for the version with twenty-eight speakers.",
       "claims": [
@@ -76,7 +76,7 @@
       ]
     },
     {
-      "t": 37.51,
+      "t": 37.41,
       "who": "RAY",
       "text": "Twenty-eight speakers. That's how they decide who gets fixed.",
       "claims": [
@@ -84,7 +84,7 @@
       ]
     },
     {
-      "t": 42.6,
+      "t": 42.5,
       "who": "INSTITUTION",
       "text": "Interim letters notifying owners of the safety risk are expected to be mailed August third.",
       "claims": [
@@ -92,7 +92,7 @@
       ]
     },
     {
-      "t": 48.88,
+      "t": 48.78,
       "who": "RAY",
       "text": "That's tomorrow.",
       "claims": [
@@ -100,7 +100,7 @@
       ]
     },
     {
-      "t": 50.49,
+      "t": 50.39,
       "who": "RAY",
       "text": "I still have the first letter.",
       "claims": [
@@ -134,7 +134,7 @@
       ]
     }
   ],
-  "estimated_seconds": 53.13,
+  "estimated_seconds": 53.03,
   "word_count": 118,
   "funniest_line_intended": "Twenty-eight speakers. That's how they decide who gets fixed.",
   "craft_notes": {

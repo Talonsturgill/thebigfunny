@@ -1,0 +1,76 @@
+{
+  "case": 2,
+  "run_date": "2026-08-02",
+  "note": "Panel reports for case 0002. The funny critic never saw the ship threshold and was never told what its number would cause. It read the script cold three times as the script changed, and each read is recorded here rather than only the best one.",
+
+  "funny_critic": {
+    "reads": [
+      {
+        "cut": "first",
+        "funny_score": 72,
+        "funniest_line": "So the repair needs a repair.",
+        "killer_note": "The script spoils its own punchline in its first sentence. Ray says 'sixty-six thousand' at zero seconds, then twenty-one seconds later Dee reveals it as if it were new. The entire escalation, which is the spine, has already been given away."
+      },
+      {
+        "cut": "second",
+        "funny_score": 68,
+        "funniest_line": "I still have the first letter.",
+        "killer_note": "'So the repair needs a repair' is Ray saying back the sentence Dee just said better six seconds earlier. Also a visible hole: Dee answers a question nobody asked, which reads cold as a missing Ray line."
+      },
+      {
+        "cut": "shipped",
+        "funny_score": 76,
+        "funniest_line": "The only fix they have is for the version with twenty-eight speakers.",
+        "would_send_it": true,
+        "explaining_lines": [],
+        "carried_by": "FACT",
+        "is_it_agreement_not_comedy": false,
+        "verdict": "Genuinely funny in two specific, verifiable places and inert in between. Not agreement dressed up as comedy; the absurdity is real and sourced and the show correctly refuses to editorialize on top of it. But it buries its own best joke behind a spreadsheet.",
+        "open_note_for_next_run": "Move the twenty-eight-speaker fact out of the middle of Dee's data block and make it the pivot the episode turns on, so the funniest true thing is not the fourth item on a list."
+      }
+    ],
+    "score_of_record": 76
+  },
+
+  "storyboard_critic": {
+    "craft_score": 79,
+    "scored_on": "the pre-fix render",
+    "institution_has_face": false,
+    "stamp_red_count": 1,
+    "caption_legible": true,
+    "cast_on_model": true,
+    "button_legible": true,
+    "strongest_frame": "t44.5, the Institution. Faceless rectilinear monolith cropped by the top of frame, true low angle with the verticals converging upward, Ray and Dee reduced to two small figures at the bottom. The one shot that could be a poster.",
+    "weakest_frame": "t12.5, the October beat. Same head-on two-shot as t7.5 but pulled further back, nothing staged.",
+    "blocker_raised": "A stray dark-red arc rendered across Ray's legs in every shot, reading as a line cutting through him and putting an unintended red on screen in a one-red episode.",
+    "blocker_status": "FIXED before ship. Root cause was the flannel plaid's third horizontal stripe at y=30 drawn unclipped and after the legs, while the coat silhouette bottoms out at y=10. Moved to -120/-70/-20 in lib/Character.tsx, verified by rendering a still and cropping the leg region. Affected every flannel character in every episode, so it was fixed in the rig.",
+    "open_notes_for_next_run": [
+      "Eight of eleven sampled frames are the same head-on eye-level street camera varying only in scale. The one deliberate camera move (t44.5) is excellent, which proves the engine can do it.",
+      "Dee is in an identical pose in all eight appearances. CAST_BIBLE says 'she holds the document' and that staging went unused, so Ray performs and Dee is composited.",
+      "Contact shadows are the weak leg of the depth tripod in the two-shots; form shading and rim light clear the bar.",
+      "Ray wears full-body brick red and Dee full-body yellow, so the show's two signal colours are on screen as clothing all runtime, which softens the one swipe and the one stamp."
+    ]
+  },
+
+  "flow_critic": {
+    "flow_score": 68,
+    "hooks_in_two_seconds": false,
+    "dead_stretch_found": "t11.6-t18.1, the October line: 6.34s for 10 words at 1.58 w/s over a frame identical to the shot before it. Explicitly NOT the number beats, which each deliver a new card.",
+    "dead_stretch_status": "PARTIALLY ADDRESSED. Line rewritten with fewer hard stops, but it only recovered 0.1s; the line is inherently slow. Logged as the leading fix for the next run.",
+    "where_the_turn_lands": "t26.6, hinging on 'The ones they fixed have to be fixed again.' It lands, and it lands correctly staged, but later than the cast bible's 5-20 window.",
+    "button_pays_off": true,
+    "runtime_earned": false,
+    "confirmed_the_push_is_real": "The parallax proves it is a camera move rather than a crop-zoom: the mountain shrinks against the near buildings and the building line rises through frame. But it grows the figures only 15-20% over 26 seconds, which is below what a viewer feels.",
+    "open_notes_for_next_run": [
+      "The hook's payload is in the back half of the sentence, so at t=2.0 the viewer has heard a recall announcement rather than an absurdity, and the wordmark is sitting on the seconds that decide whether anyone watches.",
+      "Ray is silent for 26 seconds and is physically out of frame for the entire ratio beat, in a show whose premise is Ray finding out."
+    ]
+  },
+
+  "objective_gates": {
+    "renders_clean": "PASS. 54.53s, 1080x1920, video and audio tracks, 18,710,068 bytes, parses as mp4.",
+    "sixty_seconds": "PASS. 54.53s against the 60.0s law, five seconds of margin.",
+    "mux_verify": "PASS. -20.2 dB measured on the shipped file.",
+    "caption_check": "PASS. 63 char hook, 256 char body, five hashtags last, no URL or sources line in the body, case number present."
+  }
+}

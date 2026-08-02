@@ -23,6 +23,12 @@
       "angle_type": "euphemism",
       "angle": "Microsoft raised the price of Office, called it a 'packaging and pricing update', and the official FAQ explaining it contains no prices.",
       "landed": null
+    },
+    {
+      "run_date": "2026-08-02",
+      "angle_type": "ratio",
+      "angle": "Ford recalled 43,438 of these SUVs in October for a sound they would not make, updated the software and mailed the letters; in June the same recall came back covering 66,383, and the cars they already fixed have to be fixed again.",
+      "landed": 76
     }
   ]
 }
