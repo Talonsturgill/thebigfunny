@@ -299,6 +299,7 @@ export const Figure: React.FC<FigureProps> = ({
   const face = () => {
     const eyeY = 50, rx = s.eyeRx, ry = s.eyeRy * E.open;
     const hw = s.headW / 2;
+    const sk = (k: number) => warmShade(skin, k);
     const lidDrop = ry * E.lid;
     const browY = eyeY - ry - s.browGap - E.brow;
     const eye = (side: 1 | -1) => {
@@ -345,36 +346,71 @@ export const Figure: React.FC<FigureProps> = ({
       <g>
         <clipPath id={`${uid}_headclip`}><path d={spline(outline, true, s.headTension)} /></clipPath>
         <g clipPath={`url(#${uid}_headclip)`}>
-          {/* THE SHADOW SIDE. One hard-edged shape whose boundary follows the
-              form: out over the cheekbone, in under it, out again at the jaw.
-              That boundary IS the drawing; a soft gradient in the same place
-              reads as a stain. */}
-          <path d={spline([[hw * 0.26, -10], [hw * 0.66, 34], [hw * 0.46, 70],
-                           [hw * 0.12, 104], [hw * 3, 104], [hw * 3, -10]], true)}
-                fill={INK} opacity={0.13} />
-          {/* reflected light at the very edge of the shadow side, where the form
-              turns back toward the room */}
-          <path d={spline([[hw * 0.9, 6], [hw * 1.02, 52], [hw * 0.72, 92],
-                           [hw * 3, 92], [hw * 3, 6]], true)} fill="#fff" opacity={0.09} />
-          {/* CAST SHADOW OF THE HAIR onto the forehead. Hair sits ON a head and
-              blocks light; without this the hairline reads as a sticker. */}
-          <path d={spline([[-hw * 3, -30], [hw * 3, -30], [hw * 3, 4],
-                           [hw * 0.5, 24], [-hw * 0.5, 17], [-hw * 3, 2]], true)}
-                fill={INK} opacity={0.15} />
-          {/* brow ridge: a shelf the eyes sit under */}
-          <path d={spline([[-hw * 0.85, 40], [0, 45], [hw * 0.85, 40],
-                           [hw * 0.85, 33], [0, 37], [-hw * 0.85, 33]], true)}
-                fill={INK} opacity={0.08} />
-          {/* the lit cheekbone, the single plane that says the skull has one */}
-          <ellipse cx={-hw * 0.46} cy={50} rx={hw * 0.42} ry={11} fill="#fff" opacity={0.17}
-                   transform={`rotate(-12 ${-hw * 0.46} 50)`} />
-          {/* nose plane on the shadow side, and the shelf under the lower lip */}
-          <path d={spline([[facing * 3, 56], [facing * 11, 71], [facing * 2, 77]], true)}
-                fill={INK} opacity={0.13} />
-          <ellipse cx={0} cy={81 + s.lipMass * 1.5} rx={s.mouthHalf * 0.72} ry={3.4}
-                   fill={INK} opacity={0.11} />
-          {/* temple hollow, which is what stops a forehead reading as a dome */}
-          <ellipse cx={hw * 0.74} cy={30} rx={9} ry={13} fill={INK} opacity={0.08} />
+          {/* THE VALUE SYSTEM. Every shape in here is a SOLID darker-or-lighter
+              SKIN, never black at low opacity. Reference faces read dimensional
+              because their planes are committed value steps in the colour of the
+              flesh itself; ink washes read as dirt on paper. The clip lets every
+              shape overshoot and still end exactly at the silhouette. */}
+          {/* the shadow side of the whole head, one hard-edged plane */}
+          <path d={spline([[hw * 0.22, -10], [hw * 0.62, 34], [hw * 0.44, 70],
+                           [hw * 0.1, 104], [hw * 3, 104], [hw * 3, -10]], true)}
+                fill={sk(0.86)} />
+          {/* reflected light where the dark side turns back toward the room */}
+          <path d={spline([[hw * 0.88, 6], [hw * 1.02, 52], [hw * 0.7, 92],
+                           [hw * 3, 92], [hw * 3, 6]], true)} fill={sk(0.95)} />
+          {/* the hair's cast shadow across the forehead */}
+          <path d={spline([[-hw * 3, -30], [hw * 3, -30], [hw * 3, 2],
+                           [hw * 0.5, 22], [-hw * 0.5, 15], [-hw * 3, 0]], true)}
+                fill={sk(0.8)} />
+          {/* EYE SOCKETS. The reference eyes read deep-set because they sit IN a
+              value, under the brow, instead of lying white on the surface. The
+              male socket is deeper; hers stays soft or it reads tired. */}
+          {[-1, 1].map((sd) => (
+            <ellipse key={sd} cx={sd * s.eyeX} cy={eyeY - 2}
+                     rx={rx + (sex === 'm' ? 7 : 5)} ry={ry + (sex === 'm' ? 8 : 6)}
+                     fill={sk(sex === 'm' ? 0.87 : 0.93)} />
+          ))}
+          {/* lit planes: forehead, near cheekbone, chin. Warm light, never white. */}
+          <ellipse cx={-hw * 0.18} cy={20} rx={hw * 0.5} ry={13} fill={sk(1.1)} />
+          <ellipse cx={-hw * 0.48} cy={54} rx={hw * 0.38} ry={10} fill={sk(1.13)}
+                   transform={`rotate(-14 ${-hw * 0.48} 54)`} />
+          <ellipse cx={-2} cy={93} rx={hw * 0.2} ry={5.5} fill={sk(1.08)} />
+          {/* NOSE, built from value: a side plane, nostril darks, and a light
+              down the bridge. No outline; an outlined nose on a value face is
+              the detail-density mismatch that tips a face uncanny. */}
+          {sex === 'm' ? (
+            <>
+              <path d={spline([[facing * 2, 46], [facing * 8, 62], [facing * 10.5, 72],
+                               [facing * 3, 78], [facing * 0.5, 60]], true)} fill={sk(0.84)} />
+              <path d={spline([[facing * -1, 46], [facing * -2.5, 62], [facing * -1, 72]])}
+                    fill="none" stroke={sk(1.16)} strokeWidth={3} strokeLinecap="round" />
+              <circle cx={-s.noseHalf * 0.38 + facing * 2} cy={73} r={1.5} fill={sk(0.68)} />
+              <circle cx={s.noseHalf * 0.38 + facing * 2} cy={73.5} r={1.3} fill={sk(0.68)} />
+            </>
+          ) : (
+            /* A pretty female nose is barely STATED: a short side plane, a dot of
+               shadow at each nostril, and nothing else. Nose prominence is the
+               fastest way to age or masculinize a face, so the whole feature is
+               about a third the value-weight of his. */
+            <>
+              <path d={spline([[facing * 1.5, 56], [facing * 5, 66], [facing * 6.5, 73],
+                               [facing * 2, 76.5], [facing * 0.5, 64]], true)} fill={sk(0.88)} />
+              <circle cx={-s.noseHalf * 0.42 + facing * 1.5} cy={74.5} r={1.2} fill={sk(0.68)} />
+              <circle cx={s.noseHalf * 0.42 + facing * 1.5} cy={75} r={1.1} fill={sk(0.68)} />
+            </>
+          )}
+          {/* the shelf under the lower lip, in value */}
+          <ellipse cx={0} cy={81 + s.lipMass * 1.5} rx={s.mouthHalf * 0.7} ry={3.2}
+                   fill={sk(0.87)} />
+          {/* STUBBLE. A slightly cool value over the whole jaw and chin. It does
+              two jobs: models the jaw as a plane, and is a masculinity cue that
+              costs one shape. The plain (unwarmed) shade goes bluish against the
+              warm shadows, which is exactly what beard shadow does. */}
+          {sex === 'm' && (
+            <path d={spline([[-hw * 1.2, 64], [-hw * 0.5, 92], [0, 103], [hw * 0.5, 92],
+                             [hw * 1.2, 64], [hw * 1.2, 130], [-hw * 1.2, 130]], true)}
+                  fill={shade(skin, 0.88)} opacity={0.75} />
+          )}
         </g>
         {/* cheekbone contour: a shade running down and IN under the cheek, with a
             lit plane above it. Only works on a narrowed skull; on a circle the
@@ -400,13 +436,7 @@ export const Figure: React.FC<FigureProps> = ({
             flat face is a detail-density mismatch, and over-defined noses and
             eyelids are the two most-cited causes of a stylized face tipping
             uncanny. */}
-        {sex === 'm' && (
-          <path d={`M${facing * 3},${46} L${facing * 4},${63}`} fill="none" stroke={INK}
-                strokeWidth={2.2} opacity={0.32} strokeLinecap="round" />
-        )}
-        <path d={`M${facing * 2},${64} q${facing * s.noseHalf * 0.7},${8} ${facing * -1},${9}`}
-              fill="none" stroke={INK} strokeWidth={sex === 'f' ? 2 : 2.6}
-              opacity={0.55} strokeLinecap="round" />
+
         {/* MOUTH */}
         {mouth !== undefined || talking ? (
           <TalkingMouth open={mouth ?? 0} spread={mouthSpread} half={s.mouthHalf}
@@ -780,6 +810,17 @@ export const Figure: React.FC<FigureProps> = ({
       <g transform={`translate(${headLag},0) translate(0,${Y.chin - 100}) rotate(${-shTilt * 0.5} 0 100)`}>
         {/* hair BEHIND the skull */}
         <Hair style={hairstyle} s={s} col={hair} back />
+        {/* EARS, under the head fill so only the outer rim shows. A head with no
+            ears reads as a mask; every reference face has them even when the
+            hair covers one. */}
+        {[-1, 1].map((sd) => (
+          <g key={sd}>
+            <ellipse cx={sd * s.headW * 0.5} cy={56} rx={8} ry={13}
+                     fill={skin} stroke={INK} strokeWidth={3.4} />
+            <path d={`M${sd * s.headW * 0.5 - sd * 3},52 q${sd * 4},4 ${sd * 2.5},9`}
+                  fill="none" stroke={warmShade(skin, 0.78)} strokeWidth={2.6} strokeLinecap="round" />
+          </g>
+        ))}
         <path d={spline(outline, true, s.headTension)} fill={`url(#${uid}_skin)`}
               stroke={INK} strokeWidth={4.5} strokeLinejoin="round" />
         {/* shadow-side head contour, heavier than the lit side */}
@@ -991,6 +1032,19 @@ const TalkingMouth: React.FC<{open: number; spread: number; half: number; lip: s
     </g>
   );
 };
+
+/** Shade SKIN the way a painter does: darker AND warmer, because black at low
+ *  opacity is not shadow, it is grime. Multiplying all three channels equally
+ *  desaturates; pushing red up and blue down as it darkens is what keeps a
+ *  shadow looking like flesh turning away from light. Same shift upward for
+ *  lights: warm, never white. This one function is most of the difference the
+ *  owner named between "coding" and "drawing". */
+function warmShade(hex: string, k: number): string {
+  const n = parseInt(hex.replace('#', ''), 16);
+  const ch = (v: number, f: number) => Math.max(0, Math.min(255, Math.round(v * k * f)));
+  const r = ch((n >> 16) & 255, 1.08), g = ch((n >> 8) & 255, 0.97), b = ch(n & 255, 0.86);
+  return `#${[r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('')}`;
+}
 
 /** Multiply a hex colour's lightness. Keeps a palette to ONE authored value per
  *  garment instead of three that can drift apart. */
