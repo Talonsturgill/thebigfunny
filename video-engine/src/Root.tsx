@@ -37,15 +37,15 @@ const standoffSchema = z.object({
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-      {/* THE BIG FUNNY, case 0002. 56.29s at 30fps = 1689 frames, inside the
-          60.0s hard gate with three seconds to spare. Self-timed like Case0001:
+      {/* THE BIG FUNNY, case 0002. 54.63s at 30fps = 1639 frames, inside the
+          60.0s hard gate with five seconds to spare. Self-timed like Case0001:
           its Sequences carry their own frame numbers from the FROZEN script
           times, so there is no episode_props.json and build_scenes.py's
           SCENE_START_LINE is never consulted. */}
       <Composition
         id="Case0002"
         component={Case0002}
-        durationInFrames={1689}
+        durationInFrames={1639}
         fps={30}
         width={1080}
         height={1920}
