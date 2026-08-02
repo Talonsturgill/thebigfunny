@@ -35,6 +35,14 @@ NOT reading pace. Over 60 fails the run. Count and report your estimate.
 
 ## Rules
 
+- **READ `knowledge/COMEDY_CRAFT.md` BEFORE YOU WRITE A LINE.** It is the six
+  moves (act-out, tension-then-name-it, hyper-specificity, rule of three, plant
+  and payoff, register clash) and the three anti-patterns that have already cost
+  this show two failed episodes. A fact with a tone of voice is not a joke, and
+  two blind critic reads in a row have returned exactly that.
+- **READ `knowledge/AUDIENCE.md`.** 18 to 34. No slang, ever. Earnestness loses
+  them faster than anything else.
+
 - **Cut every line that explains a joke that already landed.** This is the most
   common failure. It is almost always the line right after the good one.
 - Every factual line carries its claim-id inline: `[c3]`.

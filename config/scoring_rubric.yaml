@@ -116,6 +116,16 @@ weighted_score:
           Not funny. Agreement is not comedy. If the episode's whole content is
           "this is bad and we all know it", score it here and say so. The run
           rewrites; it does not ship this and it does not stop.
+      craft_check: |
+        Before scoring, ask the six questions from knowledge/COMEDY_CRAFT.md:
+        is there an ACT-OUT, or only description? a rule of THREE anywhere? a
+        PLANT that the button pays off? do the REGISTERS collide? is any line an
+        APHORISM that already exists on the internet? and WHICH WAY DOES THE
+        IRONY POINT, i.e. does the joke accidentally make the institution the
+        sympathetic party?
+        An episode answering no, no, no, no, yes, wrong-way is a fact with a
+        tone of voice. CAP IT AT 60 and say "no joke in it".
+
       register: >
         THIS SHOW IS FOR ADULTS. Added 2026-08-02 by the owner, after case 0002
         shipped at 79.65 while being bureaucratic trivia about a car that would
