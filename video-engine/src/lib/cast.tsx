@@ -27,7 +27,7 @@
 import React from 'react';
 import {Figure, FigureProps, Emotion, Pose} from './Figure';
 
-type CastProps = Omit<FigureProps, 'sex' | 'skin' | 'hair' | 'eyes' | 'wear' | 'hairstyle'> & {
+type CastProps = Omit<FigureProps, 'sex' | 'skin' | 'hair' | 'eyes' | 'wear' | 'hairstyle' | 'garment'> & {
   /** Escape hatch for a genuine costume gag. Rare: a cast that gets re-dressed
       for no reason is not a cast. */
   wearOverride?: FigureProps['wear'];
@@ -43,7 +43,7 @@ type CastProps = Omit<FigureProps, 'sex' | 'skin' | 'hair' | 'eyes' | 'wear' | '
  * cold rectilinear bulk instead of echoing it.
  */
 export const RAY = {
-  skin: '#d9a077',
+  skin: '#f0c4a0',
   hair: '#3a2418',
   eyes: '#4a6f57',
   wear: {top: '#4a7fa3', bottom: '#2f3a52', accent: '#3a3128'},
@@ -79,7 +79,7 @@ export const Ray: React.FC<CastProps> = ({
  * never did.
  */
 export const DEE = {
-  skin: '#c08a63',
+  skin: '#eec2a2',
   hair: '#26191c',
   eyes: '#3b5f7a',
   wear: {top: '#a8355a', bottom: '#7a2440', accent: '#e6d9c4'},
@@ -95,6 +95,8 @@ export const Dee: React.FC<CastProps> = ({
     emotion={emotion}
     wear={wearOverride ?? DEE.wear}
     hairstyle="long"
+    /* Skirt and heels. */
+    garment="skirt"
     skin={DEE.skin}
     hair={DEE.hair}
     eyes={DEE.eyes}

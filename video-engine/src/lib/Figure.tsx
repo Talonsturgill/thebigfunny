@@ -70,7 +70,7 @@ const Y = {
 type Spec = {
   headW: number;          // bizygomatic (cheekbone) width
   waistY: number;         // the female waist sits measurably higher
-  shoulder: number; chest: number; waist: number; hip: number;
+  shoulder: number; bust: number; underbust: number; waist: number; upperHip: number; hip: number;
   neckW: number;
   armW: readonly number[];   // bicep, elbow, wrist
   legW: readonly number[];   // thigh, knee, ankle
@@ -80,6 +80,7 @@ type Spec = {
   browGap: number; browW: number;
   noseHalf: number; mouthHalf: number; lipMass: number;
   jawRatio: number;       // bigonial / bizygomatic
+  chinW: number;          // menton width as a fraction of bizygomatic
   headTension: number;    // 0 = pure curve (female), higher = straighter (male)
 };
 
@@ -90,30 +91,35 @@ type Spec = {
    this uses the more defensible number). */
 const SPEC: Record<Sex, Spec> = {
   f: {
-    headW: 73, waistY: 288,
-    hip: 155, shoulder: 158, chest: 146, waist: 108,
-    neckW: 36,                       // 0.50 of head width
+    headW: 66, waistY: 288,
+    // bust as wide as the shoulder, then a hard drop to a 0.62 waist over a
+    // SHORT span, then a hip wider than the shoulder. Waist-to-hip lands at
+    // 0.62, tighter than the 0.70 average-preference figure on purpose: this is
+    // a caricature, and silhouette is the one place caricature is right.
+    shoulder: 144, bust: 154, underbust: 108, waist: 90, upperHip: 146, hip: 168,
+    neckW: 33,                       // 0.50 of head width
     armW: [37, 28, 20], legW: [72, 45, 27],
     shoulderJoint: 66, hipJoint: 32,
     // Palpebral fissure LENGTH is not dimorphic (2.71 vs 2.73 cm, ns). What
     // differs is roundness and tilt, so the eye is not enlarged here; the face
     // around it is smaller. h/w 0.47, at the round end of the adult band (over
     // 0.55 reads infantile, which is where the old rig sat at 1.16).
-    eyeRx: 9.6, eyeRy: 4.5, eyeX: 20, tilt: 7,
-    browGap: 5.0, browW: 2.7,        // gap 0.048 H, bar 0.037 W
+    eyeRx: 9.2, eyeRy: 4.4, eyeX: 18, tilt: 7,
+    browGap: 9.0, browW: 2.7,        // 0.048 H measured, same correction
     noseHalf: 7.5, mouthHalf: 13.5, lipMass: 6.2,
-    jawRatio: 0.745, headTension: 0,
+    jawRatio: 0.72, chinW: 0.2, headTension: 0,
   },
   m: {
-    headW: 79, waistY: 302,
-    hip: 145, shoulder: 209, chest: 189, waist: 130,
-    neckW: 51,                       // 0.65 of head width
+    headW: 68, waistY: 302,
+    // no flare at the bottom: a V that widens again at the hip reads as a gut.
+    shoulder: 211, bust: 194, underbust: 156, waist: 132, upperHip: 142, hip: 145,
+    neckW: 45,                       // 0.65 of head width
     armW: [56, 42, 29], legW: [84, 55, 34],
     shoulderJoint: 88, hipJoint: 30,
-    eyeRx: 9.6, eyeRy: 3.8, eyeX: 20, tilt: 2,
-    browGap: 2.0, browW: 6.1,        // gap 0.020 H, bar 0.077 W
-    noseHalf: 10, mouthHalf: 16, lipMass: 4.6,
-    jawRatio: 0.9, headTension: 0.06,
+    eyeRx: 9.2, eyeRy: 3.7, eyeX: 18, tilt: 3,
+    browGap: 8.5, browW: 4.4,        // neat and CLEAR of the eye, not a shelf over it
+    noseHalf: 8, mouthHalf: 14, lipMass: 4.4,
+    jawRatio: 0.8, chinW: 0.30, headTension: 0.04,
   },
 };
 
@@ -136,8 +142,8 @@ const SPEC: Record<Sex, Spec> = {
 function headOutline(s: Spec): Pt[] {
   const w = s.headW / 2;
   const jaw = w * s.jawRatio;
-  const ogee = lerp(jaw, w, s.jawRatio > 0.85 ? 0.75 : 0.25);   // males barely pull in
-  const chin = w * (s.jawRatio > 0.85 ? 0.42 : 0.23);
+  const ogee = lerp(jaw, w, s.jawRatio > 0.78 ? 0.62 : 0.25);   // males pull in less
+  const chin = w * s.chinW;
   const R: Pt[] = [
     [0, 0],
     [w * 0.60, 5],
@@ -148,7 +154,7 @@ function headOutline(s: Spec): Pt[] {
     // The male gets one extra landmark COLLINEAR with the two above it, which
     // makes the mandibular border a straight run before it turns. That, and not
     // the gonial angle, is what a "square jaw" actually is.
-    ...(s.jawRatio > 0.85 ? [[lerp(chin, jaw, 0.82), 89] as Pt] : []),
+    ...(s.jawRatio > 0.78 ? [[lerp(chin, jaw, 0.8), 90] as Pt] : []),
     [lerp(chin, jaw, 0.55), 93],
     [chin, 99],
     [0, 100],           // menton
@@ -168,6 +174,8 @@ export type FigureProps = {
   /** garment + accent. Two colours is all a flat figure should carry. */
   wear?: {top: string; bottom: string; accent?: string};
   hairstyle?: 'long' | 'short' | 'wave';
+  /** 'skirt' bares the legs and puts her in heels. */
+  garment?: 'trousers' | 'skirt';
   /** 0..1 per frame from the VO envelope. */
   mouth?: number;
   mouthSpread?: number;
@@ -195,6 +203,7 @@ export const Figure: React.FC<FigureProps> = ({
   skin = '#e0a882', hair = '#2a1c16', eyes = '#3d5a72',
   wear = {top: '#3f6f8f', bottom: '#2f3a52', accent: '#e8dcc8'},
   hairstyle = 'short',
+  garment = 'trousers',
   mouth, mouthSpread = 0.5, talking, idleGain = 1,
 }) => {
   const s = SPEC[sex];
@@ -230,11 +239,13 @@ export const Figure: React.FC<FigureProps> = ({
     [1.6 + shift * 0.7, Y.hip],
     [2.2 + shift * 0.7, Y.hip + 40],        // runs PAST the hip so the flat end
   ];                                        // cut lands where the legs hide it
-  const torsoW = [s.shoulder * 0.66, s.shoulder, s.chest, s.waist, s.hip, s.hip * 0.9];
+  const torsoW = [s.shoulder * 0.66, s.shoulder, s.bust, s.waist, s.hip, s.hip * 0.9];
 
   /* ---- ARMS. A pose is three joint positions, not a redrawn path. */
   const armSpine = (side: 1 | -1): Pt[] => {
-    const sh: Pt = [side * s.shoulderJoint + shift * 0.4, Y.shoulder + 6 + side * shTilt];
+    const far = side > 0;
+    const sh: Pt = [side * (s.shoulderJoint - (far ? 16 : 0)) + shift * 0.4,
+                    Y.shoulder + 6 + (far ? 16 : 0) + side * shTilt];
     switch (pose) {
       case 'arms-crossed': {
         // Forearms stacked at DIFFERENT heights, each hand tucked at the
@@ -256,7 +267,7 @@ export const Figure: React.FC<FigureProps> = ({
       default:
         // Hanging, and NOT mirrored: one arm slightly further forward and a
         // touch more bent. Symmetry is the thing being avoided.
-        return bent(sh, [side * (s.shoulderJoint + 12 + (side > 0 ? 4 : 0)), Y.hip + 66],
+        return bent(sh, [side * (s.hip * 0.5 + 16 + (side > 0 ? 4 : 0)), Y.hip + 62],
                     side * (side > 0 ? 15 : 11), 4);
     }
   };
@@ -329,9 +340,9 @@ export const Figure: React.FC<FigureProps> = ({
             lit plane above it. Only works on a narrowed skull; on a circle the
             same shape reads as a smudge. */}
         <path d={spline([[-s.headW / 2 + 2, 48], [-s.headW * 0.30, 66], [-s.headW * 0.22, 76]])}
-              fill="none" stroke={INK} strokeWidth={3} opacity={0.13} strokeLinecap="round" />
+              fill="none" stroke={INK} strokeWidth={3} opacity={0.1} strokeLinecap="round" />
         <path d={spline([[s.headW / 2 - 2, 48], [s.headW * 0.30, 66], [s.headW * 0.22, 76]])}
-              fill="none" stroke={INK} strokeWidth={3.4} opacity={0.18} strokeLinecap="round" />
+              fill="none" stroke={INK} strokeWidth={3.4} opacity={0.14} strokeLinecap="round" />
         {[-1, 1].map((sd) => eye(sd as 1 | -1))}
         {/* BROWS. The GAP is the cue, not the bar: a clean 0.048H of skin between
             brow and lid reads instantly at tile scale where a thin arched line
@@ -349,8 +360,12 @@ export const Figure: React.FC<FigureProps> = ({
             flat face is a detail-density mismatch, and over-defined noses and
             eyelids are the two most-cited causes of a stylized face tipping
             uncanny. */}
+        {sex === 'm' && (
+          <path d={`M${facing * 3},${46} L${facing * 4},${63}`} fill="none" stroke={INK}
+                strokeWidth={2.2} opacity={0.32} strokeLinecap="round" />
+        )}
         <path d={`M${facing * 2},${64} q${facing * s.noseHalf * 0.7},${8} ${facing * -1},${9}`}
-              fill="none" stroke={INK} strokeWidth={sex === 'f' ? 2 : 2.8}
+              fill="none" stroke={INK} strokeWidth={sex === 'f' ? 2 : 2.6}
               opacity={0.55} strokeLinecap="round" />
         {/* MOUTH */}
         {mouth !== undefined || talking ? (
@@ -405,8 +420,8 @@ export const Figure: React.FC<FigureProps> = ({
           of things being in front of other things. */}
       <Limb spine={legSpine(1)} w={s.legW} fill={INK} shadow />
       <Limb spine={legSpine(-1)} w={s.legW} fill={INK} />
-      <Foot at={legSpine(1)[2]} side={1} col={wear.accent ?? INK} shadow />
-      <Foot at={legSpine(-1)[2]} side={-1} col={wear.accent ?? INK} />
+      <Foot at={legSpine(1)[2]} side={1} col={wear.accent ?? INK} heel={garment === 'skirt'} shadow />
+      <Foot at={legSpine(-1)[2]} side={-1} col={wear.accent ?? INK} heel={garment === 'skirt'} />
 
       {/* FAR ARM behind the torso, near arm in front of it. */}
       <Limb spine={armSpine(1)} w={s.armW} fill={INK} shadow />
@@ -426,7 +441,7 @@ export const Figure: React.FC<FigureProps> = ({
           // Bust and waist as the garment's own seams. The silhouette already
           // carries the shape; this is the fabric acknowledging it.
           <>
-            <path d={spline([[-s.chest * 0.30, Y.chest - 10], [0, Y.chest + 4], [s.chest * 0.30, Y.chest - 10]])}
+            <path d={spline([[-s.bust * 0.34, Y.chest - 14], [0, Y.chest + 10], [s.bust * 0.34, Y.chest - 14]])}
                   fill="none" stroke={INK} strokeWidth={2.4} opacity={0.28} />
             <path d={spline([[-s.waist * 0.46, waistY - 6], [0, waistY + 3], [s.waist * 0.46, waistY - 6]])}
                   fill="none" stroke={INK} strokeWidth={2.6} opacity={0.3} />
@@ -436,9 +451,9 @@ export const Figure: React.FC<FigureProps> = ({
           // Pec shelf and the two lat lines the V-taper needs in order to explain
           // itself. A taper with nothing inside it reads as a garment, not a body.
           <>
-            <path d={spline([[-s.chest * 0.34, Y.chest - 16], [0, Y.chest + 2], [s.chest * 0.34, Y.chest - 16]])}
+            <path d={spline([[-s.bust * 0.34, Y.chest - 18], [0, Y.chest + 2], [s.bust * 0.34, Y.chest - 18]])}
                   fill="none" stroke={INK} strokeWidth={3} opacity={0.3} />
-            <path d={spline([[0, Y.chest - 26], [0, Y.chest + 6]])}
+            <path d={spline([[0, Y.chest - 28], [0, Y.chest + 10]])}
                   fill="none" stroke={INK} strokeWidth={2.6} opacity={0.22} />
             <path d={spline([[-s.shoulder * 0.42, Y.shoulder + 20], [-s.waist * 0.5, waistY - 30]])}
                   fill="none" stroke={INK} strokeWidth={2.4} opacity={0.16} />
@@ -448,6 +463,24 @@ export const Figure: React.FC<FigureProps> = ({
         )}
       </g>
 
+      {/* SKIRT. Flares from the cinch and stops above the knee: the flare is what
+          reads the waist-to-hip curve, and the short hem is what keeps the legs
+          long. Both halves matter, and a long hem cancels a waist however hard
+          you nip it, which is how the previous attempt went wrong. */}
+      {garment === 'skirt' && (
+        <g>
+          <path d={ribbon([[-1.6 + shift, waistY + 6], [1.2 + shift * 0.8, Y.hip],
+                           [2.4 + shift * 0.7, Y.hip + 74]],
+                          [s.waist * 1.04, s.hip * 1.0, s.hip * 1.06], {capStart: false, capEnd: false})}
+                fill={`url(#${uid}_top)`} stroke={INK} strokeWidth={4.5} strokeLinejoin="round" />
+          <path d={edge([[-1.6 + shift, waistY + 6], [1.2 + shift * 0.8, Y.hip],
+                         [2.4 + shift * 0.7, Y.hip + 74]],
+                        [s.waist * 1.04, s.hip * 1.0, s.hip * 1.06], -1)}
+                fill="none" stroke={INK} strokeWidth={7} opacity={0.45} strokeLinecap="round" />
+          <path d={spline([[-s.hip * 0.34, Y.hip + 30], [-s.hip * 0.28, Y.hip + 80]])}
+                fill="none" stroke="#fff" strokeWidth={5} opacity={0.13} strokeLinecap="round" />
+        </g>
+      )}
       {/* NECK, over the garment. Then a COLLAR RIM laid back over its base, so
           the neck comes THROUGH the opening instead of the opening being a patch
           of skin painted on a chest. */}
@@ -487,10 +520,10 @@ export const Figure: React.FC<FigureProps> = ({
 
       {/* FAR LEG first: it goes BEHIND. Depth in a flat medium is made entirely
           of things being in front of other things. */}
-      <Limb spine={legSpine(1)} w={s.legW} fill={wear.bottom} shadow />
-      <Limb spine={legSpine(-1)} w={s.legW} fill={wear.bottom} />
-      <Foot at={legSpine(1)[2]} side={1} col={wear.accent ?? INK} shadow />
-      <Foot at={legSpine(-1)[2]} side={-1} col={wear.accent ?? INK} />
+      <Limb spine={legSpine(1)} w={s.legW} fill={garment === 'skirt' ? `url(#${uid}_skin)` : wear.bottom} shadow />
+      <Limb spine={legSpine(-1)} w={s.legW} fill={garment === 'skirt' ? `url(#${uid}_skin)` : wear.bottom} />
+      <Foot at={legSpine(1)[2]} side={1} col={wear.accent ?? INK} heel={garment === 'skirt'} shadow />
+      <Foot at={legSpine(-1)[2]} side={-1} col={wear.accent ?? INK} heel={garment === 'skirt'} />
 
       {/* FAR ARM behind the torso, near arm in front of it. */}
       <Limb spine={armSpine(1)} w={s.armW} fill={`url(#${uid}_skin)`} shadow />
@@ -510,7 +543,7 @@ export const Figure: React.FC<FigureProps> = ({
           // Bust and waist as the garment's own seams. The silhouette already
           // carries the shape; this is the fabric acknowledging it.
           <>
-            <path d={spline([[-s.chest * 0.30, Y.chest - 10], [0, Y.chest + 4], [s.chest * 0.30, Y.chest - 10]])}
+            <path d={spline([[-s.bust * 0.34, Y.chest - 14], [0, Y.chest + 10], [s.bust * 0.34, Y.chest - 14]])}
                   fill="none" stroke={INK} strokeWidth={2.4} opacity={0.28} />
             <path d={spline([[-s.waist * 0.46, waistY - 6], [0, waistY + 3], [s.waist * 0.46, waistY - 6]])}
                   fill="none" stroke={INK} strokeWidth={2.6} opacity={0.3} />
@@ -520,9 +553,9 @@ export const Figure: React.FC<FigureProps> = ({
           // Pec shelf and the two lat lines the V-taper needs in order to explain
           // itself. A taper with nothing inside it reads as a garment, not a body.
           <>
-            <path d={spline([[-s.chest * 0.34, Y.chest - 16], [0, Y.chest + 2], [s.chest * 0.34, Y.chest - 16]])}
+            <path d={spline([[-s.bust * 0.34, Y.chest - 18], [0, Y.chest + 2], [s.bust * 0.34, Y.chest - 18]])}
                   fill="none" stroke={INK} strokeWidth={3} opacity={0.3} />
-            <path d={spline([[0, Y.chest - 26], [0, Y.chest + 6]])}
+            <path d={spline([[0, Y.chest - 28], [0, Y.chest + 10]])}
                   fill="none" stroke={INK} strokeWidth={2.6} opacity={0.22} />
             <path d={spline([[-s.shoulder * 0.42, Y.shoulder + 20], [-s.waist * 0.5, waistY - 30]])}
                   fill="none" stroke={INK} strokeWidth={2.4} opacity={0.16} />
@@ -532,6 +565,24 @@ export const Figure: React.FC<FigureProps> = ({
         )}
       </g>
 
+      {/* SKIRT. Flares from the cinch and stops above the knee: the flare is what
+          reads the waist-to-hip curve, and the short hem is what keeps the legs
+          long. Both halves matter, and a long hem cancels a waist however hard
+          you nip it, which is how the previous attempt went wrong. */}
+      {garment === 'skirt' && (
+        <g>
+          <path d={ribbon([[-1.6 + shift, waistY + 6], [1.2 + shift * 0.8, Y.hip],
+                           [2.4 + shift * 0.7, Y.hip + 74]],
+                          [s.waist * 1.04, s.hip * 1.0, s.hip * 1.06], {capStart: false, capEnd: false})}
+                fill={`url(#${uid}_top)`} stroke={INK} strokeWidth={4.5} strokeLinejoin="round" />
+          <path d={edge([[-1.6 + shift, waistY + 6], [1.2 + shift * 0.8, Y.hip],
+                         [2.4 + shift * 0.7, Y.hip + 74]],
+                        [s.waist * 1.04, s.hip * 1.0, s.hip * 1.06], -1)}
+                fill="none" stroke={INK} strokeWidth={7} opacity={0.45} strokeLinecap="round" />
+          <path d={spline([[-s.hip * 0.34, Y.hip + 30], [-s.hip * 0.28, Y.hip + 80]])}
+                fill="none" stroke="#fff" strokeWidth={5} opacity={0.13} strokeLinecap="round" />
+        </g>
+      )}
       {/* NECK, over the garment. Then a COLLAR RIM laid back over its base, so
           the neck comes THROUGH the opening instead of the opening being a patch
           of skin painted on a chest. */}
@@ -597,11 +648,28 @@ const Hand: React.FC<{at: Pt; r: number; fill: string; shadow?: boolean}> = ({at
   </g>
 );
 
-const Foot: React.FC<{at: Pt; side: 1 | -1; col: string; shadow?: boolean}> = ({at, side, col, shadow}) => (
+const Foot: React.FC<{at: Pt; side: 1 | -1; col: string; heel?: boolean; shadow?: boolean}> = ({
+  at, side, col, heel, shadow,
+}) => (
   <g transform={`translate(${at[0]},${at[1]})`} opacity={shadow ? 0.85 : 1}>
-    <path d={spline([[-17, -2], [-21, 22], [side * 6, 34], [31, 31], [19, 2]], true)}
-          fill={shadow ? shade(col, 0.82) : col} stroke={INK} strokeWidth={3.6} strokeLinejoin="round" />
-    <path d="M-21,26 q26,9 50,2" fill="none" stroke={INK} strokeWidth={2.2} opacity={0.4} />
+    {heel ? (
+      // A pointed pump on a raised heel, with an ARCHED instep. The arch is the
+      // functional part: it is what visually lengthens a leg, which is the whole
+      // reason heels read the way they do.
+      <g>
+        <path d={spline([[-13, -4], [-17, 12], [4, 26], [30, 24], [34, 14], [15, -2]], true)}
+              fill={shadow ? shade(col, 0.82) : col} stroke={INK} strokeWidth={3.4} strokeLinejoin="round" />
+        <path d="M-15,10 l-3,22 h9 l1,-20 Z" fill={shadow ? shade(col, 0.8) : col}
+              stroke={INK} strokeWidth={3} strokeLinejoin="round" />
+        <path d="M-6,-1 q14,4 22,10" fill="none" stroke="#fff" strokeWidth={2.6} opacity={0.32} strokeLinecap="round" />
+      </g>
+    ) : (
+      <g>
+        <path d={spline([[-17, -2], [-21, 22], [side * 6, 34], [31, 31], [19, 2]], true)}
+              fill={shadow ? shade(col, 0.82) : col} stroke={INK} strokeWidth={3.6} strokeLinejoin="round" />
+        <path d="M-21,26 q26,9 50,2" fill="none" stroke={INK} strokeWidth={2.2} opacity={0.4} />
+      </g>
+    )}
   </g>
 );
 
@@ -613,8 +681,8 @@ const Hair: React.FC<{style: string; s: Spec; col: string; back?: boolean}> = ({
     // drawn as one arc is a swim cap; the break is the whole difference.
     return (
       <g>
-        <path d={spline([[-w * 1.04, 30], [-w * 1.0, 4], [-w * 0.3, -8], [w * 0.72, -2],
-                         [w * 1.06, 20], [w * 1.02, 34],
+        <path d={spline([[-w * 1.06, 30], [-w * 1.12, -6], [-w * 0.5, -26], [w * 0.5, -22],
+                         [w * 1.08, 4], [w * 1.06, 32],
                          // the fringe SWEEPS: a peak on the part side, a hard
                          // temple corner on the other. One smooth arc here is
                          // the difference between hair and a swim cap.
@@ -633,23 +701,29 @@ const Hair: React.FC<{style: string; s: Spec; col: string; back?: boolean}> = ({
   // last version read as a man with long hair.
   if (back) {
     return (
-      <path d={spline([[-w * 1.28, 40], [-w * 1.2, -2], [-w * 0.3, -12], [w * 0.9, 2],
-                       [w * 1.3, 46], [w * 1.36, 130], [w * 1.02, 208], [w * 0.5, 224],
-                       [-w * 0.55, 220], [-w * 1.06, 196], [-w * 1.3, 118]], true)}
+      // The long fall, entirely on ONE side. It clears the far jaw and runs well
+      // past the shoulder, because LENGTH is the cue and hair that stops at the
+      // jaw reads as a bob.
+      <path d={spline([[-w * 1.02, 24], [-w * 1.06, -4], [-w * 0.3, -14], [w * 0.86, -2],
+                       [w * 1.3, 44], [w * 1.62, 118], [w * 1.54, 186], [w * 1.16, 206],
+                       [w * 0.86, 176], [w * 0.94, 108], [w * 0.72, 54], [w * 0.24, 28]], true)}
             fill={col} stroke={INK} strokeWidth={4.5} strokeLinejoin="round" />
     );
   }
   return (
     <g>
       {/* the near fall, over the shoulder */}
-      <path d={spline([[-w * 0.98, 6], [-w * 0.2, -10], [w * 0.86, 4], [w * 1.14, 40],
-                       [w * 0.82, 34], [w * 0.5, 14], [-w * 0.1, 20], [-w * 0.72, 44],
-                       [-w * 0.9, 116], [-w * 1.16, 96], [-w * 1.14, 34]], true)}
+      {/* The crown and the fringe, with a real PART. The near side is TUCKED: it
+          comes down only to the cheekbone and stops, so the jawline and the neck
+          on that side are completely open. That open side is the whole design. */}
+      <path d={spline([[-w * 1.0, 30], [-w * 1.04, 0], [-w * 0.24, -16], [w * 0.8, -6],
+                       [w * 1.16, 34], [w * 1.06, 62],
+                       [w * 0.72, 30], [w * 0.18, 16], [-w * 0.36, 24], [-w * 0.78, 46]], true)}
             fill={col} stroke={INK} strokeWidth={4} strokeLinejoin="round" />
-      <path d={spline([[-w * 0.45, 2], [w * 0.25, -4], [w * 0.8, 10]])}
-            fill="none" stroke="#fff" strokeWidth={5} opacity={0.15} strokeLinecap="round" />
-      <path d={spline([[-w * 1.0, 60], [-w * 0.94, 130], [-w * 1.0, 186]])}
-            fill="none" stroke="#fff" strokeWidth={5} opacity={0.1} strokeLinecap="round" />
+      <path d={spline([[-w * 0.5, -2], [w * 0.2, -10], [w * 0.86, 6]])}
+            fill="none" stroke="#fff" strokeWidth={5} opacity={0.17} strokeLinecap="round" />
+      <path d={spline([[w * 1.24, 70], [w * 1.36, 132], [w * 1.2, 182]])}
+            fill="none" stroke="#fff" strokeWidth={6} opacity={0.12} strokeLinecap="round" />
     </g>
   );
 };
