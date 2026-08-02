@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""contact_sheet.py — give the critics EYES.
+"""contact_sheet.py: give the critics EYES.
 
 WHY THIS EXISTS
 The owner watched case 0003 and said "the scenes are boring and not actually
