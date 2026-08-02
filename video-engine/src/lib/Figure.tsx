@@ -95,23 +95,23 @@ type Spec = {
    this uses the more defensible number). */
 const SPEC: Record<Sex, Spec> = {
   f: {
-    headW: 58, waistY: 288,
+    headW: 66, waistY: 288,
     // bust as wide as the shoulder, then a hard drop to a 0.62 waist over a
     // SHORT span, then a hip wider than the shoulder. Waist-to-hip lands at
     // 0.62, tighter than the 0.70 average-preference figure on purpose: this is
     // a caricature, and silhouette is the one place caricature is right.
     shoulder: 142, bust: 158, underbust: 100, waist: 78, upperHip: 150, hip: 178,
-    neckW: 29,                       // 0.50 of head width
-    armW: [37, 28, 20], legW: [80, 38, 52, 20],
+    neckW: 33,                       // 0.50 of head width
+    armW: [37, 28, 20], legW: [78, 41, 51, 22],
     shoulderJoint: 66, hipJoint: 32,
     // Palpebral fissure LENGTH is not dimorphic (2.71 vs 2.73 cm, ns). What
     // differs is roundness and tilt, so the eye is not enlarged here; the face
     // around it is smaller. h/w 0.47, at the round end of the adult band (over
     // 0.55 reads infantile, which is where the old rig sat at 1.16).
-    eyeRx: 8.6, eyeRy: 5.0, eyeX: 12.8, tilt: 9,
-    browGap: 9.5, browW: 2.0,        // 0.048 H measured, same correction
-    noseHalf: 4.2, mouthHalf: 10.5, lipMass: 6.2,
-    jawRatio: 0.68, chinW: 0.17, headTension: 0, neckDrop: 24,
+    eyeRx: 10.2, eyeRy: 6.3, eyeX: 18, tilt: 7,
+    browGap: 9.0, browW: 2.7,        // 0.048 H measured, same correction
+    noseHalf: 7.5, mouthHalf: 13.5, lipMass: 6.2,
+    jawRatio: 0.72, chinW: 0.2, headTension: 0, neckDrop: 24,
   },
   m: {
     headW: 68, waistY: 302,
@@ -228,8 +228,8 @@ export const Figure: React.FC<FigureProps> = ({
   // horizontal squeeze of the head plus a shift of the features inside it, so
   // the far cheek compresses. Small on purpose: past about 0.5 the flat
   // features stop selling it and you need a real redraw.
-  const headTurn = sex === 'f' ? 0.1 : 0.08;
-  const headTilt = sex === 'f' ? -4 : -2;
+  const headTurn = 0;
+  const headTilt = 0;
 
   /* ---- CONTRAPPOSTO. Weight on the figure's right (screen left when facing 1).
      The hip on the weight side rides UP, the shoulders counter-tilt the other
@@ -347,8 +347,8 @@ export const Figure: React.FC<FigureProps> = ({
                   faces, flips perceived sex on its own, and unlike lashes it is
                   a LOW-frequency property, so it is the one feminine cue that
                   survives a thumbnail intact. It is also free in flat fill. */}
-              <circle cx={cx + 0.8 * facing} cy={eyeY - ry * 0.1} r={ry * (sex === 'f' ? 1.34 : 1.02)} fill={eyes} />
-              <circle cx={cx + 0.8 * facing} cy={eyeY - ry * 0.1} r={ry * (sex === 'f' ? 0.78 : 0.55)} fill={INK} />
+              <circle cx={cx + 0.8 * facing} cy={eyeY - ry * 0.1} r={ry * 1.02} fill={eyes} />
+              <circle cx={cx + 0.8 * facing} cy={eyeY - ry * 0.1} r={ry * 0.55} fill={INK} />
               <circle cx={cx + 0.8 * facing - ry * 0.3} cy={eyeY - ry * 0.5} r={ry * 0.26} fill="#fff" />
               {lidDrop > 0 && (
                 <path d={`M${cx - rx},${eyeY - ry + lidDrop} a${rx},${ry} 0 0 1 ${rx * 2},0 Z`}
@@ -361,10 +361,10 @@ export const Figure: React.FC<FigureProps> = ({
                   open-eyed. */}
               <path d={`M${cx - rx - 1},${eyeY - ry * 0.35} q${rx},${-ry * 1.5} ${rx * 2 + (sex === 'f' ? 3 : 1)},${-ry * 0.1}`}
                     fill="none" stroke={INK} strokeLinecap="round"
-                    strokeWidth={sex === 'f' ? rx * 0.26 : rx * 0.24} />
+                    strokeWidth={sex === 'f' ? 3.8 : 2.2} />
               {sex === 'f' && (
                 <path d={`M${cx + rx + 1.6},${eyeY - ry * 0.45} q${3.4},${-1.6} ${5},${-3.8}`}
-                      fill="none" stroke={INK} strokeWidth={rx * 0.22} strokeLinecap="round" />
+                      fill="none" stroke={INK} strokeWidth={3} strokeLinecap="round" />
               )}
               {sex === 'm' && (
                 <path d={`M${cx - rx * 0.7},${eyeY + ry * 0.85} q${rx * 0.7},${ry * 0.5} ${rx * 1.4},0`}
@@ -385,16 +385,16 @@ export const Figure: React.FC<FigureProps> = ({
               flesh itself; ink washes read as dirt on paper. The clip lets every
               shape overshoot and still end exactly at the silhouette. */}
           {/* the shadow side of the whole head, one hard-edged plane */}
-          <path d={spline([[hw * 0.62, -10], [hw * 0.92, 34], [hw * 0.78, 70],
+          <path d={spline([[hw * 0.22, -10], [hw * 0.62, 34], [hw * 0.44, 70],
                            [hw * 0.1, 104], [hw * 3, 104], [hw * 3, -10]], true)}
-                fill={sk(0.92)} />
+                fill={sk(0.86)} />
           {/* reflected light where the dark side turns back toward the room */}
           <path d={spline([[hw * 0.88, 6], [hw * 1.02, 52], [hw * 0.7, 92],
                            [hw * 3, 92], [hw * 3, 6]], true)} fill={sk(0.95)} />
           {/* the hair's cast shadow across the forehead */}
           <path d={spline([[-hw * 3, -30], [hw * 3, -30], [hw * 3, 2],
-                           [hw * 0.5, 16], [-hw * 0.5, 10], [-hw * 3, -4]], true)}
-                fill={sk(0.9)} />
+                           [hw * 0.5, 22], [-hw * 0.5, 15], [-hw * 3, 0]], true)}
+                fill={sk(0.8)} />
           {/* EYE SOCKETS. The reference eyes read deep-set because they sit IN a
               value, under the brow, instead of lying white on the surface. The
               male socket is deeper; hers stays soft or it reads tired. */}
@@ -408,8 +408,8 @@ export const Figure: React.FC<FigureProps> = ({
                   {/* the crease shadow ABOVE the eye only; below it stays LIGHT.
                       Dark under an eye is what tired literally is, and every
                       reference face is bright there. */}
-                  <ellipse cx={sd * s.eyeX} cy={eyeY - ry * 1.15} rx={rx + 2} ry={ry * 0.62}
-                           fill={sk(0.95)} />
+                  <ellipse cx={sd * s.eyeX} cy={eyeY - ry * 0.9} rx={rx + 5} ry={ry * 0.9}
+                           fill={sk(0.92)} />
                   <ellipse cx={sd * s.eyeX} cy={eyeY + ry + 3} rx={rx * 0.8} ry={3.4}
                            fill={sk(1.07)} />
                 </>
@@ -453,7 +453,7 @@ export const Figure: React.FC<FigureProps> = ({
             </>
           )}
           {/* the shelf under the lower lip, in value */}
-          <ellipse cx={0} cy={85 + s.lipMass * 1.5} rx={s.mouthHalf * 0.7} ry={3.2}
+          <ellipse cx={0} cy={81 + s.lipMass * 1.5} rx={s.mouthHalf * 0.7} ry={3.2}
                    fill={sk(0.87)} />
           {/* STUBBLE. A slightly cool value over the whole jaw and chin. It does
               two jobs: models the jaw as a plane, and is a masculinity cue that
@@ -480,10 +480,10 @@ export const Figure: React.FC<FigureProps> = ({
         {[-1, 1].map((sd) => (
           sex === 'f' ? (
             <path key={sd}
-                  d={`M${sd * (s.eyeX - 6)},${browY - 0.2}
-                      Q${sd * (s.eyeX + 3)},${browY - 4.2} ${sd * (s.eyeX + 11)},${browY - 1.4}
-                      L${sd * (s.eyeX + 14)},${browY + 0.4}
-                      Q${sd * (s.eyeX + 3)},${browY - 1.4} ${sd * (s.eyeX - 6)},${browY + 2.2} Z`}
+                  d={`M${sd * (s.eyeX - 12)},${browY + 0.5}
+                      Q${sd * (s.eyeX - 1)},${browY - 3.2} ${sd * (s.eyeX + 9)},${browY - 2.2}
+                      L${sd * (s.eyeX + 13)},${browY - 0.8}
+                      Q${sd * (s.eyeX + 1)},${browY - 0.2} ${sd * (s.eyeX - 12)},${browY + 2.4} Z`}
                   fill="#241a18" transform={`rotate(${sd * E.browTilt} ${sd * s.eyeX} ${browY})`} />
           ) : (
             <path key={sd}
@@ -1078,7 +1078,7 @@ const Hair: React.FC<{style: string; s: Spec; col: string; back?: boolean}> = ({
 const StaticMouth: React.FC<{emotion: Emotion; half: number; mass: number; lip: string; full: boolean}> = ({
   emotion, half, mass, lip, full,
 }) => {
-  const y = 85;
+  const y = 81;
   const curve = {neutral: 3, angry: -1, worried: -5, shock: 0, smug: 5, flat: 0, squint: 1}[emotion] ?? 0;
   if (emotion === 'shock') {
     return <ellipse cx={0} cy={y + 4} rx={half * 0.5} ry={mass * 1.5} fill="#5e2430" stroke={INK} strokeWidth={2.6} />;
@@ -1123,7 +1123,7 @@ const TalkingMouth: React.FC<{open: number; spread: number; half: number; lip: s
   const o = Math.max(0, Math.min(1, open));
   const w = half * (0.66 + 0.34 * spread);
   const h = 1.6 + o * 13;
-  const y = 85;
+  const y = 81;
   return (
     <g>
       <path d={spline([[-w, y], [-w * 0.45, y - h * 0.34], [0, y - h * 0.42], [w * 0.45, y - h * 0.34],
