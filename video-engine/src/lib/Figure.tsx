@@ -359,12 +359,24 @@ export const Figure: React.FC<FigureProps> = ({
                   tile and turns to mud. The lower lid is omitted entirely on the
                   female, because asymmetric lid weight reads both feminine and
                   open-eyed. */}
-              <path d={`M${cx - rx - 1},${eyeY - ry * 0.35} q${rx},${-ry * 1.5} ${rx * 2 + (sex === 'f' ? 3 : 1)},${-ry * 0.1}`}
+              {/* UPPER LASH LINE, and the reason the old one looked deranged:
+                  it was written in +x relative units, so its 3-unit extension
+                  and its whole flick landed on the +x end of BOTH eyes. On the
+                  right eye that is the outer corner and correct; on the LEFT eye
+                  +x is the NOSE, so the lash overshot the inner corner and
+                  hooked back around it. One curl, pointing inward, on one eye.
+                  Lashes are anatomically OUTBOARD, so everything here is signed
+                  by `side`: inner corner -> over the eye -> past the OUTER
+                  corner -> flick up and away from the nose. */}
+              <path d={`M${cx - side * rx * 0.98},${eyeY - ry * 0.2}
+                        Q${cx},${eyeY - ry * 1.55}
+                         ${cx + side * (rx + (sex === 'f' ? 3.5 : 1.2))},${eyeY - ry * 0.55}`}
                     fill="none" stroke={INK} strokeLinecap="round"
-                    strokeWidth={sex === 'f' ? 3.8 : 2.2} />
+                    strokeWidth={sex === 'f' ? rx * 0.3 : rx * 0.2} />
               {sex === 'f' && (
-                <path d={`M${cx + rx + 1.6},${eyeY - ry * 0.45} q${3.4},${-1.6} ${5},${-3.8}`}
-                      fill="none" stroke={INK} strokeWidth={3} strokeLinecap="round" />
+                <path d={`M${cx + side * (rx + 1.8)},${eyeY - ry * 0.5}
+                          q${side * 3.4},${-1.8} ${side * 5.4},${-4.2}`}
+                      fill="none" stroke={INK} strokeWidth={rx * 0.24} strokeLinecap="round" />
               )}
               {sex === 'm' && (
                 <path d={`M${cx - rx * 0.7},${eyeY + ry * 0.85} q${rx * 0.7},${ry * 0.5} ${rx * 1.4},0`}
