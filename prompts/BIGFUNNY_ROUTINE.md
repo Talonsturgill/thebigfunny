@@ -252,8 +252,22 @@ Failing Gate 0 is cheap. Failing after a render is not.
    metrics ran backwards against the ear. It is a malfunction detector, not
    taste. Read its header before trusting any number in it.
 
-3. Captions are burned in and come from the MEASURED VO timings, so they cannot
-   drift from the spoken word. The show is watched muted more often than not.
+3. **Captions are GENERATED, never typed:**
+   `python3 scripts/gen_captions_ts.py --case N`
+   It writes `video-engine/src/caseNNNN_captions.ts` from `vo_lines.json`, so the
+   cues, the speaker labels and `TOTAL` all come from the takes that were
+   actually synthesized. Captions are burned in and the show is watched muted
+   more often than not.
+
+   **GATE: `python3 scripts/gen_captions_ts.py --case N --check` must exit 0**
+   before the final render. It fails when the committed cue file is not what the
+   current VO produces, which is the exact defect a render cannot show you: both
+   files are internally consistent and the picture simply cuts on the wrong word.
+
+   **NEVER hand-type a time into a composition.** Derive the shot ladder from the
+   cue starts (`CUT_ON` in `Case0002.tsx` is the pattern) and `durationInFrames`
+   from `TOTAL`. Re-synthesis moves all twelve line starts; anything typed
+   alongside them goes stale silently and no gate can see it.
 
 4. Scene code in `video-engine/src/`. Compose from `src/lib/`.
 

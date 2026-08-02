@@ -50,13 +50,37 @@ import {Wordmark, CaseNumber, EndCard, Highlighter, Stamp, BRAND} from './lib/br
 import {MainStreetBG} from './lib/biomes';
 import {MachineShadow} from './lib/kit';
 import {NightGrade, GradeLayer} from './lib/lighting';
-import {CAPTIONS, speakerAt} from './case0002_captions';
+import {CAPTIONS, speakerAt, TOTAL as TOTAL_S} from './case0002_captions';
 
 export const case0002Schema = z.object({total: z.number().optional()});
 
 const FPS = 30;
 const s = (sec: number) => Math.round(sec * FPS);
-const TOTAL = s(48.87);
+
+/**
+ * THE SHOT LADDER IS DERIVED FROM THE VOICE, NOT TYPED IN BESIDE IT.
+ *
+ * Every shot boundary used to be a hand-entered second: `from={s(13.66)}
+ * durationInFrames={s(7.62)}`, eight of them, plus a TOTAL and a
+ * durationInFrames in Root.tsx. Re-synthesizing the VO moves all twelve line
+ * starts, so each re-fit meant retyping ten numbers across three files, and
+ * nothing in the machine can see when one of them is stale: the render is
+ * internally consistent and the picture simply cuts on the wrong word.
+ *
+ * That happened twice in one day, so the boundaries are now CUE INDICES. A shot
+ * runs from the moment one line starts to the moment another does, which is what
+ * the storyboard actually meant, and a re-fit retimes the picture for free.
+ *
+ * SHOTS[i] is the cue that shot i cuts in on. The last shot runs to TOTAL.
+ */
+const CUT_ON = [0, 1, 4, 6, 7, 9, 10];
+const TOTAL = s(TOTAL_S);
+/** The end card owns the tail, the same 1.5s vo_cast reserves after the last word. */
+const TAIL_AT = TOTAL - s(1.5);
+const at = (cue: number) => s(CAPTIONS[cue].start);
+/** Frames from the cut-in of shot i to the cut-in of shot i+1 (or to the tail). */
+const shot = (i: number) =>
+  (i + 1 < CUT_ON.length ? at(CUT_ON[i + 1]) : TAIL_AT) - at(CUT_ON[i]);
 
 const HEAD = 'Arial Black, DejaVu Sans, FreeSans, sans-serif';
 const BODY = 'Arial, DejaVu Sans, FreeSans, sans-serif';
@@ -219,7 +243,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
     <AbsoluteFill style={{background: '#0D141C'}}>
 
       {/* ---------- S1  the hook. cold open, NO logo. 0.00 - 6.54 ---------- */}
-      <Sequence from={0} durationInFrames={s(4.63)}>
+      <Sequence from={at(CUT_ON[0])} durationInFrames={shot(0)}>
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
           <Ray frame={frame} x={540} y={1470} scale={1.5} emotion="angry" pose="arms-crossed" talking={rayTalks} />
@@ -235,7 +259,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
       </Sequence>
 
       {/* ---------- S2  the turn. Dee arrives with the printout. 6.54 - 17.88 ---------- */}
-      <Sequence from={s(4.63)} durationInFrames={s(9.03)}>
+      <Sequence from={at(CUT_ON[1])} durationInFrames={shot(1)}>
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
           <Ray frame={frame} x={348} y={1486} scale={1.32} facing={1} emotion="angry"
@@ -247,7 +271,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
       </Sequence>
 
       {/* ---------- S3  THE RATIO. two counts, placed, no commentary. 17.88 - 26.48 ---------- */}
-      <Sequence from={s(13.66)} durationInFrames={s(7.62)}>
+      <Sequence from={at(CUT_ON[2])} durationInFrames={shot(2)}>
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
           <Dee frame={frame} x={648} y={1690} scale={1.86} talking={deeTalks} />
@@ -280,7 +304,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
       </Sequence>
 
       {/* ---------- S4  Ray finds out. performance, not graphics. 26.48 - 35.77 ---------- */}
-      <Sequence from={s(21.28)} durationInFrames={s(6.26)}>
+      <Sequence from={at(CUT_ON[3])} durationInFrames={shot(3)}>
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
           <Ray frame={frame} x={498} y={1858} scale={2.52}
@@ -294,7 +318,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
           Gate 0 blocker: draw the SORTING, never the speakers. Two rows, both
           verbatim from the record, so the picture states the eligibility rule
           rather than pointing at a part. */}
-      <Sequence from={s(27.54)} durationInFrames={s(9.43)}>
+      <Sequence from={at(CUT_ON[4])} durationInFrames={shot(4)}>
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
           <Dee frame={frame} x={760} y={1606} scale={1.62} pose="raise"
@@ -334,7 +358,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
           the monolith exceeds the top of frame and the pair are small at the
           bottom edge. Its shape language is "too large for frame", and eye level
           down a road made it read as a distant building. */}
-      <Sequence from={s(36.97)} durationInFrames={s(6.57)}>
+      <Sequence from={at(CUT_ON[5])} durationInFrames={shot(5)}>
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.5}>
           <MachineShadow x={540} y={1180} scale={3.1} f={frame} grow={1} />
@@ -355,7 +379,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
           what makes it read as evidence. It sits OUTSIDE NightGrade on purpose:
           the cold cast and black floor would drag PAPER to muddy blue-grey on
           the one frame that has to look like real paper. */}
-      <Sequence from={s(43.54)} durationInFrames={s(3.83)}>
+      <Sequence from={at(CUT_ON[6])} durationInFrames={shot(6)}>
         <AbsoluteFill style={{background: BRAND.PAPER}}>
           <div style={{
             position: 'absolute', left: 74, right: 74, top: 372,
@@ -428,7 +452,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
       {frame < s(36.97) && <Caption frame={frame} />}
 
       {/* End card: case number and the promise. Nothing else. INK, not red. */}
-      <Sequence from={s(47.37)}>
+      <Sequence from={TAIL_AT}>
         <EndCard n={2} frame={frame - s(47.37)} fps={fps} color={BRAND.INK} />
       </Sequence>
 
