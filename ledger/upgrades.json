@@ -148,6 +148,20 @@
         "carried_by_fact"
       ],
       "commit": "PENDING"
+    },
+    {
+      "run_date": "2026-08-02",
+      "upgrade": "THE BUTTON HAD NO OWNER. `button_doesnt_land` recurred across cases 0002 and 0003 and every response was to rewrite the last line, which is the artifact and not the decision. Nothing in the machine chose the button until the writer reached the end of a draft, so it was structurally an afterthought and the ending was always the one the viewer already had queued. PHASE 3.7, the producer room, now names the button BEFORE a line is written: its document, its image, and why Ray does not win. That plan binds every later phase, and the director at 4.4 can reject a script whose turn or button cannot be illustrated. The button is now a decision with a phase, an owner and a downstream veto.",
+      "files": [
+        ".claude/agents/producer.md",
+        ".claude/agents/director.md",
+        "prompts/BIGFUNNY_ROUTINE.md",
+        "scripts/retro.py"
+      ],
+      "verified_by": "retro.py --check exits 0 with every repeat offender claimed; retro.py --self-test exit 0 both directions; producer plan schema carries the_button {document, image, why_ray_does_not_win} as required fields; routine Phase 3.7 spawns producer before Phase 4.",
+      "addresses": [
+        "button_doesnt_land"
+      ]
     }
   ]
 }

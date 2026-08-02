@@ -126,7 +126,7 @@ Everything below is downstream of that sentence.
 | 1 | build silhouettes + cast lock + proof sheet | DONE |
 | 2 | retro.py cross-run memory + verdict ledger | DONE |
 | 3 | story_check.py phase 3 gate | DONE |
-| 4 | `button_doesnt_land` repeat offender still open | TODO |
+| 4 | `button_doesnt_land` closed: the producer room owns the button | DONE |
 | 5 | knowledge/DIRECTING.md | DONE |
 | 6 | scripts/visual_check.py + self-test | DONE |
 | 7 | the room agents (producer, director, designer, devils-advocate, reader-sim) | DONE |
@@ -209,8 +209,8 @@ lateral move from Remotion), any framework dependency at all.
 
 ## Wrap
 
-- [ ] every gate self-tests RED on purpose, fixtures checked
-- [ ] `retro --check` exits 0
-- [ ] routine prompt is the source of truth and matches the code
-- [ ] FIELD_NOTES gets the root-cause paragraph above, in short form
+- [x] every gate self-tests RED on purpose, fixtures checked
+- [x] `retro --check` exits 0
+- [x] routine prompt is the source of truth and matches the code
+- [x] FIELD_NOTES gets the root-cause paragraph above, in short form
 - [ ] delete this file

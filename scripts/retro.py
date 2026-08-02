@@ -64,9 +64,14 @@ OWNER = {
          "Ray asks questions instead of arriving at verdicts, which contradicts "
          "the cast law. Recurrence means script_check should count his questions."),
     "button_doesnt_land":
-        ("PHASE 4.4 (the button)",
-         "The ending is the one the viewer already had queued. The button is "
-         "chosen before the script is written and keeps being an afterthought."),
+        ("PHASE 3.7 (the producer room)",
+         "The ending is the one the viewer already had queued. The button used "
+         "to be whatever the writer landed on at the end of a draft, which is "
+         "why it kept being an afterthought: nothing owned it until it was too "
+         "late to change. The producer now names the button, its document, its "
+         "image and why Ray does not win BEFORE a line is written, and the plan "
+         "binds every later phase. Ownership moved from 4.4, which is the "
+         "director now."),
     "repeated_trick":
         ("PHASE 4 (the writers room)",
          "The same comic move twice in one episode."),

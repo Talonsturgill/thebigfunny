@@ -320,3 +320,37 @@ worth anything if you looked at the right ones.
 (The retune was not wasted, as it happens: keeping the pupil visible in every
 register is correct on its own terms. But it was decided for the wrong reason,
 which is luck and not method.)
+
+## The Alaska shelf was why episodes were two people talking (2026-08-02)
+
+Four complaints arrived as one diagnosis: the speed, the boring scenes, the
+incoherent story, "two ppl talking and doing nothing." They are ONE fault.
+
+The art library was ported from an Alaska show. It is parkas, snow, spruce,
+wolves, glaciers. ASSET_MANIFEST told every run to cast from the shelf before
+drawing anything new, which is a good rule that was doing quiet damage: the
+shelf is a PLACE and the stories are national. So every board dressed an Alaska
+set for a story with nothing to do with Alaska, the set could not illustrate
+anything, and once the set is inert the only thing left for an episode to do is
+have two people talk.
+
+"Two people talking" is not a staging failure. It is what is left after the
+world has been amputated from the story.
+
+It also explains the standing repeat offenders. `carried_by_fact` and
+`agreement_not_comedy` appeared in both runs on file and the funny critic blamed
+the STORY each time. Half right. The fact was carrying the episode because
+nothing else was allowed to: not the set, not the props, not the world. A joke
+that lives only in the dialogue is a podcast with drawings over it.
+
+THE FIX: the world of the story becomes the set. A Ford engine story is staged
+INSIDE a Ford engine. The shelf becomes a KIT of parametric primitives and every
+episode BUILDS its world instead of shopping for one. See knowledge/WORLD_KIT.md
+and knowledge/DIRECTING.md.
+
+THE SECOND LESSON, about gates: none of this was visible to any gate, because
+nothing in the machine ever LOOKED at the episode. Every critic graded JSON.
+`scripts/contact_sheet.py` now renders a grid the critics grade, and
+`scripts/visual_check.py` refuses talking heads mechanically on the BOARD,
+before a cent of audio is bought. A critic downstream of a decision never fixes
+the decision.
