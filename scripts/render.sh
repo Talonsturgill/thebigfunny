@@ -187,6 +187,21 @@ case "$MODE" in
       --scale=0.5 --crf=30 --every-nth-frame=1
     ;;
   final)
+    # THE CUE FILE MUST MATCH THE TAKES. A ship render is the last place this can
+    # be caught, and it is invisible everywhere else: a stale caseNNNN_captions.ts
+    # is internally consistent, so the render succeeds and the picture simply cuts
+    # on the wrong word with last cut's captions burned over this cut's audio.
+    # Draft renders skip it on purpose, because iterating on the board before the
+    # VO is re-fitted is a normal thing to do.
+    if [[ "$COMP" =~ ^Case([0-9]{4})$ ]]; then
+      n="$((10#${BASH_REMATCH[1]}))"
+      if [[ -f "src/case$(printf '%04d' "$n")_captions.ts" && -f "../out/dispatch/vo_lines.json" ]]; then
+        if ! python3 ../scripts/gen_captions_ts.py --case "$n" --check; then
+          echo "render.sh: refusing to ship a final render against stale captions." >&2
+          exit 1
+        fi
+      fi
+    fi
     OUT="../out/dispatch/render/video_mute.mp4"; [[ -n "${3:-}" ]] && OUT="$(resolve_out "$3")"
     exec npx remotion render src/index.ts "$COMP" "$OUT" \
       "${PROPS_ARG[@]}" --codec=h264 --muted --concurrency=2 --crf=19

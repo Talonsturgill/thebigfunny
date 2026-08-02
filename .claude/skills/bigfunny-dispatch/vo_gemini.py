@@ -24,7 +24,25 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from vo_backends import normalize_for_tts, SR  # SR = 44100; shared number/text normalizer
 
-MODEL = os.environ.get("DISPATCH_GEMINI_TTS_MODEL", "gemini-2.5-flash-preview-tts")
+# THE MODEL. gemini-3.1-flash-tts-preview, chosen 2026-08-02 by owner A/B on real
+# takes of real lines. It is the newest TTS model, supports single and multi
+# speaker, and was the only one whose tagged takes the owner described as having
+# "real fluctuation". Do not quietly downgrade this to a 2.5 preview.
+MODEL = os.environ.get("DISPATCH_GEMINI_TTS_MODEL", "gemini-3.1-flash-tts-preview")
+
+# Tags Google documents as PERFORMED rather than spoken. Anything outside this
+# set risks being read aloud as a word, which the docs warn about explicitly.
+KNOWN_TAGS = {
+    "sarcasm", "sigh", "sighs", "laughs", "laughing", "giggles", "gasp", "uhm",
+    "whispers", "whispering", "shouting", "excited", "amazed", "curious",
+    "serious", "tired", "panicked", "trembling", "crying", "mischievously",
+    "scoffs", "flat", "extremely fast", "short pause", "medium pause", "long pause",
+}
+
+# BANNED. [robotic] was tested on 2026-08-02 and the owner's verdict was
+# "a robot sound and horrid". It is the one tag that makes a prebuilt voice sound
+# synthetic on purpose, which is the exact defect this show was just fixing.
+BANNED_TAGS = {"robotic"}
 VOICE = os.environ.get("DISPATCH_GEMINI_VOICE", "Charon")
 STYLE = os.environ.get("DISPATCH_GEMINI_STYLE", "").strip()
 PCM_RATE = 24000  # Gemini TTS returns signed 16-bit PCM, mono, 24 kHz
@@ -50,7 +68,26 @@ def _resample_to_sr(pcm_i16):
     return a
 
 
-def synth(text, voice=None, style=None):
+def _check_tags(text):
+    """Refuse a banned tag, warn on an undocumented one.
+
+    Google warns that a tag it does not recognise may be VOCALISED rather than
+    performed, so an invented tag does not fail loudly, it quietly says the word
+    "grumpily" in the middle of a line and ships."""
+    import re as _re
+    for raw in _re.findall(r"\[([^\]]{1,20})\]", text):
+        t = raw.strip().lower()
+        if t in BANNED_TAGS:
+            raise ValueError(
+                f"vo_gemini: [{t}] is banned. Tested 2026-08-02 and the verdict was "
+                f"'a robot sound and horrid'. It makes a prebuilt voice sound "
+                f"synthetic, which is the defect this show fixed.")
+        if t not in KNOWN_TAGS:
+            print(f"    warn: [{t}] is not a documented tag; Gemini may SPEAK it "
+                  f"aloud rather than perform it. Verify the take.")
+
+
+def synth(text, voice=None, style=None, direction=None):
     """Synthesize one or two whole sentences -> float32 mono @ 44100.
 
     voice/style override the module defaults PER CALL. That is what lets one
@@ -60,7 +97,33 @@ def synth(text, voice=None, style=None):
     spoken = normalize_for_tts(text)
     v = voice or VOICE
     st = style if style is not None else STYLE
-    prompt = f"Say {st}: {spoken}" if st else spoken
+
+    # THE PROMPT. Google's own advanced-prompting format: an audio profile, the
+    # scene, director's notes broken into style/pace/accent, and a clearly
+    # labelled transcript. This replaced a flat "Say <style>: <text>", which the
+    # owner correctly identified as leaving most of the API on the table: a bare
+    # style string gets a READING, the structured brief gets a PERFORMANCE.
+    #
+    # The preamble is not decoration. The docs warn that a vague prompt fails to
+    # trigger the speech classifier and the model then reads your director's
+    # notes ALOUD as dialogue. Naming the transcript boundary is what prevents
+    # that, and scripts/vo_soundcheck.py's overrun check is the backstop.
+    if direction:
+        _check_tags(spoken)
+        prompt = (
+            "Perform this line of scripted audio drama. Read ALOUD only the text "
+            "under the heading TRANSCRIPT. Everything above that heading is "
+            "direction for you and must NOT be spoken.\n\n"
+            f"# AUDIO PROFILE: {direction.get('name', 'Narrator')}\n"
+            f"## THE SCENE\n{direction.get('scene', '')}\n"
+            f"### DIRECTOR'S NOTES\n"
+            f"Style: {direction.get('style', st or '')}\n"
+            f"Pace: {direction.get('pace', '')}\n"
+            f"Accent: {direction.get('accent', 'General American.')}\n"
+            f"#### TRANSCRIPT\n{spoken}"
+        )
+    else:
+        prompt = f"Say {st}: {spoken}" if st else spoken
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
     body = {
         "contents": [{"parts": [{"text": prompt}]}],

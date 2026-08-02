@@ -212,72 +212,85 @@ Failing Gate 0 is cheap. Failing after a render is not.
 
 ## PHASE 5: BUILD
 
-1. Build the VO, and take the timings from the TAKES:
+1. **Build the VO. This is a PERFORMANCE, not a text-to-speech dump.**
 
-   ```
-   python3 scripts/vo_cast.py --dry-run   # casting + shape. No API calls, no spend.
-   python3 scripts/vo_cast.py --fit       # synthesize once (cached), MEASURE, freeze
-   python3 scripts/vo_cast.py             # vo.wav + vo_lines.json + captions.json
-   ```
+   `python3 scripts/vo_cast.py --fit` FIRST, always. It synthesizes each line
+   once, caches it on disk, measures the real duration and writes the timeline
+   back into `script.json`. Do NOT hand-time a script: measured delivery on this
+   cast varies per line and a words-per-second constant has been wrong in both
+   directions inside a single day. Then `python3 scripts/vo_cast.py` to assemble.
 
-   It casts THREE distinct Gemini voices, one per character, and carries each
-   character's delivery direction from `CAST_BIBLE.md` into the synthesis as a
-   style instruction. Needs `GEMINI_API_KEY`.
+   The standard, locked 2026-08-02 after owner A/B on real takes. All of it is
+   already implemented; do not undo any of it:
 
-   **`--fit` is not an optimisation, use it.** The dry run's timing check assumes
-   3.6 words per second. Measured delivery on this cast is 1.85 to 2.81 and it
-   varies BY LINE, because a full stop mid-line buys a pause no word count can
-   see. Case 0002 found that out when Ray's opening line needed 7.33s in a 4.20s
-   slot, AFTER the take was paid for, and guessing does not converge because
-   every edit changes the rate. `--fit` synthesizes each line once, caches it on
-   disk by (voice, style, text), lays the timeline out from the REAL durations
-   and writes the frozen numbers back into `script.json`. Iterating on the script
-   after that is free; unchanged lines are cache hits.
+   - **Model `gemini-3.1-flash-tts-preview`.** The newest TTS model. Do not
+     downgrade to a 2.5 preview.
+   - **Structured direction, never a bare style string.** `vo_cast.py`'s CAST
+     table carries an audio profile, a scene, and director's notes split into
+     style / pace / accent, and `vo_gemini` assembles Google's documented
+     advanced-prompting format from them. A flat "Say <style>: <text>" gets a
+     READING; the brief gets a PERFORMANCE. That difference was the owner's
+     first complaint about case 0002.
+   - **PERFORMANCE TAGS are how the show gets fluctuation.** Place them in the
+     script text. Confirmed by ear: `[sarcasm]` and `[short pause]` on Ray's
+     punchline, `[sigh]` before a verdict he is tired of reaching,
+     `[medium pause]` as a comic beat, `[extremely fast]` on the Institution's
+     legal or remedy clause, which reads as a disclaimer and is in character.
+     `[flat]` kills an intonation the model wants to add.
+   - **`[robotic]` is BANNED** and `vo_gemini` raises on it. Tested; the verdict
+     was "a robot sound and horrid".
+   - Tags are direction, not dialogue. `vo_cast.strip_tags` removes them from
+     captions automatically, so never write a tag you would be happy to see
+     burned into the frame.
 
-   Line timings still come from the SCRIPT, not from the audio, and the
-   storyboard is cut to those same numbers, so the picture cannot drift from the
-   words. --fit sets those numbers ONCE with the facts in hand instead of
-   guessing them. If a take overruns its slot the run FAILS rather than sliding
-   everything after it. Cut the line instead.
-2. Force-align captions to the VO audio. Captions are burned in and must track
-   the spoken word, because the show is watched muted more often than not.
-3. Scene code in `video-engine/src/`, composed from `src/lib/`, registered as a
-   `<Composition>` in `src/Root.tsx`.
+2. **GATE: `python3 scripts/vo_soundcheck.py --episode` must exit 0.**
+   It measures the built VO line by line and hard-fails dead audio, clipping,
+   delivery that is sedated or gabbling, and a take whose duration says it
+   performed your DIRECTOR'S NOTES as dialogue, which is the documented failure
+   mode of the structured prompt. It prints pitch and dynamics for a human and
+   deliberately does NOT judge them: tested against owner-labelled takes, both
+   metrics ran backwards against the ear. It is a malfunction detector, not
+   taste. Read its header before trusting any number in it.
 
-   **There are two build paths and they are not interchangeable:**
+3. **Captions are GENERATED, never typed:**
+   `python3 scripts/gen_captions_ts.py --case N`
+   It writes `video-engine/src/caseNNNN_captions.ts` from `vo_lines.json`, so the
+   cues, the speaker labels and `TOTAL` all come from the takes that were
+   actually synthesized. Captions are burned in and the show is watched muted
+   more often than not.
 
-   - **Self-timed `CaseNNNN.tsx`. This is what the show ships.** Case0001 and
-     Case0002 both work this way: the composition's Sequences carry their own
-     frame numbers, taken from the frozen script times `--fit` wrote. There is no
-     `episode_props.json`, so `render.sh` omits `--props`, `build_scenes.py` is
-     never run, and its `SCENE_START_LINE` is never consulted. Do not go and fix
-     a stale SCENE_START_LINE for an episode on this path. It is not in the
-     chain, and Gate 0 raised it as a blocker on case 0002 for nothing.
-   - **Generic `Episode.tsx` plus props.** Only if you are driving the shared
-     Episode component instead of writing a case composition. Then
-     `python3 scripts/build_scenes.py` writes `out/dispatch/episode_props.json`
-     from the VO timings, and `SCENE_START_LINE` must have exactly as many
-     entries as `SCENE_COMPONENTS` in Episode.tsx. It hard-fails on that mismatch
-     (Episode falls back to DEFAULT_BOUNDS silently otherwise) and on a total
-     over 60.0s.
+   **GATE: `python3 scripts/gen_captions_ts.py --case N --check` must exit 0**
+   before the final render. It fails when the committed cue file is not what the
+   current VO produces, which is the exact defect a render cannot show you: both
+   files are internally consistent and the picture simply cuts on the wrong word.
 
-   CLAUDE.md's Engine quickstart describes only the second path. This section is
-   authoritative.
-4. Iterate on DRAFT renders: `bash scripts/render.sh draft`. Look, fix, repeat.
+   **NEVER hand-type a time into a composition.** Derive the shot ladder from the
+   cue starts (`CUT_ON` in `Case0002.tsx` is the pattern) and `durationInFrames`
+   from `TOTAL`. Re-synthesis moves all twelve line starts; anything typed
+   alongside them goes stale silently and no gate can see it.
+
+4. Scene code in `video-engine/src/`. Compose from `src/lib/`.
+
+   Two build paths, and the routine used to imply only one existed:
+   - **Self-timed `CaseNNNN.tsx`** (what case 0001 and 0002 shipped). Its
+     Sequences carry their own frame numbers taken from the frozen script times.
+     No props, and `build_scenes.py` is NOT in the chain.
+   - **Generic `Episode.tsx`**, which takes `episode_props.json` from
+     `python3 scripts/build_scenes.py`. Only then does `SCENE_START_LINE` matter.
+   `render.sh` passes `--props` only when `episode_props.json` exists, and picks
+   the highest-numbered `CaseNNNN` registered in `Root.tsx` by default.
+
+5. **GATE: `python3 scripts/script_check.py` must exit 0** before any scene code.
+   Dangling claim-ids, a line citing a CUT claim, and Ray absent from his own
+   beat are arithmetic, and they were being eyeballed.
+
+6. Iterate on DRAFT renders: `bash scripts/render.sh draft`. Look at the frames.
    Three to five cheap passes beat one expensive one.
-
-   With no composition argument, render.sh renders the highest-numbered CaseNNNN
-   registered in `Root.tsx` and PRINTS the one it chose. Read that line. It used
-   to be hardcoded to Case0001, which meant the command written above would have
-   rendered the PREVIOUS episode's picture and passed every objective gate while
-   doing it. Name a composition explicitly (`render.sh draft Case0003`) whenever
-   you mean something other than this episode.
-5. `bash scripts/render.sh final` only when the draft is right.
-6. `bash scripts/mux_and_verify.sh` for audio mux and integrity.
-7. `python3 scripts/render_gate.py <final.mp4>` — the OBJECTIVE renders_clean
+7. `bash scripts/render.sh final` only when the draft is right.
+8. `bash scripts/mux_and_verify.sh` for audio mux and integrity.
+9. `python3 scripts/render_gate.py <final.mp4>` — the OBJECTIVE renders_clean
    gate. Dependency-free container parse: duration under 60.0s, 1080x1920, a
-   real audio track, non-trivial size. It is not a prose judgement and it is not
-   optional.
+   real audio track, non-trivial size. Not a prose judgement, not optional.
 
 ## PHASE 5B: THE CAPTION
 

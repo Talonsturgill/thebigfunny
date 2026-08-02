@@ -7,6 +7,31 @@
 #
 # The beats are also the variety mechanism. ledger/topics.json enforces a 30 day
 # no-repeat on subject, and a beat should not run twice in any three episodes.
+#
+# ---------------------------------------------------------------------------
+# WHAT A STORY HAS TO HAVE (added 2026-08-02, after case 0002)
+#
+# Case 0002 was a car recall about a warning beep. Every gate passed, it scored
+# 79.65, and it was BORING: bureaucratic trivia, correct and unrepeatable. The
+# owner's note was that this reads like a nerd joke, and it does.
+#
+# A beat is not enough. A story also needs TEETH, which means at least one of:
+#   - somebody is getting hurt in the wallet, on purpose, and it is working
+#   - the institution said the quiet part in public and did not flinch
+#   - the mechanism is slightly obscene once you say it plainly
+#   - a normal person would repeat it out loud, angry, to another person
+#
+# "It ends on a filing" is the floor, not the target. If the worst thing in the
+# story is an inconvenience, take a different story.
+#
+# THE LINE, so nobody has to guess. Crude is fine and encouraged. Profanity is
+# fine, and Ray is supposed to swear like a tired adult (CAST_BIBLE.md). Vice,
+# money, addiction, death, the body and hypocrisy are all in bounds when the
+# target is an institution. What stays out is not a matter of taste, it is the
+# ban list in CLAUDE.md: no slurs, no hate, NO SEXUAL CONTENT, no harassment of
+# a private person. Those end the channel rather than demonetize it. "Risque"
+# here means the SUBJECT has an edge, never that the show gets explicit.
+# ---------------------------------------------------------------------------
 
 beats:
   - id: the-fee
@@ -98,6 +123,57 @@ beats:
       - https://news.ycombinator.com/rss
       - https://www.theverge.com/rss/index.xml
       - https://www.reddit.com/r/assholedesign/top/.json?t=day
+
+  - id: the-grift
+    name: The Grift
+    covers: >
+      MLMs, crypto, prosperity influencers, wellness quackery, rent-to-own,
+      payday and title loans, debt relief that is not, dropshipped junk sold
+      with fake urgency, coaching programs that sell a coaching program.
+    why_it_works: >
+      The single richest vein of things that are already obscene when described
+      plainly, and the villain is always a company selling a promise it has
+      priced. Everybody knows somebody who got taken, which is what makes it
+      repeatable rather than merely true.
+    sources:
+      - https://www.ftc.gov/news-events/news/press-releases
+      - https://www.consumerfinance.gov/enforcement/actions/
+      - https://www.sec.gov/litigation/litreleases
+      - https://www.justice.gov/news/rss
+      - https://www.reddit.com/r/antimlm/top/.json?t=day
+
+  - id: the-vice
+    name: The Vice Economy
+    covers: >
+      Sports betting apps and their hooks, casino and social-casino mechanics,
+      loot boxes, nicotine and vape marketing, energy drinks aimed at children,
+      alcohol pricing, anything engineered to be hard to stop doing.
+    why_it_works: >
+      It is the most borderline material the show can legally touch, and it is
+      almost entirely documented: state gaming regulators, AG settlements and
+      the companies' own investor decks say the loud part in writing, because
+      they have to. The audience is anyone who has watched an ad break lately.
+    sources:
+      - https://www.ftc.gov/news-events/news/press-releases
+      - https://www.justice.gov/news/rss
+      - https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany
+      - https://www.reddit.com/r/problemgambling/top/.json?t=day
+
+  - id: the-landlord
+    name: The Landlord
+    covers: >
+      Rent, evictions, algorithmic rent-setting, junk fees on a lease,
+      application fees for an apartment already promised to someone else,
+      security deposits that never come back, HOA enforcement with teeth.
+    why_it_works: >
+      Highest anger per dollar of any beat, and the mechanisms are increasingly
+      documented in antitrust filings rather than anecdote. Nobody defends a
+      landlord fee, which means the audience is everyone who rents.
+    sources:
+      - https://www.justice.gov/atr/pressroom
+      - https://www.consumerfinance.gov/data-research/consumer-complaints/
+      - https://www.hud.gov/press
+      - https://www.reddit.com/r/legaladvice/top/.json?t=day
 
 wildcard:
   name: The Wildcard

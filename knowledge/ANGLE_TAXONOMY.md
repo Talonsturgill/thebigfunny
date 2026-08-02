@@ -20,6 +20,30 @@ costs more than cable did in the year they told you cable was a ripoff.
 If you cannot say the angle in one sentence to someone who has not heard of the
 story, and get a reaction, there is no episode.
 
+## The second law: it has to have TEETH
+
+Added 2026-08-02, after case 0002. That episode had a real angle, a clean
+institutional villain, two verified counts and a federal filing to end on. It
+scored 79.65 and shipped. It was also about a car that would not make a beep,
+and no adult would repeat it to another adult.
+
+Passing the first law is not enough. Ask, out loud:
+
+> Would a normal adult say this in a bar, angry, unprompted?
+
+If the worst thing in the story is an INCONVENIENCE, the angle is dead no matter
+how specific it is. The show wants stories where somebody is getting hurt in the
+wallet on purpose and it is working, where the institution said the quiet part in
+public and did not flinch, or where the mechanism is slightly obscene the moment
+you describe it plainly.
+
+**This show is for adults.** Crude is the register, not a risk to be managed.
+CLAUDE.md permits profanity explicitly and the scoring rubric now caps a
+toothless episode at 70 no matter how well made it is. The border to work
+against is the ban list, which is slurs, hate, sexual content and harassment,
+plus never punching at a private individual. Everything short of that line is
+available, and the show has been leaving most of it on the table.
+
 ## The seven that land
 
 Every one of these is found by RESEARCH, not by writing. That is deliberate.

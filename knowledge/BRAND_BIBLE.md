@@ -112,6 +112,21 @@ No clickbait punctuation. No all-caps screaming in a title, because the wordmark
 already screams and two things screaming is noise. No emoji, ever, anywhere. The
 show is deadpan and deadpan does not use a crying-laughing face.
 
+## Who it is for
+
+**Adults.** Stated plainly here because case 0002 forgot it and the machine had
+nothing written down to catch that.
+
+The dumb name and the case-file restraint are a disarming wrapper around
+something with a real edge, not a substitute for the edge. A viewer should feel
+that the show is willing to say the thing, and the only reason it has not gone
+further is that it refuses to lie, never that it is being careful with them.
+
+The one line, and it is a hard one: crude, angry and profane are the register;
+slurs, hate, sexual content and harassment are bans that end the channel. Those
+are not points on the same scale. Push right up to the second list and never
+into it.
+
 ## What the brand is not
 
 - Not political. No red-vs-blue in the palette by accident: `STAMP` red is a
