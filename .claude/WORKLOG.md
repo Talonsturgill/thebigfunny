@@ -324,7 +324,20 @@ gabbling, overrun, clipping, dead) and prints prosody as information it refuses
 to grade. The falsification table is in the file header on purpose, so the next
 engineer does not re-derive thresholds that have already been disproven.
 
-**Status: all four DONE and merged to main.** Open from the original list: C
+### What note 1 actually turned up
+
+Chasing "the voices sound robotic" found three machine defects, none of which
+failed any gate, all of the same shape: an input that changes the OUTPUT without
+changing anything that is checked. The full write-up is in FIELD_NOTES; the short
+version is that the TTS model default existed in two places and the older one won
+on import order, so every take of case 0002 ran on the wrong model while three
+separate files recorded the right one. The take cache would then have replayed
+that old audio under the new model's name, and the hand-typed shot ladder would
+have gone stale silently on top of it.
+
+All three are now derived, keyed or asserted rather than written down twice.
+
+**Status: all four DONE, on PR #6.** Open from the original list: C
 (Institution costume system), D (funny-gate self-test, which the Phase 8 engineer
 declined as unverifiable and which should stay declined until someone can state
 what a red case would look like), E (trigger config, outside this repo).
