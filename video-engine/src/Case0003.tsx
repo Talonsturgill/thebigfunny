@@ -80,9 +80,15 @@ const BODY = 'Arial, DejaVu Sans, FreeSans, sans-serif';
 const Orbit: React.FC<{frame: number; rate?: number; children: React.ReactNode}> = ({
   frame, rate = 1, children,
 }) => {
+  // MEASURED, not guessed. At the first amplitude the plate travelled 3.5 px/s
+  // and the figures 0.8 to 1.2 px/s across the whole episode, which is below
+  // what anyone perceives as a camera move: the flow critic called the orbit
+  // invisible and it was, arithmetically. 260px puts the plate near 9.5 px/s and
+  // the near figures around 2 to 3, so the wall visibly slides against them.
+  // The differential is what makes it an orbit rather than a pan.
   const a = interpolate(frame, [0, TOTAL], [-1, 1], {extrapolateRight: 'clamp'});
-  const dx = a * 96 * rate;
-  const rot = a * 1.35 * rate;
+  const dx = a * 260 * rate;
+  const rot = a * 2.4 * rate;
   return (
     <svg width="1080" height="1920" viewBox="0 0 1080 1920"
          style={{position: 'absolute', inset: 0}}>
