@@ -192,12 +192,16 @@ Failing Gate 0 is cheap. Failing after a render is not.
 
 ## PHASE 5: BUILD
 
-1. Build the VO with `.claude/skills/bigfunny-dispatch/` (run
-   `scripts/setup_env.sh` first; the voice stack needs `.venv-voice`). Listen
-   back against the script and reject a take that drops or garbles a line.
-   KNOWN GAP: the ported path speaks all three characters in ONE cloned voice.
-   Until that is fixed, say so in the run report rather than letting the panel
-   grade as if the cast were realised.
+1. Build the VO: `python3 scripts/vo_cast.py`. It casts THREE distinct Gemini
+   voices, one per character, and carries each character's delivery direction
+   from `CAST_BIBLE.md` into the synthesis as a style instruction. Needs
+   `GEMINI_API_KEY`. Run `--dry-run` first; it checks casting and timing with no
+   API calls and no spend.
+
+   Line timings come from the SCRIPT, not from the audio, and the storyboard is
+   cut to the same numbers, so the picture cannot drift from the words. If a
+   take overruns its slot the run FAILS rather than sliding everything after it.
+   Cut the line instead.
 2. Force-align captions to the VO audio. Captions are burned in and must track
    the spoken word, because the show is watched muted more often than not.
 3. Scene code in `video-engine/src/`. Compose from `src/lib/`.
@@ -209,6 +213,29 @@ Failing Gate 0 is cheap. Failing after a render is not.
    gate. Dependency-free container parse: duration under 60.0s, 1080x1920, a
    real audio track, non-trivial size. It is not a prose judgement and it is not
    optional.
+
+## PHASE 5B: THE CAPTION
+
+Write `out/dispatch/caption.txt` and `out/dispatch/first_comment.txt`. They are
+part of the deliverable, not an afterthought; a video with no post copy is not
+shippable.
+
+**The caption body is short.** This is TikTok first, and a long caption is a
+LinkedIn artifact: on short form it is read in the second before the video
+starts, or not at all. Hook <= 100 chars carrying the ANGLE, body <= 300, three
+to five hashtags on the LAST line, and the case number.
+
+**Sources NEVER go in the caption body.** They go in `first_comment.txt`, which
+the human pastes into the first comment. The upstream publication learned this
+the expensive way: source and credit lines pasted into the post got duplicated,
+and a credit sitting above the hashtags blocked copying the post at all.
+
+The title is the ANGLE, not a description, and there is no clickbait
+punctuation, no all-caps screaming (the wordmark already screams) and no emoji.
+
+GATE: `python3 scripts/caption_check.py out/dispatch/caption.txt` must exit 0.
+It hard-fails a URL in the body, a sources line, an emoji, an em dash, clickbait
+punctuation, a missing case number, and hashtags that are not last.
 
 ## PHASE 6: GATES + PANEL (the human is never the QA)
 
@@ -229,8 +256,14 @@ brand.
 ## PHASE 7: DELIVER
 
 On a passing run:
-1. Write `runs/<date>/` — final mp4, thumbnail, script, claims.json, the panel
-   reports, the score card.
+1. Write `runs/<date>/` — the full deliverable, which is:
+   - `final.mp4` and a thumbnail
+   - `caption.txt` (the post body) and `first_comment.txt` (the sources)
+   - `script.json`, `claims.json`, `vo_lines.json`
+   - the panel reports and the score card
+   - `stills/` for the record
+
+   A run that produces a video and no caption has produced half a deliverable.
 2. Update every ledger: `topics.json`, `bits.json`, `artwork.json`,
    `instincts.json`.
 3. Commit, push, open a PR that is **ready, not a draft**, and **MERGE it to

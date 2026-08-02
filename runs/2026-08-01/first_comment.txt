@@ -1,0 +1,11 @@
+Sources, for the first comment. NEVER paste these into the caption body.
+
+Microsoft, Packaging and Pricing Updates for Microsoft 365 Commercial Suites Public FAQs
+https://www.microsoft.com/en-us/licensing/news/2026-m365-packaging-pricing-updates-faq
+
+Per-SKU price table, Office 365 E3 $23 to $26 per user per month
+https://www.uscloud.com/blog/microsoft-365-price-increase-july-1-2026-what-enterprise-buyers-need-to-know-part-1/
+
+Not used, and why: the widely repeated "up to 43 percent" figure had one source
+and conflicted with a per-SKU table attributed to Microsoft showing a maximum of
+14 percent. Cut at the fact-check gate.

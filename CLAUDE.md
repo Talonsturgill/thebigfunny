@@ -116,7 +116,10 @@ Everything else ships.
   inventory; **every run reads it and casts from the shelf before drawing
   anything new**, and registers additions in the same commit.
 - `assets/` — committed sfx and voice.
-- `runs/` — shipped artifacts, merged each run. `out/` — scratch (gitignored).
+- `runs/` — shipped artifacts, merged each run. The deliverable is the mp4 AND
+  the post copy: `caption.txt` (the body) plus `first_comment.txt` (the sources,
+  which NEVER go in the body). A video with no caption is half a deliverable.
+  `out/` — scratch (gitignored).
 
 ## Lineage
 

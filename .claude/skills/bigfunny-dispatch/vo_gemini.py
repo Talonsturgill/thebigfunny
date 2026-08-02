@@ -50,16 +50,23 @@ def _resample_to_sr(pcm_i16):
     return a
 
 
-def synth(text):
-    """Synthesize one or two whole sentences -> float32 mono @ 44100."""
+def synth(text, voice=None, style=None):
+    """Synthesize one or two whole sentences -> float32 mono @ 44100.
+
+    voice/style override the module defaults PER CALL. That is what lets one
+    episode carry three different characters: The Big Funny has no narrator, and
+    a single-voice read collapses Ray, Dee and the Institution into a podcast.
+    See scripts/vo_cast.py for the casting table."""
     spoken = normalize_for_tts(text)
-    prompt = f"Say {STYLE}: {spoken}" if STYLE else spoken
+    v = voice or VOICE
+    st = style if style is not None else STYLE
+    prompt = f"Say {st}: {spoken}" if st else spoken
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
     body = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
             "responseModalities": ["AUDIO"],
-            "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": VOICE}}},
+            "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": v}}},
         },
     }
     data = json.dumps(body).encode("utf-8")
