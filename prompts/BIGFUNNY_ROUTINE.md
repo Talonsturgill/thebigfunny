@@ -254,7 +254,8 @@ Failing Gate 0 is cheap. Failing after a render is not.
 
 3. **Captions are GENERATED, never typed:**
    `python3 scripts/gen_captions_ts.py --case N`
-   It writes `video-engine/src/caseNNNN_captions.ts` from `vo_lines.json`, so the
+   It writes the episode's cue file into `video-engine/src/` from
+   `vo_lines.json` (case 2's is `video-engine/src/case0002_captions.ts`), so the
    cues, the speaker labels and `TOTAL` all come from the takes that were
    actually synthesized. Captions are burned in and the show is watched muted
    more often than not.
