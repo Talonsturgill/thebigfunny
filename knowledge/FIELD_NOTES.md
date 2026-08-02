@@ -263,3 +263,39 @@ exempt because a phone tree is supposed to sound like one.
 The honest coda: a seven-voice sweep measured every candidate between 3.46 and
 4.12 semitones of pitch variance, INCLUDING the one already judged robotic. The
 soundcheck cannot rank voices. It refuses known causes; the ear picks.
+
+### 2026-08-02, later: I re-rendered five times without looking at a frame
+
+The owner watched the rebuilt episode and said the mouths were floating and the
+bodies were not aligned with the speaking. Three defects, all real, all visible
+in ONE still once anybody actually opened one:
+
+- The head was never attached to the body. Torso bobbed by `bob`, head by
+  `bob * 1.4`, so the head's offset from the shoulders changed every frame.
+- The default pose's right arm was a solid black bar, because its ink stroke was
+  painted after the colour stroke and 12px wider. `stand` is the default pose, so
+  this was in nearly every shot of every episode ever rendered here.
+- Nothing in the rig knew a word was being spoken. Bob, sway and mouth were all
+  free-running sines. Constant motion unrelated to speech reads as drift.
+
+**The process failure is the lesson, not the three bugs.** I rendered this
+episode five times in one session and did not open a single frame until the owner
+complained. Every objective gate passed every time, because every objective gate
+asks about the FILE: does it parse, is it 1080x1920, is it under sixty, does it
+carry audio. Not one of them can see a character.
+
+The repo already has the answer and I skipped it: `storyboard-critic` exists
+precisely for this, and it is the agent that caught the red arc across Ray's legs
+earlier the same day. It works when it runs.
+
+So: **a render is not finished until a human or the storyboard critic has LOOKED
+at frames from it.** Not the codec report, the frames. If a rebuild changes the
+rig, the cast, the staging or the timing, pull stills at a speaking beat and at a
+held beat and look at them before shipping or before sending anything to the
+owner.
+
+The animation lesson underneath it, from the viral formats worth copying: the
+body ACCENTS the voice and is otherwise still, and only the speaker moves. A
+listener that keeps swaying steals the eye and makes a two-shot unreadable. That
+is why `mouth` and `accent` are gated on `speakerAt()` and the listener's idle is
+damped rather than everyone being alive at once.
