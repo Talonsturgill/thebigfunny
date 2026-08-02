@@ -196,7 +196,64 @@ def check(plan, world):
         f"`Queue` was dropped, and the pile of mail it represented was the only force "
         f"moving the cast past their own exit.")
 
-    # -- 5. shippability agrees ---------------------------------------------
+    # -- 5. EVERY CLEARED CLAIM THE WORLD NAMES IS ACTUALLY STAGED ----------
+    # The devil's advocate found c7 listed in world.mechanism.claim_ids and
+    # staged in NONE of the fifteen shots. The room then spent a whole pass
+    # discussing "the INVALID return with the wheel not moving" as though it were
+    # on the page. It was a passing mention in a scale note.
+    #
+    # This is arithmetic and it is the same class the gate was built for: a claim
+    # the world CLAIMS to stage and does not is a promise to the fact-checker
+    # that the board cannot keep, and it is how a cleared claim quietly becomes
+    # an unstaged one between phases.
+    ids = [str(x) for x in ((world.get("mechanism") or {}).get("claim_ids") or [])]
+    if ids:
+        staged = json.dumps({k: world.get(k) for k in ("shots", "sight_gags")}).lower()
+        unstaged = sorted({i for i in ids if i and i.lower() not in staged})
+        row("every claim the world names is staged in a shot or a gag",
+            not unstaged,
+            f"all {len(ids)} staged" if not unstaged else
+            f"{unstaged} appear in mechanism.claim_ids and in NO shot and NO gag. "
+            f"A claim the world says it stages and does not is a promise to the "
+            f"fact-checker the board cannot keep, and the room will discuss it as "
+            f"though it were on the page.")
+
+    # -- 6. THE GAG COUNT AGREES --------------------------------------------
+    # The plan asserted four gags surviving their claim guards; the world carried
+    # two. A count in one document with no referent in the other is the same
+    # defect as disagreeing about the turn, and a producer who believes he has
+    # four will not commission the two that are missing.
+    claimed = plan.get("sight_gags_surviving_claim_guards")
+    actual = world.get("sight_gags")
+    if claimed is not None and isinstance(actual, list):
+        row("the plan's gag count matches the gags the world actually has",
+            int(claimed) == len(actual),
+            f"both {claimed}" if int(claimed) == len(actual) else
+            f"plan claims {claimed} surviving gags, world carries {len(actual)}. A "
+            f"producer who believes he has {claimed} will not commission the "
+            f"{int(claimed) - len(actual)} that are missing.")
+
+    # -- 7. THE WORLD DOES NOT CONTRADICT ITSELF ----------------------------
+    # world.json's turn said the pile FANS across the floor and its own
+    # handoff_to_board said NEVER FAN THE PILE, in the same file. The gate could
+    # catch two different films and not two different stagings of one, because
+    # every check compared ACROSS documents and none looked WITHIN one.
+    ban = " ".join(str(x) for x in (world.get("handoff_to_board") or [])).lower()
+    turn_txt = _text(world.get("the_turn"), "what_gets_worse").lower()
+    # Only CONTENT words. The first cut matched `never (\w+)` and caught "never a"
+    # out of "never a face", then searched for a bare "a" in the turn text, which
+    # matches essentially any sentence. A guard whose first live run fires on a
+    # stopword teaches the room to ignore it, which is worse than not having it.
+    forbidden = [v for v in re.findall(r"never (\w+)", ban)
+                 if len(v) >= 4 and v not in STOP and v not in HOUSE]
+    self_broken = sorted({v for v in forbidden if re.search(rf"\b{v}", turn_txt)})
+    row("the world does not forbid on one line what it stages on another",
+        not self_broken,
+        "consistent" if not self_broken else
+        f"handoff_to_board says 'never {self_broken[0]}' and the_turn does exactly "
+        f"that. The board is handed two instructions and will pick one at random.")
+
+    # -- 8. shippability agrees ---------------------------------------------
     ps, ws = plan.get("shippable"), world.get("shippable")
     if ps is not None and ws is not None:
         row("both documents agree on whether this is shippable", ps == ws,
@@ -281,6 +338,17 @@ def self_test():
         ("catches: a prop the plan needs and the world dropped", ["silently dropped"],
          good_plan,
          dict(good_world, cast_from_kit=[{"primitive": "DayLampPanel", "status": "not_required"}])),
+        ("catches: a claim the world names and never stages", ["claim the world names"],
+         good_plan, dict(good_world, mechanism={"claim_ids": ["c4", "c7"]},
+                         shots=[{"visual": "cards land, licensed by c4"}])),
+        ("catches: a gag count with no referent", ["gag count"],
+         dict(good_plan, sight_gags_surviving_claim_guards=4),
+         dict(good_world, sight_gags=[{"gag": "one"}, {"gag": "two"}])),
+        ("catches: the world forbidding what its own turn stages", ["forbid on one line"],
+         good_plan, dict(good_world, handoff_to_board=["never scatter the pile"],
+                         the_turn={"what_gets_worse":
+                             "the gate shuts and the lamps keep going out while the "
+                             "envelope sits still, and the copies scatter across the floor"})),
         ("catches: one document saying ship and the other saying do not", ["shippable"],
          good_plan, dict(good_world, shippable=False)),
         ("catches: only one document declaring a turn at all", ["THE TURN"],
