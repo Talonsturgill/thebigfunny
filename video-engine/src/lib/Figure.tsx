@@ -95,30 +95,30 @@ type Spec = {
    this uses the more defensible number). */
 const SPEC: Record<Sex, Spec> = {
   f: {
-    headW: 66, waistY: 288,
+    headW: 58, waistY: 288,
     // bust as wide as the shoulder, then a hard drop to a 0.62 waist over a
     // SHORT span, then a hip wider than the shoulder. Waist-to-hip lands at
     // 0.62, tighter than the 0.70 average-preference figure on purpose: this is
     // a caricature, and silhouette is the one place caricature is right.
     shoulder: 142, bust: 158, underbust: 100, waist: 78, upperHip: 150, hip: 178,
-    neckW: 33,                       // 0.50 of head width
-    armW: [37, 28, 20], legW: [78, 41, 51, 22],
+    neckW: 29,                       // 0.50 of head width
+    armW: [37, 28, 20], legW: [80, 38, 52, 20],
     shoulderJoint: 66, hipJoint: 32,
     // Palpebral fissure LENGTH is not dimorphic (2.71 vs 2.73 cm, ns). What
     // differs is roundness and tilt, so the eye is not enlarged here; the face
     // around it is smaller. h/w 0.47, at the round end of the adult band (over
     // 0.55 reads infantile, which is where the old rig sat at 1.16).
-    eyeRx: 10.2, eyeRy: 6.3, eyeX: 18, tilt: 7,
-    browGap: 9.0, browW: 2.7,        // 0.048 H measured, same correction
-    noseHalf: 7.5, mouthHalf: 13.5, lipMass: 6.2,
-    jawRatio: 0.72, chinW: 0.2, headTension: 0, neckDrop: 24,
+    eyeRx: 8.6, eyeRy: 5.0, eyeX: 12.8, tilt: 9,
+    browGap: 9.5, browW: 2.0,        // 0.048 H measured, same correction
+    noseHalf: 4.2, mouthHalf: 10.5, lipMass: 6.2,
+    jawRatio: 0.68, chinW: 0.17, headTension: 0, neckDrop: 24,
   },
   m: {
     headW: 68, waistY: 302,
     // no flare at the bottom: a V that widens again at the hip reads as a gut.
     shoulder: 211, bust: 194, underbust: 156, waist: 132, upperHip: 142, hip: 145,
     neckW: 45,                       // 0.65 of head width
-    armW: [56, 42, 29], legW: [90, 50, 62, 29],
+    armW: [56, 42, 29], legW: [98, 72, 78, 38],
     shoulderJoint: 88, hipJoint: 30,
     eyeRx: 9.2, eyeRy: 3.7, eyeX: 18, tilt: 3,
     browGap: 8.5, browW: 4.4,        // neat and CLEAR of the eye, not a shelf over it
@@ -196,7 +196,7 @@ const EYES: Record<Emotion, {open: number; lid: number; brow: number; browTilt: 
   angry: {open: 0.92, lid: 0.14, brow: -4.5, browTilt: -17},
   worried: {open: 1.1, lid: -0.1, brow: 3.5, browTilt: 16},
   shock: {open: 1.45, lid: -0.25, brow: 8, browTilt: -6},
-  smug: {open: 0.86, lid: 0.34, brow: 1.5, browTilt: -6},
+  smug: {open: 0.88, lid: 0.28, brow: 1.5, browTilt: -3},
   flat: {open: 0.9, lid: 0.3, brow: 0.5, browTilt: 0},
   squint: {open: 0.8, lid: 0.4, brow: -1.5, browTilt: -11},
 };
@@ -223,6 +223,13 @@ export const Figure: React.FC<FigureProps> = ({
   const shift = 3.4 * idleGain * Math.sin(f / 62);
   const headLag = 2.2 * idleGain * Math.sin(f / 62 - 0.55);
   const blink = (f + 17) % 104 < 5 && emotion !== 'shock';
+  // THE THREE-QUARTER CUE. A face dead-on is a passport photo; every reference
+  // is turned a little and tilted a little. In a flat rig the turn is a
+  // horizontal squeeze of the head plus a shift of the features inside it, so
+  // the far cheek compresses. Small on purpose: past about 0.5 the flat
+  // features stop selling it and you need a real redraw.
+  const headTurn = sex === 'f' ? 0.1 : 0.08;
+  const headTilt = sex === 'f' ? -4 : -2;
 
   /* ---- CONTRAPPOSTO. Weight on the figure's right (screen left when facing 1).
      The hip on the weight side rides UP, the shoulders counter-tilt the other
@@ -294,8 +301,14 @@ export const Figure: React.FC<FigureProps> = ({
   const legSpine = (side: 1 | -1): Pt[] => {
     const weight = side < 0;
     const hipX = side * s.hipJoint + shift * 0.5 + (weight ? -1 : 2);
-    const kneeX = side * (s.hipJoint + (weight ? 3 : -5));
-    const ankleX = side * (s.hipJoint + (weight ? 1 : 9));
+    // The free leg travels INBOARD, its ankle crossing past the weight leg's.
+    // Hers goes further: the reference poses all cross, and a crossed ankle
+    // narrows the base, which is what makes the hips read wide by contrast.
+    const cross = sex === 'f' ? 1.9 : 0.5;
+    const kneeX = weight ? side * (s.hipJoint + 3)
+                         : side * (s.hipJoint - 9 * cross);
+    const ankleX = weight ? side * (s.hipJoint + 1)
+                          : side * (s.hipJoint - 15 * cross);
     const kneeY = Y.knee + (weight ? 0 : -6);
     return [
       [hipX, Y.hip - 10 + (weight ? -hipTilt : hipTilt)],
@@ -315,6 +328,7 @@ export const Figure: React.FC<FigureProps> = ({
     const eyeY = 50, rx = s.eyeRx, ry = s.eyeRy * E.open;
     const hw = s.headW / 2;
     const sk = (k: number) => warmShade(skin, k);
+    const fx = 0;   // features do NOT get their own offset: see headTurn
     const lidDrop = ry * E.lid;
     const browY = eyeY - ry - s.browGap - E.brow;
     const eye = (side: 1 | -1) => {
@@ -333,8 +347,8 @@ export const Figure: React.FC<FigureProps> = ({
                   faces, flips perceived sex on its own, and unlike lashes it is
                   a LOW-frequency property, so it is the one feminine cue that
                   survives a thumbnail intact. It is also free in flat fill. */}
-              <circle cx={cx + 0.8 * facing} cy={eyeY - ry * 0.1} r={ry * 1.02} fill={eyes} />
-              <circle cx={cx + 0.8 * facing} cy={eyeY - ry * 0.1} r={ry * 0.55} fill={INK} />
+              <circle cx={cx + 0.8 * facing} cy={eyeY - ry * 0.1} r={ry * (sex === 'f' ? 1.34 : 1.02)} fill={eyes} />
+              <circle cx={cx + 0.8 * facing} cy={eyeY - ry * 0.1} r={ry * (sex === 'f' ? 0.78 : 0.55)} fill={INK} />
               <circle cx={cx + 0.8 * facing - ry * 0.3} cy={eyeY - ry * 0.5} r={ry * 0.26} fill="#fff" />
               {lidDrop > 0 && (
                 <path d={`M${cx - rx},${eyeY - ry + lidDrop} a${rx},${ry} 0 0 1 ${rx * 2},0 Z`}
@@ -347,10 +361,10 @@ export const Figure: React.FC<FigureProps> = ({
                   open-eyed. */}
               <path d={`M${cx - rx - 1},${eyeY - ry * 0.35} q${rx},${-ry * 1.5} ${rx * 2 + (sex === 'f' ? 3 : 1)},${-ry * 0.1}`}
                     fill="none" stroke={INK} strokeLinecap="round"
-                    strokeWidth={sex === 'f' ? 3.8 : 2.2} />
+                    strokeWidth={sex === 'f' ? rx * 0.26 : rx * 0.24} />
               {sex === 'f' && (
                 <path d={`M${cx + rx + 1.6},${eyeY - ry * 0.45} q${3.4},${-1.6} ${5},${-3.8}`}
-                      fill="none" stroke={INK} strokeWidth={3} strokeLinecap="round" />
+                      fill="none" stroke={INK} strokeWidth={rx * 0.22} strokeLinecap="round" />
               )}
               {sex === 'm' && (
                 <path d={`M${cx - rx * 0.7},${eyeY + ry * 0.85} q${rx * 0.7},${ry * 0.5} ${rx * 1.4},0`}
@@ -362,7 +376,7 @@ export const Figure: React.FC<FigureProps> = ({
       );
     };
     return (
-      <g>
+      <g transform={`translate(${fx},0)`}>
         <clipPath id={`${uid}_headclip`}><path d={spline(outline, true, s.headTension)} /></clipPath>
         <g clipPath={`url(#${uid}_headclip)`}>
           {/* THE VALUE SYSTEM. Every shape in here is a SOLID darker-or-lighter
@@ -371,16 +385,16 @@ export const Figure: React.FC<FigureProps> = ({
               flesh itself; ink washes read as dirt on paper. The clip lets every
               shape overshoot and still end exactly at the silhouette. */}
           {/* the shadow side of the whole head, one hard-edged plane */}
-          <path d={spline([[hw * 0.22, -10], [hw * 0.62, 34], [hw * 0.44, 70],
+          <path d={spline([[hw * 0.62, -10], [hw * 0.92, 34], [hw * 0.78, 70],
                            [hw * 0.1, 104], [hw * 3, 104], [hw * 3, -10]], true)}
-                fill={sk(0.86)} />
+                fill={sk(0.92)} />
           {/* reflected light where the dark side turns back toward the room */}
           <path d={spline([[hw * 0.88, 6], [hw * 1.02, 52], [hw * 0.7, 92],
                            [hw * 3, 92], [hw * 3, 6]], true)} fill={sk(0.95)} />
           {/* the hair's cast shadow across the forehead */}
           <path d={spline([[-hw * 3, -30], [hw * 3, -30], [hw * 3, 2],
-                           [hw * 0.5, 22], [-hw * 0.5, 15], [-hw * 3, 0]], true)}
-                fill={sk(0.8)} />
+                           [hw * 0.5, 16], [-hw * 0.5, 10], [-hw * 3, -4]], true)}
+                fill={sk(0.9)} />
           {/* EYE SOCKETS. The reference eyes read deep-set because they sit IN a
               value, under the brow, instead of lying white on the surface. The
               male socket is deeper; hers stays soft or it reads tired. */}
@@ -394,8 +408,8 @@ export const Figure: React.FC<FigureProps> = ({
                   {/* the crease shadow ABOVE the eye only; below it stays LIGHT.
                       Dark under an eye is what tired literally is, and every
                       reference face is bright there. */}
-                  <ellipse cx={sd * s.eyeX} cy={eyeY - ry * 0.9} rx={rx + 5} ry={ry * 0.9}
-                           fill={sk(0.92)} />
+                  <ellipse cx={sd * s.eyeX} cy={eyeY - ry * 1.15} rx={rx + 2} ry={ry * 0.62}
+                           fill={sk(0.95)} />
                   <ellipse cx={sd * s.eyeX} cy={eyeY + ry + 3} rx={rx * 0.8} ry={3.4}
                            fill={sk(1.07)} />
                 </>
@@ -406,12 +420,12 @@ export const Figure: React.FC<FigureProps> = ({
               the skin pushed toward rose, not a paint dab. */}
           {sex === 'f' && [-1, 1].map((sd) => (
             <ellipse key={sd} cx={sd * hw * 0.52} cy={64} rx={hw * 0.26} ry={7.5}
-                     fill="#d9808a" opacity={0.3}
+                     fill="#d9808a" opacity={0.19}
                      transform={`rotate(${sd * -10} ${sd * hw * 0.52} 64)`} />
           ))}
           {/* lit planes: forehead, near cheekbone, chin. Warm light, never white. */}
-          <ellipse cx={-hw * 0.18} cy={20} rx={hw * 0.5} ry={13} fill={sk(1.1)} />
-          <ellipse cx={-hw * 0.48} cy={54} rx={hw * 0.38} ry={10} fill={sk(1.13)}
+          <ellipse cx={-hw * 0.18} cy={20} rx={hw * 0.5} ry={13} fill={sk(1.05)} />
+          <ellipse cx={-hw * 0.48} cy={54} rx={hw * 0.38} ry={10} fill={sk(1.07)}
                    transform={`rotate(-14 ${-hw * 0.48} 54)`} />
           <ellipse cx={-2} cy={93} rx={hw * 0.2} ry={5.5} fill={sk(1.08)} />
           {/* NOSE, built from value: a side plane, nostril darks, and a light
@@ -432,14 +446,14 @@ export const Figure: React.FC<FigureProps> = ({
                fastest way to age or masculinize a face, so the whole feature is
                about a third the value-weight of his. */
             <>
-              <path d={spline([[facing * 1.5, 56], [facing * 5, 66], [facing * 6.5, 73],
-                               [facing * 2, 76.5], [facing * 0.5, 64]], true)} fill={sk(0.88)} />
-              <circle cx={-s.noseHalf * 0.42 + facing * 1.5} cy={74.5} r={1.2} fill={sk(0.68)} />
-              <circle cx={s.noseHalf * 0.42 + facing * 1.5} cy={75} r={1.1} fill={sk(0.68)} />
+              <path d={spline([[facing * 1.5, 54], [facing * 4, 62], [facing * 5, 68],
+                               [facing * 1.5, 70.5], [facing * 0.5, 61]], true)} fill={sk(0.93)} />
+              <circle cx={-s.noseHalf * 0.34 + facing * 1.5} cy={69.5} r={1.1} fill={sk(0.74)} />
+              <circle cx={s.noseHalf * 0.34 + facing * 1.5} cy={70} r={1.0} fill={sk(0.74)} />
             </>
           )}
           {/* the shelf under the lower lip, in value */}
-          <ellipse cx={0} cy={81 + s.lipMass * 1.5} rx={s.mouthHalf * 0.7} ry={3.2}
+          <ellipse cx={0} cy={85 + s.lipMass * 1.5} rx={s.mouthHalf * 0.7} ry={3.2}
                    fill={sk(0.87)} />
           {/* STUBBLE. A slightly cool value over the whole jaw and chin. It does
               two jobs: models the jaw as a plane, and is a masculinity cue that
@@ -466,10 +480,10 @@ export const Figure: React.FC<FigureProps> = ({
         {[-1, 1].map((sd) => (
           sex === 'f' ? (
             <path key={sd}
-                  d={`M${sd * (s.eyeX - 12)},${browY + 0.5}
-                      Q${sd * (s.eyeX - 1)},${browY - 3.2} ${sd * (s.eyeX + 9)},${browY - 2.2}
-                      L${sd * (s.eyeX + 13)},${browY - 0.8}
-                      Q${sd * (s.eyeX + 1)},${browY - 0.2} ${sd * (s.eyeX - 12)},${browY + 2.4} Z`}
+                  d={`M${sd * (s.eyeX - 6)},${browY - 0.2}
+                      Q${sd * (s.eyeX + 3)},${browY - 4.2} ${sd * (s.eyeX + 11)},${browY - 1.4}
+                      L${sd * (s.eyeX + 14)},${browY + 0.4}
+                      Q${sd * (s.eyeX + 3)},${browY - 1.4} ${sd * (s.eyeX - 6)},${browY + 2.2} Z`}
                   fill="#241a18" transform={`rotate(${sd * E.browTilt} ${sd * s.eyeX} ${browY})`} />
           ) : (
             <path key={sd}
@@ -684,7 +698,7 @@ export const Figure: React.FC<FigureProps> = ({
       <Hand at={armSpine(1)[armSpine(1).length - 1]} r={s.armW[2] * 0.74} fill={skin} shadow />
 
       {/* HEAD. Counter-rotated against the weight shift, and lagging it. */}
-      <g transform={`translate(${headLag},0) translate(0,${Y.chin - 100 + s.neckDrop}) rotate(${-shTilt * 0.5} 0 100)`}>
+      <g transform={`translate(${headLag},0) translate(0,${Y.chin - 100 + s.neckDrop}) rotate(${-shTilt * 0.5 + headTilt} 0 100) translate(${headTurn * 4},0) scale(${1 - Math.abs(headTurn) * 0.1},1)`}>
         {/* hair BEHIND the skull */}
         <Hair style={hairstyle} s={s} col={hair} back />
         <path d={spline(outline, true, s.headTension)} fill={INK}
@@ -853,7 +867,7 @@ export const Figure: React.FC<FigureProps> = ({
       <Hand at={armSpine(1)[armSpine(1).length - 1]} r={s.armW[2] * 0.74} fill={skin} shadow />
 
       {/* HEAD. Counter-rotated against the weight shift, and lagging it. */}
-      <g transform={`translate(${headLag},0) translate(0,${Y.chin - 100 + s.neckDrop}) rotate(${-shTilt * 0.5} 0 100)`}>
+      <g transform={`translate(${headLag},0) translate(0,${Y.chin - 100 + s.neckDrop}) rotate(${-shTilt * 0.5 + headTilt} 0 100) translate(${headTurn * 4},0) scale(${1 - Math.abs(headTurn) * 0.1},1)`}>
         {/* hair BEHIND the skull */}
         <Hair style={hairstyle} s={s} col={hair} back />
         {/* EARS, under the head fill so only the outer rim shows. A head with no
@@ -911,9 +925,17 @@ const Hand: React.FC<{at: Pt; r: number; fill: string; shadow?: boolean}> = ({at
     <path d={spline([[-r, -r * 0.7], [r * 0.85, -r * 0.75], [r * 1.05, r * 0.5],
                      [r * 0.2, r * 1.15], [-r * 0.85, r * 0.6]], true)}
           fill={shadow ? shade(fill, 0.8) : fill} stroke={INK} strokeWidth={3.6} strokeLinejoin="round" />
+    {/* thumb */}
     <path d={`M${-r * 0.75},${-r * 0.1} q${-r * 0.5},${r * 0.4} ${-r * 0.05},${r * 0.75}`}
           fill="none" stroke={INK} strokeWidth={3.2} strokeLinecap="round" />
-    <path d={`M${r * 0.1},${r * 0.1} v${r * 0.7}`} stroke={INK} strokeWidth={1.6} opacity={0.35} />
+    {/* KNUCKLE LINE, and fingers of DIFFERENT LENGTHS. A mitten becomes a hand
+        at exactly these two marks: the knuckles say where the fingers begin,
+        and unequal lengths say they are fingers and not a paddle. */}
+    <path d={`M${-r * 0.5},${r * 0.12} q${r * 0.55},${-r * 0.22} ${r * 1.1},${r * 0.04}`}
+          fill="none" stroke={INK} strokeWidth={2} opacity={0.45} strokeLinecap="round" />
+    <path d={`M${-r * 0.2},${r * 0.28} v${r * 0.66}`} stroke={INK} strokeWidth={1.7} opacity={0.4} strokeLinecap="round" />
+    <path d={`M${r * 0.24},${r * 0.24} v${r * 0.74}`} stroke={INK} strokeWidth={1.7} opacity={0.4} strokeLinecap="round" />
+    <path d={`M${r * 0.66},${r * 0.3} v${r * 0.56}`} stroke={INK} strokeWidth={1.7} opacity={0.4} strokeLinecap="round" />
   </g>
 );
 
@@ -969,6 +991,16 @@ const Hair: React.FC<{style: string; s: Spec; col: string; back?: boolean}> = ({
                          [w * 0.1, 16], [-w * 0.86, 34]], true)} fill={INK} opacity={0.2} />
         <path d={spline([[-w * 0.5, 0], [w * 0.2, -6], [w * 0.72, 4]])}
               fill="none" stroke="#fff" strokeWidth={4} opacity={0.24} strokeLinecap="round" />
+        {/* sweep lines following the part, so the crop reads as combed hair
+            rather than a painted cap */}
+        {[0, 1, 2].map((i) => (
+          <path key={i}
+                d={spline([[-w * (0.62 - i * 0.1), 6 + i * 5],
+                           [w * (0.1 + i * 0.14), -6 + i * 5],
+                           [w * (0.76 - i * 0.06), 8 + i * 6]])}
+                fill="none" stroke={i % 2 ? INK : '#fff'} strokeWidth={i % 2 ? 2.6 : 3}
+                opacity={i % 2 ? 0.18 : 0.14} strokeLinecap="round" />
+        ))}
       </g>
     );
   }
@@ -994,9 +1026,9 @@ const Hair: React.FC<{style: string; s: Spec; col: string; back?: boolean}> = ({
       {/* The crown and the fringe, with a real PART. The near side is TUCKED: it
           comes down only to the cheekbone and stops, so the jawline and the neck
           on that side are completely open. That open side is the whole design. */}
-      <path d={spline([[-w * 1.0, 30], [-w * 1.04, 0], [-w * 0.24, -16], [w * 0.8, -6],
-                       [w * 1.16, 34], [w * 1.06, 62],
-                       [w * 0.72, 30], [w * 0.18, 16], [-w * 0.36, 24], [-w * 0.78, 46]], true)}
+      <path d={spline([[-w * 1.0, 26], [-w * 1.04, 0], [-w * 0.24, -16], [w * 0.8, -6],
+                       [w * 1.16, 28], [w * 1.1, 40],
+                       [w * 0.78, 22], [w * 0.18, 12], [-w * 0.36, 18], [-w * 0.8, 34]], true)}
             fill={col} stroke={INK} strokeWidth={4} strokeLinejoin="round" />
       {/* specular band across the crown, plus a dark root under it */}
       <path d={spline([[-w * 0.78, 10], [-w * 0.1, -12], [w * 0.72, 0], [w * 0.86, 12],
@@ -1013,6 +1045,32 @@ const Hair: React.FC<{style: string; s: Spec; col: string; back?: boolean}> = ({
                        [w * 0.86, 128], [w * 0.8, 76]], true)} fill={INK} opacity={0.2} />
       <path d={spline([[w * 1.44, 156], [w * 1.5, 186], [w * 1.2, 202], [w * 1.32, 172]], true)}
             fill="#fff" opacity={0.1} />
+      {/* STRAND FLOW. A mass with two highlights is a wig. Hair reads as hair
+          when the interior is broken into LOCKS that follow the same curve as
+          the outer edge and diverge slightly from each other, so the eye can
+          trace a path from root to tip. Four locks, alternating light and dark,
+          drawn along the fall. */}
+      {[0, 1, 2, 3].map((i) => {
+        const t = 0.24 + i * 0.2;
+        const dark = i % 2 === 1;
+        return (
+          <path key={i}
+                d={spline([[w * (0.92 + t * 0.5), 30 + i * 9],
+                           [w * (1.0 + t * 0.52), 90 + i * 7],
+                           [w * (0.98 + t * 0.5), 150 + i * 5],
+                           [w * (0.86 + t * 0.44), 192 - i * 4]])}
+                fill="none" stroke={dark ? INK : '#fff'} strokeWidth={dark ? 4 : 5}
+                opacity={dark ? 0.16 : 0.12} strokeLinecap="round" />
+        );
+      })}
+      {/* tip separations: the silhouette breaks into points at the bottom, which
+          is what stops the fall reading as a cut sheet of paper */}
+      {[0, 1, 2].map((i) => (
+        <path key={`t${i}`}
+              d={spline([[w * (1.0 + i * 0.16), 178], [w * (1.06 + i * 0.16), 200],
+                         [w * (0.94 + i * 0.16), 196]], true)}
+              fill={INK} opacity={0.14} />
+      ))}
     </g>
   );
 };
@@ -1020,7 +1078,7 @@ const Hair: React.FC<{style: string; s: Spec; col: string; back?: boolean}> = ({
 const StaticMouth: React.FC<{emotion: Emotion; half: number; mass: number; lip: string; full: boolean}> = ({
   emotion, half, mass, lip, full,
 }) => {
-  const y = 81;
+  const y = 85;
   const curve = {neutral: 3, angry: -1, worried: -5, shock: 0, smug: 5, flat: 0, squint: 1}[emotion] ?? 0;
   if (emotion === 'shock') {
     return <ellipse cx={0} cy={y + 4} rx={half * 0.5} ry={mass * 1.5} fill="#5e2430" stroke={INK} strokeWidth={2.6} />;
@@ -1065,7 +1123,7 @@ const TalkingMouth: React.FC<{open: number; spread: number; half: number; lip: s
   const o = Math.max(0, Math.min(1, open));
   const w = half * (0.66 + 0.34 * spread);
   const h = 1.6 + o * 13;
-  const y = 81;
+  const y = 85;
   return (
     <g>
       <path d={spline([[-w, y], [-w * 0.45, y - h * 0.34], [0, y - h * 0.42], [w * 0.45, y - h * 0.34],

@@ -86,7 +86,7 @@ export const Ray: React.FC<CastProps> = ({
 export const DEE = {
   skin: '#e3ac7e',
   hair: '#26191c',
-  eyes: '#3b5f7a',
+  eyes: '#4a3327',
   wear: {top: '#a8355a', bottom: '#7a2440', accent: '#1d1a22'},
 } as const;
 
