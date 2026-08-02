@@ -45,6 +45,19 @@ is yours.
    relearn a lesson that is already written down.
 5. `mkdir -p out/dispatch` for scratch (live working dir, gitignored). `runs/<date>/` is for shipped artifacts
    only.
+6. **STAMP THE RUN, before any artifact exists:**
+
+   ```
+   python3 scripts/run_guard.py init --run-id <YYYY-MM-DD>
+   ```
+
+   `out/dispatch/` survives across container sessions, so the PREVIOUS episode's
+   file at the right path is byte-for-byte indistinguishable from this one's.
+   Two runs have already picked up another story's scratch. Every artifact this
+   run legitimately produces is written at or after the stamp, so anything older
+   is a leftover by definition, and `render.sh`, `build_scenes.py` and
+   `contact_sheet.py` all refuse one. Skipping this step does not make the run
+   permissive, it makes those three steps refuse to prove freshness and stop.
 
 ## PHASE 1: RESEARCH (wide, parallel, non-recursive)
 

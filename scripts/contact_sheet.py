@@ -184,9 +184,18 @@ def pick_frames(total, n):
 
 def props_arg():
     """Same conditional as render.sh: Remotion HARD ERRORS on a --props path that
-    does not exist, so the flag is only passed when the file is really there."""
-    p = os.path.join(REPO, "out", "dispatch", "episode_props.json")
-    return [f"--props={p}"] if os.path.isfile(p) else []
+    does not exist, so the flag is only passed when the file is really there.
+
+    Routed through the freshness guard, because a contact sheet is what the
+    critics LOOK at: the previous episode's episode_props.json at the same path
+    renders a clean, plausible strip of the WRONG cut, and the room would grade
+    it. optional() returns None when it was never written and raises when it
+    exists and predates this run."""
+    sys.path.insert(0, os.path.join(REPO, "scripts"))
+    from run_guard import optional
+    p = optional(os.path.join(REPO, "out", "dispatch", "episode_props.json"),
+                 label="episode props")
+    return [f"--props={p}"] if p else []
 
 
 def render_one(comp, frame, path, scale, extra):

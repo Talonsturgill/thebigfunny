@@ -34,8 +34,19 @@ PROPS="${PROPS:-../out/dispatch/episode_props.json}"
 # carry their own frame numbers, so there is no episode_props.json and never
 # will be. A generic Episode built by scripts/build_scenes.py does take props,
 # and still gets them. One flag, conditional, instead of two render paths.
+#
+# AND ONLY WHEN IT BELONGS TO THIS RUN. out/dispatch/ survives across container
+# sessions, so the previous episode's episode_props.json at this exact path
+# renders a clean, plausible picture of the WRONG cut. scripts/run_guard.py was
+# written for precisely this read and nothing in the repo called it.
 PROPS_ARG=()
 if [[ -f "$PROPS" ]]; then
+  if ! python3 ../scripts/run_guard.py check "$PROPS"; then
+    echo "render.sh: refusing to render against props that do not belong to this run." >&2
+    echo "  Stamp the run in Phase 0:  python3 scripts/run_guard.py init --run-id <date>" >&2
+    echo "  Or, for deliberate manual use, BIGFUNNY_NO_FRESHNESS=1." >&2
+    [[ "${BIGFUNNY_NO_FRESHNESS:-}" =~ ^(1|true|yes)$ ]] || exit 1
+  fi
   PROPS_ARG=(--props="$PROPS")
 fi
 

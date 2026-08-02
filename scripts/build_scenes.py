@@ -5,6 +5,9 @@ VO line; S1 covers lines 0-1. Writes episode_props.json {captions, scenes, total
 """
 import json, os, sys
 
+# scripts/ on the path, so `run_guard` resolves however this is invoked.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 OUT = os.path.join(REPO, "out", "dispatch")
 FPS = 30
@@ -246,11 +249,19 @@ def main():
     props = {"captions": caps, "scenes": scenes, "total": total_f}
     # voice-acting data (scripts/vo_envelope.py): per-frame mouth envelope + the
     # vo-director's emphasis accents, for lib/voice.tsx. Optional, additive.
-    mt = os.path.join(OUT, "mouth_track.json")
-    ac = os.path.join(OUT, "accents.json")
-    if os.path.exists(mt):
+    # THROUGH THE FRESHNESS GUARD. These two were `if os.path.exists(...)`, which
+    # is exactly the read scripts/run_guard.py was written for and never wired
+    # into: out/dispatch/ survives across container sessions, so the PREVIOUS
+    # episode's mouth envelope at the right path is byte-for-byte
+    # indistinguishable from this one's, and the mouths would move to the last
+    # cut's audio. optional() returns None when the file was never written and
+    # RAISES when it exists and predates this run.
+    from run_guard import optional
+    mt = optional(os.path.join(OUT, "mouth_track.json"), label="mouth track")
+    ac = optional(os.path.join(OUT, "accents.json"), label="accents")
+    if mt:
         props["mouth"] = json.load(open(mt))["values"]
-    if os.path.exists(ac):
+    if ac:
         props["accents"] = json.load(open(ac))
     json.dump(props, open(os.path.join(OUT, "episode_props.json"), "w"))
     print(f"total={total_f}f ({total_s:.2f}s)  mouth={'y' if 'mouth' in props else 'n'} accents={len(props.get('accents', []))}")
