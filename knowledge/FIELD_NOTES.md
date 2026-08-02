@@ -79,6 +79,93 @@ ruling became this show's hardest rule: **the Institution has no face, ever.**
 
 *(Phase 8 appends below. Newest first. One entry per run, pass or fail.)*
 
+### Case 0002 (2026-08-02): the first delivered episode, and four things that nearly stopped it
+
+**A words-per-second constant cannot time a script. Measure the takes.**
+`vo_cast.py`'s static check assumes 3.6 w/s. Real measured delivery on this
+cast is 1.85 to 2.81 w/s, and it varies BY LINE, because a full stop mid-line
+buys a pause no word count can see: the same voice ran 2.07 w/s on one line and
+2.43 on another. The first synthesis died with Ray's opening line needing 7.33s
+in a 4.20s slot, AFTER the take was paid for. Guess-and-fail does not converge,
+because each edit changes the rate. `--fit` now synthesizes once, caches every
+take on disk by (voice, style, text), measures, and lays the timeline out from
+what the takes actually are. Use it. Iterating on the script after that is free.
+
+Gemini also pads every take with about 0.25s of lead and 0.30s of tail. Over a
+dozen lines that is most of a beat spent saying nothing, and worse, the padding
+lands INSIDE the slot, so a take that fits perfectly well overruns and fails the
+run for a reason that has nothing to do with the writing. `trim_silence()`
+strips it, which also makes captions.json honest: the cue ends when the SPEECH
+ends, not when the file does.
+
+**A gate that fails for the wrong reason is worse than no gate.**
+`mux_and_verify.sh` measured audio with `-af volumedetect`. The ffmpeg Remotion
+vendors is built `--disable-filters` with a whitelist that has neither
+`volumedetect` nor `astats`. So on any host without a system ffmpeg, the
+documented fallback measured NOTHING, and the script reported "has no audio
+stream at all" on a perfectly good mux. The fallback that exists precisely so
+the mux always works could never pass, and its error message pointed at
+entirely the wrong problem. It now decodes to PCM and computes RMS in stdlib
+python, which needs no filters at all.
+
+Corollary, learned while writing that gate's self-test: **the vendored ffmpeg
+has no `wrapped_avframe` decoder**, so every lavfi VIDEO source (`nullsrc`,
+`testsrc`) fails to encode there. Build fixture video from a generated PNG
+instead. The first cut of the self-test used nullsrc and printed "THE GATE IS
+WRONG" when the gate was fine and only the fixture was unbuildable.
+
+**Draw the rule, not the part.** Gate 0 killed a shot that would have taught
+viewers something the fact-checker had explicitly CUT. The story's funniest
+detail is that the federal record sorts repairable cars by speaker count, and
+the board staged it as a lone "28 SPEAKERS" badge. A single isolated spec chip
+does not read as a window sticker, it reads as a CALLOUT ON THE BROKEN PART, so
+the viewer would have walked away believing the 28 speakers failed, which the
+record never says. The fix was to draw the SORTING: a two-row eligibility list
+quoting the remedy field on both sides. **When a claim is cut for being an
+unprovable inference, check that the PICTURE cannot imply it either.** Prose
+guards do not bind the storyboard.
+
+**Look at the whole figure, not the frame.** A stray dark red arc rendered
+across Ray's thighs in every shot for two full renders before the craft panel
+caught it. Root cause: the flannel plaid's third horizontal stripe sits at
+y=30, the coat silhouette bottoms out at y=10, and the stripes are drawn
+unclipped and AFTER the legs. It had presumably been there since the outfit was
+authored. On a show whose law is one red per episode it also put an unintended
+STAMP-adjacent red on screen for the entire runtime. Two lessons: unclipped
+decoration inside a `<g>` leaks past the silhouette it belongs to, and
+"verified by looking at the frame" means looking at the whole figure, because
+the eye goes to the face and the bug was at the knees.
+
+**The one-stamp rule was asserted rather than earned.** `Wordmark` and `EndCard`
+both render through `Stamp`, which defaults to STAMP red, so any episode that
+also stamps its receipt spends the red token three times and halves it twice.
+Both now take an explicit `color`. `Stamp` also needed a `blend`, because
+ink-into-paper is a multiply, which is right on a light ground and INVISIBLE on
+a dark one: the first night-set wordmark vanished completely. If a brand rule is
+stated in prose but nothing in code enforces it, assume it is being violated.
+
+**A self-test that cannot ISOLATE cannot detect a dead guard.** Found in this
+run's phase 8, one level up from the rule it refines. `script_check.py` shipped
+with four guards and a self-test whose cases each asserted "some row went red".
+Disabling the Ray-gap guard entirely (`MAX_RAY_GAP_S = 999`) still printed all
+green, because that case's fixture also had no Ray in the middle third and the
+neighbouring guard covered for the dead one. The repo's oldest rule says a gate
+that cannot fail certifies nothing; the corollary is that each case must name
+the guard it trips and the fixture must trip ONLY that guard, or the self-test
+is measuring the union of the guards rather than any of them. Verify a new
+self-test by breaking each guard in turn and requiring the corresponding case,
+not merely the suite, to go red.
+
+**KNOWN GAP: the funny gate still has no self-test.** It is the heaviest
+criterion at 35 percent and the only one whose verdict is a model judgement, so
+it cannot be self-tested the way `render_gate` and `script_check` are. The
+obvious design is a committed known-unfunny fixture script that `funny-critic`
+must score under 60, read blind alongside the real one. That is worth building,
+and it was not built here because it cannot be verified without spending the
+model call the gate exists to grade, and this repo does not log a change it has
+not run. Until it exists, the funny score is the one number in the rubric with
+nothing behind it but the critic's own discipline.
+
 ### Case 0001 (2026-08-01): the mounting contract nobody wrote down
 
 **Everything in `src/lib/` returns SVG and MUST be inside an

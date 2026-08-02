@@ -21,9 +21,14 @@ take runs LONGER than its slot the script is wrong, and this fails loudly rather
 than silently sliding everything after it.
 
   export GEMINI_API_KEY=...
-  python scripts/vo_cast.py                    # synthesize out/dispatch/vo.wav
   python scripts/vo_cast.py --dry-run          # casting + timing, no API calls
+  python scripts/vo_cast.py --fit              # measure real takes, freeze the timings
+  python scripts/vo_cast.py                    # synthesize out/dispatch/vo.wav
   python scripts/vo_cast.py --self-test        # prove the guards fire
+
+--fit before the real synthesis, always. The timing check below assumes 3.6
+words/sec and the measured cast runs 1.85 to 2.81, per line, so the guess fails
+AFTER you have paid for the takes. See fit().
 
 Exit 0 pass, 1 fail.
 """
@@ -311,7 +316,13 @@ def synth_all(planned, script):
     json.dump({"lines": lines_out}, open(os.path.join(OUT, "vo_lines.json"), "w"), indent=2)
     json.dump(cues(lines_out), open(os.path.join(OUT, "captions.json"), "w"), indent=2)
     print(f"\nwrote {wav} ({total_s:.1f}s), vo_lines.json, captions.json")
-    print("next: python3 scripts/build_scenes.py  then  bash scripts/render.sh draft")
+    # Which next step is right depends on the build path, and printing only one
+    # of them is how case 0002 spent a Gate 0 blocker on a SCENE_START_LINE that
+    # was never in its chain. A self-timed CaseNNNN composition takes no props.
+    print("next: bash scripts/render.sh draft"
+          "   (self-timed CaseNNNN comp: no props, no build_scenes.py)\n"
+          "      python3 scripts/build_scenes.py first ONLY for a generic "
+          "Episode.tsx build")
     return 0
 
 
