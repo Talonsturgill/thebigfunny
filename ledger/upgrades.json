@@ -53,7 +53,26 @@
         "knowledge/CAST_BIBLE.md",
         "prompts/BIGFUNNY_ROUTINE.md"
       ],
-      "verified_by": "Re-synthesized all 12 lines of case 0002 on gemini-3.1-flash-tts-preview with per-character briefs and 7 tagged lines. vo_soundcheck --episode PASSED all 12 with zero overruns, which is the proof the model PERFORMED the direction rather than reading it aloud: a take that speaks its own notes runs long and trips OVERRUN, and the soundcheck self-test has a fixture for exactly that case. Episode rebuilt end to end: 48.87s, mux -20.2 dB, render gate PASS at 1080x1920. The banned tag raises on construction; an undocumented tag warns rather than failing, so a new tag costs a warning and not a dead run.",
+      "verified_by": "Re-synthesized all 12 lines of case 0002 with per-character briefs and 7 tagged lines. vo_soundcheck --episode PASSED all 12 with zero overruns, which is the proof the model PERFORMED the direction rather than reading it aloud: a take that speaks its own notes runs long and trips OVERRUN, and the soundcheck self-test has a fixture for exactly that case. Episode rebuilt end to end: 48.87s, mux -20.2 dB, render gate PASS at 1080x1920. The banned tag raises on construction; an undocumented tag warns rather than failing, so a new tag costs a warning and not a dead run. CORRECTION, same day: this entry originally claimed those takes ran on gemini-3.1-flash-tts-preview. THEY DID NOT. vo_cast.py set DISPATCH_GEMINI_TTS_MODEL to gemini-2.5-pro-preview-tts at module scope and vo_gemini is imported later, so the older model won on import order alone and every take of case 0002 was 2.5-pro. Nothing failed, so the wrong model shipped and got written down as fact. Fixed in the entry below.",
+      "commit": "PENDING"
+    },
+    {
+      "run_date": "2026-08-02",
+      "upgrade": "One default for the TTS model, and a run gate that reads back what actually resolved. vo_cast.py's module-scope os.environ.setdefault was silently outranking vo_gemini's newer default purely by import order, so the pipeline used gemini-2.5-pro-preview-tts while every report said 3.1-flash. The override is deleted, vo_gemini owns the default alone, and check() now asserts the RESOLVED model rather than the intended one.",
+      "files": [
+        "scripts/vo_cast.py"
+      ],
+      "verified_by": "Before: importing vo_cast then vo_gemini resolved gemini-2.5-pro-preview-tts. After: resolves gemini-3.1-flash-tts-preview, asserted by reading vo_gemini.MODEL back rather than by reading either comment. The guard was then proven RED in the direction that matters: running check() with DISPATCH_GEMINI_TTS_MODEL=gemini-2.5-pro-preview-tts fails the 'TTS model is gemini-3.1-flash-tts-preview' row and prints the model it caught. This is the whole class of bug the run reports could not see, because a downgraded model renders clean and passes every objective gate.",
+      "commit": "PENDING"
+    },
+    {
+      "run_date": "2026-08-02",
+      "upgrade": "THE CASTING LAW, in code. Owner verdict on Dee, twice: 'mad robotic', 'no fluctuation'. Two causes were stacked and both are now refused mechanically: a human character cast to a voice whose roster descriptor is flat, and a director's brief that instructs the ABSENCE of prosody. Dee moves from Schedar (descriptor: 'Even') to a voice with a disposition, and her brief stops asking for what it was complaining about.",
+      "files": [
+        "scripts/vo_cast.py",
+        "knowledge/CAST_BIBLE.md"
+      ],
+      "verified_by": "python3 scripts/vo_cast.py --self-test -> exit 0, 11 cases, four of them new and three RED on purpose: a flat-descriptor voice on a human, a style note saying 'no rising intonation', a pace note saying 'monotone'. The Institution is EXEMPT and the self-test proves the exemption still passes, because that character is a phone tree and its blandness is the joke. The live table is checked too, so the gate fails the moment someone re-flattens a brief. Note what the gate deliberately does NOT do: the seven-voice sweep measured 3.46 to 4.12 semitones of pitch variance across every candidate INCLUDING the one the owner called robotic, so the machine cannot rank these and does not pretend to. It refuses the two known causes and leaves the pick to the ear.",
       "commit": "PENDING"
     },
     {

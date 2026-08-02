@@ -49,15 +49,103 @@ MAX_TOTAL_S = 60.0
 TAIL = 1.5
 
 # ---------------------------------------------------------------------------
+# THE MODEL LIVES IN vo_gemini AND NOWHERE ELSE.
+#
+# This file used to carry `os.environ.setdefault("DISPATCH_GEMINI_TTS_MODEL",
+# "gemini-2.5-pro-preview-tts")` right here, at module scope. vo_gemini is
+# imported LATER, inside take(), so by the time it ran its own
+# `os.environ.get(..., "gemini-3.1-flash-tts-preview")` the variable was already
+# set and the newer model never won. Every take of case 0002 was therefore
+# synthesized on 2.5-pro while the run reported 3.1-flash, including the takes
+# the owner then described as robotic. Two defaults for one setting is the bug;
+# the older one silently outranked the newer one purely by import order, and
+# nothing failed, so it shipped and got written down as fact.
+#
+# So there is exactly one default now, in vo_gemini.MODEL, and expected_model()
+# below asserts what actually resolved instead of trusting either comment.
+EXPECTED_TTS_MODEL = "gemini-3.1-flash-tts-preview"
+
+
+def resolved_model():
+    """The model that will REALLY be used, read back from vo_gemini after import."""
+    sys.path.insert(0, SKILL)
+    import vo_gemini
+    return vo_gemini.MODEL
+
+
+# Google's own one-word dispositions for the prebuilt voices. Only the flat end
+# of the roster is listed, because that is the end that has to be refused; a
+# voice absent from this map is not assumed good, it is simply not KNOWN flat,
+# and the mechanical gate does not pretend otherwise.
+FLAT_VOICES = {
+    "Schedar": "Even", "Charon": "Informative", "Rasalgethi": "Informative",
+    "Iapetus": "Clear", "Erinome": "Clear", "Achernar": "Soft",
+    "Vindemiatrix": "Gentle", "Despina": "Smooth", "Algieba": "Smooth",
+    "Sadaltager": "Knowledgeable",
+}
+
+# Words that, in a director's note, ask the model to REMOVE prosody. "Deadpan"
+# is deliberately NOT here: deadpan is a legitimate comic register and the show
+# needs it. What broke Dee was pairing it with instructions that spell out the
+# mechanism, so the mechanism is what gets refused.
+FLATTENING_PHRASES = (
+    "monotone", "no rising intonation", "no intonation", "no inflection",
+    "without inflection", "flat delivery", "completely flat", "no variation",
+    "no pitch", "even tone", "and monotone",
+)
+
+
+def casting_problems(table=None):
+    """Return the casting-law violations in a CAST table. Empty list means clean.
+
+    Two checks, one per cause of the 2026-08-02 Dee failure: a flat VOICE, and a
+    brief that directs flatness. A character may opt out with flat_ok, which
+    exists for exactly one character and says why in the table."""
+    t = CAST if table is None else table
+    out = []
+    for who, c in t.items():
+        if c.get("flat_ok"):
+            continue
+        v = c.get("voice", "")
+        if v in FLAT_VOICES:
+            out.append(f"{who} is cast as {v}, whose roster descriptor is "
+                       f"\"{FLAT_VOICES[v]}\"; cast for eccentricity instead")
+        brief = " ".join(str(c.get(k, "")) for k in ("style", "pace", "scene")).lower()
+        for p in FLATTENING_PHRASES:
+            if p in brief:
+                out.append(f"{who}'s brief directs the absence of prosody (\"{p}\"); "
+                           f"dry withholds the REACTION, never the melody")
+                break
+    return out
+
+
+# ---------------------------------------------------------------------------
 # THE CASTING TABLE
 #
 # Voice choice is doing real work here, so the reasoning is written down rather
 # than left to whoever edits this next.
-# MODEL: the pro TTS voice, chosen by the owner on 2026-08-02 after A/B on real
-# takes. It is set here rather than left to the environment so the show's voice
-# is in the repo. vo_gemini still honours DISPATCH_GEMINI_TTS_MODEL if set.
-os.environ.setdefault("DISPATCH_GEMINI_TTS_MODEL", "gemini-2.5-pro-preview-tts")
-
+#
+# CASTING LAW, 2026-08-02, after the owner said Dee sounded "mad robotic" and had
+# "no fluctuation": READ THE ROSTER DESCRIPTOR BEFORE YOU CAST. Google ships each
+# prebuilt voice with a one-word disposition, and that disposition is a property
+# of the voice that direction does not overcome. Dee was cast as Schedar, whose
+# descriptor is literally "Even", and then handed a brief demanding "completely
+# deadpan" with "no rising intonation". Flattest voice in the catalogue, told to
+# flatten. Two causes stacked, and the sweep that replaced her measured all seven
+# candidates at 3.46 to 4.12 semitones of pitch variance, which is to say the
+# soundcheck could not tell them apart and the ear could.
+#
+# The two rules that came out of it:
+#   1. Cast for ECCENTRICITY. A human character never gets a voice whose
+#      descriptor is a synonym for flat (Even, Neutral, Calm). Prefer the ones
+#      with a disposition: Forward, Lively, Firm, Casual, Mature, Gravelly.
+#   2. NEVER DIRECT THE ABSENCE OF PROSODY. "Dry" and "deadpan" describe a
+#      withheld REACTION, not a withheld melody. A brief that says monotone, flat,
+#      even, no intonation or no inflection gets exactly what it asked for.
+#
+# THE ONE EXEMPTION is THE INSTITUTION, and the exemption is the joke: it is a
+# phone tree, its blandness is the character, and a lively read would destroy it.
+# It is marked exempt in the table so a future pass does not "fix" it.
 CAST = {
     "RAY": {
         # Gravelly. Ray is a tired adult who has already found out, not an
@@ -82,28 +170,44 @@ CAST = {
         "style_legacy": "fast and clipped, annoyed and unimpressed",
     },
     "DEE": {
-        # Even. Her comedy is total deadpan delivery of something insane, so the
-        # voice must not lift at the end of a sentence.
-        "voice": "Schedar",
+        # Forward. NOT "Even" (Schedar), which was the pick through 2026-08-02 and
+        # was wrong twice over: the roster's own word for that voice is "Even", and
+        # the brief underneath it ASKED for flatness. Owner verdict on the result,
+        # twice: "mad robotic", "no fluctuation in her voice". See the DRY IS NOT
+        # FLAT note below; do not re-flatten this brief.
+        "voice": "Pulcherrima",
         "name": "Dee",
-        "scene": ("The same street. Dee is holding the printout and reading from it. "
-                  "She has already checked the numbers twice and none of it surprises "
-                  "her any more."),
-        "style": ("Precise, dry, completely deadpan, reading off a document. Deadpan is "
-                  "a REFUSAL to react, not sleepiness. No rising intonation at the end "
-                  "of a sentence. She cites; she does not editorialise. She is allowed "
-                  "exactly one crack in composure per episode and the transcript will "
-                  "mark it."),
-        "pace": ("Brisk and natural, the speed of someone reading a fact they find "
-                 "unremarkable. Do not pause between sentences unless the transcript "
-                 "marks it."),
+        "scene": ("The same street at night. Dee has the printout in her hand and she is "
+                  "showing Ray the part that matters. She is not reading a document to "
+                  "an empty room, she is building a case to a person standing in front "
+                  "of her, and she wants him to get to the same place she already is."),
+        "style": ("Dry, sharp and quietly contemptuous of the document, not of Ray. "
+                  "DRY IS NOT FLAT. She withholds the obvious REACTION, never the "
+                  "melody of her own voice: a real person reading a number she finds "
+                  "absurd still lands on the absurd part, still leans on the word that "
+                  "does the damage, still lets the pitch fall away on the throwaway "
+                  "half of the sentence. Use natural conversational intonation with "
+                  "real variation from phrase to phrase. She underlines by pointing at "
+                  "the fact, never by raising her volume. She has no patience left and "
+                  "it is audible."),
+        "pace": ("Brisk and conversational, the clip of someone who has read this twice "
+                 "already and wants you to see the line she is pointing at. Numbers are "
+                 "spoken like a person quoting an outrageous figure to a friend, with "
+                 "the weight on the part that makes it outrageous, NEVER recited like a "
+                 "digit string or an account number. Do not pause between sentences "
+                 "unless the transcript marks it."),
         "accent": "General American.",
-        "style_legacy": "precise, dry and completely deadpan, reading from a document",
+        "style_legacy": "dry, sharp and out of patience, quoting a document she finds absurd",
     },
     "INSTITUTION": {
         # Smooth. The politeness is the menace, so it must sound HELPFUL, never
         # threatening. This is hold music with a mouth.
         "voice": "Despina",
+        # THE ONE EXEMPTION from the casting law above. Despina's descriptor is
+        # "Smooth" and that is the point: this character is a phone tree, its
+        # blandness IS the joke, and an eccentric read would turn a process into
+        # a villain with opinions. Do not "fix" this one.
+        "flat_ok": "a phone tree; the blandness is the character",
         "name": "The Institution",
         "scene": ("An automated telephone system reading a policy clause to a customer "
                   "who has been on hold. Nobody is present. Nothing is being decided."),
@@ -178,6 +282,23 @@ def check(script, planned):
     row("three distinct voices, not one",
         len(set(voices.values())) == len(voices) and len(voices) > 1,
         ", ".join(f"{k}={v}" for k, v in sorted(voices.items())) or "none")
+
+    # THE CASTING LAW. Checked on the real table every run, not only in the
+    # self-test, because the failure it catches ships quietly: a flat voice
+    # renders clean, passes every objective gate, and is only caught by a human
+    # listening. See casting_problems().
+    probs = casting_problems()
+    row("cast for eccentricity, and no brief directs flatness",
+        not probs, "; ".join(probs) if probs else "clean")
+
+    # And the model the run will REALLY use, read back rather than asserted. A
+    # stale override in this file silently outranked the newer default for the
+    # whole of case 0002 and the run reported the model it did not use.
+    try:
+        m = resolved_model()
+        row(f"TTS model is {EXPECTED_TTS_MODEL}", m == EXPECTED_TTS_MODEL, m)
+    except Exception as e:
+        row(f"TTS model is {EXPECTED_TTS_MODEL}", False, f"could not resolve: {e}")
 
     # The Institution is an emission, not a conversation. More than a couple of
     # lines means it has become a character you can argue with.
@@ -478,6 +599,29 @@ def self_test():
                 and c[0]["end"] == 2.1 and c[1]["text"] == "Two.")
     print(f"  {'ok  ' if shape_ok else 'FAIL'} emits captions.json in Episode's schema")
     ok &= shape_ok
+
+    # --- the casting law, both directions -------------------------------
+    for name, table in [
+        ("a human cast to a voice whose descriptor is flat",
+         {"DEE": dict(CAST["DEE"], voice="Schedar")}),
+        ("a brief that directs the ABSENCE of prosody",
+         {"DEE": dict(CAST["DEE"], style="Precise and completely deadpan, with no "
+                                         "rising intonation at the end of a sentence.")}),
+        ("a brief that asks for monotone in the pace note",
+         {"DEE": dict(CAST["DEE"], pace="Even and monotone throughout.")}),
+    ]:
+        problems = casting_problems(table)
+        print(f"  {'ok  ' if problems else 'FAIL'} catches: {name}")
+        ok &= bool(problems)
+
+    exempt = casting_problems({"INSTITUTION": CAST["INSTITUTION"]})
+    print(f"  {'ok  ' if not exempt else 'FAIL'} exempts: the Institution, whose flatness IS the joke")
+    ok &= not exempt
+
+    live = casting_problems(CAST)
+    print(f"  {'ok  ' if not live else 'FAIL'} accepts: the cast as it stands today"
+          + ("  <- " + "; ".join(live) if live else ""))
+    ok &= not live
 
     good = {"estimated_seconds": 30.0, "lines": [
         {"t": 0.0, "who": "RAY", "text": "Short line."},

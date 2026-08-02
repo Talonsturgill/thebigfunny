@@ -139,8 +139,37 @@ and the thing no competitor does, because no competitor has a fact-check gate.
 The voice is not a rendering step, it is casting. Locked 2026-08-02 after A/B on
 real takes.
 
-- Ray is **Algenib**, Dee is **Schedar**, the Institution is **Despina**, on
-  `gemini-3.1-flash-tts-preview`.
+- Ray is **Algenib** (Gravelly), Dee is **CAST_PENDING_OWNER_PICK**, the
+  Institution is **Despina** (Smooth), on `gemini-3.1-flash-tts-preview`.
+
+### The casting law
+
+Cast for ECCENTRICITY. Every prebuilt voice ships with a one-word disposition,
+and that disposition is a property of the voice that no amount of direction
+overcomes. Dee was cast as Schedar, whose descriptor is literally "Even", and
+then handed a brief demanding "completely deadpan" with "no rising intonation":
+the flattest voice in the catalogue, told to flatten. The owner heard it
+immediately and twice, and no gate in the machine had an opinion.
+
+So, two rules, both enforced in `vo_cast.py` and both with red self-test cases:
+
+1. **No human character gets a flat voice.** Even, Neutral, Calm and their
+   neighbours are refused. Prefer a voice with a disposition: Forward, Lively,
+   Firm, Casual, Mature, Gravelly.
+2. **Never direct the absence of prosody.** Dry and deadpan describe a withheld
+   REACTION, not a withheld melody. A real person reading a number she finds
+   absurd still lands on the absurd part. Write what she WANTS, never what her
+   voice should stop doing.
+
+The Institution is the sole exemption and the exemption is the joke: it is a
+phone tree, its blandness is the character, and a lively read would turn a
+process into a villain with opinions. It is marked exempt in the table so a
+later pass does not helpfully fix it.
+
+What the machine cannot do here: the sweep that replaced Dee measured every
+candidate between 3.46 and 4.12 semitones of pitch variance, including the one
+already judged robotic. The soundcheck cannot rank voices and does not pretend
+to. It refuses the two known causes; the pick is an ear's job.
 - Each carries a full director's brief in `scripts/vo_cast.py`: an audio profile,
   a scene, and notes split into style, pace and accent. A bare style string
   produces a reading rather than a performance, which is the defect the owner
