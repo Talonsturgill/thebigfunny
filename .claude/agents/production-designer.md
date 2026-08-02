@@ -157,6 +157,10 @@ Write `out/dispatch/world.json` and return the same object.
   },
   "palette": {"key": "", "fill": "", "shade": "", "ink": "", "accent": "", "family": ""},
   "lighting_rig": "one of WORLD_KIT WorldLight",
+  "the_turn": {
+    "at_seconds": 0.0,
+    "what_gets_worse": "the SAME turn the producer's plan names, restated as a PICTURE rather than as an event. Not a new turn: if you disagree with the producer's, stage theirs and put your disagreement in unresolved_dissent, because two documents naming different turns is exactly what scripts/coherence_check.py catches and `artifacts_fork` is a logged repeat offender. This field exists because without it the coherence gate can never be anything but red on the turn row, which trains the room to ignore a red gate."
+  },
   "cast_from_kit": [
     {"primitive": "", "status": "exists|substituted|not_required|NOT_BUILT",
      "file": "the real path, or null", "substituted_by": "what you used instead",
