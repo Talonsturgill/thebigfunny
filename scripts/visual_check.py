@@ -393,6 +393,16 @@ def check(sb):
     # -- 4. WORLD RELEVANCE -------------------------------------------------
     vsys = sb.get("visual_system") or {}
     world = vsys.get("world") or {}
+    # A board author will naturally write `world: "a sorting floor"` as a STRING,
+    # and this used to do `.get` on it and die with an AttributeError. A gate that
+    # CRASHES is worse than one that misses: it exits non-zero so the run stops,
+    # but it prints a traceback instead of a report, so nobody learns which rule
+    # was broken. Coerce the shorthand into the long form and let the normal rows
+    # fail it honestly for the fields it is missing.
+    if isinstance(world, str):
+        world = {"name": world, "drawn_from": [], "why_this_world": ""}
+    if not isinstance(world, dict):
+        world = {}
     wname = str(world.get("name", "")).strip()
     wwhy = str(world.get("why_this_world", "")).strip()
     drawn = [str(x) for x in (world.get("drawn_from") or []) if str(x).strip()]
@@ -765,6 +775,14 @@ def self_test():
         ("a sight gag nobody can state", ["states the joke", "sight gags"],
          _board([dict(s, events=[{k: v for k, v in e.items() if k != "the_joke"}
                                  for e in s["events"]]) for s in g])),
+        # The shorthand a human actually writes. It used to CRASH the gate with
+        # an AttributeError, which is worse than a miss: the run stops on a
+        # traceback and nobody learns which rule broke. It must GRADE now, and
+        # fail honestly for the fields the shorthand does not carry.
+        ("a world written as a bare string instead of an object",
+         ["names the WORLD", "story's own nouns", "NAME is built"],
+         _board(g, visual_system=dict(_board(g)["visual_system"],
+                                      world="a sorting floor"))),
         ("a character who teleports across the cut", ["screen side"],
          _board(swap(g, 3, staging={"RAY": "right", "DEE": "left"}))),
         # One BOGUS kind ADDED to a shot that keeps its real events, so the rate
