@@ -48,9 +48,9 @@ So: **B first (the expression engine), then A (a new episode that uses it).**
 | B4 | Wire into `writer.md` + `BIGFUNNY_ROUTINE.md` so every future run must author faces | DONE |
 | B5 | Case 0002 as proving ground: 3 changes/0 reactions -> 21/13, frames checked | DONE |
 | **PHASE A — CASE 0003** | | |
-| A1 | Research the three unused beats (the-grift, the-vice, the-landlord) | IN PROGRESS |
-| A2 | Fact-check to primary documents, produce claims.json | TODO |
-| A3 | Angle: the funniest VERIFIED fact is the pivot, not item four in a list | TODO |
+| A1 | Research the three unused beats | DONE — the-landlord wins |
+| A2 | Fact-check to primary documents, produce claims.json | DONE — 9 VERIFIED, 3 CUT |
+| A3 | Angle: who-benefits, one step | DONE — awaiting owner read |
 | A4 | Script: Dee has a POINT OF VIEW, not a printout. Faces authored per line. | TODO |
 | A5 | Storyboard + gate 0 | TODO |
 | A6 | VO, soundcheck, envelope | TODO |
@@ -114,6 +114,32 @@ A gate, because a rule nobody can fail is a preference. Hard-fails:
 - a LISTENER who never reacts during someone else's line
 
 Self-test must go red on each, per the house rule.
+
+## PHASE A — the story, locked
+
+**US v. RentGrow, Inc.**, FTC matter 222 3002, civil action 1:26-cv-02415,
+D.D.C., filed 2026-07-09. $2.25 million. Tenant screening.
+
+The FTC alleged RentGrow's reports carried DUPLICATE entries for the same
+criminal or eviction case, which made applicants look like they had been evicted
+more times than they had. That when consumers asked what was in their file it did
+not disclose all its sources, including Lexis-Nexis Accurint, which made the data
+hard to dispute. That it sometimes marked a dispute "invalid" and did nothing
+further. And that it told property managers something different from what it told
+the consumer about the same dispute.
+
+Variety: `the-landlord` has never run. Subject is new. Angle type
+`who-benefits` has never been used (used so far: euphemism, ratio).
+
+### THE ANGLE (who-benefits, exactly one step)
+
+> **You are not the tenant screening company's customer. The landlord is.**
+> That one step explains every allegation in the filing, including why your
+> dispute could be marked invalid while the landlord was told something else.
+
+The pivot fact, and the thing the whole episode is built to arrive at: the same
+eviction, counted twice. Per the case 0002 lesson, this is NOT item four in a
+data block; it is the turn.
 
 ## PHASE A notes
 
