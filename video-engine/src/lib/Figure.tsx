@@ -82,6 +82,10 @@ type Spec = {
   jawRatio: number;       // bigonial / bizygomatic
   chinW: number;          // menton width as a fraction of bizygomatic
   headTension: number;    // 0 = pure curve (female), higher = straighter (male)
+  /** How far the head drops toward the shoulders. Chin minus shoulder was 58
+   *  units on a 100-unit head; visible neck should be about a quarter of a
+   *  head. His drops less: a thick short neck reads powerful, not stumpy. */
+  neckDrop: number;
 };
 
 /* Torso widths are the measured attractiveness ratios, with hip width as 1.00.
@@ -107,7 +111,7 @@ const SPEC: Record<Sex, Spec> = {
     eyeRx: 9.2, eyeRy: 4.4, eyeX: 18, tilt: 7,
     browGap: 9.0, browW: 2.7,        // 0.048 H measured, same correction
     noseHalf: 7.5, mouthHalf: 13.5, lipMass: 6.2,
-    jawRatio: 0.72, chinW: 0.2, headTension: 0,
+    jawRatio: 0.72, chinW: 0.2, headTension: 0, neckDrop: 24,
   },
   m: {
     headW: 68, waistY: 302,
@@ -119,7 +123,7 @@ const SPEC: Record<Sex, Spec> = {
     eyeRx: 9.2, eyeRy: 3.7, eyeX: 18, tilt: 3,
     browGap: 8.5, browW: 4.4,        // neat and CLEAR of the eye, not a shelf over it
     noseHalf: 8, mouthHalf: 14, lipMass: 4.4,
-    jawRatio: 0.8, chinW: 0.30, headTension: 0.04,
+    jawRatio: 0.8, chinW: 0.30, headTension: 0.04, neckDrop: 16,
   },
 };
 
@@ -224,23 +228,34 @@ export const Figure: React.FC<FigureProps> = ({
      The hip on the weight side rides UP, the shoulders counter-tilt the other
      way, and the free leg goes slack. Three numbers, and they are most of what
      separates a standing person from a placed figure. */
-  const hipTilt = 4.5;
-  const shTilt = -3.2;
+  const hipTilt = sex === 'f' ? 7.5 : 4.5;
+  const shTilt = sex === 'f' ? -5 : -3.2;
   const waistY = s.waistY;
+  // S-curve amplitude. Hers is nearly double: the pose SHOWS the curves.
+  const sway = sex === 'f' ? 1.9 : 1;
 
   /* ---- TORSO. A ribbon down an S-curved spine, with the shoulder:waist:hip
      ratios as its widths. The hourglass is not a special case here: it is three
      numbers, and the male V-taper is the same three numbers with no flare at
      the bottom. */
+  // THE EIGHT-POINT SPINE. The Spec has carried underbust and upperHip since
+  // the curves pass, and a silent string-replace failure meant the spine never
+  // grew the points to USE them: the cinch numbers sat dead in the table while
+  // the torso interpolated straight from bust to waist to hip. Same lesson as
+  // every silent failure in this repo: a replace without an assert is a hope.
+  // Curves are RATE OF CHANGE, and rate of change needs points close together.
   const spine: Pt[] = [
-    [3.6 + shift * 0.2, Y.shoulder - 2],    // shoulder slope, NOT a collar: at
-    [3.0 + shift * 0.25, Y.shoulder + 6],   // -38 the garment climbed the neck
-    [1.0 + shift * 0.5, Y.chest],
-    [-2.6 + shift, waistY],
-    [1.6 + shift * 0.7, Y.hip],
-    [2.2 + shift * 0.7, Y.hip + 40],        // runs PAST the hip so the flat end
-  ];                                        // cut lands where the legs hide it
-  const torsoW = [s.shoulder * 0.66, s.shoulder, s.bust, s.waist, s.hip, s.hip * 0.9];
+    [3.6 * sway + shift * 0.2, Y.shoulder - 2],
+    [3.0 * sway + shift * 0.25, Y.shoulder + 6],
+    [1.6 * sway + shift * 0.45, Y.chest - 4],      // bust, full
+    [-0.4 * sway + shift * 0.7, Y.chest + 38],     // underbust, dropping fast
+    [-3.2 * sway + shift, waistY],                 // the cinch
+    [0.6 * sway + shift * 0.8, waistY + 32],       // hip flare starts HIGH
+    [1.8 * sway + shift * 0.7, Y.hip],
+    [2.2 * sway + shift * 0.7, Y.hip + 40],        // past the hip: flat cut hides
+  ];
+  const torsoW = [s.shoulder * 0.66, s.shoulder, s.bust, s.underbust,
+                  s.waist, s.upperHip, s.hip, s.hip * 0.92];
 
   /* ---- ARMS. A pose is three joint positions, not a redrawn path. */
   const armSpine = (side: 1 | -1): Pt[] => {
@@ -288,7 +303,7 @@ export const Figure: React.FC<FigureProps> = ({
       // calf belly, a third of the way down the shin
       [kneeX + side * (weight ? 3 : 4), kneeY + (Y.ankle - kneeY) * 0.34],
       // In heels the ankle sits well ABOVE the ground and the shoe spans the gap.
-      [ankleX, heels ? Y.ankle - 32 : Y.ankle],
+      [ankleX, heels ? Y.ankle - 18 : Y.ankle],
     ];
   };
 
@@ -621,11 +636,11 @@ export const Figure: React.FC<FigureProps> = ({
       {/* NECK, over the garment. Then a COLLAR RIM laid back over its base, so
           the neck comes THROUGH the opening instead of the opening being a patch
           of skin painted on a chest. */}
-      <path d={ribbon([[2, Y.chin - 6], [1, Y.shoulder + 14]], [s.neckW, s.neckW * 1.18], {capEnd: false})}
+      <path d={ribbon([[2, Y.chin - 6 + s.neckDrop], [1, Y.shoulder + 14]], [s.neckW, s.neckW * 1.18], {capEnd: false})}
             fill={INK} stroke={INK} strokeWidth={17} strokeLinejoin="round" />
       {/* the jaw's shadow down the throat: without it the neck is a pasted
           cylinder rather than something under a chin */}
-      <path d={`M${-s.neckW * 0.44},${Y.chin - 4} q${s.neckW * 0.44},${10} ${s.neckW * 0.88},0 l0,13 q${-s.neckW * 0.44},${9} ${-s.neckW * 0.88},0 Z`}
+      <path d={`M${-s.neckW * 0.44},${Y.chin - 4 + s.neckDrop} q${s.neckW * 0.44},${10} ${s.neckW * 0.88},0 l0,13 q${-s.neckW * 0.44},${9} ${-s.neckW * 0.88},0 Z`}
             fill={INK} opacity={0.2} />
       <path d={sex === 'f'
         ? spline([[-s.neckW * 0.86, Y.shoulder - 6], [0, Y.shoulder + 30], [s.neckW * 0.86, Y.shoulder - 6],
@@ -638,7 +653,7 @@ export const Figure: React.FC<FigureProps> = ({
       <Hand at={armSpine(1)[armSpine(1).length - 1]} r={s.armW[2] * 0.74} fill={skin} shadow />
 
       {/* HEAD. Counter-rotated against the weight shift, and lagging it. */}
-      <g transform={`translate(${headLag},0) translate(0,${Y.chin - 100}) rotate(${-shTilt * 0.5} 0 100)`}>
+      <g transform={`translate(${headLag},0) translate(0,${Y.chin - 100 + s.neckDrop}) rotate(${-shTilt * 0.5} 0 100)`}>
         {/* hair BEHIND the skull */}
         <Hair style={hairstyle} s={s} col={hair} back />
         <path d={spline(outline, true, s.headTension)} fill={INK}
@@ -790,11 +805,11 @@ export const Figure: React.FC<FigureProps> = ({
       {/* NECK, over the garment. Then a COLLAR RIM laid back over its base, so
           the neck comes THROUGH the opening instead of the opening being a patch
           of skin painted on a chest. */}
-      <path d={ribbon([[2, Y.chin - 6], [1, Y.shoulder + 14]], [s.neckW, s.neckW * 1.18], {capEnd: false})}
+      <path d={ribbon([[2, Y.chin - 6 + s.neckDrop], [1, Y.shoulder + 14]], [s.neckW, s.neckW * 1.18], {capEnd: false})}
             fill={`url(#${uid}_skin)`} stroke={INK} strokeWidth={4} strokeLinejoin="round" />
       {/* the jaw's shadow down the throat: without it the neck is a pasted
           cylinder rather than something under a chin */}
-      <path d={`M${-s.neckW * 0.44},${Y.chin - 4} q${s.neckW * 0.44},${10} ${s.neckW * 0.88},0 l0,13 q${-s.neckW * 0.44},${9} ${-s.neckW * 0.88},0 Z`}
+      <path d={`M${-s.neckW * 0.44},${Y.chin - 4 + s.neckDrop} q${s.neckW * 0.44},${10} ${s.neckW * 0.88},0 l0,13 q${-s.neckW * 0.44},${9} ${-s.neckW * 0.88},0 Z`}
             fill={INK} opacity={0.2} />
       <path d={sex === 'f'
         ? spline([[-s.neckW * 0.86, Y.shoulder - 6], [0, Y.shoulder + 30], [s.neckW * 0.86, Y.shoulder - 6],
@@ -807,7 +822,7 @@ export const Figure: React.FC<FigureProps> = ({
       <Hand at={armSpine(1)[armSpine(1).length - 1]} r={s.armW[2] * 0.74} fill={skin} shadow />
 
       {/* HEAD. Counter-rotated against the weight shift, and lagging it. */}
-      <g transform={`translate(${headLag},0) translate(0,${Y.chin - 100}) rotate(${-shTilt * 0.5} 0 100)`}>
+      <g transform={`translate(${headLag},0) translate(0,${Y.chin - 100 + s.neckDrop}) rotate(${-shTilt * 0.5} 0 100)`}>
         {/* hair BEHIND the skull */}
         <Hair style={hairstyle} s={s} col={hair} back />
         {/* EARS, under the head fill so only the outer rim shows. A head with no
@@ -880,16 +895,16 @@ const Foot: React.FC<{at: Pt; side: 1 | -1; col: string; heel?: boolean; shadow?
       // functional part: it is what visually lengthens a leg, which is the whole
       // reason heels read the way they do.
       <g>
-        {/* the arched foot: topline at the ankle, vamp sweeping forward and DOWN
-            to a pointed toe on the floor, sole running back to the heel seat */}
-        <path d={spline([[-13, -8], [-11, 10], [4, 30], [24, 46], [42, 55],
-                         [46, 49], [30, 28], [13, 6], [9, -9]], true)}
-              fill={shadow ? shade(col, 0.82) : col} stroke={INK} strokeWidth={3.2} strokeLinejoin="round" />
-        {/* the spike. Thin is the point: a thick heel is a boot. */}
-        <path d="M1,38 L-7,57 L-1,58 L9,41 Z" fill={shadow ? shade(col, 0.75) : shade(col, 0.9)}
-              stroke={INK} strokeWidth={2.6} strokeLinejoin="round" />
-        {/* patent highlight down the vamp */}
-        <path d="M-4,2 q12,12 22,26" fill="none" stroke="#fff" strokeWidth={3} opacity={0.3} strokeLinecap="round" />
+        {/* the pump: an instep sweeping from the raised ankle down to a pointed
+            toe ON the ground, with a slim post under the heel seat. The old
+            version arched to y58 off a 32-unit lift and drew as a black hook; a
+            real pump is mostly FOOT and its hardware is small. */}
+        <path d={spline([[-12, -8], [6, -10], [16, 4], [27, 26], [40, 42], [43, 46],
+                         [22, 44], [4, 32], [-11, 10]], true)}
+              fill={shadow ? shade(col, 0.82) : col} stroke={INK} strokeWidth={3} strokeLinejoin="round" />
+        <path d="M-6,28 L-11,46 L-5,47 L1,31 Z" fill={shadow ? shade(col, 0.75) : shade(col, 0.9)}
+              stroke={INK} strokeWidth={2.4} strokeLinejoin="round" />
+        <path d="M-3,0 q13,14 24,32" fill="none" stroke="#fff" strokeWidth={2.6} opacity={0.3} strokeLinecap="round" />
       </g>
     ) : (
       <g>
