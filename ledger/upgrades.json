@@ -77,6 +77,26 @@
     },
     {
       "run_date": "2026-08-02",
+      "upgrade": "The take cache keys on the MODEL as well as the brief, and the key is computed in one place. It was written out twice, in cached_duration and in take, and both copies omitted the model, so fixing the model default alone would have replayed every old take off disk under the new model's name.",
+      "files": [
+        "scripts/vo_cast.py"
+      ],
+      "verified_by": "The same line under two models now produces two different cache filenames (fe7ca240e0c4233e vs 743811a6af2f39b8); before the fix it produced one. vo_cast --self-test still exit 0. This was the THIRD instance in one day of a single bug class, an input that changes how a take SOUNDS without changing the identity of the take, and duplicating the key is what let it recur, so take_path() is now the only definition."
+    },
+    {
+      "run_date": "2026-08-02",
+      "upgrade": "scripts/gen_captions_ts.py: the caption cue file is GENERATED from vo_lines.json rather than hand-typed, and --check fails a run whose committed cues are not what the current takes produce. Case0002's shot ladder became CUT_ON, a list of cue INDICES, and Root.tsx derives durationInFrames from the VO total.",
+      "files": [
+        "scripts/gen_captions_ts.py",
+        "video-engine/src/Case0002.tsx",
+        "video-engine/src/Root.tsx",
+        "video-engine/src/case0002_captions.ts",
+        "prompts/BIGFUNNY_ROUTINE.md"
+      ],
+      "verified_by": "python3 scripts/gen_captions_ts.py --self-test -> exit 0, seven cases including a RED one for a cue file that no longer matches the takes. One case initially passed for the WRONG reason (counting 'who: ' matched the Cue type declaration as well as the cues) and was tightened to 'who: ' with the quote, which is the kind of false green this gate exists to prevent. Generated for case 2, then --check confirmed current. npx tsc --noEmit -p video-engine -> exit 0 after both the composition and Root.tsx changes. Twenty-odd hand-entered numbers described one thing, re-synthesis moved all of them, and they were retyped twice in one day; a stale one cannot be seen in a render because the file stays internally consistent and the picture simply cuts on the wrong word."
+    },
+    {
+      "run_date": "2026-08-02",
       "upgrade": "scripts/vo_soundcheck.py: a listening gate, so voice quality stops depending on a human playing the file back. Measures duration, gross and articulation rate, F0 variance and range, dynamics, pauses, peak and slot overrun per line and for a whole episode.",
       "files": [
         "scripts/vo_soundcheck.py",
