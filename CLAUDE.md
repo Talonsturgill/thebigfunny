@@ -54,6 +54,19 @@ every commit. Delete the file when its wrap tasks are all DONE.
 Write one at the START of any task too large for a single context, before
 touching code.
 
+**DO NOT ASK PERMISSION TO WRITE IT, OR TO WRITE ANYTHING ELSE THIS REPO OWNS.**
+This is an autonomous routine. `.claude/settings.json` sets `acceptEdits` and
+allows `.claude/`, `ledger/`, `runs/`, `out/`, `scripts/`, `prompts/`,
+`knowledge/`, `config/`, `assets/` and `video-engine/src/`. Editing the worklog,
+the ledgers and the engine is the JOB, not a favour to ask for. A run that stops
+to request permission to update its own progress file has failed at being a
+routine.
+
+The three things that still stop and ask are listed under the delivery policy
+below, and they are the only three: publishing to a social platform, rewriting
+published history on `main`, and deleting or overwriting shipped `runs/`
+artifacts.
+
 ## Delivery & merge policy (AUTHORITATIVE)
 
 Routine runs SHIP AUTONOMOUSLY. When a run's quality gates pass, the run branch

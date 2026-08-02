@@ -82,14 +82,29 @@ same `--check` staleness gate, same self-test.
 
 ### B2 — why the rig cannot show emotion today
 
-Measured, not assumed: `browY` is `emotion === 'shock' ? -14 : 0`. **Four of the
-five expressions have IDENTICAL brows.** Eye size varies only for shock and smug.
-So most of the "expression" is a mouth curve on an otherwise fixed face, at a
-size where the mouth is 36 units wide. That is why nothing reads.
+CORRECTED after reading the rig. A first draft of this section claimed four of
+the five expressions share identical brows, from skimming
+`browY = emotion === 'shock' ? -14 : 0`. That is false: every emotion draws its
+OWN brow path (angry slants in, worried arches out, smug cocks one). Recording
+the correction rather than quietly editing it, because the wrong version would
+have sent the next context rebuilding a part that works.
 
-Work: give every emotion its own brow height AND angle, lid state, and eye
-scale. Add the registers the show actually needs and does not have (a dead flat
-stare, a suspicious squint, a real grin).
+What is actually wrong, measured:
+
+1. **The timeline, overwhelmingly.** 3 switch events in 52 seconds. Dee is
+   `neutral` for roughly 36 straight seconds because S2 and S3 never set her
+   emotion at all and the cast default takes over. This is a SCRIPT and
+   COMPOSITION problem, which makes B1 the high-value work, not B2.
+2. **Eyes.** Only shock and smug change the eye. `angry`, `worried` and
+   `neutral` render an identical eye, so three of five expressions differ by
+   brow and mouth alone.
+3. **No transition.** Emotion snaps between frames. Real faces move THROUGH a
+   change, and the snap is part of why it reads as a slide swap.
+4. **Missing registers.** There is no dead flat stare and no suspicious squint,
+   which are the two faces this show needs most.
+
+So B2 is smaller than first assumed: per-emotion eyes, a short ease on change,
+and the two missing registers. Do not rebuild the brows.
 
 ### B3 — the gate
 

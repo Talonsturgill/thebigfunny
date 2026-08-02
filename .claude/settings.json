@@ -1,9 +1,34 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
+    "defaultMode": "acceptEdits",
     "allow": [
-      "Edit(.claude/WORKLOG.md)",
-      "Write(.claude/WORKLOG.md)"
+      "Edit(.claude/**)",
+      "Write(.claude/**)",
+      "Edit(ledger/**)",
+      "Write(ledger/**)",
+      "Edit(runs/**)",
+      "Write(runs/**)",
+      "Edit(out/**)",
+      "Write(out/**)",
+      "Edit(video-engine/src/**)",
+      "Write(video-engine/src/**)",
+      "Edit(scripts/**)",
+      "Write(scripts/**)",
+      "Edit(prompts/**)",
+      "Write(prompts/**)",
+      "Edit(knowledge/**)",
+      "Write(knowledge/**)",
+      "Edit(config/**)",
+      "Write(config/**)",
+      "Edit(assets/**)",
+      "Write(assets/**)",
+      "Bash(git *)",
+      "Bash(npx remotion *)",
+      "Bash(npm *)",
+      "Bash(python3 scripts/*)",
+      "Bash(bash scripts/*)",
+      "Read"
     ]
   }
 }
