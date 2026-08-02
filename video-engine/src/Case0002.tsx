@@ -45,13 +45,15 @@
 import React from 'react';
 import {AbsoluteFill, Sequence, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {z} from 'zod';
-import {Ray, Dee, DEE_CRACK} from './lib/cast';
+import {Ray, Dee} from './lib/cast';
+import type {Emotion} from './lib/Character';
 import {Wordmark, CaseNumber, EndCard, Highlighter, Stamp, BRAND} from './lib/brand';
 import {MainStreetBG} from './lib/biomes';
 import {MachineShadow} from './lib/kit';
 import {NightGrade, GradeLayer} from './lib/lighting';
 import {CAPTIONS, speakerAt, TOTAL as TOTAL_S} from './case0002_captions';
 import {openAt, spreadAt} from './case0002_mouth';
+import {emotionAt} from './case0002_faces';
 
 export const case0002Schema = z.object({total: z.number().optional()});
 
@@ -234,8 +236,15 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
   const spr = spreadAt(frame);
   const rayIdle = who === 'RAY' ? 1 : 0.32;
   const deeIdle = who === 'DEE' ? 1 : 0.32;
-  const rayVoice = {mouth: rayMouth, mouthSpread: spr, idleGain: rayIdle};
-  const deeVoice = {mouth: deeMouth, mouthSpread: spr, idleGain: deeIdle};
+  /* Expression comes from the FACE TRACK, authored per line in the script and
+     compiled by scripts/gen_faces_ts.py. It used to be a per-SHOT constant set
+     here, which is why a nine second shot was a nine second face and why the
+     whole episode had three expression changes in fifty-two seconds. Do not put
+     `emotion=` back on a figure below; face_check.py exists to catch that. */
+  const rayFace = emotionAt('RAY', frame) as Emotion;
+  const deeFace = emotionAt('DEE', frame) as Emotion;
+  const rayVoice = {mouth: rayMouth, mouthSpread: spr, idleGain: rayIdle, emotion: rayFace};
+  const deeVoice = {mouth: deeMouth, mouthSpread: spr, idleGain: deeIdle, emotion: deeFace};
 
   /* The night street, lit only by what the scene DECLARES. NightGrade blooms
      only at registered sources by design, so the warm shop windows are the one
@@ -269,7 +278,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
       <Sequence from={at(CUT_ON[0])} durationInFrames={shot(0)}>
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
-          <Ray frame={frame} x={540} y={1470} scale={1.5} emotion="angry" pose="arms-crossed" {...rayVoice} />
+          <Ray frame={frame} x={540} y={1470} scale={1.5} pose="arms-crossed" {...rayVoice} />
         </Art>
         {night}
       </Sequence>
@@ -285,7 +294,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
       <Sequence from={at(CUT_ON[1])} durationInFrames={shot(1)}>
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
-          <Ray frame={frame} x={348} y={1486} scale={1.32} facing={1} emotion="angry"
+          <Ray frame={frame} x={348} y={1486} scale={1.32} facing={1}
                pose={frame >= at(2) ? 'point' : 'stand'} {...rayVoice} />
           <Dee frame={frame} x={744} y={1468} scale={1.3}
                pose={frame >= at(3) ? 'raise' : 'stand'} {...deeVoice} />
@@ -331,7 +340,6 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
           <Ray frame={frame} x={498} y={1858} scale={2.52}
-               emotion={frame >= at(6) ? 'shock' : 'angry'}
                pose={frame >= at(6) ? 'panic' : 'arms-crossed'} {...rayVoice} />
         </Art>
         {night}
@@ -344,10 +352,8 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
       <Sequence from={at(CUT_ON[4])} durationInFrames={shot(4)}>
         <Art frame={frame} rate={1}>{street}</Art>
         <Art frame={frame} rate={0.28}>
-          <Dee frame={frame} x={760} y={1606} scale={1.62} pose="raise"
-               emotion={frame < at(8) ? DEE_CRACK : 'neutral'} {...deeVoice} />
+          <Dee frame={frame} x={760} y={1606} scale={1.62} pose="raise" {...deeVoice} />
           <Ray frame={frame} x={318} y={1628} scale={1.7} facing={1}
-               emotion={frame >= at(8) ? 'smug' : 'angry'}
                pose={frame >= at(8) ? 'arms-crossed' : 'point'} {...rayVoice} />
         </Art>
         {night}
@@ -387,7 +393,7 @@ export const Case0002: React.FC<z.infer<typeof case0002Schema>> = () => {
           <MachineShadow x={540} y={1180} scale={3.1} f={frame} grow={1} />
         </Art>
         <Art frame={frame} rate={0.2}>
-          <Ray frame={frame} x={286} y={1742} scale={0.72} facing={1} emotion="angry" pose="stand" {...rayVoice} />
+          <Ray frame={frame} x={286} y={1742} scale={0.72} facing={1} pose="stand" {...rayVoice} />
           <Dee frame={frame} x={806} y={1734} scale={0.7} {...deeVoice} />
         </Art>
         {night}

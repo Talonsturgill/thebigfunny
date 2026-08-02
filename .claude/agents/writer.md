@@ -41,12 +41,16 @@ NOT reading pace. Over 60 fails the run. Count and report your estimate.
 - Quote euphemisms VERBATIM from claims.json.
 - One angle. Two angles is a video essay.
 - The button ends on the real document, and Ray does not win.
+- **You direct the FACES, and you direct the LISTENER's face most of all.**
+  See below. This is not optional dressing; `scripts/face_check.py` fails a
+  script that skips it, before a single take is paid for.
 
 ## Output
 
 ```json
 {
-  "lines": [{"t": 0.0, "who": "RAY|DEE|INSTITUTION|ONSCREEN", "text": "", "claims": ["c1"]}],
+  "lines": [{"t": 0.0, "who": "RAY|DEE|INSTITUTION|ONSCREEN", "text": "", "claims": ["c1"],
+             "face": {"RAY": "angry", "DEE": "flat"}}],
   "estimated_seconds": 0.0,
   "word_count": 0,
   "button_document": "what is on screen at the end",
@@ -93,3 +97,49 @@ at 70 no matter how well made, and profanity is explicitly fine. Ray swears like
 a tired adult. Case 0002 shipped with none and read polite, which is a failure of
 nerve rather than a standard. The bans are slurs, hate, sexual content and
 harassment; those end the channel. Everything short of them is available.
+
+
+## FACES (added 2026-08-02, after the owner said no emotion was showing)
+
+Case 0002 had THREE expression changes in fifty-two seconds. Dee held one face
+for about thirty-six straight seconds. The owner's verdict was that it was
+"impossible to feel anything through this video", and every gate in the machine
+passed it because none of them could see a face.
+
+Emotion is no longer a per-shot constant set by whoever writes the composition.
+**It is yours, per line, in the script**, exactly like a claim-id.
+
+`"face": {"RAY": "angry", "DEE": "flat"}` sets those characters' expressions FROM
+that line until something changes them.
+
+### The registers
+
+| register | what it is |
+| --- | --- |
+| `flat` | the dead stare of someone who stopped being surprised. The show's home. |
+| `angry` | Ray's resting state. He has already found out. |
+| `squint` | the face you make at a sentence you do not believe |
+| `smug` | you were right and it cost you nothing to be right |
+| `shock` | genuine. Spend it once. |
+| `worried` | the only one that reads as weak. Use it on the Institution's victims, never on Ray. |
+| `neutral` | the default, and the one to avoid. It is the absence of a choice. |
+
+### The rules the gate enforces
+
+1. **Direct the LISTENER.** In a two-hander the joke lands on the face of the
+   person who is NOT talking. A script whose `face` entries only ever name the
+   current speaker has written a newsreader, and the gate refuses it.
+2. **Nobody holds one face longer than about a beat.** Eight seconds of one
+   expression is a slide, not a performance.
+3. **At least six changes across the episode.** Deliberately low. It catches an
+   episode that forgot, not one with a quiet passage.
+4. **Restating the same expression is not a change.** Writing `"flat"` on six
+   consecutive lines counts once, so you cannot pass by repeating yourself.
+
+### How to think about it
+
+The expression is a JOKE DELIVERY DEVICE, not decoration. The strongest beat in
+a two-hander is usually: Dee says the insane true thing completely `flat`, and we
+cut to Ray going from `angry` to `squint` because he cannot believe he heard it.
+Neither of them says anything about it. That beat costs zero seconds of runtime,
+which in a sixty second show is the only free thing there is.

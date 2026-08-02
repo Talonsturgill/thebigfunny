@@ -43,13 +43,18 @@ export type Emotion =
  * far the upper lid comes down, browY = brow height offset.
  */
 const EYES: Record<Emotion, {ry: number; rx: number; pupil: number; lid: number; browY: number}> = {
+  // TUNED after looking at a frame: the first pass set smug/flat/squint so narrow
+  // (ry 5.2 to 7.2) that the eye closed around the pupil and the expression read
+  // as a BLINK rather than a mood, worst of all behind Dee's glasses. The pupil
+  // must stay visible in every register or the face is asleep, so narrowing is
+  // done with the LID coming down over an eye that stays open underneath.
   neutral: {ry: 11, rx: 9.5, pupil: 4.4, lid: 0, browY: 0},
-  angry:   {ry: 8.4, rx: 9.5, pupil: 4.8, lid: 3.4, browY: 3},
+  angry:   {ry: 9.6, rx: 9.5, pupil: 4.8, lid: 3.0, browY: 3},
   worried: {ry: 12.4, rx: 10.2, pupil: 3.9, lid: -1, browY: -3},
   shock:   {ry: 15, rx: 13, pupil: 3.4, lid: -3, browY: -14},
-  smug:    {ry: 6, rx: 9.5, pupil: 4.2, lid: 4.6, browY: -2},
-  flat:    {ry: 7.2, rx: 9.5, pupil: 4.4, lid: 5.2, browY: 1},
-  squint:  {ry: 5.2, rx: 8.6, pupil: 4.6, lid: 6.2, browY: 2},
+  smug:    {ry: 9.0, rx: 9.5, pupil: 4.2, lid: 4.2, browY: -2},
+  flat:    {ry: 10.0, rx: 9.5, pupil: 4.4, lid: 4.0, browY: 1},
+  squint:  {ry: 8.2, rx: 8.8, pupil: 4.6, lid: 5.0, browY: 2},
 };
 // Everyday Alaskan gear (deliberately NOT the fur-ruff parka, which reads as
 // Inupiat/Inuit-coded; the crowd must read as generic residents). 'parka' is kept

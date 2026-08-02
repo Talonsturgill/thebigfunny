@@ -285,6 +285,23 @@ Failing Gate 0 is cheap. Failing after a render is not.
    Dangling claim-ids, a line citing a CUT claim, and Ray absent from his own
    beat are arithmetic, and they were being eyeballed.
 
+5b. **GATE: `python3 scripts/face_check.py` must exit 0**, and generate the track:
+   `python3 scripts/gen_faces_ts.py --case N`
+
+   The script carries a `face` map per line and the writer authors it. Case 0002
+   had THREE expression changes in fifty-two seconds, Dee held one face for about
+   thirty-six straight seconds, and the owner said it was impossible to feel
+   anything. Every gate passed it, because none of them could see a face.
+
+   The gate refuses a face held longer than a beat, an episode with almost no
+   changes, and the one that matters: a script where only the SPEAKER is ever
+   directed, so nobody reacts to anything. In a two-hander the joke lands on the
+   face of the person who is NOT talking, and a reaction costs zero runtime,
+   which in a sixty second show is the only free thing there is.
+
+   The composition reads `emotionAt(who, frame)` from the generated track. Do NOT
+   set `emotion=` as a per-shot constant; that is the defect this replaced.
+
 6. Iterate on DRAFT renders: `bash scripts/render.sh draft`. Look at the frames.
    Three to five cheap passes beat one expensive one.
 

@@ -210,6 +210,15 @@ case "$MODE" in
           exit 1
         fi
       fi
+      # And the face track. Same class again: stale means the episode wears the
+      # PREVIOUS cut's expressions, which renders clean and is invisible to
+      # everything except a person watching.
+      if [[ -f "src/case$(printf '%04d' "$n")_faces.ts" && -f "../out/dispatch/script.json" ]]; then
+        if ! python3 ../scripts/gen_faces_ts.py --case "$n" --check; then
+          echo "render.sh: refusing to ship a final render against a stale face track." >&2
+          exit 1
+        fi
+      fi
     fi
     OUT="../out/dispatch/render/video_mute.mp4"; [[ -n "${3:-}" ]] && OUT="$(resolve_out "$3")"
     exec npx remotion render src/index.ts "$COMP" "$OUT" \

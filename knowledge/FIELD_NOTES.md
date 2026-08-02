@@ -299,3 +299,24 @@ body ACCENTS the voice and is otherwise still, and only the speaker moves. A
 listener that keeps swaying steals the eye and makes a two-shot unreadable. That
 is why `mouth` and `accent` are gated on `speakerAt()` and the listener's idle is
 damped rather than everyone being alive at once.
+
+### 2026-08-02: check the frame is not a BLINK before you judge a face
+
+While tuning per-emotion eyes I pulled a still of Dee on `smug`, saw two closed
+crescents, concluded the register was too narrow, and retuned the whole eye
+table. Then I computed her blink phase: `((f + 11 + floor(swayPhase*13)) % 92)`
+put frame 590 three frames into her five-frame closure. **I had tuned an
+expression from a frame that was not showing the expression.**
+
+The desync fix (per-figure blink phase, same day) makes this MORE likely, not
+less: figures used to blink in unison so a blink frame was obvious, and now one
+character can be mid-blink while the other is not, which looks exactly like an
+expression difference.
+
+So when judging a face from a still, compute the blink window first and pick a
+frame outside it, or pull two frames ten apart. "Look at the frames" is only
+worth anything if you looked at the right ones.
+
+(The retune was not wasted, as it happens: keeping the pupil visible in every
+register is correct on its own terms. But it was decided for the wrong reason,
+which is luck and not method.)
