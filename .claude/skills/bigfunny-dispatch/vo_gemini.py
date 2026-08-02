@@ -129,7 +129,8 @@ def synth(text, voice=None, style=None, direction=None):
     try:
         sys.path.insert(0, os.path.join(HERE, "..", "..", "..", "scripts"))
         import tts_budget
-        tts_budget.check(1)
+        tts_budget.check(1, model=MODEL)
+        tts_budget.throttle(MODEL)
     except ImportError:
         tts_budget = None
 

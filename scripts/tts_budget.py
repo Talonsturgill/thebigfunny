@@ -50,6 +50,20 @@ LEDGER = os.path.join(REPO, "ledger", "tts_spend.json")
 # https://aistudio.google.com/rate-limit and nowhere else. Preview TTS models are
 # capped far tighter than the stable text models. The next lever is Tier 2,
 # which requires $100 paid AND 3 days elapsed, so it cannot be bought same-day.
+# PER-MODEL, because that is how the provider counts. The first cut of this file
+# used one global daily number, which is wrong in both directions: it would
+# refuse a model with budget left because a different model was exhausted, and it
+# would authorise calls on a 50/day model using a 100/day allowance. Confirmed
+# from the account's own rate-limit dashboard 2026-08-02.
+MODEL_CAPS = {
+    "gemini-3.1-flash-tts-preview": {"rpd": 100, "rpm": 10},
+    "gemini-2.5-flash-preview-tts": {"rpd": 100, "rpm": 10},
+    "gemini-2.5-pro-preview-tts":   {"rpd": 50,  "rpm": 10},
+}
+# An unknown model is assumed to be the STRICTEST thing on the shelf, never the
+# most generous, so a new model id cannot quietly buy itself a bigger allowance.
+DEFAULT_CAP = {"rpd": 50, "rpm": 10}
+
 HARD_CAP = int(os.environ.get("BIGFUNNY_TTS_DAILY_CAP", "100"))
 # Stop here instead, so a run always keeps enough headroom to finish ONE clean
 # synthesis of a whole episode after whatever it has already spent. An episode
@@ -99,12 +113,74 @@ def _load():
         }
 
 
-def spent(day=None):
-    return int(_load()["days"].get(day or _today(), {}).get("calls", 0))
+def caps(model):
+    c = MODEL_CAPS.get(model, DEFAULT_CAP)
+    if model is None:
+        c = {"rpd": HARD_CAP, "rpm": 10}
+    return c
 
 
-def remaining(day=None):
-    return max(0, SOFT_CAP - spent(day))
+def spent(day=None, model=None):
+    """Calls today. Per MODEL when one is named, which is how the provider counts."""
+    rec = _load()["days"].get(day or _today(), {})
+    if model is None:
+        return int(rec.get("calls", 0))
+    return int(rec.get("by_model", {}).get(model, 0))
+
+
+def reserve_for(model):
+    """Hold back enough to synthesize one finished episode on THIS model."""
+    return min(RESERVE, max(0, caps(model)["rpd"] // 3))
+
+
+def remaining(day=None, model=None):
+    if model is None:
+        return max(0, SOFT_CAP - spent(day))
+    working = caps(model)["rpd"] - reserve_for(model)
+    return max(0, working - spent(day, model))
+
+
+def best_model_with_budget(preferred, day=None):
+    """The preferred model if it can pay, else any that can, else None.
+
+    Exists because on 2026-08-02 the 3.1 preview was exhausted at 105/100 while
+    2.5 Flash still had 54 calls, and the run stopped anyway because nothing knew
+    the limits were per model."""
+    if remaining(day, preferred) > 0:
+        return preferred
+    for m in sorted(MODEL_CAPS, key=lambda k: -remaining(day, k)):
+        if remaining(day, m) > 0:
+            return m
+    return None
+
+
+# --- RPM ------------------------------------------------------------------
+# Every TTS model here is 10 requests per MINUTE, and the dashboard showed the
+# 3.1 preview at 13/10, so this run was over the per-minute limit as well as the
+# daily one. Nothing in the code spaced its calls. A per-minute 429 looks exactly
+# like an exhausted quota and is not one, which is the worst kind of error to
+# read at 2am.
+_recent = []
+
+
+def throttle(model, sleep=True):
+    """Block until another call would be within the per-minute limit."""
+    import time
+    global _recent
+    rpm = caps(model)["rpm"]
+    now = time.monotonic()
+    _recent = [x for x in _recent if now - x < 60.0]
+    if len(_recent) >= rpm:
+        wait = 60.0 - (now - _recent[0]) + 0.25
+        if sleep and wait > 0:
+            print(f"  tts: {len(_recent)} calls in the last minute (limit {rpm}), "
+                  f"waiting {wait:.0f}s", flush=True)
+            time.sleep(wait)
+            now = time.monotonic()
+            _recent = [x for x in _recent if now - x < 60.0]
+        return wait
+    _recent.append(now)
+    return 0.0
 
 
 def record(model="unknown", n=1, day=None):
@@ -124,15 +200,16 @@ class BudgetExceeded(RuntimeError):
     pass
 
 
-def check(n=1, day=None):
+def check(n=1, day=None, model=None):
     """Raise BEFORE spending if this call would cross the reserve line."""
-    r = remaining(day)
+    r = remaining(day, model)
     if n > r:
         raise BudgetExceeded(
-            f"TTS budget: this would be call {spent(day) + n} of a {SOFT_CAP} "
-            f"working cap ({HARD_CAP} hard, {RESERVE} held back so a finished "
-            f"episode can always be synthesized).\n"
-            f"  spent today: {spent(day)}   remaining: {r}\n"
+            f"TTS budget: {model or 'global'} would go to "
+            f"{spent(day, model) + n} calls today.\n"
+            f"  cap {caps(model)['rpd']}/day, {reserve_for(model)} held back so a "
+            f"finished episode is always renderable.\n"
+            f"  spent on this model: {spent(day, model)}   remaining: {r}\n"
             f"  This is a REFUSAL, not an outage. Iterate the script against the "
             f"free gates (script_check, face_check, the funny critic) and "
             f"synthesize once. Raise BIGFUNNY_TTS_DAILY_CAP only if the account "
