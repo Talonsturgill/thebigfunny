@@ -63,16 +63,16 @@ Decisions already locked, do not relitigate:
 
 | # | Task | Note |
 | --- | --- | --- |
-| A | **Produce episode 1 end to end** | The only real test. Funny is the open question; everything above is scaffolding until one episode exists. |
-| B | Look-dev frame for Ray and Dee | `cast.tsx` typechecks but has never been rendered. Wrappers over a proven rig, so low risk, but unrendered is unproven. |
+| A | ~~**Produce episode 1 end to end**~~ | DONE 2026-08-02, case 0002. Shipped at 79.65 against a threshold of 78, merged to main in PR #4. 54.53s, 1080x1920, with audio. Funny scored 76 on the third cold read, carried by FACT, zero explaining lines. |
+| B | ~~Look-dev frame for Ray and Dee~~ | DONE 2026-08-02. Both rendered in anger across a whole episode. Worth noting the panel found Dee holds ONE pose in all seven appearances and never holds the document CAST_BIBLE assigns her, so Ray performs and Dee is composited. That is now the standing note for case 0003. |
 | C | Institution costume system | `MachineShadow` exists; the per-episode re-dressing (insurer/airline/HR livery) is designed, not built. |
 | D | `--self-test` for the funny gate | House rule: a gate that cannot fail certifies nothing. The funny gate is a MODEL judgement, so it cannot be self-tested the way render_gate and refs_check are. Open question: feed it a known-unfunny script and require a sub-60. |
-| G | Brand components never rendered | brand.tsx typechecks; the stamp overshoot, ink bleed and highlighter overshoot are unproven until a frame exists. |
+| G | ~~Brand components never rendered~~ | DONE 2026-08-02. All rendered. Rendering them found two real defects: the one-stamp rule was unenforceable because Wordmark and EndCard default to red, and Stamp's hardcoded multiply blend makes a pale wordmark invisible on a night frame. Both now take explicit props. |
 | E | Trigger config at claude.ai/code/routines | Schedule, model, connectors. Lives outside this repo. |
 | F | ~~VO voices for Ray and Dee~~ | DONE. `scripts/vo_cast.py` casts three Gemini voices (Algenib/Schedar/Despina) with per-character delivery direction. Needs `GEMINI_API_KEY` at run time; verified by `--dry-run` and `--self-test` only, never against the live API. |
-| H | Synthesize case 0001 for real | The casting layer has never made an API call. First run with a key is the proof. |
+| H | ~~Synthesize for real~~ | DONE 2026-08-02. The casting layer made real API calls for the first time, in three distinct voices. It immediately found that the static 3.6 w/s assumption is wrong by roughly 2x and varies per line, which produced `--fit` and the on-disk take cache. |
 
-## RUN 2026-08-02 — CASE No. 0002 (this is task A, in progress)
+## RUN 2026-08-02 — CASE No. 0002 (task A, DELIVERED)
 
 Appended live so the run survives context compaction. Resume from the table.
 
@@ -149,11 +149,11 @@ Fonts: explicit `fontWeight: 900` plus a stack naming an installed face.
 | 3.5 | Angle room, judge hard | DONE. RATIO survived; precedent and straight-face killed. |
 | 4 | Script, art direction, brand moves, the button | DONE |
 | 4.5 | Gate 0 storyboard-critic, before any scene code | DONE. FAILED with 6 blockers, all resolved. |
-| 5 | VO, scene code, drafts, final, mux, render_gate | IN PROGRESS |
+| 5 | VO, scene code, drafts, final, mux, render_gate | DONE. renders_clean PASS at 54.53s. |
 | 5b | caption.txt + first_comment.txt, caption_check | DONE, gate PASS |
-| 6 | Hard gates + panel, ship threshold 78 | IN PROGRESS |
-| 7 | runs/2026-08-02/, ledgers, commit, push, PR ready, MERGE | TODO |
-| 8 | Retro + upgrades on a SEPARATE branch off fresh main | TODO |
+| 6 | Hard gates + panel, ship threshold 78 | DONE. 79.65, ship true. All 8 hard gates pass. |
+| 7 | runs/2026-08-02/, ledgers, commit, push, PR ready, MERGE | DONE. PR #4 merged to main. Gmail draft written. |
+| 8 | Retro + upgrades on a SEPARATE branch off fresh main | IN PROGRESS on upgrade/2026-08-02. |
 
 ### The story, and what the gate killed
 
@@ -252,4 +252,29 @@ with three seconds to spare.
 - Cast code: `video-engine/src/lib/cast.tsx`, registered in `ASSET_MANIFEST.md`
 - Scar tissue: `knowledge/FIELD_NOTES.md`
 
-Delete this file when A through F are done.
+Delete this file when A through F are done. As of 2026-08-02: A, B, G and H are DONE.
+Still open: C (Institution costume system, still designed rather than built), D (a
+--self-test for the funny gate, which the Phase 8 engineer is looking at), and E
+(trigger config, which lives outside this repo).
+
+### How it scored, and the honest read
+
+Weighted **79.65** against a threshold of 78. funny 76, angle 79, ray 83,
+craft 81, button 87. All eight hard gates passed on inspection rather than
+assertion: the scorer walked every line to a VERIFIED claim, confirmed the CUT
+claim c11 appears nowhere in the script or on any card, and confirmed in the
+shipped frames that the Institution has no face.
+
+It clears by 1.65, which is thin. The scorer's diagnosis, which two other
+critics reached independently from different directions: the episode was built
+on the weaker half of its own story. The declared angle type is `ratio`, but the
+ratio is the inert half, because claims.json forbids subtracting the two counts,
+so the taxonomy's promise that the viewer does the math never cashes out. The
+funniest verified fact, that the only fix which exists is for the version with
+twenty-eight speakers, arrives as the fourth item in a data block at t=32, and
+Ray is consequently off screen for the middle third of a show whose premise is
+Ray finding out.
+
+**The lesson for case 0003, now in instincts.json:** pick the spine by asking
+which single VERIFIED fact is funniest, then build the episode to arrive at it.
+Do not pick an angle TYPE first and fit the facts to it.

@@ -1,0 +1,261 @@
+#!/usr/bin/env python3
+"""script_check.py: Gate 0's mechanical half. Run it on the script, before any
+scene code exists.
+
+WHY THIS EXISTS
+
+Gate 0 is seven prose bullets judged by a model. Two of them are arithmetic and
+were being judged by eye, and both got through on case 0002:
+
+1. **The claim-ids.** The `sourced` hard gate says every factual line traces to a
+   verified claim. Nothing checked that the ids in the script actually RESOLVE,
+   or that the claim they resolve to was not CUT by the fact-checker. Case 0002
+   cut claim c11 (the record never says the 28 speakers failed) and the only
+   thing standing between that cut claim and the script was a paragraph in a
+   WORKLOG. Prose does not bind a script. A dangling id is a line with no
+   source; a CUT id is worse, because it is a line the fact-checker already
+   killed. Both are the failure that ends a channel, and both are one `in` away
+   from being impossible.
+
+2. **Ray's cadence.** CAST_BIBLE: "Every episode is, structurally, Ray finding
+   out", and its five-beat table gives him 20-40s, the beat literally named "Ray
+   finds out. The show." Case 0002 shipped with Ray silent for 27.9 seconds and
+   with NO Ray line anywhere in the middle third. The flow critic and the scorer
+   both found it, and both found it AFTER a full-res render and a panel round.
+   It is two subtractions on a JSON file. It belongs at Gate 0, where the fix is
+   free.
+
+This deliberately does NOT re-check what vo_cast.py already checks (casting,
+overlap, the Institution's line budget, the 60s law). Two gates enforcing one
+rule drift apart; that is how build_scenes.py's TAIL and the routine's ceiling
+got out of sync once already.
+
+  python3 scripts/script_check.py                     # out/dispatch/{script,claims}.json
+  python3 scripts/script_check.py --script X --claims Y
+  python3 scripts/script_check.py --self-test         # prove it can go red
+
+Exit 0 pass, 1 fail.
+"""
+
+import argparse
+import json
+import os
+import sys
+
+REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+OUT = os.path.join(REPO, "out", "dispatch")
+
+# Ray may not be gone longer than one whole named beat of the five-beat shape in
+# CAST_BIBLE.md (the beats are 5 to 20 seconds wide). Calibrated against the two
+# scripts that exist: case 0001's longest Ray gap is 11.4s and reads fine; case
+# 0002's is 27.9s and both the flow critic and the scorer called it out.
+MAX_RAY_GAP_S = 20.0
+
+# Anything the fact-checker did not leave standing. Case 0002's claims.json uses
+# `status`, case 0001's used `ruling`; accept either rather than force one
+# schema on a file the fact-checker writes.
+STATUS_FIELDS = ("status", "ruling", "verdict", "state")
+NOT_USABLE = ("cut", "kill", "reject", "unverified", "unproven", "fail", "drop")
+
+
+def load(path):
+    return json.load(open(path))
+
+
+def claim_index(claims_doc):
+    """id -> claim, for whichever shape the fact-checker wrote."""
+    claims = claims_doc.get("claims", claims_doc) if isinstance(claims_doc, dict) else claims_doc
+    return {c["id"]: c for c in claims if isinstance(c, dict) and "id" in c}
+
+
+def claim_is_cut(claim):
+    for f in STATUS_FIELDS:
+        v = claim.get(f)
+        if isinstance(v, str) and any(w in v.lower() for w in NOT_USABLE):
+            return v
+    return None
+
+
+def spans(lines):
+    """[(t, end, who)]. A line runs until the next line starts. Pre-VO there are
+    no durations, so this is the only honest span available, and it is the same
+    assumption the storyboard is cut to."""
+    ordered = sorted(lines, key=lambda l: l["t"])
+    out = []
+    for i, l in enumerate(ordered):
+        end = ordered[i + 1]["t"] if i + 1 < len(ordered) else None
+        out.append((l["t"], end, l["who"]))
+    return out
+
+
+def check(script, claims_doc):
+    """The guards. Returns [(name, ok, detail)]."""
+    rows = []
+
+    def row(n, ok, d):
+        rows.append((n, ok, d))
+        return ok
+
+    lines = script["lines"]
+    idx = claim_index(claims_doc)
+
+    cited = [(l, c) for l in lines for c in l.get("claims", [])]
+    dangling = sorted({c for _, c in cited if c not in idx})
+    row("every claim-id resolves in claims.json", not dangling,
+        f"{len(dangling)} dangling: {dangling[:4]}" if dangling
+        else f"{len({c for _, c in cited})} distinct id(s), all found")
+
+    cut = sorted({f"{c}({claim_is_cut(idx[c])})" for _, c in cited
+                  if c in idx and claim_is_cut(idx[c])})
+    row("no line cites a claim the fact-checker cut", not cut,
+        f"{len(cut)} cut: {cut[:4]}" if cut else "clean")
+
+    est = float(script.get("estimated_seconds") or 0.0)
+    ray = [(t, end if end is not None else est) for t, end, who in spans(lines)
+           if who == "RAY"]
+
+    # Longest stretch with no Ray in it, counting the head (does the show open
+    # without him) and the tail (does he get the last word).
+    if ray:
+        starts = [t for t, _ in ray]
+        gaps = [(starts[0], 0.0)] + [(starts[i + 1] - starts[i], starts[i])
+                                     for i in range(len(starts) - 1)]
+        gaps += [(max(0.0, est - starts[-1]), starts[-1])]
+        worst, at = max(gaps)
+    else:
+        worst, at = est, 0.0
+    row(f"Ray is never gone longer than {MAX_RAY_GAP_S}s",
+        worst <= MAX_RAY_GAP_S,
+        f"longest silence {worst:.1f}s from {at:.1f}s"
+        + ("" if worst <= MAX_RAY_GAP_S else "  <- give him a line inside it"))
+
+    # The middle third is the beat CAST_BIBLE names "Ray finds out. The show."
+    # Proportional rather than a literal 20-40 window so it holds for a 45s
+    # episode as well as a 58s one.
+    lo, hi = est / 3.0, est * 2.0 / 3.0
+    inside = [t for t, e in ray if t < hi and e > lo]
+    row("Ray speaks in the middle third", bool(inside),
+        f"{len(inside)} line(s) in {lo:.1f}-{hi:.1f}s" if inside
+        else f"NONE in {lo:.1f}-{hi:.1f}s, the beat named 'Ray finds out'")
+    return rows
+
+
+def run(script_path, claims_path):
+    script = load(script_path)
+    claims_doc = load(claims_path)
+    rows = check(script, claims_doc)
+    for n, ok, d in rows:
+        print(f"  {'ok  ' if ok else 'FAIL'} {n:<44} {d}")
+    if all(o for _, o, _ in rows):
+        print("\nscript_check: Gate 0's mechanical half is clean.")
+        return 0
+    print("\nscript_check: FAIL. Fix the SCRIPT, not this file. Gate 0 is the "
+          "cheap save;\n              the same fix after a render costs a full "
+          "render.")
+    return 1
+
+
+def self_test():
+    """Prove every guard fires, and that a good script still passes.
+
+    Each case names the guard it is supposed to trip, and the fixture is built so
+    that ONLY that guard trips. "Some row went red" is not a test: the first cut
+    of this self-test asserted exactly that, and disabling the Ray-gap guard
+    entirely still printed all green, because the same fixture also had no Ray in
+    the middle third and the neighbouring guard covered for the dead one. A
+    self-test that cannot isolate cannot detect a broken guard, which is the
+    same "gate that cannot fail" trap one level up.
+    """
+    claims = {"claims": [
+        {"id": "c1", "status": "VERIFIED"},
+        {"id": "c2", "status": "VERIFIED"},
+        {"id": "c3", "status": "CUT"},
+    ]}
+
+    def script(lines, est=54.0):
+        return {"estimated_seconds": est, "lines": lines}
+
+    good = script([
+        {"t": 0.0, "who": "RAY", "text": "The fact.", "claims": ["c1"]},
+        {"t": 6.0, "who": "DEE", "text": "The detail.", "claims": ["c2"]},
+        {"t": 14.0, "who": "RAY", "text": "So fix it.", "claims": []},
+        {"t": 22.0, "who": "DEE", "text": "They did.", "claims": ["c2"]},
+        {"t": 30.0, "who": "RAY", "text": "The verdict.", "claims": []},
+        {"t": 40.0, "who": "INSTITUTION", "text": "We value you.", "claims": ["c1"]},
+        {"t": 50.0, "who": "RAY", "text": "The button.", "claims": []},
+    ])
+
+    cases = [
+        ("a claim-id that resolves to nothing", "resolves",
+         script([dict(good["lines"][0], claims=["c9"])] + good["lines"][1:])),
+        ("a line citing a claim the fact-checker CUT", "cut",
+         script([dict(good["lines"][0], claims=["c3"])] + good["lines"][1:])),
+        # Ray IS in the middle third here (22.0-28.0 against 18.0-36.0), so only
+        # the gap guard can catch the 22s hole between his lines.
+        ("Ray gone longer than one whole beat", "never gone longer",
+         script([{"t": 0.0, "who": "RAY", "text": "The fact.", "claims": ["c1"]},
+                 {"t": 5.0, "who": "DEE", "text": "block", "claims": ["c2"]},
+                 {"t": 22.0, "who": "RAY", "text": "the middle", "claims": []},
+                 {"t": 28.0, "who": "DEE", "text": "block", "claims": ["c2"]},
+                 {"t": 40.0, "who": "RAY", "text": "back", "claims": []},
+                 {"t": 50.0, "who": "RAY", "text": "the button", "claims": []}])),
+        # Every Ray gap here is 18s or under, so only the middle-third guard can
+        # catch him stepping around the beat named after him (15.0-30.0).
+        ("Ray absent from the middle third", "middle third",
+         script([{"t": 0.0, "who": "RAY", "text": "The fact.", "claims": ["c1"]},
+                 {"t": 5.0, "who": "DEE", "text": "block", "claims": ["c2"]},
+                 {"t": 13.0, "who": "RAY", "text": "So fix it.", "claims": []},
+                 {"t": 14.5, "who": "DEE", "text": "block", "claims": ["c2"]},
+                 {"t": 24.0, "who": "DEE", "text": "block", "claims": ["c2"]},
+                 {"t": 31.0, "who": "RAY", "text": "back", "claims": []},
+                 {"t": 40.0, "who": "RAY", "text": "the button", "claims": []}],
+                est=45.0)),
+        # The one case that is legitimately not isolable: a script with no Ray in
+        # it fails both Ray guards by definition, so it declares both.
+        ("a script with no Ray in it at all", "never gone longer|middle third",
+         script([{"t": 0.0, "who": "DEE", "text": "All mine.", "claims": ["c1"]},
+                 {"t": 30.0, "who": "INSTITUTION", "text": "Ours.", "claims": ["c2"]}])),
+    ]
+
+    ok = True
+    for name, guards, s in cases:
+        want = guards.split("|")
+        rows = check(s, claims)
+        missed = [g for g in want
+                  if not any(g in n and not o for n, o, _ in rows)]
+        others = [n for n, o, _ in rows
+                  if not o and not any(g in n for g in want)]
+        good_case = not missed and not others
+        print(f"  {'ok  ' if good_case else 'FAIL'} catches: {name}"
+              + (f"   <- did NOT fire: {missed}" if missed else "")
+              + (f"   <- not isolated, also fired: {others}" if others else ""))
+        ok &= good_case
+
+    rows = check(good, claims)
+    clean = all(o for _, o, _ in rows)
+    if not clean:
+        for n, o, d in rows:
+            if not o:
+                print(f"       (good script tripped '{n}': {d})")
+    print(f"  {'ok  ' if clean else 'FAIL'} accepts: a well-formed script")
+    ok &= clean
+
+    print("\nself-test: " + ("both directions correct, as designed"
+                             if ok else "THE GATE IS WRONG"))
+    return 0 if ok else 1
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--script", help="default out/dispatch/script.json")
+    ap.add_argument("--claims", help="default out/dispatch/claims.json")
+    ap.add_argument("--self-test", action="store_true")
+    a = ap.parse_args()
+    if a.self_test:
+        return self_test()
+    return run(a.script or os.path.join(OUT, "script.json"),
+               a.claims or os.path.join(OUT, "claims.json"))
+
+
+if __name__ == "__main__":
+    sys.exit(main())

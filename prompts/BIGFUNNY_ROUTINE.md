@@ -178,10 +178,24 @@ Write `out/dispatch/storyboard.json` (beats, shots, assets per shot), then
 spawn `storyboard-critic` on it. This is the cheap save; a board fixed here
 is free and the same fix after a full-res render is not.
 
+Run the mechanical half first, because it is free and it does not need a model:
+
+```
+python3 scripts/script_check.py     # out/dispatch/{script,claims}.json
+```
+
+It hard-fails a claim-id that resolves to nothing, a line citing a claim the
+fact-checker CUT, Ray gone for longer than one whole beat, and Ray absent from
+the middle third (the beat CAST_BIBLE names "Ray finds out. The show."). Case
+0002 shipped with Ray silent for 27.9 seconds; the flow critic and the scorer
+both found it, and both found it after a full-res render and a panel round.
+
 Do not render until all of these are true:
-- Script is <= 56 seconds at delivery pace. The render adds a 1.5s
-  tail, and build_scenes.py hard-fails above 60.0s total, so 56 leaves
-  room. Do not push to the arithmetic limit.
+- Script is <= 56 seconds at delivery pace. The render adds a 1.5s tail and the
+  60.0s law is hard, so 56 leaves room. Do not push to the arithmetic limit.
+  This number is an ESTIMATE until `vo_cast.py --fit` measures the real takes,
+  and --fit will move your line times, so treat any `t` in the storyboard as
+  provisional until it has run.
 - Every factual line has a claim-id in `claims.json`
 - The angle is one sentence and maps to a named type
 - The Institution has no face anywhere in the storyboard
@@ -189,26 +203,75 @@ Do not render until all of these are true:
 - Every asset in the storyboard exists in `ASSET_MANIFEST.md` or is explicitly
   scheduled to be built and registered
 - The button document is chosen and legible
+- **Nothing in the PICTURE asserts a claim that was cut.** A prose guard does
+  not bind a storyboard. Case 0002 cut "the 28 speakers failed" and the board
+  still drew a lone "28 SPEAKERS" badge on the broken part, which teaches the
+  viewer exactly the cut claim. Draw the rule, not the part.
 
 Failing Gate 0 is cheap. Failing after a render is not.
 
 ## PHASE 5: BUILD
 
-1. Build the VO: `python3 scripts/vo_cast.py`. It casts THREE distinct Gemini
-   voices, one per character, and carries each character's delivery direction
-   from `CAST_BIBLE.md` into the synthesis as a style instruction. Needs
-   `GEMINI_API_KEY`. Run `--dry-run` first; it checks casting and timing with no
-   API calls and no spend.
+1. Build the VO, and take the timings from the TAKES:
 
-   Line timings come from the SCRIPT, not from the audio, and the storyboard is
-   cut to the same numbers, so the picture cannot drift from the words. If a
-   take overruns its slot the run FAILS rather than sliding everything after it.
-   Cut the line instead.
+   ```
+   python3 scripts/vo_cast.py --dry-run   # casting + shape. No API calls, no spend.
+   python3 scripts/vo_cast.py --fit       # synthesize once (cached), MEASURE, freeze
+   python3 scripts/vo_cast.py             # vo.wav + vo_lines.json + captions.json
+   ```
+
+   It casts THREE distinct Gemini voices, one per character, and carries each
+   character's delivery direction from `CAST_BIBLE.md` into the synthesis as a
+   style instruction. Needs `GEMINI_API_KEY`.
+
+   **`--fit` is not an optimisation, use it.** The dry run's timing check assumes
+   3.6 words per second. Measured delivery on this cast is 1.85 to 2.81 and it
+   varies BY LINE, because a full stop mid-line buys a pause no word count can
+   see. Case 0002 found that out when Ray's opening line needed 7.33s in a 4.20s
+   slot, AFTER the take was paid for, and guessing does not converge because
+   every edit changes the rate. `--fit` synthesizes each line once, caches it on
+   disk by (voice, style, text), lays the timeline out from the REAL durations
+   and writes the frozen numbers back into `script.json`. Iterating on the script
+   after that is free; unchanged lines are cache hits.
+
+   Line timings still come from the SCRIPT, not from the audio, and the
+   storyboard is cut to those same numbers, so the picture cannot drift from the
+   words. --fit sets those numbers ONCE with the facts in hand instead of
+   guessing them. If a take overruns its slot the run FAILS rather than sliding
+   everything after it. Cut the line instead.
 2. Force-align captions to the VO audio. Captions are burned in and must track
    the spoken word, because the show is watched muted more often than not.
-3. Scene code in `video-engine/src/`. Compose from `src/lib/`.
+3. Scene code in `video-engine/src/`, composed from `src/lib/`, registered as a
+   `<Composition>` in `src/Root.tsx`.
+
+   **There are two build paths and they are not interchangeable:**
+
+   - **Self-timed `CaseNNNN.tsx`. This is what the show ships.** Case0001 and
+     Case0002 both work this way: the composition's Sequences carry their own
+     frame numbers, taken from the frozen script times `--fit` wrote. There is no
+     `episode_props.json`, so `render.sh` omits `--props`, `build_scenes.py` is
+     never run, and its `SCENE_START_LINE` is never consulted. Do not go and fix
+     a stale SCENE_START_LINE for an episode on this path. It is not in the
+     chain, and Gate 0 raised it as a blocker on case 0002 for nothing.
+   - **Generic `Episode.tsx` plus props.** Only if you are driving the shared
+     Episode component instead of writing a case composition. Then
+     `python3 scripts/build_scenes.py` writes `out/dispatch/episode_props.json`
+     from the VO timings, and `SCENE_START_LINE` must have exactly as many
+     entries as `SCENE_COMPONENTS` in Episode.tsx. It hard-fails on that mismatch
+     (Episode falls back to DEFAULT_BOUNDS silently otherwise) and on a total
+     over 60.0s.
+
+   CLAUDE.md's Engine quickstart describes only the second path. This section is
+   authoritative.
 4. Iterate on DRAFT renders: `bash scripts/render.sh draft`. Look, fix, repeat.
    Three to five cheap passes beat one expensive one.
+
+   With no composition argument, render.sh renders the highest-numbered CaseNNNN
+   registered in `Root.tsx` and PRINTS the one it chose. Read that line. It used
+   to be hardcoded to Case0001, which meant the command written above would have
+   rendered the PREVIOUS episode's picture and passed every objective gate while
+   doing it. Name a composition explicitly (`render.sh draft Case0003`) whenever
+   you mean something other than this episode.
 5. `bash scripts/render.sh final` only when the draft is right.
 6. `bash scripts/mux_and_verify.sh` for audio mux and integrity.
 7. `python3 scripts/render_gate.py <final.mp4>` — the OBJECTIVE renders_clean
