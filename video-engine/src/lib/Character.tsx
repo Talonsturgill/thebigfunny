@@ -22,7 +22,35 @@ import {TalkMouth, ambientMouth} from './voice';
 export const INK = '#101423';
 
 export type Pose = 'stand' | 'arms-crossed' | 'point' | 'panic' | 'raise';
-export type Emotion = 'neutral' | 'angry' | 'worried' | 'shock' | 'smug';
+export type Emotion =
+  | 'neutral' | 'angry' | 'worried' | 'shock' | 'smug'
+  // Added 2026-08-02. The two faces this show needs most and did not have.
+  // 'flat' is the dead-eyed stare of someone who has stopped being surprised,
+  // which is the register the whole cast lives in. 'squint' is suspicion: the
+  // face you make at a sentence you do not believe.
+  | 'flat' | 'squint';
+
+/**
+ * PER-EMOTION EYE GEOMETRY.
+ *
+ * This was five inline ternaries that only ever tested 'shock' and 'smug', so
+ * 'angry', 'worried' and 'neutral' rendered an IDENTICAL eye and three of the
+ * five expressions differed by a brow and a mouth curve alone. At the size a
+ * face occupies here that is not enough to read, which is most of why the owner
+ * said no emotion was showing (2026-08-02).
+ *
+ * ry = eyelid opening, pupil = how much of the eye the pupil fills, lid = how
+ * far the upper lid comes down, browY = brow height offset.
+ */
+const EYES: Record<Emotion, {ry: number; rx: number; pupil: number; lid: number; browY: number}> = {
+  neutral: {ry: 11, rx: 9.5, pupil: 4.4, lid: 0, browY: 0},
+  angry:   {ry: 8.4, rx: 9.5, pupil: 4.8, lid: 3.4, browY: 3},
+  worried: {ry: 12.4, rx: 10.2, pupil: 3.9, lid: -1, browY: -3},
+  shock:   {ry: 15, rx: 13, pupil: 3.4, lid: -3, browY: -14},
+  smug:    {ry: 6, rx: 9.5, pupil: 4.2, lid: 4.6, browY: -2},
+  flat:    {ry: 7.2, rx: 9.5, pupil: 4.4, lid: 5.2, browY: 1},
+  squint:  {ry: 5.2, rx: 8.6, pupil: 4.6, lid: 6.2, browY: 2},
+};
 // Everyday Alaskan gear (deliberately NOT the fur-ruff parka, which reads as
 // Inupiat/Inuit-coded; the crowd must read as generic residents). 'parka' is kept
 // for legacy scenes but new crowds use puffer/flannel/vest + varied headgear.
@@ -186,7 +214,8 @@ export const Character: React.FC<CharacterProps> = ({
 
   // ---- face per emotion --------------------------------------------------
   const face = () => {
-    const browY = emotion === 'shock' ? -14 : 0;
+    const E = EYES[emotion] ?? EYES.neutral;
+    const browY = E.browY;
     return (
       <g>
         {/* eyes */}
@@ -197,14 +226,22 @@ export const Character: React.FC<CharacterProps> = ({
           </g>
         ) : (
           <g>
-            <ellipse cx={-17} cy={-14} rx={emotion === 'shock' ? 13 : 9.5} ry={emotion === 'smug' ? 6 : emotion === 'shock' ? 15 : 11} fill="#fff" stroke={INK} strokeWidth={4.5} />
-            <ellipse cx={19} cy={-14} rx={emotion === 'shock' ? 13 : 9.5} ry={emotion === 'smug' ? 6 : emotion === 'shock' ? 15 : 11} fill="#fff" stroke={INK} strokeWidth={4.5} />
+            <ellipse cx={-17} cy={-14} rx={E.rx} ry={E.ry} fill="#fff" stroke={INK} strokeWidth={4.5} />
+            <ellipse cx={19} cy={-14} rx={E.rx} ry={E.ry} fill="#fff" stroke={INK} strokeWidth={4.5} />
             {/* iris (2026-07-21 parity pass): a colored ring under the pupil so the eyes read as
                 designed EYES, not ink dots — the single cheapest "finish parity" win on the face */}
-            <circle cx={-15 + 2 * facing} cy={-13} r={emotion === 'shock' ? 5.2 : 6.6} fill={eyes} opacity={0.95} />
-            <circle cx={21 + 2 * facing} cy={-13} r={emotion === 'shock' ? 5.2 : 6.6} fill={eyes} opacity={0.95} />
-            <circle cx={-15 + 2 * facing} cy={-13} r={emotion === 'shock' ? 3.4 : 4.4} fill={INK} />
-            <circle cx={21 + 2 * facing} cy={-13} r={emotion === 'shock' ? 3.4 : 4.4} fill={INK} />
+            <circle cx={-15 + 2 * facing} cy={-13} r={E.pupil * 1.5} fill={eyes} opacity={0.95} />
+            <circle cx={21 + 2 * facing} cy={-13} r={E.pupil * 1.5} fill={eyes} opacity={0.95} />
+            <circle cx={-15 + 2 * facing} cy={-13} r={E.pupil} fill={INK} />
+            <circle cx={21 + 2 * facing} cy={-13} r={E.pupil} fill={INK} />
+            {/* upper lid coming DOWN over the eye. A heavy lid is most of what
+                separates bored from alert, and nothing here had one. */}
+            {E.lid > 0 && (
+              <g>
+                <path d={`M${-17 - E.rx},${-14 - E.ry + E.lid} a${E.rx},${E.ry} 0 0 1 ${E.rx * 2},0 Z`} fill={skinShade} stroke="none" />
+                <path d={`M${19 - E.rx},${-14 - E.ry + E.lid} a${E.rx},${E.ry} 0 0 1 ${E.rx * 2},0 Z`} fill={skinShade} stroke="none" />
+              </g>
+            )}
             {/* upper eyelid line — the eye sits under a lid, not floating on the face */}
             <path d="M-26,-22 q9,-6 18,-2" stroke={INK} strokeWidth={2.8} opacity={0.35} fill="none" strokeLinecap="round" />
             <path d="M10,-24 q9,-4 18,0" stroke={INK} strokeWidth={2.8} opacity={0.35} fill="none" strokeLinecap="round" />
@@ -244,6 +281,20 @@ export const Character: React.FC<CharacterProps> = ({
             <path d="M29,-29 q-10,-4 -20,-1" stroke={INK} strokeWidth={6} strokeLinecap="round" fill="none" />
           </g>
         )}
+        {/* flat: brows dead level. Nothing is happening behind this face. */}
+        {emotion === 'flat' && (
+          <g transform={`translate(0,${browY})`}>
+            <path d="M-29,-27 L-7,-27" stroke={INK} strokeWidth={6} strokeLinecap="round" />
+            <path d="M31,-27 L9,-27" stroke={INK} strokeWidth={6} strokeLinecap="round" />
+          </g>
+        )}
+        {/* squint: one brow down and in, the other holding. Disbelief. */}
+        {emotion === 'squint' && (
+          <g transform={`translate(0,${browY})`}>
+            <path d="M-30,-31 L-7,-25" stroke={INK} strokeWidth={7} strokeLinecap="round" />
+            <path d="M31,-27 q-11,-5 -22,-1" stroke={INK} strokeWidth={6} strokeLinecap="round" fill="none" />
+          </g>
+        )}
         {/* nose (2026-07-21 parity pass): a small drawn nose over the round-9 plane shading, so the
             face has actual features between the eyes and mouth — kept light so the friendly house
             face survives, but no longer a featureless oval */}
@@ -267,7 +318,7 @@ export const Character: React.FC<CharacterProps> = ({
                 the voiceover) */}
             <TalkMouth openness={mouth !== undefined ? mouth : (ambientMouth(talking, f, swayPhase) ?? 0)}
                        spread={mouthSpread} w={36} ink={INK}
-                       mood={emotion === 'angry' || emotion === 'worried' ? 'frown' : emotion === 'smug' ? 'smile' : 'neutral'} />
+                       mood={emotion === 'angry' || emotion === 'worried' || emotion === 'squint' ? 'frown' : emotion === 'smug' ? 'smile' : 'neutral'} />
           </g>
         ) : (
           <>
@@ -276,6 +327,8 @@ export const Character: React.FC<CharacterProps> = ({
             {emotion === 'shock' && <ellipse cx={2} cy={18} rx={12} ry={16} fill="#7a2f2f" stroke={INK} strokeWidth={5} />}
             {emotion === 'smug' && <path d="M-12,12 q16,10 30,-4" fill="none" stroke={INK} strokeWidth={6} strokeLinecap="round" />}
             {emotion === 'neutral' && <path d="M-10,14 q12,6 24,0" fill="none" stroke={INK} strokeWidth={6} strokeLinecap="round" />}
+            {emotion === 'flat' && <path d="M-12,15 L14,15" fill="none" stroke={INK} strokeWidth={6} strokeLinecap="round" />}
+            {emotion === 'squint' && <path d="M-11,16 q13,-3 25,-5" fill="none" stroke={INK} strokeWidth={6} strokeLinecap="round" />}
           </>
         )}
         {/* worried/angry sweat drop */}
