@@ -466,10 +466,10 @@ export const Figure: React.FC<FigureProps> = ({
         {[-1, 1].map((sd) => (
           sex === 'f' ? (
             <path key={sd}
-                  d={`M${sd * (s.eyeX - 12)},${browY + 3}
-                      Q${sd * (s.eyeX - 2)},${browY - 4} ${sd * (s.eyeX + 8)},${browY - 2.5}
-                      L${sd * (s.eyeX + 13)},${browY - 0.5}
-                      Q${sd * (s.eyeX + 2)},${browY - 0.5} ${sd * (s.eyeX - 12)},${browY + 4.6} Z`}
+                  d={`M${sd * (s.eyeX - 12)},${browY + 0.5}
+                      Q${sd * (s.eyeX - 1)},${browY - 3.2} ${sd * (s.eyeX + 9)},${browY - 2.2}
+                      L${sd * (s.eyeX + 13)},${browY - 0.8}
+                      Q${sd * (s.eyeX + 1)},${browY - 0.2} ${sd * (s.eyeX - 12)},${browY + 2.4} Z`}
                   fill="#241a18" transform={`rotate(${sd * E.browTilt} ${sd * s.eyeX} ${browY})`} />
           ) : (
             <path key={sd}
