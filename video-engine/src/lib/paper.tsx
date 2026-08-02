@@ -74,10 +74,22 @@ export const PaperFiber: React.FC<{id: string; rule?: boolean; ruleColor?: strin
  */
 export const Sheet: React.FC<{
   x: number; y: number; w: number; h: number; fill?: string; rot?: number;
-  curl?: number; fiber?: string; children?: React.ReactNode;
-}> = ({x, y, w, h, fill = PAPER.front, rot = 0, curl = 0, fiber, children}) => (
+  curl?: number; fiber?: string;
+  /** Drop-shadow offset in px. Omit for the proportional default. */
+  shadow?: number;
+  children?: React.ReactNode;
+}> = ({x, y, w, h, fill = PAPER.front, rot = 0, curl = 0, fiber, shadow, children}) => (
   <g transform={`translate(${x},${y}) rotate(${rot})`}>
-    <rect x={4} y={6} width={w} height={h} fill={INK} opacity={0.22} />
+    {/* THE DROP SHADOW SCALES WITH THE SHEET. It was a fixed x=4 y=6 offset at
+        opacity 0.22 regardless of w and h, so at card scale it sat entirely
+        under the sheet and was invisible, and at wall scale it was a hairline.
+        ASSET_MANIFEST listed this as a castability gap: the shadow is the only
+        thing making paper read as a solid, and it silently stopped doing that
+        outside one size. It is now proportional, with a floor so a small sheet
+        keeps a visible edge, and `shadow` overrides it for a shot that wants a
+        harder or softer cast. */}
+    <rect x={shadow ?? Math.max(4, w * 0.012)} y={shadow ?? Math.max(6, h * 0.014)}
+          width={w} height={h} fill={INK} opacity={0.22} />
     <rect x={0} y={0} width={w} height={h} fill={fill} stroke={INK} strokeWidth={2} />
     {fiber && <rect x={0} y={0} width={w} height={h} fill={`url(#${fiber})`} />}
     {curl > 0 && (
@@ -202,7 +214,7 @@ export const TaperedCone: React.FC<{
   tint?: string; rim?: string; rings?: number;
 }> = ({x, y, mouthW, stemW, len, tint = PAPER.hero, rim = PAPER.brass, rings = 4}) => {
   const t = tones(tint);
-  const id = `cone${Math.round(x)}_${Math.round(y)}_${Math.round(mouthW)}`;
+  const id = `cone${React.useId().replace(/:/g, '')}`;
   // PASS 2 (2026-07-26, panel hard blocker). Pass 1 drew a dark ellipse at FULL mouth
   // width on top of the body, so the whole cone read as a black satellite dish. That is
   // the exact lollipop failure the 2026-07-25 SeismicStation horn hit and that the art
@@ -271,7 +283,7 @@ export const StateLetter: React.FC<{
   const o = Math.max(0, Math.min(1, open));
   const hes = o < 0.55 ? o * 0.8 : 0.44 + (o - 0.55) * 1.24;
   const t = tones(PAPER.front);
-  const id = `ltr${Math.round(x)}_${Math.round(y)}`;
+  const id = `ltr${React.useId().replace(/:/g, '')}`;
   return (
     <g transform={`translate(${x},${y + v.bob * 0.5}) scale(${scale}) rotate(${v.tilt * 0.3})`}>
       <FormGradient id={id} t={t} />

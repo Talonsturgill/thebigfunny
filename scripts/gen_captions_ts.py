@@ -29,6 +29,11 @@ import os
 import re
 import sys
 
+# scripts/ on the path, so `captions_text` resolves however this file is
+# invoked. It is imported for strip_tags: ONE definition of what a viewer
+# is allowed to read.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 OUT = os.path.join(REPO, "out", "dispatch")
 SRC = os.path.join(REPO, "video-engine", "src")
@@ -69,10 +74,7 @@ export const speakerAt = (t: number): string | null => {{
 '''
 
 
-def strip_tags(t):
-    """Performance markup is direction for the voice model, never dialogue. It
-    must not reach the screen; the same strip lives in vo_cast.cues()."""
-    return re.sub(r"\s*\[[^\]]{1,20}\]\s*", " ", t).strip()
+from captions_text import strip_tags   # ONE definition; see that module
 
 
 def ts_str(s):
@@ -90,6 +92,18 @@ def render(lines, case, name, tail=TAIL):
     return (HEADER.format(name=name, case=case, tail=tail)
             + "\n" + "\n".join(body) + "\n"
             + FOOTER.format(tail=tail, total=total))
+
+
+def is_current(committed, generated):
+    """Is the file on disk what the takes would produce?
+
+    Extracted so the self-test can EXERCISE it. The staleness fixture used to
+    assert only `out.replace("end: 2.0", ...) != out`, which tests that
+    str.replace works, not that --check notices. A case named "catches a cue
+    file that no longer matches the takes" that never runs the comparison is
+    the same "gate that cannot fail" trap one level down.
+    """
+    return committed == generated
 
 
 def self_test():
@@ -115,10 +129,23 @@ def self_test():
         print(f"  {'ok  ' if good else 'FAIL'} {name}")
         ok &= good
 
-    # RED on purpose: a stale file must not pass --check.
-    stale = out.replace("end: 2.0", "end: 9.9")
-    print(f"  {'ok  ' if stale != out else 'FAIL'} catches: a cue file that no longer matches the takes")
-    ok &= stale != out
+    # RED on purpose, and through the REAL comparison this time: a take whose
+    # measured end moved, a caption whose text was edited by hand, and a file
+    # that is simply not there.
+    red = [
+        ("a cue file whose timings no longer match the takes",
+         out.replace("end: 2.0", "end: 9.9")),
+        ("a caption edited by hand after generation",
+         out.replace("Two.", "Three.")),
+        ("no committed cue file at all", ""),
+    ]
+    for name, committed in red:
+        good = not is_current(committed, out)
+        print(f"  {'ok  ' if good else 'FAIL'} catches: {name}")
+        ok &= good
+    same = is_current(out, out)
+    print(f"  {'ok  ' if same else 'FAIL'} accepts: a cue file that IS current")
+    ok &= same
 
     print("\nself-test: " + ("both directions correct, as designed" if ok else "THE GATE IS WRONG"))
     return 0 if ok else 1
@@ -152,7 +179,7 @@ def main():
     text = render(lines, a.case, name)
     if a.check:
         cur = open(dest).read() if os.path.exists(dest) else ""
-        if cur == text:
+        if is_current(cur, text):
             print(f"gen_captions_ts: {name} is current ({len(lines)} cues)")
             return 0
         print(f"gen_captions_ts: FAIL {name} is STALE. The committed cue file is not "

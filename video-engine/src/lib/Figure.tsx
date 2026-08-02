@@ -82,6 +82,10 @@ type Spec = {
   jawRatio: number;       // bigonial / bizygomatic
   chinW: number;          // menton width as a fraction of bizygomatic
   headTension: number;    // 0 = pure curve (female), higher = straighter (male)
+  /** How far the head drops toward the shoulders. Chin minus shoulder was 58
+   *  units on a 100-unit head; visible neck should be about a quarter of a
+   *  head. His drops less: a thick short neck reads powerful, not stumpy. */
+  neckDrop: number;
 };
 
 /* Torso widths are the measured attractiveness ratios, with hip width as 1.00.
@@ -104,22 +108,22 @@ const SPEC: Record<Sex, Spec> = {
     // differs is roundness and tilt, so the eye is not enlarged here; the face
     // around it is smaller. h/w 0.47, at the round end of the adult band (over
     // 0.55 reads infantile, which is where the old rig sat at 1.16).
-    eyeRx: 9.2, eyeRy: 4.4, eyeX: 18, tilt: 7,
+    eyeRx: 10.2, eyeRy: 6.3, eyeX: 18, tilt: 7,
     browGap: 9.0, browW: 2.7,        // 0.048 H measured, same correction
     noseHalf: 7.5, mouthHalf: 13.5, lipMass: 6.2,
-    jawRatio: 0.72, chinW: 0.2, headTension: 0,
+    jawRatio: 0.72, chinW: 0.2, headTension: 0, neckDrop: 24,
   },
   m: {
     headW: 68, waistY: 302,
     // no flare at the bottom: a V that widens again at the hip reads as a gut.
     shoulder: 211, bust: 194, underbust: 156, waist: 132, upperHip: 142, hip: 145,
     neckW: 45,                       // 0.65 of head width
-    armW: [56, 42, 29], legW: [90, 50, 62, 29],
+    armW: [56, 42, 29], legW: [98, 72, 78, 38],
     shoulderJoint: 88, hipJoint: 30,
     eyeRx: 9.2, eyeRy: 3.7, eyeX: 18, tilt: 3,
     browGap: 8.5, browW: 4.4,        // neat and CLEAR of the eye, not a shelf over it
     noseHalf: 8, mouthHalf: 14, lipMass: 4.4,
-    jawRatio: 0.8, chinW: 0.30, headTension: 0.04,
+    jawRatio: 0.8, chinW: 0.30, headTension: 0.04, neckDrop: 16,
   },
 };
 
@@ -192,7 +196,7 @@ const EYES: Record<Emotion, {open: number; lid: number; brow: number; browTilt: 
   angry: {open: 0.92, lid: 0.14, brow: -4.5, browTilt: -17},
   worried: {open: 1.1, lid: -0.1, brow: 3.5, browTilt: 16},
   shock: {open: 1.45, lid: -0.25, brow: 8, browTilt: -6},
-  smug: {open: 0.86, lid: 0.34, brow: 1.5, browTilt: -6},
+  smug: {open: 0.88, lid: 0.28, brow: 1.5, browTilt: -3},
   flat: {open: 0.9, lid: 0.3, brow: 0.5, browTilt: 0},
   squint: {open: 0.8, lid: 0.4, brow: -1.5, browTilt: -11},
 };
@@ -219,28 +223,46 @@ export const Figure: React.FC<FigureProps> = ({
   const shift = 3.4 * idleGain * Math.sin(f / 62);
   const headLag = 2.2 * idleGain * Math.sin(f / 62 - 0.55);
   const blink = (f + 17) % 104 < 5 && emotion !== 'shock';
+  // THE THREE-QUARTER CUE. A face dead-on is a passport photo; every reference
+  // is turned a little and tilted a little. In a flat rig the turn is a
+  // horizontal squeeze of the head plus a shift of the features inside it, so
+  // the far cheek compresses. Small on purpose: past about 0.5 the flat
+  // features stop selling it and you need a real redraw.
+  const headTurn = 0;
+  const headTilt = 0;
 
   /* ---- CONTRAPPOSTO. Weight on the figure's right (screen left when facing 1).
      The hip on the weight side rides UP, the shoulders counter-tilt the other
      way, and the free leg goes slack. Three numbers, and they are most of what
      separates a standing person from a placed figure. */
-  const hipTilt = 4.5;
-  const shTilt = -3.2;
+  const hipTilt = sex === 'f' ? 7.5 : 4.5;
+  const shTilt = sex === 'f' ? -5 : -3.2;
   const waistY = s.waistY;
+  // S-curve amplitude. Hers is nearly double: the pose SHOWS the curves.
+  const sway = sex === 'f' ? 1.9 : 1;
 
   /* ---- TORSO. A ribbon down an S-curved spine, with the shoulder:waist:hip
      ratios as its widths. The hourglass is not a special case here: it is three
      numbers, and the male V-taper is the same three numbers with no flare at
      the bottom. */
+  // THE EIGHT-POINT SPINE. The Spec has carried underbust and upperHip since
+  // the curves pass, and a silent string-replace failure meant the spine never
+  // grew the points to USE them: the cinch numbers sat dead in the table while
+  // the torso interpolated straight from bust to waist to hip. Same lesson as
+  // every silent failure in this repo: a replace without an assert is a hope.
+  // Curves are RATE OF CHANGE, and rate of change needs points close together.
   const spine: Pt[] = [
-    [3.6 + shift * 0.2, Y.shoulder - 2],    // shoulder slope, NOT a collar: at
-    [3.0 + shift * 0.25, Y.shoulder + 6],   // -38 the garment climbed the neck
-    [1.0 + shift * 0.5, Y.chest],
-    [-2.6 + shift, waistY],
-    [1.6 + shift * 0.7, Y.hip],
-    [2.2 + shift * 0.7, Y.hip + 40],        // runs PAST the hip so the flat end
-  ];                                        // cut lands where the legs hide it
-  const torsoW = [s.shoulder * 0.66, s.shoulder, s.bust, s.waist, s.hip, s.hip * 0.9];
+    [3.6 * sway + shift * 0.2, Y.shoulder - 2],
+    [3.0 * sway + shift * 0.25, Y.shoulder + 6],
+    [1.6 * sway + shift * 0.45, Y.chest - 4],      // bust, full
+    [-0.4 * sway + shift * 0.7, Y.chest + 38],     // underbust, dropping fast
+    [-3.2 * sway + shift, waistY],                 // the cinch
+    [0.6 * sway + shift * 0.8, waistY + 32],       // hip flare starts HIGH
+    [1.8 * sway + shift * 0.7, Y.hip],
+    [2.2 * sway + shift * 0.7, Y.hip + 40],        // past the hip: flat cut hides
+  ];
+  const torsoW = [s.shoulder * 0.66, s.shoulder, s.bust, s.underbust,
+                  s.waist, s.upperHip, s.hip, s.hip * 0.92];
 
   /* ---- ARMS. A pose is three joint positions, not a redrawn path. */
   const armSpine = (side: 1 | -1): Pt[] => {
@@ -279,8 +301,14 @@ export const Figure: React.FC<FigureProps> = ({
   const legSpine = (side: 1 | -1): Pt[] => {
     const weight = side < 0;
     const hipX = side * s.hipJoint + shift * 0.5 + (weight ? -1 : 2);
-    const kneeX = side * (s.hipJoint + (weight ? 3 : -5));
-    const ankleX = side * (s.hipJoint + (weight ? 1 : 9));
+    // The free leg travels INBOARD, its ankle crossing past the weight leg's.
+    // Hers goes further: the reference poses all cross, and a crossed ankle
+    // narrows the base, which is what makes the hips read wide by contrast.
+    const cross = sex === 'f' ? 1.9 : 0.5;
+    const kneeX = weight ? side * (s.hipJoint + 3)
+                         : side * (s.hipJoint - 9 * cross);
+    const ankleX = weight ? side * (s.hipJoint + 1)
+                          : side * (s.hipJoint - 15 * cross);
     const kneeY = Y.knee + (weight ? 0 : -6);
     return [
       [hipX, Y.hip - 10 + (weight ? -hipTilt : hipTilt)],
@@ -288,7 +316,7 @@ export const Figure: React.FC<FigureProps> = ({
       // calf belly, a third of the way down the shin
       [kneeX + side * (weight ? 3 : 4), kneeY + (Y.ankle - kneeY) * 0.34],
       // In heels the ankle sits well ABOVE the ground and the shoe spans the gap.
-      [ankleX, heels ? Y.ankle - 32 : Y.ankle],
+      [ankleX, heels ? Y.ankle - 18 : Y.ankle],
     ];
   };
 
@@ -299,6 +327,8 @@ export const Figure: React.FC<FigureProps> = ({
   const face = () => {
     const eyeY = 50, rx = s.eyeRx, ry = s.eyeRy * E.open;
     const hw = s.headW / 2;
+    const sk = (k: number) => warmShade(skin, k);
+    const fx = 0;   // features do NOT get their own offset: see headTurn
     const lidDrop = ry * E.lid;
     const browY = eyeY - ry - s.browGap - E.brow;
     const eye = (side: 1 | -1) => {
@@ -329,9 +359,25 @@ export const Figure: React.FC<FigureProps> = ({
                   tile and turns to mud. The lower lid is omitted entirely on the
                   female, because asymmetric lid weight reads both feminine and
                   open-eyed. */}
-              <path d={`M${cx - rx - 1},${eyeY - ry * 0.35} q${rx},${-ry * 1.5} ${rx * 2 + (sex === 'f' ? 3 : 1)},${-ry * 0.1}`}
+              {/* UPPER LASH LINE, and the reason the old one looked deranged:
+                  it was written in +x relative units, so its 3-unit extension
+                  and its whole flick landed on the +x end of BOTH eyes. On the
+                  right eye that is the outer corner and correct; on the LEFT eye
+                  +x is the NOSE, so the lash overshot the inner corner and
+                  hooked back around it. One curl, pointing inward, on one eye.
+                  Lashes are anatomically OUTBOARD, so everything here is signed
+                  by `side`: inner corner -> over the eye -> past the OUTER
+                  corner -> flick up and away from the nose. */}
+              <path d={`M${cx - side * rx * 0.98},${eyeY - ry * 0.2}
+                        Q${cx},${eyeY - ry * 1.55}
+                         ${cx + side * (rx + (sex === 'f' ? 3.5 : 1.2))},${eyeY - ry * 0.55}`}
                     fill="none" stroke={INK} strokeLinecap="round"
-                    strokeWidth={sex === 'f' ? 3.4 : 2.2} />
+                    strokeWidth={sex === 'f' ? rx * 0.3 : rx * 0.2} />
+              {sex === 'f' && (
+                <path d={`M${cx + side * (rx + 1.8)},${eyeY - ry * 0.5}
+                          q${side * 3.4},${-1.8} ${side * 5.4},${-4.2}`}
+                      fill="none" stroke={INK} strokeWidth={rx * 0.24} strokeLinecap="round" />
+              )}
               {sex === 'm' && (
                 <path d={`M${cx - rx * 0.7},${eyeY + ry * 0.85} q${rx * 0.7},${ry * 0.5} ${rx * 1.4},0`}
                       fill="none" stroke={INK} strokeWidth={1.2} opacity={0.5} strokeLinecap="round" />
@@ -342,78 +388,134 @@ export const Figure: React.FC<FigureProps> = ({
       );
     };
     return (
-      <g>
+      <g transform={`translate(${fx},0)`}>
         <clipPath id={`${uid}_headclip`}><path d={spline(outline, true, s.headTension)} /></clipPath>
         <g clipPath={`url(#${uid}_headclip)`}>
-          {/* THE SHADOW SIDE. One hard-edged shape whose boundary follows the
-              form: out over the cheekbone, in under it, out again at the jaw.
-              That boundary IS the drawing; a soft gradient in the same place
-              reads as a stain. */}
-          <path d={spline([[hw * 0.26, -10], [hw * 0.66, 34], [hw * 0.46, 70],
-                           [hw * 0.12, 104], [hw * 3, 104], [hw * 3, -10]], true)}
-                fill={INK} opacity={0.13} />
-          {/* reflected light at the very edge of the shadow side, where the form
-              turns back toward the room */}
-          <path d={spline([[hw * 0.9, 6], [hw * 1.02, 52], [hw * 0.72, 92],
-                           [hw * 3, 92], [hw * 3, 6]], true)} fill="#fff" opacity={0.09} />
-          {/* CAST SHADOW OF THE HAIR onto the forehead. Hair sits ON a head and
-              blocks light; without this the hairline reads as a sticker. */}
-          <path d={spline([[-hw * 3, -30], [hw * 3, -30], [hw * 3, 4],
-                           [hw * 0.5, 24], [-hw * 0.5, 17], [-hw * 3, 2]], true)}
-                fill={INK} opacity={0.15} />
-          {/* brow ridge: a shelf the eyes sit under */}
-          <path d={spline([[-hw * 0.85, 40], [0, 45], [hw * 0.85, 40],
-                           [hw * 0.85, 33], [0, 37], [-hw * 0.85, 33]], true)}
-                fill={INK} opacity={0.08} />
-          {/* the lit cheekbone, the single plane that says the skull has one */}
-          <ellipse cx={-hw * 0.46} cy={50} rx={hw * 0.42} ry={11} fill="#fff" opacity={0.17}
-                   transform={`rotate(-12 ${-hw * 0.46} 50)`} />
-          {/* nose plane on the shadow side, and the shelf under the lower lip */}
-          <path d={spline([[facing * 3, 56], [facing * 11, 71], [facing * 2, 77]], true)}
-                fill={INK} opacity={0.13} />
-          <ellipse cx={0} cy={81 + s.lipMass * 1.5} rx={s.mouthHalf * 0.72} ry={3.4}
-                   fill={INK} opacity={0.11} />
-          {/* temple hollow, which is what stops a forehead reading as a dome */}
-          <ellipse cx={hw * 0.74} cy={30} rx={9} ry={13} fill={INK} opacity={0.08} />
+          {/* THE VALUE SYSTEM. Every shape in here is a SOLID darker-or-lighter
+              SKIN, never black at low opacity. Reference faces read dimensional
+              because their planes are committed value steps in the colour of the
+              flesh itself; ink washes read as dirt on paper. The clip lets every
+              shape overshoot and still end exactly at the silhouette. */}
+          {/* the shadow side of the whole head, one hard-edged plane */}
+          <path d={spline([[hw * 0.22, -10], [hw * 0.62, 34], [hw * 0.44, 70],
+                           [hw * 0.1, 104], [hw * 3, 104], [hw * 3, -10]], true)}
+                fill={sk(0.86)} />
+          {/* reflected light where the dark side turns back toward the room */}
+          <path d={spline([[hw * 0.88, 6], [hw * 1.02, 52], [hw * 0.7, 92],
+                           [hw * 3, 92], [hw * 3, 6]], true)} fill={sk(0.95)} />
+          {/* the hair's cast shadow across the forehead */}
+          <path d={spline([[-hw * 3, -30], [hw * 3, -30], [hw * 3, 2],
+                           [hw * 0.5, 22], [-hw * 0.5, 15], [-hw * 3, 0]], true)}
+                fill={sk(0.8)} />
+          {/* EYE SOCKETS. The reference eyes read deep-set because they sit IN a
+              value, under the brow, instead of lying white on the surface. The
+              male socket is deeper; hers stays soft or it reads tired. */}
+          {[-1, 1].map((sd) => (
+            <g key={sd}>
+              {sex === 'm' ? (
+                <ellipse cx={sd * s.eyeX} cy={eyeY - 2} rx={rx + 7} ry={ry + 8}
+                         fill={sk(0.87)} />
+              ) : (
+                <>
+                  {/* the crease shadow ABOVE the eye only; below it stays LIGHT.
+                      Dark under an eye is what tired literally is, and every
+                      reference face is bright there. */}
+                  <ellipse cx={sd * s.eyeX} cy={eyeY - ry * 0.9} rx={rx + 5} ry={ry * 0.9}
+                           fill={sk(0.92)} />
+                  <ellipse cx={sd * s.eyeX} cy={eyeY + ry + 3} rx={rx * 0.8} ry={3.4}
+                           fill={sk(1.07)} />
+                </>
+              )}
+            </g>
+          ))}
+          {/* BLUSH. Warmth high on the cheek, outboard of the nose. Its colour is
+              the skin pushed toward rose, not a paint dab. */}
+          {sex === 'f' && [-1, 1].map((sd) => (
+            <ellipse key={sd} cx={sd * hw * 0.52} cy={64} rx={hw * 0.26} ry={7.5}
+                     fill="#d9808a" opacity={0.19}
+                     transform={`rotate(${sd * -10} ${sd * hw * 0.52} 64)`} />
+          ))}
+          {/* lit planes: forehead, near cheekbone, chin. Warm light, never white. */}
+          <ellipse cx={-hw * 0.18} cy={20} rx={hw * 0.5} ry={13} fill={sk(1.05)} />
+          <ellipse cx={-hw * 0.48} cy={54} rx={hw * 0.38} ry={10} fill={sk(1.07)}
+                   transform={`rotate(-14 ${-hw * 0.48} 54)`} />
+          <ellipse cx={-2} cy={93} rx={hw * 0.2} ry={5.5} fill={sk(1.08)} />
+          {/* NOSE, built from value: a side plane, nostril darks, and a light
+              down the bridge. No outline; an outlined nose on a value face is
+              the detail-density mismatch that tips a face uncanny. */}
+          {sex === 'm' ? (
+            <>
+              <path d={spline([[facing * 2, 46], [facing * 8, 62], [facing * 10.5, 72],
+                               [facing * 3, 78], [facing * 0.5, 60]], true)} fill={sk(0.84)} />
+              <path d={spline([[facing * -1, 46], [facing * -2.5, 62], [facing * -1, 72]])}
+                    fill="none" stroke={sk(1.16)} strokeWidth={3} strokeLinecap="round" />
+              <circle cx={-s.noseHalf * 0.38 + facing * 2} cy={73} r={1.5} fill={sk(0.68)} />
+              <circle cx={s.noseHalf * 0.38 + facing * 2} cy={73.5} r={1.3} fill={sk(0.68)} />
+            </>
+          ) : (
+            /* A pretty female nose is barely STATED: a short side plane, a dot of
+               shadow at each nostril, and nothing else. Nose prominence is the
+               fastest way to age or masculinize a face, so the whole feature is
+               about a third the value-weight of his. */
+            <>
+              <path d={spline([[facing * 1.5, 54], [facing * 4, 62], [facing * 5, 68],
+                               [facing * 1.5, 70.5], [facing * 0.5, 61]], true)} fill={sk(0.93)} />
+              <circle cx={-s.noseHalf * 0.34 + facing * 1.5} cy={69.5} r={1.1} fill={sk(0.74)} />
+              <circle cx={s.noseHalf * 0.34 + facing * 1.5} cy={70} r={1.0} fill={sk(0.74)} />
+            </>
+          )}
+          {/* the shelf under the lower lip, in value */}
+          <ellipse cx={0} cy={81 + s.lipMass * 1.5} rx={s.mouthHalf * 0.7} ry={3.2}
+                   fill={sk(0.87)} />
+          {/* STUBBLE. A slightly cool value over the whole jaw and chin. It does
+              two jobs: models the jaw as a plane, and is a masculinity cue that
+              costs one shape. The plain (unwarmed) shade goes bluish against the
+              warm shadows, which is exactly what beard shadow does. */}
+          {sex === 'm' && (
+            <path d={spline([[-hw * 1.2, 64], [-hw * 0.5, 92], [0, 103], [hw * 0.5, 92],
+                             [hw * 1.2, 64], [hw * 1.2, 130], [-hw * 1.2, 130]], true)}
+                  fill={shade(skin, 0.88)} opacity={0.75} />
+          )}
         </g>
         {/* cheekbone contour: a shade running down and IN under the cheek, with a
             lit plane above it. Only works on a narrowed skull; on a circle the
             same shape reads as a smudge. */}
-        <path d={spline([[-s.headW / 2 + 2, 48], [-s.headW * 0.30, 66], [-s.headW * 0.22, 76]])}
-              fill="none" stroke={INK} strokeWidth={3} opacity={0.1} strokeLinecap="round" />
-        <path d={spline([[s.headW / 2 - 2, 48], [s.headW * 0.30, 66], [s.headW * 0.22, 76]])}
-              fill="none" stroke={INK} strokeWidth={3.4} opacity={0.14} strokeLinecap="round" />
+        {sex === 'm' && (
+          <path d={spline([[s.headW / 2 - 2, 48], [s.headW * 0.30, 66], [s.headW * 0.22, 76]])}
+                fill="none" stroke={INK} strokeWidth={3} opacity={0.12} strokeLinecap="round" />
+        )}
         {[-1, 1].map((sd) => eye(sd as 1 | -1))}
         {/* BROWS. The GAP is the cue, not the bar: a clean 0.048H of skin between
             brow and lid reads instantly at tile scale where a thin arched line
             does not. Female bar is thin and arched with its apex over the outer
             third; male bar is heavy and essentially flat. */}
         {[-1, 1].map((sd) => (
-          <path key={sd}
-                d={sex === 'f'
-                  ? `M${sd * (s.eyeX - 11)},${browY + 2.5} q${sd * 7},${-4.5} ${sd * 21},${-0.5}`
-                  : `M${sd * (s.eyeX - 12)},${browY + 1} L${sd * (s.eyeX + 11)},${browY - 0.5}`}
-                fill="none" stroke={INK} strokeWidth={s.browW} strokeLinecap="round"
-                transform={`rotate(${sd * E.browTilt} ${sd * s.eyeX} ${browY})`} />
+          sex === 'f' ? (
+            <path key={sd}
+                  d={`M${sd * (s.eyeX - 12)},${browY + 0.5}
+                      Q${sd * (s.eyeX - 1)},${browY - 3.2} ${sd * (s.eyeX + 9)},${browY - 2.2}
+                      L${sd * (s.eyeX + 13)},${browY - 0.8}
+                      Q${sd * (s.eyeX + 1)},${browY - 0.2} ${sd * (s.eyeX - 12)},${browY + 2.4} Z`}
+                  fill="#241a18" transform={`rotate(${sd * E.browTilt} ${sd * s.eyeX} ${browY})`} />
+          ) : (
+            <path key={sd}
+                  d={`M${sd * (s.eyeX - 12)},${browY + 1} L${sd * (s.eyeX + 11)},${browY - 0.5}`}
+                  fill="none" stroke={INK} strokeWidth={s.browW} strokeLinecap="round"
+                  transform={`rotate(${sd * E.browTilt} ${sd * s.eyeX} ${browY})`} />
+          )
         ))}
         {/* NOSE. Two marks, never a bridge line. A drawn bridge on an otherwise
             flat face is a detail-density mismatch, and over-defined noses and
             eyelids are the two most-cited causes of a stylized face tipping
             uncanny. */}
-        {sex === 'm' && (
-          <path d={`M${facing * 3},${46} L${facing * 4},${63}`} fill="none" stroke={INK}
-                strokeWidth={2.2} opacity={0.32} strokeLinecap="round" />
-        )}
-        <path d={`M${facing * 2},${64} q${facing * s.noseHalf * 0.7},${8} ${facing * -1},${9}`}
-              fill="none" stroke={INK} strokeWidth={sex === 'f' ? 2 : 2.6}
-              opacity={0.55} strokeLinecap="round" />
+
         {/* MOUTH */}
         {mouth !== undefined || talking ? (
           <TalkingMouth open={mouth ?? 0} spread={mouthSpread} half={s.mouthHalf}
-                        lip={sex === 'f' ? '#8d3347' : INK} full={sex === 'f'} />
+                        lip={sex === 'f' ? '#a63a55' : INK} full={sex === 'f'} />
         ) : (
           <StaticMouth emotion={emotion} half={s.mouthHalf} mass={s.lipMass}
-                       lip={sex === 'f' ? '#8d3347' : INK} full={sex === 'f'} />
+                       lip={sex === 'f' ? '#a63a55' : INK} full={sex === 'f'} />
         )}
       </g>
     );
@@ -591,11 +693,11 @@ export const Figure: React.FC<FigureProps> = ({
       {/* NECK, over the garment. Then a COLLAR RIM laid back over its base, so
           the neck comes THROUGH the opening instead of the opening being a patch
           of skin painted on a chest. */}
-      <path d={ribbon([[2, Y.chin - 6], [1, Y.shoulder + 14]], [s.neckW, s.neckW * 1.18], {capEnd: false})}
+      <path d={ribbon([[2, Y.chin - 6 + s.neckDrop], [1, Y.shoulder + 14]], [s.neckW, s.neckW * 1.18], {capEnd: false})}
             fill={INK} stroke={INK} strokeWidth={17} strokeLinejoin="round" />
       {/* the jaw's shadow down the throat: without it the neck is a pasted
           cylinder rather than something under a chin */}
-      <path d={`M${-s.neckW * 0.44},${Y.chin - 4} q${s.neckW * 0.44},${10} ${s.neckW * 0.88},0 l0,13 q${-s.neckW * 0.44},${9} ${-s.neckW * 0.88},0 Z`}
+      <path d={`M${-s.neckW * 0.44},${Y.chin - 4 + s.neckDrop} q${s.neckW * 0.44},${10} ${s.neckW * 0.88},0 l0,13 q${-s.neckW * 0.44},${9} ${-s.neckW * 0.88},0 Z`}
             fill={INK} opacity={0.2} />
       <path d={sex === 'f'
         ? spline([[-s.neckW * 0.86, Y.shoulder - 6], [0, Y.shoulder + 30], [s.neckW * 0.86, Y.shoulder - 6],
@@ -608,7 +710,7 @@ export const Figure: React.FC<FigureProps> = ({
       <Hand at={armSpine(1)[armSpine(1).length - 1]} r={s.armW[2] * 0.74} fill={skin} shadow />
 
       {/* HEAD. Counter-rotated against the weight shift, and lagging it. */}
-      <g transform={`translate(${headLag},0) translate(0,${Y.chin - 100}) rotate(${-shTilt * 0.5} 0 100)`}>
+      <g transform={`translate(${headLag},0) translate(0,${Y.chin - 100 + s.neckDrop}) rotate(${-shTilt * 0.5 + headTilt} 0 100) translate(${headTurn * 4},0) scale(${1 - Math.abs(headTurn) * 0.1},1)`}>
         {/* hair BEHIND the skull */}
         <Hair style={hairstyle} s={s} col={hair} back />
         <path d={spline(outline, true, s.headTension)} fill={INK}
@@ -760,11 +862,11 @@ export const Figure: React.FC<FigureProps> = ({
       {/* NECK, over the garment. Then a COLLAR RIM laid back over its base, so
           the neck comes THROUGH the opening instead of the opening being a patch
           of skin painted on a chest. */}
-      <path d={ribbon([[2, Y.chin - 6], [1, Y.shoulder + 14]], [s.neckW, s.neckW * 1.18], {capEnd: false})}
+      <path d={ribbon([[2, Y.chin - 6 + s.neckDrop], [1, Y.shoulder + 14]], [s.neckW, s.neckW * 1.18], {capEnd: false})}
             fill={`url(#${uid}_skin)`} stroke={INK} strokeWidth={4} strokeLinejoin="round" />
       {/* the jaw's shadow down the throat: without it the neck is a pasted
           cylinder rather than something under a chin */}
-      <path d={`M${-s.neckW * 0.44},${Y.chin - 4} q${s.neckW * 0.44},${10} ${s.neckW * 0.88},0 l0,13 q${-s.neckW * 0.44},${9} ${-s.neckW * 0.88},0 Z`}
+      <path d={`M${-s.neckW * 0.44},${Y.chin - 4 + s.neckDrop} q${s.neckW * 0.44},${10} ${s.neckW * 0.88},0 l0,13 q${-s.neckW * 0.44},${9} ${-s.neckW * 0.88},0 Z`}
             fill={INK} opacity={0.2} />
       <path d={sex === 'f'
         ? spline([[-s.neckW * 0.86, Y.shoulder - 6], [0, Y.shoulder + 30], [s.neckW * 0.86, Y.shoulder - 6],
@@ -777,9 +879,20 @@ export const Figure: React.FC<FigureProps> = ({
       <Hand at={armSpine(1)[armSpine(1).length - 1]} r={s.armW[2] * 0.74} fill={skin} shadow />
 
       {/* HEAD. Counter-rotated against the weight shift, and lagging it. */}
-      <g transform={`translate(${headLag},0) translate(0,${Y.chin - 100}) rotate(${-shTilt * 0.5} 0 100)`}>
+      <g transform={`translate(${headLag},0) translate(0,${Y.chin - 100 + s.neckDrop}) rotate(${-shTilt * 0.5 + headTilt} 0 100) translate(${headTurn * 4},0) scale(${1 - Math.abs(headTurn) * 0.1},1)`}>
         {/* hair BEHIND the skull */}
         <Hair style={hairstyle} s={s} col={hair} back />
+        {/* EARS, under the head fill so only the outer rim shows. A head with no
+            ears reads as a mask; every reference face has them even when the
+            hair covers one. */}
+        {[-1, 1].map((sd) => (
+          <g key={sd}>
+            <ellipse cx={sd * s.headW * 0.5} cy={56} rx={8} ry={13}
+                     fill={skin} stroke={INK} strokeWidth={3.4} />
+            <path d={`M${sd * s.headW * 0.5 - sd * 3},52 q${sd * 4},4 ${sd * 2.5},9`}
+                  fill="none" stroke={warmShade(skin, 0.78)} strokeWidth={2.6} strokeLinecap="round" />
+          </g>
+        ))}
         <path d={spline(outline, true, s.headTension)} fill={`url(#${uid}_skin)`}
               stroke={INK} strokeWidth={4.5} strokeLinejoin="round" />
         {/* shadow-side head contour, heavier than the lit side */}
@@ -824,9 +937,17 @@ const Hand: React.FC<{at: Pt; r: number; fill: string; shadow?: boolean}> = ({at
     <path d={spline([[-r, -r * 0.7], [r * 0.85, -r * 0.75], [r * 1.05, r * 0.5],
                      [r * 0.2, r * 1.15], [-r * 0.85, r * 0.6]], true)}
           fill={shadow ? shade(fill, 0.8) : fill} stroke={INK} strokeWidth={3.6} strokeLinejoin="round" />
+    {/* thumb */}
     <path d={`M${-r * 0.75},${-r * 0.1} q${-r * 0.5},${r * 0.4} ${-r * 0.05},${r * 0.75}`}
           fill="none" stroke={INK} strokeWidth={3.2} strokeLinecap="round" />
-    <path d={`M${r * 0.1},${r * 0.1} v${r * 0.7}`} stroke={INK} strokeWidth={1.6} opacity={0.35} />
+    {/* KNUCKLE LINE, and fingers of DIFFERENT LENGTHS. A mitten becomes a hand
+        at exactly these two marks: the knuckles say where the fingers begin,
+        and unequal lengths say they are fingers and not a paddle. */}
+    <path d={`M${-r * 0.5},${r * 0.12} q${r * 0.55},${-r * 0.22} ${r * 1.1},${r * 0.04}`}
+          fill="none" stroke={INK} strokeWidth={2} opacity={0.45} strokeLinecap="round" />
+    <path d={`M${-r * 0.2},${r * 0.28} v${r * 0.66}`} stroke={INK} strokeWidth={1.7} opacity={0.4} strokeLinecap="round" />
+    <path d={`M${r * 0.24},${r * 0.24} v${r * 0.74}`} stroke={INK} strokeWidth={1.7} opacity={0.4} strokeLinecap="round" />
+    <path d={`M${r * 0.66},${r * 0.3} v${r * 0.56}`} stroke={INK} strokeWidth={1.7} opacity={0.4} strokeLinecap="round" />
   </g>
 );
 
@@ -839,16 +960,16 @@ const Foot: React.FC<{at: Pt; side: 1 | -1; col: string; heel?: boolean; shadow?
       // functional part: it is what visually lengthens a leg, which is the whole
       // reason heels read the way they do.
       <g>
-        {/* the arched foot: topline at the ankle, vamp sweeping forward and DOWN
-            to a pointed toe on the floor, sole running back to the heel seat */}
-        <path d={spline([[-13, -8], [-11, 10], [4, 30], [24, 46], [42, 55],
-                         [46, 49], [30, 28], [13, 6], [9, -9]], true)}
-              fill={shadow ? shade(col, 0.82) : col} stroke={INK} strokeWidth={3.2} strokeLinejoin="round" />
-        {/* the spike. Thin is the point: a thick heel is a boot. */}
-        <path d="M1,38 L-7,57 L-1,58 L9,41 Z" fill={shadow ? shade(col, 0.75) : shade(col, 0.9)}
-              stroke={INK} strokeWidth={2.6} strokeLinejoin="round" />
-        {/* patent highlight down the vamp */}
-        <path d="M-4,2 q12,12 22,26" fill="none" stroke="#fff" strokeWidth={3} opacity={0.3} strokeLinecap="round" />
+        {/* the pump: an instep sweeping from the raised ankle down to a pointed
+            toe ON the ground, with a slim post under the heel seat. The old
+            version arched to y58 off a 32-unit lift and drew as a black hook; a
+            real pump is mostly FOOT and its hardware is small. */}
+        <path d={spline([[-12, -8], [6, -10], [16, 4], [27, 26], [40, 42], [43, 46],
+                         [22, 44], [4, 32], [-11, 10]], true)}
+              fill={shadow ? shade(col, 0.82) : col} stroke={INK} strokeWidth={3} strokeLinejoin="round" />
+        <path d="M-6,28 L-11,46 L-5,47 L1,31 Z" fill={shadow ? shade(col, 0.75) : shade(col, 0.9)}
+              stroke={INK} strokeWidth={2.4} strokeLinejoin="round" />
+        <path d="M-3,0 q13,14 24,32" fill="none" stroke="#fff" strokeWidth={2.6} opacity={0.3} strokeLinecap="round" />
       </g>
     ) : (
       <g>
@@ -882,6 +1003,16 @@ const Hair: React.FC<{style: string; s: Spec; col: string; back?: boolean}> = ({
                          [w * 0.1, 16], [-w * 0.86, 34]], true)} fill={INK} opacity={0.2} />
         <path d={spline([[-w * 0.5, 0], [w * 0.2, -6], [w * 0.72, 4]])}
               fill="none" stroke="#fff" strokeWidth={4} opacity={0.24} strokeLinecap="round" />
+        {/* sweep lines following the part, so the crop reads as combed hair
+            rather than a painted cap */}
+        {[0, 1, 2].map((i) => (
+          <path key={i}
+                d={spline([[-w * (0.62 - i * 0.1), 6 + i * 5],
+                           [w * (0.1 + i * 0.14), -6 + i * 5],
+                           [w * (0.76 - i * 0.06), 8 + i * 6]])}
+                fill="none" stroke={i % 2 ? INK : '#fff'} strokeWidth={i % 2 ? 2.6 : 3}
+                opacity={i % 2 ? 0.18 : 0.14} strokeLinecap="round" />
+        ))}
       </g>
     );
   }
@@ -907,9 +1038,9 @@ const Hair: React.FC<{style: string; s: Spec; col: string; back?: boolean}> = ({
       {/* The crown and the fringe, with a real PART. The near side is TUCKED: it
           comes down only to the cheekbone and stops, so the jawline and the neck
           on that side are completely open. That open side is the whole design. */}
-      <path d={spline([[-w * 1.0, 30], [-w * 1.04, 0], [-w * 0.24, -16], [w * 0.8, -6],
-                       [w * 1.16, 34], [w * 1.06, 62],
-                       [w * 0.72, 30], [w * 0.18, 16], [-w * 0.36, 24], [-w * 0.78, 46]], true)}
+      <path d={spline([[-w * 1.0, 26], [-w * 1.04, 0], [-w * 0.24, -16], [w * 0.8, -6],
+                       [w * 1.16, 28], [w * 1.1, 40],
+                       [w * 0.78, 22], [w * 0.18, 12], [-w * 0.36, 18], [-w * 0.8, 34]], true)}
             fill={col} stroke={INK} strokeWidth={4} strokeLinejoin="round" />
       {/* specular band across the crown, plus a dark root under it */}
       <path d={spline([[-w * 0.78, 10], [-w * 0.1, -12], [w * 0.72, 0], [w * 0.86, 12],
@@ -926,6 +1057,32 @@ const Hair: React.FC<{style: string; s: Spec; col: string; back?: boolean}> = ({
                        [w * 0.86, 128], [w * 0.8, 76]], true)} fill={INK} opacity={0.2} />
       <path d={spline([[w * 1.44, 156], [w * 1.5, 186], [w * 1.2, 202], [w * 1.32, 172]], true)}
             fill="#fff" opacity={0.1} />
+      {/* STRAND FLOW. A mass with two highlights is a wig. Hair reads as hair
+          when the interior is broken into LOCKS that follow the same curve as
+          the outer edge and diverge slightly from each other, so the eye can
+          trace a path from root to tip. Four locks, alternating light and dark,
+          drawn along the fall. */}
+      {[0, 1, 2, 3].map((i) => {
+        const t = 0.24 + i * 0.2;
+        const dark = i % 2 === 1;
+        return (
+          <path key={i}
+                d={spline([[w * (0.92 + t * 0.5), 30 + i * 9],
+                           [w * (1.0 + t * 0.52), 90 + i * 7],
+                           [w * (0.98 + t * 0.5), 150 + i * 5],
+                           [w * (0.86 + t * 0.44), 192 - i * 4]])}
+                fill="none" stroke={dark ? INK : '#fff'} strokeWidth={dark ? 4 : 5}
+                opacity={dark ? 0.16 : 0.12} strokeLinecap="round" />
+        );
+      })}
+      {/* tip separations: the silhouette breaks into points at the bottom, which
+          is what stops the fall reading as a cut sheet of paper */}
+      {[0, 1, 2].map((i) => (
+        <path key={`t${i}`}
+              d={spline([[w * (1.0 + i * 0.16), 178], [w * (1.06 + i * 0.16), 200],
+                         [w * (0.94 + i * 0.16), 196]], true)}
+              fill={INK} opacity={0.14} />
+      ))}
     </g>
   );
 };
@@ -945,11 +1102,16 @@ const StaticMouth: React.FC<{emotion: Emotion; half: number; mass: number; lip: 
     // contrast, which IS a finding and which flips perceived sex on its own.
     return (
       <g>
-        <path d={spline([[-half, y], [-half * 0.4, y - mass * 0.55], [0, y - mass * 0.3],
-                         [half * 0.4, y - mass * 0.55], [half, y],
+        <path d={spline([[-half, y], [-half * 0.45, y - mass * 0.6], [-half * 0.18, y - mass * 0.7],
+                         [0, y - mass * 0.42], [half * 0.18, y - mass * 0.7], [half * 0.45, y - mass * 0.6],
+                         [half, y],
                          [half * 0.45, y + mass * 0.9 + curve * 0.4], [0, y + mass * 1.05 + curve * 0.5],
                          [-half * 0.45, y + mass * 0.9 + curve * 0.4]], true)}
               fill={lip} stroke={INK} strokeWidth={1.8} strokeLinejoin="round" />
+        {/* gloss on the lower lip: the single highlight that makes a lip read
+            full instead of painted on */}
+        <ellipse cx={half * 0.1} cy={y + mass * 0.62} rx={half * 0.34} ry={mass * 0.24}
+                 fill="#fff" opacity={0.4} />
         <path d={spline([[-half * 0.9, y + 0.5], [0, y + curve * 0.35], [half * 0.9, y + 0.5]])}
               fill="none" stroke={INK} strokeWidth={1.8} opacity={0.7} />
         <path d={spline([[-half * 0.25, y + mass * 0.72], [half * 0.2, y + mass * 0.72]])}
@@ -991,6 +1153,19 @@ const TalkingMouth: React.FC<{open: number; spread: number; half: number; lip: s
     </g>
   );
 };
+
+/** Shade SKIN the way a painter does: darker AND warmer, because black at low
+ *  opacity is not shadow, it is grime. Multiplying all three channels equally
+ *  desaturates; pushing red up and blue down as it darkens is what keeps a
+ *  shadow looking like flesh turning away from light. Same shift upward for
+ *  lights: warm, never white. This one function is most of the difference the
+ *  owner named between "coding" and "drawing". */
+function warmShade(hex: string, k: number): string {
+  const n = parseInt(hex.replace('#', ''), 16);
+  const ch = (v: number, f: number) => Math.max(0, Math.min(255, Math.round(v * k * f)));
+  const r = ch((n >> 16) & 255, 1.08), g = ch((n >> 8) & 255, 0.97), b = ch(n & 255, 0.86);
+  return `#${[r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('')}`;
+}
 
 /** Multiply a hex colour's lightness. Keeps a palette to ONE authored value per
  *  garment instead of three that can drift apart. */

@@ -148,6 +148,43 @@
         "carried_by_fact"
       ],
       "commit": "PENDING"
+    },
+    {
+      "run_date": "2026-08-02",
+      "upgrade": "THE BUTTON HAD NO OWNER. `button_doesnt_land` recurred across cases 0002 and 0003 and every response was to rewrite the last line, which is the artifact and not the decision. Nothing in the machine chose the button until the writer reached the end of a draft, so it was structurally an afterthought and the ending was always the one the viewer already had queued. PHASE 3.7, the producer room, now names the button BEFORE a line is written: its document, its image, and why Ray does not win. That plan binds every later phase, and the director at 4.4 can reject a script whose turn or button cannot be illustrated. The button is now a decision with a phase, an owner and a downstream veto.",
+      "files": [
+        ".claude/agents/producer.md",
+        ".claude/agents/director.md",
+        "prompts/BIGFUNNY_ROUTINE.md",
+        "scripts/retro.py"
+      ],
+      "verified_by": "retro.py --check exits 0 with every repeat offender claimed; retro.py --self-test exit 0 both directions; producer plan schema carries the_button {document, image, why_ray_does_not_win} as required fields; routine Phase 3.7 spawns producer before Phase 4.",
+      "addresses": [
+        "button_doesnt_land"
+      ]
+    },
+    {
+      "run_date": "2026-08-02",
+      "upgrade": "THE FIRST END-TO-END DRY RUN OF THE NEW ROOMS, and it paid for itself in defects found. Ran Phase 3 -> 3.7 -> 4 -> 4.2 -> 4.4 -> 4.5 against a fixture, then re-ran 3.7 against the real cleared claims. Every phase fired, and every phase found something the phase before it got wrong. Shipped fixes: (1) scripts/coherence_check.py, a new gate catching the plan and the world describing different films, which two agents found independently and no human noticed; it shipped WITH the bug of passing on silence and was fixed the same run. (2) visual_check crashed on a world written as a string instead of an object, which is the shorthand a human writes; a gate that crashes is worse than one that misses because it prints a traceback instead of a report. (3) WORLD_KIT's warning that zero of thirteen primitives are built was one buried line and the producer walked straight into it, budgeting three props for 100 percent new construction; hoisted to the top of the file. (4) A KILL is now a WORK LIST that re-enters an editing loop, per the owner, matching the show's own law that a gate failure ends an attempt and never the run. (5) A reject now names where it goes; the director nearly sent thirteen serviceable lines back to the writers room for a producer's error. (6) Two new retro slugs, beautiful_and_unfunny and artifacts_fork, because the taxonomy could not name a set that is doing everything and still is not funny. (7) Schema fixes in producer, designer, writer and director specs, all found by the agents in their own specs, the most important being beats[].claims, since a beat with no claim binding is a beat nobody can check and that is the exact failure that already cost this show an episode.",
+      "files": [
+        "scripts/coherence_check.py",
+        "scripts/visual_check.py",
+        "scripts/retro.py",
+        "knowledge/WORLD_KIT.md",
+        "knowledge/FIELD_NOTES.md",
+        "prompts/BIGFUNNY_ROUTINE.md",
+        ".claude/agents/producer.md",
+        ".claude/agents/production-designer.md",
+        ".claude/agents/director.md",
+        ".claude/agents/devils-advocate.md",
+        ".claude/agents/writer.md",
+        "knowledge/examples/"
+      ],
+      "verified_by": "Every gate self-tests both directions and every gate verified against an EMPTY document, which is how the coherence bug was caught: story_check, visual_check, coherence_check all exit 1 on empty and on blank-but-present. visual_check verified on real content in both directions: 11 red rows on a talking-heads board, 16 of 16 green on a good one, both kept in knowledge/examples/. retro --check exits 0. refs_check clean, 29 files.",
+      "addresses": [
+        "artifacts_fork",
+        "beautiful_and_unfunny"
+      ]
     }
   ]
 }

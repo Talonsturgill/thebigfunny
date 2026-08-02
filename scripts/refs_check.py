@@ -34,9 +34,20 @@ SCAN = [
     "knowledge/CAST_BIBLE.md", "knowledge/ANGLE_TAXONOMY.md",
     "knowledge/FIELD_NOTES.md",
     "video-engine/src/lib/ASSET_MANIFEST.md",
-    ".claude/WORKLOG.md",
     ".claude/skills/bigfunny-dispatch/SKILL.md",
 ]
+
+# Scanned WHEN PRESENT. CLAUDE.md's instruction for the worklog is literally
+# "Delete this file when its wrap tasks are all DONE", so a hardcoded SCAN entry
+# turned the gate red for following the repo's own rule. It is the only entry
+# here that is meant to come and go; everything else above is permanent, and a
+# permanent file going missing is a real defect this gate should keep catching.
+# These are also exempt as REFERENCES, not only as scan targets. CLAUDE.md says
+# "If `.claude/WORKLOG.md` exists, READ IT FIRST", which is a conditional read
+# by construction, so pointing at it while it is absent is correct rather than
+# dangling. Keep this list to files the repo's own rules say come and go.
+OPTIONAL = {".claude/WORKLOG.md"}
+SCAN += [f for f in OPTIONAL if os.path.exists(os.path.join(REPO, f))]
 SCAN += [os.path.join(".claude/agents", f)
          for f in sorted(os.listdir(os.path.join(REPO, ".claude/agents")))
          if f.endswith(".md")]
@@ -75,7 +86,7 @@ def scan_file(rel):
     for n, line in enumerate(open(p, encoding="utf-8", errors="replace"), 1):
         for m in PATH_RE.finditer(line):
             ref = m.group(1)
-            if PLACEHOLDER.search(ref) or ref.startswith(RUNTIME):
+            if PLACEHOLDER.search(ref) or ref.startswith(RUNTIME) or ref in OPTIONAL:
                 continue
             if PLANNED.search(line):
                 continue

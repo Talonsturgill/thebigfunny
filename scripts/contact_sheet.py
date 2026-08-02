@@ -50,6 +50,7 @@ Exit 0 on success, 1 on failure.
 """
 import argparse
 import concurrent.futures
+import glob
 import os
 import re
 import subprocess
@@ -184,9 +185,18 @@ def pick_frames(total, n):
 
 def props_arg():
     """Same conditional as render.sh: Remotion HARD ERRORS on a --props path that
-    does not exist, so the flag is only passed when the file is really there."""
-    p = os.path.join(REPO, "out", "dispatch", "episode_props.json")
-    return [f"--props={p}"] if os.path.isfile(p) else []
+    does not exist, so the flag is only passed when the file is really there.
+
+    Routed through the freshness guard, because a contact sheet is what the
+    critics LOOK at: the previous episode's episode_props.json at the same path
+    renders a clean, plausible strip of the WRONG cut, and the room would grade
+    it. optional() returns None when it was never written and raises when it
+    exists and predates this run."""
+    sys.path.insert(0, os.path.join(REPO, "scripts"))
+    from run_guard import optional
+    p = optional(os.path.join(REPO, "out", "dispatch", "episode_props.json"),
+                 label="episode props")
+    return [f"--props={p}"] if p else []
 
 
 def render_one(comp, frame, path, scale, extra):
@@ -338,33 +348,49 @@ def main():
 
     tmp = a.keep or tempfile.mkdtemp(prefix="contact_sheet_")
     os.makedirs(tmp, exist_ok=True)
-    jobs, errors = render_all(a.comp, frames, tmp, a.scale, max(1, a.workers))
-    if errors:
-        print(f"\ncontact_sheet: {len(errors)} still(s) failed to render", file=sys.stderr)
-        for f, e in sorted(errors.items())[:3]:
-            print(f"  frame {f}: {e}", file=sys.stderr)
-        if len(errors) == len(frames):
+    # CLEANUP IS IN A finally, because it was not: when stitch() raised, the
+    # function returned before the cleanup block and leaked the mkdtemp directory
+    # and every PNG in it.
+    try:
+        jobs, errors = render_all(a.comp, frames, tmp, a.scale, max(1, a.workers))
+        if errors:
+            print(f"\ncontact_sheet: {len(errors)} of {len(frames)} still(s) failed "
+                  f"to render", file=sys.stderr)
+            for f, e in sorted(errors.items())[:3]:
+                print(f"  frame {f}: {e}", file=sys.stderr)
+            # A SHEET WITH HOLES IS NOT A SHEET. This returned 1 only when EVERY
+            # still failed, so 11 of 12 failing printed to stderr and exited 0
+            # with a one-cell grid. The critics READ this sheet and it is the
+            # only thing in the machine that ever LOOKS at the episode; handing
+            # them a sheet with holes and a green exit code is how "the scenes
+            # are boring" stayed invisible in the first place.
+            print(f"  A contact sheet is the only thing in this machine that LOOKS "
+                  f"at the episode.\n"
+                  f"  A partial one grades the frames that happened to render, so "
+                  f"this is a failure,\n"
+                  f"  not a warning. Fix the render and re-run.", file=sys.stderr)
             return 1
 
-    title = f"{a.comp}   {total} frames @ {fps}fps   {total / float(fps):.2f}s"
-    try:
-        size = stitch(jobs, fps, a.out, max(1, a.cols), a.cell_width, title)
-    except Exception as e:
-        print(f"contact_sheet: stitch failed: {e}", file=sys.stderr)
-        return 1
-    print(f"\ncontact_sheet: wrote {a.out} ({size[0]}x{size[1]}, "
-          f"{len(jobs) - len(errors)} cells)")
-    if not a.keep:
-        for _, p in jobs:
+        title = f"{a.comp}   {total} frames @ {fps}fps   {total / float(fps):.2f}s"
+        try:
+            size = stitch(jobs, fps, a.out, max(1, a.cols), a.cell_width, title)
+        except Exception as e:
+            print(f"contact_sheet: stitch failed: {e}", file=sys.stderr)
+            return 1
+        print(f"\ncontact_sheet: wrote {a.out} ({size[0]}x{size[1]}, "
+              f"{len(jobs)} cells)")
+        return 0
+    finally:
+        if not a.keep:
+            for p in glob.glob(os.path.join(tmp, "*.png")):
+                try:
+                    os.remove(p)
+                except OSError:
+                    pass
             try:
-                os.remove(p)
+                os.rmdir(tmp)
             except OSError:
                 pass
-        try:
-            os.rmdir(tmp)
-        except OSError:
-            pass
-    return 0
 
 
 if __name__ == "__main__":

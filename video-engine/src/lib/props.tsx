@@ -193,7 +193,8 @@ export const TallyCounter: React.FC<{
   count?: string; spin?: number; roll?: number; tag?: string;
 }> = ({x, y, s = 1, f, variant = 'clicker', count = '0001', spin = 1, roll = 0, tag}) => {
   const tB = tones(BRASS);
-  const uid = `tally${Math.round(x)}_${Math.round(y)}_${variant}`;
+  // Per instance, never per position. See ASSET_MANIFEST.
+  const uid = `tally${React.useId().replace(/:/g, '')}`;
   if (variant === 'clicker') {
     const k = Math.max(0, Math.min(1, spin));
     // needle whirls fast early, settles hard at the end (eased lock)
@@ -242,9 +243,22 @@ export const TallyCounter: React.FC<{
       <rect x={-w / 2} y={-34} width={w} height={68} rx={10} fill={`url(#${uid}_b)`} stroke={INK} strokeWidth={6} />
       <RimLight d={`M${-w / 2},-14 a10,10 0 0 1 8,-18`} w={3.5} opacity={0.55} />
       {digits.map((d, i) => {
+        // CARRY. `roll` used to animate the ones digit ONLY, so 09 -> 10 rendered
+        // as the ones wheel turning while the tens digit JUMPED, which is the one
+        // thing a mechanical odometer physically cannot do. Found by the
+        // production designer verifying a cast asset could do the job rather than
+        // merely exist, on the prop that carries an episode's whole mechanism.
+        //
+        // A real odometer carries: a wheel turns only when every wheel to its
+        // right is passing 9. So digit i rolls if it is the ones, or if every
+        // digit to its right is a 0 that is arriving this frame (meaning they are
+        // all rolling over together).
         const isOnes = i === digits.length - 1;
-        const flip = isOnes ? r : 0;
-        const prev = isOnes ? String((parseInt(d, 10) + 9) % 10) : d;
+        const rightOfMeAllRollingOver =
+          i < digits.length - 1 &&
+          digits.slice(i + 1).every((rd) => rd === '0');
+        const flip = isOnes || rightOfMeAllRollingOver ? r : 0;
+        const prev = flip > 0 ? String((parseInt(d, 10) + 9) % 10) : d;
         return (
           <g key={i} transform={`translate(${-w / 2 + 12 + 17 + i * 34},0)`}>
             <rect x={-15} y={-26} width={30} height={52} rx={4} fill={DIAL} stroke={INK} strokeWidth={4} />
@@ -282,7 +296,7 @@ export const VideoWeir: React.FC<{
   const p = Math.max(0, Math.min(1, plant));
   const drop = (1 - p) * -60;
   const tW = tones(WOOD);
-  const uid = `weir${Math.round(x)}_${Math.round(y)}`;
+  const uid = `weir${React.useId().replace(/:/g, '')}`;
   return (
     <g transform={`translate(${x},${y + drop}) scale(${s})`} opacity={Math.min(1, p * 1.5)}>
       <FormGradient id={`${uid}_w`} t={tW} />

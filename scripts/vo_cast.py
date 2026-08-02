@@ -66,9 +66,21 @@ TAIL = 1.5
 EXPECTED_TTS_MODEL = "gemini-3.1-flash-tts-preview"
 
 
+def _skill_on_path():
+    """Put the dispatch skill on sys.path ONCE per process.
+
+    `sys.path.insert(0, SKILL)` was written raw at four call sites, two of which
+    (take_path and take) run PER LINE, so sys.path grew unboundedly across a run
+    and every import after it walked a longer list. Idempotent, so calling it
+    from anywhere is free.
+    """
+    if SKILL not in sys.path:
+        sys.path.insert(0, SKILL)
+
+
 def resolved_model():
     """The model that will REALLY be used, read back from vo_gemini after import."""
-    sys.path.insert(0, SKILL)
+    _skill_on_path()
     import vo_gemini
     return vo_gemini.MODEL
 
@@ -274,7 +286,10 @@ def plan(script):
         out.append({"idx": i, "who": l["who"], "t": l["t"], "slot": round(nxt - l["t"], 3),
                     "text": l["text"], "voice": CAST[l["who"]]["voice"],
                     "claims": l.get("claims", []),
-                    "verbatim": bool(l.get("verbatim"))})
+                    "verbatim": bool(l.get("verbatim")),
+                    # fit() adds this to the cursor. Nothing set it, so a script
+                    # line asking for a beat of air got none.
+                    "hold": float(l.get("hold", 0.0) or 0.0)})
     return out
 
 
@@ -359,14 +374,13 @@ def check(script, planned):
 
 
 def strip_tags(t):
-    """Remove performance tags from anything a VIEWER reads.
+    """One definition, in scripts/captions_text.py, imported by both callers.
 
-    The tags are direction for the voice model, not dialogue. Left in, the
-    burned-in caption says "[sarcasm] Twenty-eight speakers", which is both
-    nonsense on screen and a backstage note shown to the audience. Stripped here,
-    at the one place captions are produced, so no scene can forget."""
-    import re as _re
-    return _re.sub(r"\s*\[[^\]]{1,20}\]\s*", " ", t).strip()
+    It used to be two copies of `\\[[^\\]]{1,20}\\]`, here and in
+    gen_captions_ts.py, and both were wrong the same way. See that module for
+    the bug and the rule that replaced it."""
+    from captions_text import strip_tags as _strip
+    return _strip(t)
 
 
 def cues(lines_out):
@@ -402,7 +416,7 @@ def take_path(p):
     Anything that changes how a take SOUNDS belongs in this string.
     """
     import hashlib
-    sys.path.insert(0, SKILL)
+    _skill_on_path()
     import vo_gemini
     c = CAST[p["who"]]
     key = hashlib.sha1(
@@ -465,6 +479,12 @@ TAKES = os.path.join(OUT, "takes")
 # gasping.
 GAP = 0.26
 
+# How many times an EMPTY 200 is retried. Gemini TTS sometimes answers 200 with
+# finishReason OTHER and no audio; that is transient and worth a retry. Named
+# because the loop said `range(4)` and printed "retry N/3", so the message and
+# the loop disagreed about how many attempts there were.
+_EMPTY_RETRIES = 4
+
 
 def take(p, sr):
     """Synthesize one line, trimmed, CACHED on disk by (voice, style, text).
@@ -492,19 +512,26 @@ def take(p, sr):
     # paid for. Observed live on 2026-08-02. Retry it here; it is transient.
     a = None
     direction = {k: c[k] for k in ("name", "scene", "style", "pace", "accent") if k in c}
-    for attempt in range(4):
+    for attempt in range(_EMPTY_RETRIES):
         try:
             a = trim_silence(vo_gemini.synth(p["text"], voice=p["voice"],
                                              direction=direction), sr)
             break
         except RuntimeError as e:
-            if "no audio in response" not in str(e) or attempt == 3:
+            if "no audio in response" not in str(e) or attempt == _EMPTY_RETRIES - 1:
                 raise
-            print(f"    retry {attempt + 1}/3 ({p['who']}, empty TTS response)")
+            print(f"    retry {attempt + 1}/{_EMPTY_RETRIES - 1} "
+                  f"({p['who']}, empty TTS response)")
+    # ATOMIC. Written straight to the cache key, a process killed mid-write left
+    # a truncated wav at a VALID key, and every later run read it as a paid-for
+    # take: wrong duration, garbage audio, and never re-synthesized because the
+    # only cache test is whether the path exists.
     os.makedirs(TAKES, exist_ok=True)
-    with _wave.open(path, "wb") as w:
+    tmp = path + ".tmp"
+    with _wave.open(tmp, "wb") as w:
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr)
         w.writeframes((np.clip(a, -1, 1) * 32767).astype("<i2").tobytes())
+    os.replace(tmp, path)
     return a
 
 
@@ -517,13 +544,17 @@ def fit(script, planned, path):
     those same frozen numbers. One source of truth, chosen with the facts in
     hand instead of guessed.
     """
-    sys.path.insert(0, SKILL)
+    _skill_on_path()
     from vo_backends import SR
 
     cursor, rows = 0.0, []
     for p in planned:
         dur = len(take(p, SR)) / SR
         rows.append((p, round(cursor, 2), dur))
+        # `hold` is honoured here and nothing upstream sets it. plan() builds each
+        # p from idx/who/t/slot/text/voice/claims/verbatim, so a script line
+        # asking for a hold was silently ignored by --fit. It is carried through
+        # from the SCRIPT line now, which is where a writer would put it.
         cursor += dur + GAP + float(p.get("hold", 0.0))
     end = cursor - GAP
     total = end + TAIL
@@ -550,7 +581,7 @@ def fit(script, planned, path):
 
 
 def synth_all(planned, script):
-    sys.path.insert(0, SKILL)
+    _skill_on_path()
     import numpy as np
     from vo_backends import SR
 
@@ -568,7 +599,21 @@ def synth_all(planned, script):
                 f"picture off the words, which is the failure the storyboard "
                 f"anchoring exists to prevent.")
         i0 = int(p["t"] * SR)
-        track[i0:i0 + len(a)] += a[:max(0, len(track) - i0)]
+        # A LINE THAT DOES NOT FIT ON THE TRACK IS A FAILURE, NOT A TRIM.
+        #
+        # This clamped to a zero-length slice when i0 >= len(track), so the line
+        # vanished from vo.wav while still appearing in vo_lines.json and
+        # captions.json with an end past the total. A caption for audio that is
+        # not there is the same class as a stale picture: every downstream file
+        # agrees and the mp4 does not match them.
+        if i0 >= len(track) or i0 + len(a) > len(track):
+            raise SystemExit(
+                f"FAIL the track is too short for {p['who']} at {p['t']}s: the line "
+                f"needs {(i0 + len(a)) / SR:.2f}s of track and there is "
+                f"{len(track) / SR:.2f}s.\n"
+                f"       Silently clipping it writes a caption for audio that is not "
+                f"in the file.")
+        track[i0:i0 + len(a)] += a
         lines_out.append({"idx": p["idx"], "who": p["who"], "start": p["t"],
                           "end": round(p["t"] + dur, 3), "text": p["text"],
                           "voice": p["voice"], "claims": p["claims"],

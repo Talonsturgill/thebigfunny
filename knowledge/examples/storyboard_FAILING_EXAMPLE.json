@@ -1,0 +1,61 @@
+{
+  "visual_system": {
+    "world": "a break room in Alaska with a window and snow outside"
+  },
+  "shots": [
+    {
+      "id": "s1",
+      "t": [
+        0.0,
+        18.0
+      ],
+      "figures": [
+        "RAY",
+        "DEE"
+      ],
+      "visual": "Ray and Dee stand in the break room talking",
+      "visual_contributes": "accompanies the dialogue",
+      "staging": {
+        "RAY": "left",
+        "DEE": "right"
+      },
+      "events": []
+    },
+    {
+      "id": "s2",
+      "t": [
+        18.0,
+        40.0
+      ],
+      "figures": [
+        "RAY",
+        "DEE"
+      ],
+      "visual": "Ray and Dee still standing, Dee gestures",
+      "visual_contributes": "sets the mood",
+      "staging": {
+        "RAY": "left",
+        "DEE": "right"
+      },
+      "events": []
+    },
+    {
+      "id": "s3",
+      "t": [
+        40.0,
+        56.0
+      ],
+      "figures": [
+        "RAY",
+        "DEE"
+      ],
+      "visual": "Ray and Dee standing, Ray shrugs",
+      "visual_contributes": "accompanies the dialogue",
+      "staging": {
+        "RAY": "right",
+        "DEE": "left"
+      },
+      "events": []
+    }
+  ]
+}

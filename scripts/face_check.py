@@ -48,7 +48,14 @@ MIN_REACTIONS = 2
 
 
 def analyse(script):
-    lines = script["lines"]
+    # A verdict, not a traceback. `script["lines"]` on a malformed document
+    # raised KeyError and printed a stack trace where a FAIL line belongs, and a
+    # gate that crashes has not failed the work, it has failed to run.
+    lines = script.get("lines") if isinstance(script, dict) else None
+    if not isinstance(lines, list) or not lines:
+        return (["no `lines` array in the script document, or it is empty. There is "
+                 "nothing to check, which is not the same as nothing being wrong."],
+                [])
     end = float(script.get("estimated_seconds")
                 or max(float(l["t"]) for l in lines) + 3.0)
     tracks = build(lines)
@@ -134,18 +141,36 @@ def self_test():
           + ("  <- " + "; ".join(p) if p else ""))
     ok &= not p
 
+    # EACH CASE NAMES THE GUARD IT MUST TRIP, and any OTHER red row fails it.
+    #
+    # 2026-08-02, repo-wide review, found by mutation: neutering MAX_HOLD_S left
+    # this self-test GREEN, and so did neutering MIN_CHANGES. Every red fixture
+    # also happened to trip the change counter, so two of three guards could be
+    # deleted and nothing noticed. The assertion was `bool(p)`, which asks only
+    # whether SOMETHING went red, and this is the file whose own header says a
+    # rule nobody can fail is a preference. visual_check and script_check already
+    # isolate; this was the outlier.
     cases = [
-        ("catches a face held for a whole shot",
+        # Held 30s (0.0 to 30.0) with SEVEN changes and two listener reactions,
+        # so only the hold guard can catch it.
+        ("catches a face held for a whole shot", ["holds"],
          script([{"t": 0.0, "who": "RAY", "face": {"RAY": "angry", "DEE": "flat"}},
-                 {"t": 2.0, "who": "DEE", "face": {"DEE": "smug"}},
+                 {"t": 2.0, "who": "DEE", "face": {"DEE": "smug", "RAY": "squint"}},
                  {"t": 4.0, "who": "RAY", "face": {"RAY": "flat"}},
-                 {"t": 6.0, "who": "DEE", "face": {"DEE": "squint"}},
-                 {"t": 8.0, "who": "RAY", "face": {"RAY": "smug"}},
-                 {"t": 9.0, "who": "DEE", "face": {"DEE": "shock"}}], 40.0)),
-        ("catches an episode with almost no expression changes",
-         script([{"t": 0.0, "who": "RAY", "face": {"RAY": "angry"}},
-                 {"t": 5.0, "who": "DEE", "face": {"DEE": "flat"}}], 12.0)),
-        ("catches a script where only the SPEAKER is ever directed",
+                 {"t": 6.0, "who": "DEE", "face": {"DEE": "squint", "RAY": "smug"}},
+                 {"t": 8.0, "who": "RAY", "face": {"RAY": "shock"}},
+                 {"t": 10.0, "who": "DEE", "face": {"DEE": "shock"}},
+                 {"t": 12.0, "who": "RAY", "face": {"RAY": "smug"}},
+                 {"t": 14.0, "who": "DEE", "face": {"DEE": "flat"}}], 40.0)),
+        # Two changes, both inside MAX_HOLD_S of the end and both reactions, so
+        # only the change counter can catch it.
+        ("catches an episode with almost no expression changes", ["expression change"],
+         script([{"t": 0.0, "who": "RAY", "face": {"RAY": "angry", "DEE": "flat"}},
+                 {"t": 3.0, "who": "DEE", "face": {"DEE": "smug", "RAY": "squint"}}],
+                8.0)),
+        # Seven changes, nobody held past the limit, and NOT ONE of them lands on
+        # the listener, so only the reaction guard can catch it.
+        ("catches a script where only the SPEAKER is ever directed", ["listener reaction"],
          script([{"t": 0.0, "who": "RAY", "face": {"RAY": "angry"}},
                  {"t": 4.0, "who": "DEE", "face": {"DEE": "flat"}},
                  {"t": 8.0, "who": "RAY", "face": {"RAY": "smug"}},
@@ -153,13 +178,30 @@ def self_test():
                  {"t": 16.0, "who": "RAY", "face": {"RAY": "shock"}},
                  {"t": 20.0, "who": "DEE", "face": {"DEE": "squint"}},
                  {"t": 24.0, "who": "RAY", "face": {"RAY": "flat"}}], 28.0)),
+        # Not isolable and it says so: an unknown register in a one-line script
+        # is short of every count by construction.
         ("catches a register the rig cannot draw",
+         ["is not a register", "holds", "expression change", "listener reaction"],
          script([{"t": 0.0, "who": "RAY", "face": {"RAY": "livid"}}], 10.0)),
     ]
-    for name, s in cases:
+    # RED on purpose: a malformed document gets a verdict, not a KeyError.
+    for bad, label in (({}, "a document with no lines at all"),
+                       ({"lines": []}, "a document whose lines are empty")):
+        got, _ = analyse(bad)
+        good_ = bool(got) and "lines" in got[0]
+        print(f"  {'ok  ' if good_ else 'FAIL'} catches: {label}")
+        ok &= good_
+
+    for name, want, s in cases:
         p, _ = analyse(s)
-        print(f"  {'ok  ' if p else 'FAIL'} {name}")
-        ok &= bool(p)
+        blob = " | ".join(p)
+        missed = [g for g in want if g not in blob]
+        extra = [x for x in p if not any(g in x for g in want)]
+        good_ = not missed and not extra
+        print(f"  {'ok  ' if good_ else 'FAIL'} {name}"
+              + (f"   <- did NOT fire: {missed}" if missed else "")
+              + (f"   <- not isolated, also fired: {extra}" if extra else ""))
+        ok &= good_
 
     print("\nself-test: " + ("both directions correct, as designed" if ok else "THE GATE IS WRONG"))
     return 0 if ok else 1

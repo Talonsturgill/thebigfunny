@@ -29,6 +29,10 @@ def norm_word(w):
     return re.sub(r"[^a-z0-9']", "", w.lower())
 
 
+# How much of the intended script the transcript has to actually contain.
+MATCH_FLOOR = 0.85
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--audio", required=True)
@@ -36,6 +40,9 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--total", type=float, default=60.0)
     ap.add_argument("--model", default="base", help="faster-whisper model size (base is enough for alignment)")
+    ap.add_argument("--allow-mismatch", action="store_true",
+                    help="write the timings even when the transcript does not match "
+                         "the script. For inspection only; never for a ship render.")
     a = ap.parse_args()
 
     from faster_whisper import WhisperModel
@@ -64,7 +71,7 @@ def main():
 
     if not words:
         print("FAIL: no words aligned — is the audio silent or non-speech?", file=sys.stderr)
-        sys.exit(1)
+        return 1
 
     speech_end = words[-1]["e"]
 
@@ -76,14 +83,27 @@ def main():
         want = [norm_word(t) for t in script_text.split() if norm_word(t)]
         ratio = difflib.SequenceMatcher(None, got, want).ratio()
         mismatch_note = f"  transcript_match={ratio:.3f} (vs intended script)"
-        if ratio < 0.85:
-            print(f"WARN: aligned transcript matches only {ratio:.0%} of the intended script — "
-                  f"check the VO audio for synthesis errors before shipping.", file=sys.stderr)
+        if ratio < MATCH_FLOOR:
+            # It used to WARN and then write the file and return 0, under a
+            # docstring saying "a mismatch count is reported so the caller can
+            # gate on it". No caller gated on it, because nothing in the repo
+            # invokes this script at all. A 40%-wrong transcript writing its
+            # output and exiting clean is a caption track that will burn the
+            # wrong words onto the picture at the wrong times.
+            print(f"FAIL: the aligned transcript matches only {ratio:.0%} of the "
+                  f"intended script (floor {MATCH_FLOOR:.0%}).\n"
+                  f"      The VO said something other than the script, or the "
+                  f"alignment is on the wrong audio.\n"
+                  f"      {a.out} was NOT written. Pass --allow-mismatch to write it "
+                  f"anyway for inspection.", file=sys.stderr)
+            if not a.allow_mismatch:
+                return 1
 
     out = {"words": words, "speech_end": round(speech_end, 3), "total": a.total, "fps": 30}
     Path(a.out).write_text(json.dumps(out, indent=1))
     print(f"aligned {len(words)} words, speech_end={speech_end:.2f}s -> {a.out}{mismatch_note}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -42,7 +42,13 @@ import React from 'react';
 import {AbsoluteFill, Sequence, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
 import {z} from 'zod';
 import {Ray, Dee} from './lib/cast';
-import type {Emotion} from './lib/Character';
+// From the LIVE rig. lib/cast.tsx says Character.tsx "is not the cast any
+// more" and takes its Emotion from Figure, while these files took theirs
+// from the retired crowd rig. The two unions are identical today, so
+// nothing is broken and tsc cannot warn: they are structurally compatible
+// until they are not, and the first divergence would land as a browless,
+// mouthless face at render time.
+import type {Emotion} from './lib/Figure';
 import {Wordmark, CaseNumber, EndCard, Highlighter, Stamp, BRAND} from './lib/brand';
 import {StairwellBG} from './lib/biomes';
 import {GradeLayer} from './lib/lighting';

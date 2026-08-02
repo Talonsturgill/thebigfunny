@@ -144,8 +144,11 @@ Strict JSON. No prose outside it.
 ```json
 {
   "plannable": true,
+  "shippable": false,
+  "blocked_on": ["why this must not be scripted, boarded or rendered yet"],
   "missing_inputs": [],
-  "case": 0,
+  "case": null,
+  "claims_ref": {"file": "out/dispatch/claims.json", "case": 0},
   "logline": "one sentence, what this film is, not what it is about",
   "mechanism": "the operation, step by step, in one sentence",
   "world": {
@@ -154,7 +157,8 @@ Strict JSON. No prose outside it.
     "why_this_is_the_world": "how it answers the three questions",
     "can_be_operated": "the lever, belt, chute, slot or plug",
     "can_be_broken": "what breaking it looks like",
-    "new_assets_needed": ["prop names to build and register"],
+    "new_props": ["one-run props to draw and register in ASSET_MANIFEST"],
+    "missing_primitives": ["WORLD_KIT primitives this leans on that are SKETCHES, not built .tsx"],
     "rejected_world": "the other candidate",
     "why_it_lost": "one sentence"
   },
@@ -163,18 +167,21 @@ Strict JSON. No prose outside it.
     "dee": "where she is and what she holds",
     "institution": "which piece of the machinery it is (no face, ever)"
   },
-  "escalation": {
-    "step_1": "visual event, under dialogue",
-    "step_2": "worse",
-    "step_3": "the break"
-  },
+  "escalation": [
+    {"at_seconds": 0.0, "what": "visual event, under dialogue"},
+    {"at_seconds": 0.0, "what": "worse"},
+    {"at_seconds": 0.0, "what": "the break"}
+  ],
   "beats": [
     {
       "id": "hook|turn|ray_finds_out|institution_answers|button",
       "seconds": [0.0, 5.0],
       "what_happens": "",
       "what_the_viewer_SEES": "",
-      "visual_move": "sight-gag|escalation|scale-reversal|literalized-metaphor|reveal|wrong-object|none",
+      "claims": ["claim-ids this beat is licensed by; [] means it asserts NO fact"],
+      "visual_moves": ["sight-gag|escalation|scale-reversal|literalized-metaphor|reveal|wrong-object"],
+      "visual_events": 0,
+      "longest_hold_s": 0.0,
       "is_floating_two_shot": false
     }
   ],
@@ -182,10 +189,12 @@ Strict JSON. No prose outside it.
   "the_plant": {"planted_at_s": 0.0, "paid_off_at_s": 0.0, "what": "", "visual_or_verbal": "visual"},
   "the_button": {
     "document": "the real receipt on screen",
+    "claim": "the claim-id of the document the button puts on screen",
     "image": "what the frame looks like",
     "why_ray_does_not_win": ""
   },
   "projected": {
+    "_note": "SUMMED from beats[], never asserted alongside them, so the director can re-derive instead of taking it on faith",
     "visual_events": 0,
     "longest_hold_s": 0.0,
     "floating_two_shot_s": 0.0
@@ -198,6 +207,37 @@ Strict JSON. No prose outside it.
   "verdict": "plan | split | no-episode-here"
 }
 ```
+
+### Rules the schema now enforces, and why
+
+These came out of the first dry run, where the producer room found seven gaps in
+its own spec. Every one of them is a way a plan could have handed a later phase
+something false.
+
+- **`plannable` and `shippable` are different questions.** A plan can be
+  perfectly derivable and completely unshippable, which is exactly what happens
+  when Phase 2 has not cleared the subject. A writers room reading
+  `plannable: true` has been told the wrong thing. Say what blocks it, in
+  `blocked_on`, where a downstream phase must read it.
+- **Every beat carries its claim-ids, and `[]` is a real answer meaning it
+  asserts no fact.** This is the one that already cost a run: case 0002's board
+  drew a "28 SPEAKERS" badge that taught a claim the fact-checker had CUT. A
+  beat with no claim binding is a beat nobody can check.
+- **`case` is nullable and paired with `claims_ref`.** Today's dry run found
+  claims.json on disk belonging to a different story. That must be a schema
+  violation a machine can see, not a thing an agent has to happen to notice.
+- **`escalation` steps carry timestamps** so they can be checked against
+  `beats`. Writing the ladder twice in prose lets the two copies drift silently.
+- **Beats carry their own `visual_events` and `longest_hold_s`, and `projected`
+  is SUMMED from them.** An asserted total the consumer cannot re-derive is a
+  number to be taken on faith, and the director should never take a count on
+  faith.
+- **`new_props` and `missing_primitives` are separate lines.** "Draw a lamp
+  panel" and "build the Passage primitive the engine has never implemented" are
+  not the same cost, and printing them the same width makes every plan look
+  cheap.
+- **`visual_moves` is a list.** A hook can be a literalized metaphor and a scale
+  reversal at once, and forcing one loses information.
 
 `no-episode-here` is a real and useful answer. It ends an ATTEMPT and never the
 run, and it costs the run a phase instead of a render, a script, a panel and a

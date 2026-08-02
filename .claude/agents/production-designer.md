@@ -22,7 +22,14 @@ else; it is your doctrine, your procedure and your parts list.
 ## Read
 
 - `out/dispatch/claims.json` (the CLEARED claim set, post fact-check)
-- `out/dispatch/angle.json` (the locked angle)
+- THE LOCKED ANGLE, which is CONTENT and not a filename. It is a mechanism
+  sentence sourced to cleared claim ids. It normally lives in
+  `out/dispatch/story.json` (`absurd_sentence`, `who_does_the_stupid_thing`,
+  `why_absurd_not_just_bad`, `licensed_by`), which is the name the routine
+  prompt and `scripts/story_check.py` both use. Older specs called it
+  `angle.json`; read whichever is present, and NAME THE FILE YOU FOUND IT IN in
+  your output. Return `designable: false` only when the CONTENT is absent from
+  every candidate, never because one filename is.
 - `knowledge/WORLD_KIT.md` (the doctrine, the derivation procedure, the primitives)
 - `video-engine/src/lib/ASSET_MANIFEST.md` (what already exists)
 - `ledger/artwork.json` (divergence rules; the world is now the sixth axis)
@@ -136,6 +143,8 @@ Write `out/dispatch/world.json` and return the same object.
 ```json
 {
   "designable": true,
+  "shippable": false,
+  "blocked_on": ["why this set must not be built, rendered or published yet"],
   "missing_inputs": [],
   "mechanism": {"sentence": "", "claim_ids": []},
   "rejected_worlds": [{"world": "", "killed_because": ""}],
@@ -155,11 +164,20 @@ Write `out/dispatch/world.json` and return the same object.
   },
   "palette": {"key": "", "fill": "", "shade": "", "ink": "", "accent": "", "family": ""},
   "lighting_rig": "one of WORLD_KIT WorldLight",
-  "cast_from_kit": [{"primitive": "", "file": "", "used_as": ""}],
+  "the_turn": {
+    "at_seconds": 0.0,
+    "what_gets_worse": "the SAME turn the producer's plan names, restated as a PICTURE rather than as an event. Not a new turn: if you disagree with the producer's, stage theirs and put your disagreement in unresolved_dissent, because two documents naming different turns is exactly what scripts/coherence_check.py catches and `artifacts_fork` is a logged repeat offender. This field exists because without it the coherence gate can never be anything but red on the turn row, which trains the room to ignore a red gate."
+  },
+  "cast_from_kit": [
+    {"primitive": "", "status": "exists|substituted|not_required|NOT_BUILT",
+     "file": "the real path, or null", "substituted_by": "what you used instead",
+     "used_as": ""}
+  ],
   "new_assets": [
     {"name": "", "kind": "set | prop", "file": "", "prop_shape": "", "manifest_line": ""}
   ],
-  "sight_gags": [{"gag": "", "plays_with_sound_off": true, "beat": ""}],
+  "sight_gags": [{"gag": "", "requires_claim_shape": "the claim this gag needs cleared, or null if it asserts nothing",
+     "plays_with_sound_off": true, "beat": ""}],
   "shots": [
     {"beat": 0, "on_screen": "", "camera": "", "world_is_doing": "", "changed_since_last": ""}
   ],
@@ -167,3 +185,47 @@ Write `out/dispatch/world.json` and return the same object.
   "handoff_to_board": ["at most 5 lines the storyboard must honour"]
 }
 ```
+
+## Two rules the first dry run added
+
+**When the producer has already chosen a world, your job is to TEST that choice,
+not to ratify it.** Propose your three and kill two on the record anyway. If you
+think the producer's world is wrong, say so and say why: your dissent is worth
+more to the run than your agreement, and a spec that merely permits testing will
+be read as permitting rubber-stamping by a tired agent at the end of a long run.
+
+**Run divergence against WORLD_KIT's five worked examples, not only against
+`ledger/artwork.json`.** With two entries in the ledger, "differs from the last
+four" is trivially true and certifies nothing. The worked examples are the real
+prior art, and the first dry run's chute was genuinely close to example 3, the
+Pitch Shaft, which no rule asked anybody to check.
+
+## Three more spec fixes, from pass 2
+
+**Require CONTENT, not a FILENAME.** The spec said to read `angle.json` and to
+return `designable: false` if an expected file is missing. Both dry runs hit the
+same wall: the angle CONTENT was on disk under different keys in `story.json`,
+so a literal reading kills a run over a filename while the artifact is present,
+and a loose reading lets a tired agent wave through a genuinely absent input.
+
+What you actually require is a MECHANISM SENTENCE SOURCED TO CLEARED CLAIMS.
+Find it wherever it lives, name the file you found it in, and keep the hard
+refusal for when the CONTENT is absent. The same defect applies to any step that
+names a file rather than the thing the file is supposed to contain.
+
+**`not_required` and `NOT_BUILT` are different signals.** The status enum
+resolves what the procedure text does not, so it is written down here:
+- `not_required` means absent AND UNWANTED. The world does not need it. This is
+  good news and costs a build run nothing.
+- `NOT_BUILT` means absent AND I WANTED IT. This is debt, and a build run has to
+  see it as debt.
+Pass 1 had to invent this distinction mid-flight. Do not make the next agent
+invent it again.
+
+**Casting means checking an asset's PROPS, not its path.** Before writing
+"composes X", open X and confirm the parameter you need is real. Pass 2 found
+four assets that exist, are registered, have correct paths and cannot do the job
+they were cast for, including one whose defect was live in shipped code. See the
+CASTABILITY section in ASSET_MANIFEST.md. An asset that exists and cannot be
+parameterised is worse than a missing one: a missing asset gets budgeted and a
+mis-cast one gets discovered at the render.

@@ -50,7 +50,12 @@ export const BoxLabel: React.FC<{
   x: number; y: number; text: string; w?: number; h?: number; fs?: number;
   fill?: string; color?: string; rot?: number; sub?: string; flat?: boolean;
 }> = ({x, y, text, w = 320, h = 74, fs = 40, fill = ICE, color = INK, rot = 0, sub, flat = false}) => {
-  const gid = `boxlbl_${Math.round(x)}_${Math.round(y)}_${w}`;
+  // PER INSTANCE, never per position. Position is not identity, and two of a
+  // thing in one frame is the normal case in this show: the id used to be
+  // derived from x and y, so two instances at the same coordinates shared
+  // every def and the second silently took the first's. Same class as the
+  // ghost-parka bug. useId is Remotion-deterministic.
+  const gid = `boxlbl${React.useId().replace(/:/g, '')}`;
   const t = tones(fill);
   return (
     <g transform={`translate(${x},${y}) rotate(${rot})`}>
@@ -324,6 +329,17 @@ export const AlaskaMini: React.FC<{frame: number; x: number; y: number; scale?: 
             <path d="M0,26 C -20,2 -20,-16 0,-24 C 20,-16 20,2 0,26 Z" fill={RED} stroke={INK} strokeWidth={5.5} strokeLinejoin="round" />
             <circle cx={0} cy={-6} r={7.5} fill={ICE} stroke={INK} strokeWidth={4} />
           </g>
+          {/* pinLabel was declared, destructured and RENDERED NOWHERE, so a board
+              that cast this for a label got no label and no error. Either the prop
+              draws something or it should not be in the signature. */}
+          {pinLabel && (
+            <text x={300} y={20} textAnchor="middle" fontSize={30} fontWeight={800}
+                  fill={INK} stroke={SNOW} strokeWidth={7} paintOrder="stroke"
+                  style={{fontFamily: 'Barlow Condensed, Impact, sans-serif',
+                          letterSpacing: 1.5}}>
+              {pinLabel.toUpperCase()}
+            </text>
+          )}
         </>
       )}
     </g>
@@ -359,7 +375,7 @@ export const Sourdough: React.FC<{
   const blink = idle > 0 && ((f + 30) % 110) < 5 && emotion !== 'faltering';
   const bodyT = tones('#c9741f');   // warm ember-adjacent housing color
   const capT = tones('#3A4A63');    // frost-blue knit cap, matches the palette's ground tone
-  const idg = `sd${Math.round(x)}_${Math.round(y)}`;
+  const idg = `sd${React.useId().replace(/:/g, '')}`;
   const chestGlow = Math.max(0.08, glow) * (1 + accent * 0.35);
   const browDrop = emotion === 'faltering' ? 6 : 0;
   const mouthCurve = emotion === 'confident' ? 10 : emotion === 'faltering' ? -6 : 4;
@@ -461,7 +477,7 @@ export const Cell: React.FC<{
 }> = ({frame: f, x = 0, y = 0, scale = 1, facing = 1, chargeLevel = 1}) => {
   const t = tones('#2f7d6b');   // cold-hardened teal-green casing
   const bob = vitals(f, 2.0, 0.55).bob;   // living idle (vitals) — was a single sine
-  const idg = `cl${Math.round(x)}_${Math.round(y)}`;
+  const idg = `cl${React.useId().replace(/:/g, '')}`;
   return (
     <g transform={`translate(${x},${y}) scale(${scale * facing},${scale})`}>
       <FormGradient id={idg} t={t} />
@@ -506,7 +522,7 @@ export const Vale: React.FC<{
 }> = ({frame: f, x = 0, y = 0, scale = 1, facing = 1, emotion = 'vigilant', eyeLock = 0, accent = 0, groundY, rotor = true}) => {
   const bodyT = tones('#8C99A8');   // cool gunmetal
   const tankT = tones('#3f6f6a');   // teal suppressant tank
-  const idg = `vale${Math.round(x)}_${Math.round(y)}`;
+  const idg = `vale${React.useId().replace(/:/g, '')}`;
   const bob = vitals(f, 3.0, 1.15).bob;   // living idle (vitals) — was a single sine
   const lock = Math.max(0, Math.min(1, eyeLock));
   // iris: wide when scanning, clamps SMALL and bright when locked
@@ -621,27 +637,53 @@ export const Vale: React.FC<{
 const MS_GRAPHITE = '#3a4652';
 const MS_GRAPHITE_D = '#232c34';
 
-export const MachineShadow: React.FC<{x: number; y: number; scale?: number; f: number; grow?: number}> = ({x, y, scale = 1, f, grow = 1}) => {
+/**
+ * `tint` added 2026-08-02. ASSET_MANIFEST listed this as a castability gap for
+ * weeks: the colours were module constants plus three hardcoded gradient stops,
+ * so an episode could cast the Institution's body and could not put it in this
+ * episode's livery. CAST_BIBLE's rule is "same silhouette, new livery", and half
+ * of that was unreachable. The count-room world blocked on exactly this.
+ *
+ * Default is the graphite it has always been, so every existing board renders
+ * byte-identical.
+ */
+const msShades = (tint?: string) => {
+  if (!tint) return {lit: '#5c6b7a', mid: MS_GRAPHITE, dark: MS_GRAPHITE_D};
+  const t = tones(tint);
+  return {lit: t.key, mid: t.base, dark: t.shade};
+};
+
+export const MachineShadow: React.FC<{
+  x: number; y: number; scale?: number; f: number; grow?: number;
+  /** Livery. Omit for the graphite monolith. */
+  tint?: string;
+}> = ({x, y, scale = 1, f, grow = 1, tint}) => {
   const sway = 3 * Math.sin(f / 22);
-  const gid = `msLit-${Math.round(x)}-${Math.round(y)}`;
+  const sh = msShades(tint);
+  // PER INSTANCE, not per position. `msLit-${x}-${y}` meant two monoliths at the
+  // same coordinates in one frame shared a gradient def, and the second silently
+  // took the first's colours. That is the same class as the ghost-parka bug,
+  // where a position-derived id had two figures sharing a clip path across every
+  // episode with two matching characters. useId is Remotion-deterministic.
+  const gid = `msLit${React.useId().replace(/:/g, '')}`;
   return (
     <g transform={`translate(${x},${y}) scale(${scale})`} opacity={0.92}>
       <linearGradient id={gid} x1="0%" y1="0%" x2="100%" y2="10%">
-        <stop offset="0%" stopColor="#5c6b7a" />
-        <stop offset="45%" stopColor={MS_GRAPHITE} />
-        <stop offset="100%" stopColor={MS_GRAPHITE_D} />
+        <stop offset="0%" stopColor={sh.lit} />
+        <stop offset="45%" stopColor={sh.mid} />
+        <stop offset="100%" stopColor={sh.dark} />
       </linearGradient>
       <g transform={`scaleY(${Math.max(0.02, grow)})`} style={{transformOrigin: '0px 0px'}}>
         <path d="M-60,0 L-46,-360 L46,-360 L60,0 Z" fill={`url(#${gid})`} stroke={INK} strokeWidth={6} strokeLinejoin="round" />
-        <path d="M10,-360 L46,-360 L60,0 L26,0 Z" fill={MS_GRAPHITE_D} opacity={0.75} />
+        <path d="M10,-360 L46,-360 L60,0 L26,0 Z" fill={sh.dark} opacity={0.75} />
         <path d="M-46,-360 L-60,0" fill="none" stroke="#9aabb8" strokeWidth={3} opacity={0.55} strokeLinecap="round" />
         <g transform={`translate(0,-360) rotate(${sway})`}>
           <line x1={0} y1={0} x2={-40} y2={-90} stroke={INK} strokeWidth={7} strokeLinecap="round" />
           <line x1={0} y1={0} x2={10} y2={-110} stroke={INK} strokeWidth={7} strokeLinecap="round" />
           <line x1={0} y1={0} x2={54} y2={-70} stroke={INK} strokeWidth={7} strokeLinecap="round" />
-          <circle cx={-40} cy={-90} r={7} fill={MS_GRAPHITE_D} stroke={INK} strokeWidth={4} />
-          <circle cx={10} cy={-110} r={7} fill={MS_GRAPHITE_D} stroke={INK} strokeWidth={4} />
-          <circle cx={54} cy={-70} r={7} fill={MS_GRAPHITE_D} stroke={INK} strokeWidth={4} />
+          <circle cx={-40} cy={-90} r={7} fill={sh.dark} stroke={INK} strokeWidth={4} />
+          <circle cx={10} cy={-110} r={7} fill={sh.dark} stroke={INK} strokeWidth={4} />
+          <circle cx={54} cy={-70} r={7} fill={sh.dark} stroke={INK} strokeWidth={4} />
         </g>
         {[-260, -180, -100, -30].map((yy, i) => (
           <path key={i} d={`M${-52 + i * 2},${yy} L${52 - i * 2},${yy}`} stroke={INK} strokeWidth={4} opacity={0.5} />
@@ -649,13 +691,13 @@ export const MachineShadow: React.FC<{x: number; y: number; scale?: number; f: n
         {Array.from({length: 6}).map((_, i) => {
           const yy = -320 + i * 44;
           const on = ((f / 6 + i * 3) % 11) < 4;
-          return <circle key={i} cx={-30} cy={yy} r={5} fill={on ? '#e8b45a' : MS_GRAPHITE_D} stroke={INK} strokeWidth={2.5} />;
+          return <circle key={i} cx={-30} cy={yy} r={5} fill={on ? (tint ? tones(tint).key : '#e8b45a') : MS_GRAPHITE_D} stroke={INK} strokeWidth={2.5} />;
         })}
         {[-300, -240, -180].map((yy, i) => (
-          <rect key={i} x={12} y={yy} width={30} height={10} rx={3} fill={MS_GRAPHITE_D} stroke={INK} strokeWidth={2.5} opacity={0.85} />
+          <rect key={i} x={12} y={yy} width={30} height={10} rx={3} fill={sh.dark} stroke={INK} strokeWidth={2.5} opacity={0.85} />
         ))}
-        <path d="M-92,0 q92,34 184,0 q-92,26 -184,0 Z" fill={MS_GRAPHITE_D} stroke={INK} strokeWidth={5} opacity={0.85} />
-        <path d="M-70,0 q70,28 140,0 q-70,22 -140,0 Z" fill={MS_GRAPHITE} opacity={0.6} />
+        <path d="M-92,0 q92,34 184,0 q-92,26 -184,0 Z" fill={sh.dark} stroke={INK} strokeWidth={5} opacity={0.85} />
+        <path d="M-70,0 q70,28 140,0 q-70,22 -140,0 Z" fill={sh.mid} opacity={0.6} />
       </g>
       <ellipse cx={0} cy={6} rx={110} ry={20} fill={INK} opacity={0.3} />
     </g>
@@ -681,7 +723,8 @@ export const SatelliteEye: React.FC<{
 }> = ({frame: f, x = 0, y = 0, scale = 1, facing = 1, emotion = 'searching', eyeLock = 0, accent = 0, scanCone = 0, strain = 0}) => {
   const bodyT = tones('#9AA6B4');   // cool pewter-gunmetal bus
   const cellT = tones('#2b3a6b');   // indigo solar cells
-  const idg = `sat${Math.round(x)}_${Math.round(y)}`;
+  // Per instance. Two satellites at the same coordinates shared every def.
+  const idg = `sat${React.useId().replace(/:/g, '')}`;
   const bob = vitals(f, 4.0, 1.35).bob + accent * 4;   // living idle (vitals) — was a single sine
   const lock = Math.max(0, Math.min(1, eyeLock));
   // iris: wide + sweeping while searching, CLAMPS small + bright when found (locked)
@@ -814,7 +857,7 @@ export const Petrel: React.FC<{
 }> = ({frame: f, x = 0, y = 0, scale = 1, facing = 1, emotion = 'eager', eyeDilate = 1, accent = 0, heading = 0, groundY, rotor = true}) => {
   const bodyT = tones('#EBD9B0');   // warm cream shell
   const trimT = tones('#D9B87A');   // gold trim
-  const idg = `petrel${Math.round(x)}_${Math.round(y)}`;
+  const idg = `petrel${React.useId().replace(/:/g, '')}`;
   const bob = vitals(f, 5.0, 1.35).bob;   // living idle (vitals) — was a single sine
   const dil = Math.max(0, Math.min(1, eyeDilate));
   const kick = Math.max(0, Math.min(1, accent));
@@ -908,7 +951,7 @@ export const Petrel: React.FC<{
 export const PetrelDock: React.FC<{f: number; x: number; y: number; scale?: number; lidOpen?: number}> = ({f, x, y, scale = 1, lidOpen = 1}) => {
   const t = tones('#8B98A6');   // cold slate (quarantined industry blue-gray)
   const lo = Math.max(0, Math.min(1, lidOpen));
-  const gid = `dock${Math.round(x)}_${Math.round(y)}`;
+  const gid = `dock${React.useId().replace(/:/g, '')}`;
   return (
     <g transform={`translate(${x},${y}) scale(${scale})`}>
       <ContactShadow cx={0} cy={12} rx={150} ry={22} opacity={0.3} />

@@ -30,6 +30,10 @@ import sys
 
 # From config/scoring_rubric.yaml and CLAUDE.md. Duplicated nowhere else.
 MAX_SECONDS = 60.0
+# The other end of the law, which had no guard: a zero-duration mp4 satisfies
+# `<= 60` perfectly. Nothing this show ships is under ten seconds; the shortest
+# episode shape in CAST_BIBLE is five beats.
+MIN_SECONDS = 10.0
 WANT_W, WANT_H = 1080, 1920
 # A 60s 1080x1920 h264 render is megabytes. Anything tiny is a broken encode that
 # still exited 0, which is a real failure mode worth catching.
@@ -38,7 +42,12 @@ MIN_BYTES = 250_000
 
 def _boxes(f, end, depth=0):
     """Walk ISO-BMFF boxes at the current offset. Yields (type, start, size)."""
-    while f.tell() < end - 8:
+    # `< end - 8` skipped a box whose header is the last 8 bytes of the parent.
+    # An empty box (size 8, no payload) is legal ISO-BMFF and is exactly what a
+    # zero-sample track looks like, so the walker could not see the thing most
+    # worth seeing. The short-read guard three lines down already handles a
+    # genuinely truncated tail.
+    while f.tell() <= end - 8:
         start = f.tell()
         hdr = f.read(8)
         if len(hdr) < 8:
@@ -138,8 +147,16 @@ def check(path):
     row("parses as mp4", True, f"brand={info['brand']}")
 
     d = info["duration"]
-    row("duration readable", d is not None, f"{d:.2f}s" if d else "no mvhd")
+    # `f"{d:.2f}s" if d else "no mvhd"` printed "no mvhd" for a duration of
+    # exactly 0.0, which IS readable and is a real defect: a zero-length mp4
+    # satisfies `duration <= 60` and passed the law it was measured against.
+    row("duration readable", d is not None,
+        "no mvhd" if d is None else f"{d:.2f}s")
     if d is not None:
+        row(f"duration >= {MIN_SECONDS}s (there is an episode in here)",
+            d >= MIN_SECONDS,
+            f"{d:.2f}s" + ("" if d >= MIN_SECONDS else
+                           "  <- an empty encode passes every ceiling there is"))
         row(f"duration <= {MAX_SECONDS}s (sixty_seconds law)", d <= MAX_SECONDS,
             f"{d:.2f}s")
 
@@ -158,7 +175,7 @@ def check(path):
     return all(ok for _, ok, _ in rows), rows
 
 
-def _synth_mp4(path, w=WANT_W, h=WANT_H, dur_s=57.0, audio=True):
+def _synth_mp4(path, w=WANT_W, h=WANT_H, dur_s=57.0, audio=True, pad_bytes=None):
     """A minimal but structurally REAL mp4 container, for testing the parser."""
     def box(t, payload):
         return struct.pack(">I", len(payload) + 8) + t.encode() + payload
@@ -179,7 +196,8 @@ def _synth_mp4(path, w=WANT_W, h=WANT_H, dur_s=57.0, audio=True):
     if audio:
         traks += box("trak", tkhd(0, 0) + box("mdia", hdlr("soun")))
     data = box("ftyp", b"isom" + struct.pack(">I", 512) + b"isomavc1")
-    data += box("moov", mvhd + traks) + box("mdat", b"\x00" * (MIN_BYTES + 50_000))
+    pad = (MIN_BYTES + 50_000) if pad_bytes is None else pad_bytes
+    data += box("moov", mvhd + traks) + box("mdat", b"\x00" * pad)
     open(path, "wb").write(data)
     return path
 
@@ -201,8 +219,20 @@ def self_test():
     with tempfile.TemporaryDirectory() as d:
         must_fail.append(("missing file", os.path.join(d, "missing.mp4")))
 
+        # ISOLATION. Mutation-tested 2026-08-02: with MIN_BYTES set to 0 this
+        # case stayed RED, because a 1000-byte file of nulls is also caught by
+        # the "duration readable" row. It was proving a neighbour, not the size
+        # guard. A real-but-tiny encode has to be a PARSEABLE mp4 that is simply
+        # too small to be sixty seconds of 1080x1920.
         p = os.path.join(d, "tiny.mp4"); open(p, "wb").write(b"\x00" * 1000)
         must_fail.append(("truncated/tiny encode", p))
+        must_fail.append(("a parseable mp4 far too small to be this episode",
+                          _synth_mp4(os.path.join(d, "small.mp4"), dur_s=57.0,
+                                     pad_bytes=0)))
+        # And the other end of the law, which had no guard at all: a zero-length
+        # encode satisfies `duration <= 60` perfectly.
+        must_fail.append(("a zero-duration encode",
+                          _synth_mp4(os.path.join(d, "zero.mp4"), dur_s=0.0)))
 
         p = os.path.join(d, "garbage.mp4"); open(p, "wb").write(os.urandom(MIN_BYTES + 10))
         must_fail.append(("unparseable container", p))

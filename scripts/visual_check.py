@@ -393,6 +393,16 @@ def check(sb):
     # -- 4. WORLD RELEVANCE -------------------------------------------------
     vsys = sb.get("visual_system") or {}
     world = vsys.get("world") or {}
+    # A board author will naturally write `world: "a sorting floor"` as a STRING,
+    # and this used to do `.get` on it and die with an AttributeError. A gate that
+    # CRASHES is worse than one that misses: it exits non-zero so the run stops,
+    # but it prints a traceback instead of a report, so nobody learns which rule
+    # was broken. Coerce the shorthand into the long form and let the normal rows
+    # fail it honestly for the fields it is missing.
+    if isinstance(world, str):
+        world = {"name": world, "drawn_from": [], "why_this_world": ""}
+    if not isinstance(world, dict):
+        world = {}
     wname = str(world.get("name", "")).strip()
     wwhy = str(world.get("why_this_world", "")).strip()
     drawn = [str(x) for x in (world.get("drawn_from") or []) if str(x).strip()]
@@ -456,6 +466,21 @@ def check(sb):
         f"the label." if unstated else "stated")
 
     # -- 6. SCREEN-SIDE CONTINUITY ------------------------------------------
+    #
+    # `staging` IS REQUIRED, and both rows below used to pass when it was absent.
+    # `s.get("staging") or {}` turned a shot that never declared where anybody
+    # stands into a shot with no bad sides and no flips, so stripping staging
+    # from every shot of the good fixture left the board PASSING. The schema
+    # header declares shots[].staging required, and a continuity check that
+    # certifies a board with no staging in it certifies nothing.
+    missing_staging = [str(s.get("id")) for s in ss
+                       if not isinstance(s.get("staging"), dict) or not s.get("staging")]
+    row("every shot declares where the cast STAND", not missing_staging,
+        f"{len(missing_staging)} shot(s) have no `staging`: {missing_staging[:4]}. "
+        f"Screen-side continuity cannot be checked on a board that never says "
+        f"which side anybody is on, and it silently PASSED both rows below."
+        if missing_staging else f"all {len(ss)} shot(s)")
+
     bad_side, flips = [], []
     for i, s in enumerate(ss):
         stg = s.get("staging") or {}
@@ -765,6 +790,14 @@ def self_test():
         ("a sight gag nobody can state", ["states the joke", "sight gags"],
          _board([dict(s, events=[{k: v for k, v in e.items() if k != "the_joke"}
                                  for e in s["events"]]) for s in g])),
+        # The shorthand a human actually writes. It used to CRASH the gate with
+        # an AttributeError, which is worse than a miss: the run stops on a
+        # traceback and nobody learns which rule broke. It must GRADE now, and
+        # fail honestly for the fields the shorthand does not carry.
+        ("a world written as a bare string instead of an object",
+         ["names the WORLD", "story's own nouns", "NAME is built"],
+         _board(g, visual_system=dict(_board(g)["visual_system"],
+                                      world="a sorting floor"))),
         ("a character who teleports across the cut", ["screen side"],
          _board(swap(g, 3, staging={"RAY": "right", "DEE": "left"}))),
         # One BOGUS kind ADDED to a shot that keeps its real events, so the rate
@@ -773,6 +806,14 @@ def self_test():
          _board(swap(g, 2, events=g[2]["events"] + [_ev(19.0, "vibe")]))),
         ("an event timed outside its own shot", ["inside its own shot"],
          _board(swap(g, 2, events=g[2]["events"] + [_ev(48.0, "prop")]))),
+        # RED on purpose: a board with NO staging anywhere used to collect two
+        # green continuity rows for saying nothing, on a field the schema header
+        # declares required.
+        ("a board that never says which side anybody is on", ["where the cast STAND"],
+         _board([{k: v for k, v in sh.items() if k != "staging"} for sh in g])),
+        ("one shot that forgot its staging", ["where the cast STAND"],
+         _board([{k: v for k, v in sh.items() if k != "staging"} if i == 2 else sh
+                 for i, sh in enumerate(g)])),
     ]
 
     for name, want, board in cases:

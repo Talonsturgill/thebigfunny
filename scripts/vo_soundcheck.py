@@ -317,6 +317,15 @@ def advisories(m):
 
 
 def report(rows):
+    # ZERO ROWS IS NOT A PASS. `report([])` returned True and printed
+    # "soundcheck: PASS" having measured nothing, which is the same vacuous-truth
+    # shape found in three other gates on 2026-08-02.
+    if not rows:
+        print("  FAIL nothing was measured. No takes matched, or every line's audio "
+              "slice was empty.")
+        print("       A soundcheck that measured zero takes has not passed, it has "
+              "not run.")
+        return False
     ok_all = True
     print(f"  {'take':<34}{'dur':>6}{'artic':>6}{'pitch':>7}{'range':>7}{'dyn':>6}{'paus':>6}  verdict")
     for m in rows:
@@ -336,9 +345,15 @@ def episode():
     lines = json.load(open(os.path.join(OUT, "vo_lines.json")))["lines"]
     a, sr = read_wav(os.path.join(OUT, "vo.wav"))
     rows = []
+    dead = []
     for l in lines:
         seg = a[int(l["start"] * sr):int(l["end"] * sr)]
         if not len(seg):
+            # DROPPING IT MAKES THE DEAD VERDICT UNREACHABLE. A line whose audio
+            # slice is empty is the most dead a take can be, and skipping it here
+            # removed it from the report entirely, so `DEAD (no usable audio)`
+            # could never fire on the one case that deserves it most.
+            dead.append(f"{l['who']} at {l['start']}s ({l['text'][:32]})")
             continue
         tmp = os.path.join(OUT, "takes", f"_sc_{l['idx']}.wav")
         os.makedirs(os.path.dirname(tmp), exist_ok=True)
@@ -350,6 +365,13 @@ def episode():
         m["file"] = f"{l['who']}: {l['text'][:24]}"
         rows.append(m)
         os.remove(tmp)
+    if dead:
+        raise SystemExit(
+            "FAIL no usable audio: " + "; ".join(dead) + "\n"
+            "       These lines have timings in vo_lines.json and ZERO samples in "
+            "vo.wav.\n"
+            "       Skipping them removed them from the report, so the DEAD verdict "
+            "could never fire on the deadest possible take. Re-synthesize the VO.")
     return rows
 
 
@@ -424,6 +446,12 @@ def self_test():
         print(f"        complained: {bad}")
     ok &= good
 
+    # RED on purpose: a report with nothing in it is not a pass. report([])
+    # returned True and printed "soundcheck: PASS" having measured zero takes.
+    empty_ok = report([]) is False
+    print(f"  {'ok  ' if empty_ok else 'FAIL'} catches: a report that measured NOTHING")
+    ok &= empty_ok
+
     print("\nself-test: " + ("both directions correct, as designed"
                              if ok else "THE GATE IS WRONG"))
     return 0 if ok else 1
@@ -450,7 +478,10 @@ def main():
 
     if a.json:
         print(json.dumps(rows, indent=2))
-        return 0
+        # --json used to return 0 unconditionally, so a genuinely dead take gave
+        # EXIT=1 plain and EXIT=0 with --json. A machine-readable report is still
+        # a report; the format must not change the verdict.
+        return 0 if (rows and all(verdict(m)[0] for m in rows)) else 1
     ok = report(rows)
     print("\nsoundcheck: " + ("PASS" if ok else "FAIL"))
     print("  (measures monotony, pace and damage. It cannot hear whether a take is "

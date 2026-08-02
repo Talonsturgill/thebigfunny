@@ -320,3 +320,145 @@ worth anything if you looked at the right ones.
 (The retune was not wasted, as it happens: keeping the pupil visible in every
 register is correct on its own terms. But it was decided for the wrong reason,
 which is luck and not method.)
+
+## The Alaska shelf was why episodes were two people talking (2026-08-02)
+
+Four complaints arrived as one diagnosis: the speed, the boring scenes, the
+incoherent story, "two ppl talking and doing nothing." They are ONE fault.
+
+The art library was ported from an Alaska show. It is parkas, snow, spruce,
+wolves, glaciers. ASSET_MANIFEST told every run to cast from the shelf before
+drawing anything new, which is a good rule that was doing quiet damage: the
+shelf is a PLACE and the stories are national. So every board dressed an Alaska
+set for a story with nothing to do with Alaska, the set could not illustrate
+anything, and once the set is inert the only thing left for an episode to do is
+have two people talk.
+
+"Two people talking" is not a staging failure. It is what is left after the
+world has been amputated from the story.
+
+It also explains the standing repeat offenders. `carried_by_fact` and
+`agreement_not_comedy` appeared in both runs on file and the funny critic blamed
+the STORY each time. Half right. The fact was carrying the episode because
+nothing else was allowed to: not the set, not the props, not the world. A joke
+that lives only in the dialogue is a podcast with drawings over it.
+
+THE FIX: the world of the story becomes the set. A Ford engine story is staged
+INSIDE a Ford engine. The shelf becomes a KIT of parametric primitives and every
+episode BUILDS its world instead of shopping for one. See knowledge/WORLD_KIT.md
+and knowledge/DIRECTING.md.
+
+THE SECOND LESSON, about gates: none of this was visible to any gate, because
+nothing in the machine ever LOOKED at the episode. Every critic graded JSON.
+`scripts/contact_sheet.py` now renders a grid the critics grade, and
+`scripts/visual_check.py` refuses talking heads mechanically on the BOARD,
+before a cent of audio is bought. A critic downstream of a decision never fixes
+the decision.
+
+## An absent input is not a passing input (2026-08-02)
+
+Third time this class bit in one session, and the third one shipped in a gate
+whose own docstring promised it did not.
+
+`coherence_check.py` exists to catch the plan and the world describing different
+films. Pointed at the real artifacts on its first live run, it returned PASS,
+while two independent agents had already found the fork in those same two files.
+The bug: `if plan_turn and world_turn:` emitted NO ROW when neither document
+declared the field. Silence scored as agreement. Two documents that both fail to
+declare the most load-bearing beat in the episode have not agreed, they have not
+decided.
+
+THE RULE: when the thing a guard grades is missing, the guard FAILS. It never
+skips. A row that is not emitted is indistinguishable from a row that passed, in
+the report and in the exit code, and the phase downstream reads both as
+permission.
+
+THE COROLLARY, which is how it got caught: verify a gate by RUNNING it against
+an empty document, not by reading it. Every gate here now has that test on
+record, and story_check and visual_check both survived it because a required
+field row fires before the deeper guards get a chance to skip. Reading the code
+would have flagged all three as suspects and been wrong about two of them.
+
+A gate whose comment is a lie is worse than one with no comment, because the
+comment is what the next author trusts instead of testing.
+
+## Launching an agent and writing its inputs in the same block is a race (2026-08-02)
+
+The Phase 4.4 dry run reported that the script and the world staged two
+different mechanisms, and it was right about the bytes on disk and wrong about
+the cause. `script.json` was written in the SAME tool block that launched the
+director, and the launch went first, so the agent read the previous run's
+script. The mismatch was self-inflicted.
+
+WRITE THE INPUTS, THEN LAUNCH. An agent starts reading immediately, and "same
+message" is not "before".
+
+What makes this worth writing down rather than just fixing: the director's
+BEHAVIOUR under the fault was exactly right, and that is real evidence. It
+detected the mismatch, refused to blame the writer, said plainly "that is not a
+shot-plan defect I can fix with better shots", and identified that the schema
+would have routed the repair to the wrong phase. A fault injected by accident
+tested the failure path better than a fixture would have, because nobody wrote
+the fixture to be survivable.
+
+## The repo-wide review found 43 defects and 40 of them were one bug (2026-08-02)
+
+A full `/code-review` across `scripts/`, `video-engine/src/lib/` and the
+dispatch skill. It ran every gate against empty, blank-but-present and
+hollow-but-well-formed documents, and it mutation-tested each self-test by
+disabling one guard at a time to see whether the test noticed.
+
+The findings sort into two piles and one of them is enormous.
+
+**A CHECK THAT DID NOT RUN READS EXACTLY LIKE A CHECK THAT PASSED.** This is
+already written above as a lesson about missing inputs. The review found it in
+thirteen more places, in every layer, wearing different clothes each time:
+
+- `mux_and_verify.sh` discarded ffmpeg's exit code, so a failed mux measured the
+  file already at the output path, WHICH IS THE PREVIOUS EPISODE, and printed
+  MUX OK. Its own staleness guard was written `[ -f "$VIDEO" ] && [ -f "$AUDIO" ]
+  && ...`, so a MISSING input skipped the guard rather than failing it, and the
+  render not existing is the most common way for a render to fail.
+- `script_check` passed a script citing NOTHING against an EMPTY claims.json:
+  "0 distinct id(s), all found". Vacuous truth on the house's first law.
+- `coherence_check` had four rows inside `if a and b:` after I had fixed the
+  same hole in two others.
+- `vo_soundcheck` returned True on zero rows, dropped empty audio slices from
+  its own report so the DEAD verdict was unreachable, and returned 0 with
+  `--json` on a take it failed without it.
+- `visual_check` certified a board with no `staging` anywhere.
+- `contact_sheet` exited 0 when 11 of 12 stills failed.
+- `vo_qc`'s ship floor was a literal `pass` under a comment saying "only warn",
+  emitting no warning, plus a `report["warning"]` string no caller ever read.
+- `align_captions` warned about a 40%-wrong transcript and wrote its file anyway.
+- Two ledgers did `except Exception: return <empty>` and wrote non-atomically, so
+  a killed process created precisely the corruption the handler swallowed: the
+  TTS budget handed back a full daily quota and `retro` reported "PASS, every
+  repeat offender has an upgrade logged against it" with an unreadable ledger.
+
+**THE SELF-TESTS DID NOT PROVE WHAT THEY CLAIMED.** `face_check` stayed GREEN
+with two of its three guards neutered, because every red fixture also tripped
+the change counter and the assertion was `bool(problems)`. `render_gate`'s tiny
+encode fixture proved the parse row, not `MIN_BYTES`. `gen_captions_ts`'s
+staleness case asserted that `str.replace` works. `tts_budget`'s day-boundary
+case asserted that a date is ten characters long. And `coherence_check`'s
+self-contradiction guard was DEAD for every ban this repo actually writes, and
+stayed green because I had reworded the fixture to a verb that survived the
+filter instead of fixing the guard.
+
+That last one is the one to remember. **When a self-test goes red, the fixture
+is the suspect only after the guard has been cleared.** Changing the fixture
+until it passes is how a dead guard gets a green light and a comment saying it
+works.
+
+THE THIRD PILE, small and expensive: things that were never wired up at all.
+`run_guard.py` implemented the freshness invariant correctly and had NO CALLERS
+in the entire repo, while three separate opportunistic reads did exactly what it
+was written to prevent. `resume_render.sh` `cd`ed to another machine's path,
+failed, and exited 0 with a fake PID. Three hardcoded Alaska episode scripts
+were listed in SKILL.md as the live VO tools. A protection nobody calls, and a
+manifest that points at the wrong file, both read as working.
+
+**HOW TO USE THIS.** Two questions, cheap, and they found forty defects between
+them. Run the gate on `{}`. Then break the guard on purpose and check that the
+self-test notices.

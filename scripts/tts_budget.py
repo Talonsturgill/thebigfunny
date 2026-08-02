@@ -98,10 +98,41 @@ def _today():
 
 
 def _load():
+    """The ledger, or a fresh one IF AND ONLY IF the file is genuinely absent.
+
+    2026-08-02, repo-wide review: this was `except Exception: return <empty>`,
+    and `record()` below writes a non-atomic json.dump straight to the final
+    path. So a process killed mid-write produces exactly the corruption this
+    handler swallowed, and the next run reads a truncated ledger, gets a fresh
+    100-call allowance, and spends it. Verified: spent=95 remaining=0 REFUSED,
+    truncate the file, spent=0 remaining=75 ALLOWED. The whole budget came back.
+
+    ABSENT means never written and is fine. PRESENT AND UNPARSEABLE means the
+    count is lost, and a lost count is not a zero count.
+    """
+    if not os.path.exists(LEDGER):
+        return _blank()
     try:
-        return json.load(open(LEDGER))
-    except Exception:
-        return {
+        with open(LEDGER) as fh:
+            doc = json.load(fh)
+    except Exception as e:
+        raise LedgerCorrupt(
+            f"{LEDGER} exists and cannot be parsed ({e}). This is what a process "
+            f"killed mid-write leaves behind, and treating it as an empty ledger "
+            f"hands this run the whole daily quota a second time. Restore it from "
+            f"git, or delete it deliberately if today's count really is lost."
+        ) from e
+    if not isinstance(doc, dict) or not isinstance(doc.get("days"), dict):
+        raise LedgerCorrupt(f"{LEDGER} parsed but has no `days` object.")
+    return doc
+
+
+class LedgerCorrupt(RuntimeError):
+    """Present and unreadable. Never confused with absent."""
+
+
+def _blank():
+    return {
             "_spec": {
                 "purpose": "TTS call ledger. Every real API call is counted here so a "
                            "run can be refused BEFORE it hits a 429 and loses the "
@@ -178,6 +209,11 @@ def throttle(model, sleep=True):
             time.sleep(wait)
             now = time.monotonic()
             _recent = [x for x in _recent if now - x < 60.0]
+        # THE THROTTLED CALL IS STILL A CALL. This returned without appending,
+        # so every call that had to wait was invisible to the limiter that made
+        # it wait, and the window under-counted by one each time. The real rate
+        # drifts above the limit this function exists to hold.
+        _recent.append(now)
         return wait
     _recent.append(now)
     return 0.0
@@ -190,9 +226,17 @@ def record(model="unknown", n=1, day=None):
     rec = doc["days"].setdefault(d, {"calls": 0, "by_model": {}})
     rec["calls"] = int(rec.get("calls", 0)) + n
     rec["by_model"][model] = int(rec["by_model"].get(model, 0)) + n
+    # ATOMIC. A torn write here is the corruption _load refuses to read, and it
+    # is self-inflicted: the ledger is rewritten after every single billed call,
+    # which is the most likely moment in the run for the process to be killed.
     os.makedirs(os.path.dirname(LEDGER), exist_ok=True)
-    json.dump(doc, open(LEDGER, "w"), indent=2)
-    open(LEDGER, "a").write("\n")
+    tmp = LEDGER + ".tmp"
+    with open(tmp, "w") as fh:
+        json.dump(doc, fh, indent=2)
+        fh.write("\n")
+        fh.flush()
+        os.fsync(fh.fileno())
+    os.replace(tmp, LEDGER)
     return rec["calls"]
 
 
@@ -303,10 +347,47 @@ def self_test():
         checks.append(("day boundary is provider-relative, not bare UTC",
                        RESET_UTC_OFFSET != 0 or
                        os.environ.get("BIGFUNNY_TTS_RESET_UTC_OFFSET") == "0"))
+        # This asserted `len(_today()) == 10` and computed utc_day without ever
+        # using it, so it tested that a date is ten characters long and NOT what
+        # its own name claims. Shift the offset far enough that the two dates
+        # must differ, and check that they do.
         import datetime as _dt
-        utc_day = _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d")
-        checks.append(("and it can differ from the UTC date",
-                       isinstance(_today(), str) and len(_today()) == 10))
+        keep_off = globals()["RESET_UTC_OFFSET"]
+        try:
+            now = _dt.datetime.now(_dt.timezone.utc)
+            globals()["RESET_UTC_OFFSET"] = -(now.hour + 1)
+            utc_day = now.strftime("%Y-%m-%d")
+            checks.append(("and it can differ from the UTC date", _today() != utc_day))
+        finally:
+            globals()["RESET_UTC_OFFSET"] = keep_off
+
+        # RED on purpose: a ledger that is PRESENT and unreadable must never read
+        # as an empty one. A torn write is what a killed process leaves behind,
+        # and swallowing it hands the run a second full daily quota.
+        record("m", SOFT_CAP - 5, day)
+        before = spent(day)
+        open(LEDGER, "w").write('{"days": {"2026-01-01": {"calls": 9')  # truncated
+        try:
+            spent(day)
+            checks.append(("refuses a CORRUPT ledger instead of resetting to zero", False))
+        except LedgerCorrupt:
+            checks.append(("refuses a CORRUPT ledger instead of resetting to zero", True))
+
+        # And the other half: absent is still fine, because it is the first run.
+        os.remove(LEDGER)
+        checks.append(("an ABSENT ledger is still an empty one", spent(day) == 0))
+        checks.append(("the corrupt case was really at the wall", before >= SOFT_CAP - 5))
+
+        # The throttled call is still a call. Before this, throttle() returned
+        # without recording the call it had just made room for, so the window
+        # under-counted by one every time it fired.
+        globals()["_recent"] = []
+        for _ in range(caps("gemini-2.5-flash-preview-tts")["rpm"]):
+            throttle("gemini-2.5-flash-preview-tts", sleep=False)
+        n_before = len(_recent)
+        throttle("gemini-2.5-flash-preview-tts", sleep=False)   # this one waits
+        checks.append(("a THROTTLED call still counts against the window",
+                       len(_recent) == n_before + 1))
 
         for name, good in checks:
             print(f"  {'ok  ' if good else 'FAIL'} {name}")

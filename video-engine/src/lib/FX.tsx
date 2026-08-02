@@ -62,7 +62,14 @@ export const ImpactStar: React.FC<{cx: number; cy: number; r?: number; color?: s
 };
 
 // A storm of comment papers flying across the frame (data made physical).
-export const PaperStorm: React.FC<{frame: number; count?: number; originX?: number; originY?: number; targetX?: number; targetY?: number; spread?: number}> = ({
+//
+// `sheetW`, `sheetH` and `paper` added 2026-08-02. ASSET_MANIFEST listed this as
+// a castability gap: the sheets were hardcoded 44x60 rects in #f4efe4, so any
+// world whose paper is not cream office stock, or whose documents are a
+// different shape (a docket card, a receipt, an index card), could not cast this
+// and had to redraw it. Defaults are the original numbers, so every existing
+// board renders byte-identical.
+export const PaperStorm: React.FC<{frame: number; count?: number; originX?: number; originY?: number; targetX?: number; targetY?: number; spread?: number; sheetW?: number; sheetH?: number; paper?: string}> = ({
   frame: f,
   count = 14,
   originX = -100,
@@ -70,6 +77,9 @@ export const PaperStorm: React.FC<{frame: number; count?: number; originX?: numb
   targetX = 1200,
   targetY = 700,
   spread = 420,
+  sheetW = 44,
+  sheetH = 60,
+  paper = '#f4efe4',
 }) => (
   <g>
     {Array.from({length: count}).map((_, i) => {
@@ -83,10 +93,16 @@ export const PaperStorm: React.FC<{frame: number; count?: number; originX?: numb
       const s = 0.7 + ((seed % 7) / 7) * 0.7;
       return (
         <g key={i} transform={`translate(${px},${py}) rotate(${rot}) scale(${s})`} opacity={0.95}>
-          <rect x={-22} y={-30} width={44} height={60} rx={4} fill="#f4efe4" stroke={INK} strokeWidth={4} />
-          <line x1={-12} y1={-14} x2={12} y2={-14} stroke={INK} strokeWidth={3} opacity={0.6} />
-          <line x1={-12} y1={-2} x2={12} y2={-2} stroke={INK} strokeWidth={3} opacity={0.6} />
-          <line x1={-12} y1={10} x2={6} y2={10} stroke={INK} strokeWidth={3} opacity={0.6} />
+          <rect x={-sheetW / 2} y={-sheetH / 2} width={sheetW} height={sheetH} rx={4}
+                fill={paper} stroke={INK} strokeWidth={4} />
+          {/* Rule lines placed as FRACTIONS of the sheet, so a wider or shorter
+              card carries its own ruling instead of the old fixed offsets. */}
+          {[[0.27, 0.55], [0.47, 0.55], [0.67, 0.41]].map(([fy, fw], k) => (
+            <line key={k}
+                  x1={-sheetW * (fw / 2)} y1={-sheetH / 2 + sheetH * fy}
+                  x2={sheetW * (fw / 2)} y2={-sheetH / 2 + sheetH * fy}
+                  stroke={INK} strokeWidth={3} opacity={0.6} />
+          ))}
         </g>
       );
     })}

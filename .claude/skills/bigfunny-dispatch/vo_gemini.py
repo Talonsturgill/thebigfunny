@@ -98,6 +98,15 @@ def synth(text, voice=None, style=None, direction=None):
     v = voice or VOICE
     st = style if style is not None else STYLE
 
+    # BANNED TAGS ARE CHECKED ON EVERY PATH, not only the directed one.
+    #
+    # 2026-08-02, repo-wide review: this call lived inside `if direction:`, and
+    # both synth_qc() and the __main__ audition call synth() with no direction.
+    # So the one tag this module raises on by design went unchecked on exactly
+    # the calls that paste markup into the bare `Say {style}: {text}` prompt,
+    # which is the prompt shape Google's docs warn will be read aloud.
+    _check_tags(spoken)
+
     # THE PROMPT. Google's own advanced-prompting format: an audio profile, the
     # scene, director's notes broken into style/pace/accent, and a clearly
     # labelled transcript. This replaced a flat "Say <style>: <text>", which the
@@ -109,7 +118,6 @@ def synth(text, voice=None, style=None, direction=None):
     # notes ALOUD as dialogue. Naming the transcript boundary is what prevents
     # that, and scripts/vo_soundcheck.py's overrun check is the backstop.
     if direction:
-        _check_tags(spoken)
         prompt = (
             "Perform this line of scripted audio drama. Read ALOUD only the text "
             "under the heading TRANSCRIPT. Everything above that heading is "
@@ -126,11 +134,13 @@ def synth(text, voice=None, style=None, direction=None):
         prompt = f"Say {st}: {spoken}" if st else spoken
     # THE ONE PLACE A CALL IS BILLED, so it is the one place the budget is
     # enforced. Cached takes never reach here and cost nothing.
+    # sys.path is extended ONCE per process, not once per line. This ran inside
+    # synth() and grew the path unboundedly across a run.
+    _scripts = os.path.abspath(os.path.join(HERE, "..", "..", "..", "scripts"))
+    if _scripts not in sys.path:
+        sys.path.insert(0, _scripts)
     try:
-        sys.path.insert(0, os.path.join(HERE, "..", "..", "..", "scripts"))
         import tts_budget
-        tts_budget.check(1, model=MODEL)
-        tts_budget.throttle(MODEL)
     except ImportError:
         tts_budget = None
 
@@ -153,11 +163,27 @@ def synth(text, voice=None, style=None, direction=None):
     ctx = ssl.create_default_context(cafile=ca) if os.path.exists(ca) else ssl.create_default_context()
     # retry on 429 (rate limit) / 503 (overloaded) with exponential backoff — the free tier
     # throttles the preview TTS model hard, so short spacing often clears a transient 429.
+    # EVERY ATTEMPT IS A BILLED CALL, so every attempt is authorised and throttled
+    # on its own.
+    #
+    # 2026-08-02, repo-wide review: check(1) and throttle() ran ONCE above the
+    # loop and record() ran INSIDE it, so one line could issue five requests
+    # having authorised one. vo_cast.take() wraps this in its own four-attempt
+    # loop for empty responses, which made the worst case twenty billed calls
+    # against a budget that had approved one.
+    #
+    # And 429 is no longer retried at all. A 429 means the quota is gone; that is
+    # what this function's own error text says three lines down, and retrying it
+    # spends four more calls against a wall to arrive at the same sentence. The
+    # per-minute limiter is throttle()'s job and it runs before every attempt.
     delays = [0, 4, 10, 20, 35]
     last = None
     for d in delays:
         if d:
             time.sleep(d)
+        if tts_budget is not None:
+            tts_budget.check(1, model=MODEL)    # raises BudgetExceeded, per attempt
+            tts_budget.throttle(MODEL)
         try:
             if tts_budget is not None:
                 tts_budget.record(MODEL, 1)     # billed on the REQUEST, not the result
@@ -167,7 +193,12 @@ def synth(text, voice=None, style=None, direction=None):
         except urllib.error.HTTPError as e:
             body = e.read().decode("utf-8", "ignore")[:400]
             last = f"HTTP {e.code}: {body}"
-            if e.code in (429, 500, 503):
+            if e.code == 429:
+                raise RuntimeError(
+                    f"Gemini TTS {last}\n"
+                    f"  A 429 is the quota wall, not a transient error. Retrying it "
+                    f"spends more of a budget that is already gone.")
+            if e.code in (500, 503):
                 continue
             raise RuntimeError(f"Gemini TTS {last}")
     else:

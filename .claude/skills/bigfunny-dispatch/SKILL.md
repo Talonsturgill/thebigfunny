@@ -14,15 +14,30 @@ aspect ratio, which would have sent a run down a dead path on its first day.
 
 ## What is here
 
+**The entry point is `scripts/vo_cast.py`, which is NOT in this directory.** It
+casts every line to Ray, Dee or the Institution, calls `vo_gemini.synth` per
+line, caches each take on disk and lays the timeline out from measured
+durations. This skill holds what it calls.
+
 | File | What |
 | --- | --- |
-| `build_vo.py` | Script to narration audio. |
-| `vo_backends.py`, `vo_gemini.py` | Synthesis backends. |
+| `vo_gemini.py` | The Gemini TTS call. Prompt construction, banned-tag guard, per-attempt budget enforcement. |
+| `vo_backends.py` | Sample rate and the local backends. |
 | `vo_qc.py` | Voice QC helpers. **Note the gap below.** |
-| `vo60.py` | 60 second timing helpers. |
-| `audio_build.py` | Mix narration with music and sfx. |
 | `dispatch_core.py`, `easing.py`, `craft.py`, `dimensional.py` | Shared helpers. |
 | `post_grade.py` | Post-render grade pass. |
+| `archive/` | **Do not run.** Three hardcoded Alaska episode scripts, kept for reference. See `archive/README.md`. |
+
+This table used to list `build_vo.py`, `vo60.py` and `audio_build.py` as the
+live tools. They are 22 hardcoded caribou phrases, 9 permafrost sentences and 5
+beluga sentences respectively, with no CLI between them, and `audio_build.py`
+mixes neither music nor sfx. A run following the manifest would have synthesized
+an Alaska caribou VO for a national story. They are in `archive/` now.
+
+`resume_render.sh` is deleted rather than archived. It `cd`ed to
+`/home/user/alaska-ai-weekly`, had no `set -e`, so the failed `cd` left it
+launching a retired PIL renderer in the caller's working directory, and it
+printed a success line with a PID and exited 0.
 
 ## The contract with the rest of the pipeline
 
@@ -37,18 +52,28 @@ current run. Downstream, `scripts/align_captions.py` produces word timings and
 target: `build_scenes.py` refuses to write props for anything longer, and
 `scripts/render_gate.py` refuses to pass the finished file.
 
-## KNOWN GAP: one voice, three characters
+## CLOSED: one voice, three characters
 
-The ported synthesis path speaks every line in a SINGLE cloned reference voice.
-This show has three characters (Ray, Dee, the Institution) and they are the whole
-premise, so a single-voice read collapses the cast into a podcast.
+The ported synthesis path spoke every line in a SINGLE cloned reference voice,
+which collapsed Ray, Dee and the Institution into a podcast. `scripts/vo_cast.py`
+closed this: three voices, cast per line from a table, and `vo_cast --self-test`
+refuses a script that invents a fourth character or casts a human to a voice
+whose descriptor is flat.
 
-This is tracked in `.claude/WORKLOG.md`. Do not paper over it: if a run
-synthesises all three in one voice, say so in the run's report rather than
-letting a scorer grade it as if the cast were realised.
+What is still open is the CHOICE of Dee's voice, which is with the owner. An
+audition of seven candidates went out and `main` carries Pulcherrima. The
+soundcheck measured every candidate between 3.46 and 4.12 semitones of pitch
+variance including the one the owner called robotic, so the machine cannot rank
+them and does not pretend to.
 
 ## Environment
 
-The voice stack needs `scripts/setup_env.sh` (builds `.venv-voice` with
-chatterbox / faster-whisper / resemblyzer). Under system python these imports
-fail. Run setup before the first VO build.
+The Gemini path needs `GEMINI_API_KEY` and nothing else; it runs under system
+python. The LOCAL backends in `vo_backends.py` need `scripts/setup_env.sh`
+(builds `.venv-voice` with chatterbox / faster-whisper / resemblyzer), and under
+system python those imports fail.
+
+Do not set `SSL_CERT_FILE` in this skill. The two archived scripts forced
+`/etc/ssl/certs/ca-certificates.crt`, which overrides the agent proxy's CA
+bundle that this environment requires; `vo_gemini` honours the container's
+bundle when one is present.

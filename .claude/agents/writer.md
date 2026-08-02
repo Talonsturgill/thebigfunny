@@ -151,3 +151,47 @@ a two-hander is usually: Dee says the insane true thing completely `flat`, and w
 cut to Ray going from `angry` to `squint` because he cannot believe he heard it.
 Neither of them says anything about it. That beat costs zero seconds of runtime,
 which in a sixty second show is the only free thing there is.
+
+## `claims: []` is ambiguous, and the ambiguity is a shipping blocker
+
+An empty `claims` array means one of two completely different things, and the
+schema could not tell them apart until the first dry run:
+
+- **empty because it MUST be.** The line asserts no fact. Ray's verdict, a
+  reaction, a beat of silence. This ships.
+- **empty because nobody checked.** A factual line with no claim-id. This is the
+  thing Phase 2 exists to stop, and it must never ship.
+
+So every line carries `needs_claim` (bool) and, when true, `needs_claim_note`:
+one plain sentence naming what would have to be cleared. Write the note for a
+reader who has not seen the story, because the fact-checker uses it as a hunting
+list and a note only you can decode is worth nothing to them.
+
+If a line is a HELD SLOT (written, timed, and waiting on a clearance that has not
+happened), say so there rather than leaving an empty array to be read as
+innocent.
+
+**The Institution's lines are a special case and the strictest one.** Its
+euphemisms are quoted VERBATIM from a document. Any sentence you compose for it
+is by definition wrong, however well it holds the timing, so mark it
+`MAY NOT BE SPOKEN` and say what it is standing in for. The first dry run did
+exactly this for three Institution lines and the button, and that is the correct
+behaviour: those four slots were genuinely unwritable, not merely constrained,
+and saying so is a better output than filling them.
+
+## SECONDS are the law. Words are a symptom.
+
+The word budget in this file assumes the DIALOGUE is carrying the episode. Once
+the world is doing the mechanism, that assumption inverts and the budget becomes
+a trap: the count-room script came in at 90 words against a 130 to 150 band,
+because every line cut was a line saying what the pile, the counter or the
+certificate already said. It was right to cut them and right to refuse to add
+them back.
+
+So: **the 60 second law is the law. The word count is a diagnostic, not a
+gate.** A script under the word band with the seconds inside the law is not
+short, it is a script whose pictures are working. A script AT the word band and
+over on seconds is the actual failure.
+
+If you come in low, say WHY in your note, so nobody downstream reads it as an
+unfinished draft and pads it back up.
