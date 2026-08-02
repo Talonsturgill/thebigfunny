@@ -1,150 +1,118 @@
 /**
- * cast.tsx — RAY and DEE, the two fixed characters of The Big Funny.
+ * cast.tsx — RAY and DEE.
  *
- * WHY THIS IS A THIN WRAPPER AND NOT A NEW RIG
- * The ported Character rig already does poses, emotions, outfits, idle sway,
- * blink, walk cycles and the ambient talk mouth, and it has been through a lot
- * of production notes to get there (see its own comments: the burglar-mask
- * headgear fix, the no-lip-sync ruling, the idleGain escape hatch). Rebuilding
- * any of that to get two characters would be throwing away paid-for craft.
+ * THE PREVIOUS CAST WAS DELETED, not refactored. It was a parameter set bolted
+ * onto `Character.tsx`, which is the crowd rig ported from an ALASKA show: a
+ * hand-authored paper doll of axis-aligned boxes and constant-width strokes,
+ * built for a weekly educational dispatch about a cold place. Seven passes of
+ * patching it produced a mannequin with a waist, which is the correct outcome
+ * of patching, and the wrong outcome full stop.
  *
- * So the cast is a LOCK, not a redraw. These wrappers fix the identity
- * constants (palette, build, default outfit) so Ray reads as Ray in every
- * episode without a storyboard having to remember six props. Everything an
- * episode legitimately varies (pose, emotion, position, scale, facing) stays
- * open.
+ * Owner, 2026-08-02: "if its Alaska stuff don't patch it, we are creating a
+ * better show that's more engaging as opposed to educational."
  *
- * THIS IS THE CAST LAW IN CODE. The show's variety comes from staging, camera
- * and set, never from redrawing the cast, because comedy needs you to already
- * know who is about to speak. See knowledge/CAST_BIBLE.md and the library
- * mandate in ASSET_MANIFEST.md, which said the same thing before this show
- * existed: "Composition freshness comes from the storyboard fingerprint +
- * camera + staging, not from re-drawing the cast."
+ * So the cast is built on `Figure.tsx`, which knows about proportion, line of
+ * action, contrapposto, overlap and line weight, and knows nothing about
+ * parkas. `Character.tsx` stays exactly where it is and keeps serving the crowd
+ * and the back catalogue. It is not the cast any more.
+ *
+ * WHAT A SCENE MAY VARY: pose, emotion, position, scale, facing, and the mouth
+ * track. Identity is fixed here, because comedy needs you to already know who
+ * is about to speak.
  *
  * THE INSTITUTION IS NOT HERE ON PURPOSE. It is MachineShadow, it has no face,
- * and it never gets one. Giving it an expression makes it something you could
- * negotiate with and the premise dies. Do not add it to this file.
+ * and it never gets one. Give it an expression and it becomes something you
+ * could negotiate with, and the premise dies.
  */
 import React from 'react';
-import {Character, CharacterProps, Emotion, Pose} from './Character';
+import {Figure, FigureProps, Emotion, Pose} from './Figure';
 
-/** What a scene is allowed to vary. Identity props are deliberately absent. */
-type CastProps = Omit<CharacterProps, 'outfit' | 'hair' | 'skin' | 'eyes' | 'glasses'> & {
-  /** Escape hatch for a genuine story reason (a costume gag). Use it rarely; an
-      episode that re-dresses Ray for no reason is breaking the cast law. */
-  outfitOverride?: CharacterProps['outfit'];
+type CastProps = Omit<FigureProps, 'sex' | 'skin' | 'hair' | 'eyes' | 'wear' | 'hairstyle'> & {
+  /** Escape hatch for a genuine costume gag. Rare: a cast that gets re-dressed
+      for no reason is not a cast. */
+  wearOverride?: FigureProps['wear'];
 };
 
 /**
- * RAY — the Id. Warm, round, slightly too small for the world he is in, which is
- * the deliberate shape-language opposite of the Institution's cold rectilinear
- * bulk. The same Sourdough-vs-ServerMachine opposition the library already
- * encodes, pointed at a person.
+ * RAY — the Id. He is RIGHT, not a fool, and his default emotion is angry
+ * because that is his resting state by the time a scene starts: he has already
+ * found out.
  *
- * He is RIGHT, not a fool. Default emotion is angry rather than neutral because
- * that is his resting state by the time a scene starts: he has already found
- * out.
+ * Built athletic on purpose, and not only because the owner asked for it. The
+ * taper does staging work: it points his shape language AT the Institution's
+ * cold rectilinear bulk instead of echoing it.
  */
-export const RAY_PALETTE = {
-  hair: '#2b1d12',
-  skin: '#d8a07a',
-  eyes: '#3a6b52',
+export const RAY = {
+  skin: '#d9a077',
+  hair: '#3a2418',
+  eyes: '#4a6f57',
+  wear: {top: '#4a7fa3', bottom: '#2f3a52', accent: '#3a3128'},
 } as const;
 
 export const Ray: React.FC<CastProps> = ({
-  outfitOverride,
-  emotion = 'angry',
-  pose = 'arms-crossed',
-  scale = 1,
-  ...rest
+  wearOverride, emotion = 'angry', pose = 'arms-crossed', scale = 1, ...rest
 }) => (
-  <Character
+  <Figure
     {...rest}
+    sex="m"
     pose={pose}
     emotion={emotion}
-    /* JEANS AND A TEE. Never a suit; a suit reads as management and Ray is never
-       management. The flannel was ported from an Alaska show and dressed
-       him for a plow; nothing about a national story needs cold-weather workwear,
-       and a coat sleeve is a tube by definition so it can never show an arm. */
-    outfit={outfitOverride ?? 'tee'}
-    headgear="bare"
-    /* ATHLETIC: wide shoulders tapering to a narrow waist, square jaw, planted
-       stance. Ray was the same shapeless sack as everyone else, which is half of
-       why the cast read as one person in different jackets. The taper also does
-       real staging work: it points Ray's shape-language AT the Institution's
-       rectilinear bulk instead of echoing it. */
-    build="athletic"
-    hair={RAY_PALETTE.hair}
-    skin={RAY_PALETTE.skin}
-    eyes={RAY_PALETTE.eyes}
-    /* Slightly under scale on purpose. The world is bigger than him. */
-    scale={scale * 0.96}
+    /* Jeans and a t-shirt. Never a suit: a suit reads as management and Ray is
+       never management. Bare forearms because a sleeve is a tube by definition
+       and can never show an arm. */
+    wear={wearOverride ?? RAY.wear}
+    hairstyle="short"
+    skin={RAY.skin}
+    hair={RAY.hair}
+    eyes={RAY.eyes}
+    scale={scale}
   />
 );
 
 /**
- * DEE — the Straight Man. Upright and more vertical than Ray, angular but still
- * warm, because she is on his side and must never read as institutional.
+ * DEE — the Straight Man. Her comedy is deadpan delivery of something insane,
+ * so her default is neutral: a pre-loaded expression spends the crack early.
  *
- * Glasses USED to be her one fixed differentiator, from back when she and Ray
- * shared a body and a face and there was nothing else to tell them apart. The
- * silhouette does that job now, and far better, so the glasses are gone: they
- * were the loudest shape on her face and they were solving a problem that no
- * longer exists. Default emotion neutral, because her comedy is deadpan delivery of something
- * insane and a pre-loaded expression spends the crack early.
+ * She used to be differentiated by GLASSES, from back when she and Ray shared
+ * one body and one face and there was nothing else to tell them apart. The
+ * silhouette does that job now and does it at thumbnail size, which glasses
+ * never did.
  */
-export const DEE_PALETTE = {
-  hair: '#1d1a26',
-  skin: '#8d5f43',
-  eyes: '#2f4a6b',
+export const DEE = {
+  skin: '#c08a63',
+  hair: '#26191c',
+  eyes: '#3b5f7a',
+  wear: {top: '#a8355a', bottom: '#7a2440', accent: '#e6d9c4'},
 } as const;
 
 export const Dee: React.FC<CastProps> = ({
-  outfitOverride,
-  emotion = 'neutral',
-  pose = 'stand',
-  scale = 1,
-  ...rest
+  wearOverride, emotion = 'neutral', pose = 'stand', scale = 1, ...rest
 }) => (
-  <Character
+  <Figure
     {...rest}
+    sex="f"
     pose={pose}
     emotion={emotion}
-    /* HOURGLASS: narrow shoulders, a belted waist, hip flare, tapered chin,
-       lashes, narrow stance. The bob was the right instinct at the wrong layer.
-       Hair sits on top of a BODY, and the body was the shared sack, so a bob on
-       it read exactly as the owner put it (2026-08-02): "a dudes face, on a fat
-       chick in a parka, with long hair, looking like a man with long hair."
-       Silhouette is what reads at thumbnail size; it decides who is speaking
-       before a single feature is legible. */
-    build="hourglass"
-    /* A DRESS AND HEELS. The vest was a quilted box, which is the one garment
-       guaranteed to cancel a waist. */
-    outfit={outfitOverride ?? 'dress'}
-    headgear="bare"
-    /* LONG. Length is the cue, and the reference is consistent: the mass falls
-       well past the shoulder while leaving the whole face open. The earlier bob
-       covered the jawline, which is the one line that makes a face read female,
-       so it was actively cancelling the silhouette work underneath it. */
+    wear={wearOverride ?? DEE.wear}
     hairstyle="long"
-    hair={DEE_PALETTE.hair}
-    skin={DEE_PALETTE.skin}
-    eyes={DEE_PALETTE.eyes}
-    scale={scale * 1.02}
+    skin={DEE.skin}
+    hair={DEE.hair}
+    eyes={DEE.eyes}
+    scale={scale}
   />
 );
 
 /**
  * The beat where Dee's composure cracks. ONE per episode; the bible is explicit
- * that saving it is the point. Exposed as a named helper rather than left to a
- * storyboard's judgement so it is countable in review: grep the scene for
- * DEE_CRACK and if there are two, the episode is spending it wrong.
+ * that saving it is the point. Named rather than left to a storyboard's
+ * judgement so it is countable: grep a scene for DEE_CRACK, and if there are
+ * two, the episode is spending it wrong.
  */
 export const DEE_CRACK: Emotion = 'shock';
 
 /**
- * Ray's escalation ladder. He starts angry and goes up, he does not start
- * neutral and warm up, because a 60 second episode has no room for a warm-up.
+ * Ray's escalation ladder. He starts angry and goes UP. He does not start
+ * neutral and warm up, because sixty seconds has no room for a warm-up.
  */
 export const RAY_LADDER: readonly Emotion[] = ['angry', 'shock', 'smug'] as const;
 

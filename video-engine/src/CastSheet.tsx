@@ -1,103 +1,98 @@
 /**
- * CastSheet — the character sheet. NOT an episode, and never rendered into one.
+ * CastSheet — the character sheet for the REBUILT cast. Look-dev only, never
+ * rendered into an episode.
  *
  * WHY IT EXISTS
  * A prop that typechecks and renders successfully can still change nothing on
- * screen; the rig has already been burned by exactly that (the `mouth` prop was
- * dead for a whole episode behind a `talking !== undefined` guard, and the whole
- * pipeline stayed green while the speaker's mouth never opened). The rule that
- * came out of it is that a new visual prop is not done until somebody has looked
- * at a PIXEL, so a silhouette change ships with the still that proves it.
+ * screen; this pipeline has already been burned by exactly that (a `mouth` prop
+ * sat dead behind a `talking !== undefined` guard for a whole episode while
+ * every gate stayed green and the speaker never opened their mouth). So a
+ * figure change is not done until a human has looked at a PIXEL, and the sheet
+ * is what they look at.
  *
- * `broad` was the CONTROL, and it no longer is: the 'stand' arms had to be
- * re-authored (they attached at HALF the shoulder width, i.e. across the chest,
- * which no amount of scaling could fix) and that moved every existing figure.
- * Saying so here rather than leaving the label claiming a guarantee it stopped
- * providing. Everything else about `broad` is still the original path.
- *
- * LAYOUT NOTE: a Character's local bbox is y -440..+10 centered on x=0. That is
- * MEASURED off a render, not read off the source; reading the source and
- * reasoning about the nested transforms got it wrong twice.
+ * It shows the two things that fail INDEPENDENTLY, at the size each one is
+ * actually judged at:
+ *   - the SILHOUETTE, small, because that is what decides who is speaking on a
+ *     grid tile before a single feature is legible;
+ *   - the FACE, large, because that is what decides whether anyone wants to
+ *     keep looking.
  *
  *   npx remotion still src/index.ts CastSheet out/castsheet.png --frame=30
  */
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame} from 'remotion';
-import {Character, Build} from './lib/Character';
-import {Ray, Dee, RAY_PALETTE, DEE_PALETTE} from './lib/cast';
+import {Ray, Dee} from './lib/cast';
+import {Pose} from './lib/Figure';
 
-const COLS: {build: Build; label: string; note: string}[] = [
-  {build: 'broad', label: 'broad', note: 'baseline. arms re-authored.'},
-  {build: 'hourglass', label: 'hourglass', note: 'waist + hips + lashes'},
-  {build: 'athletic', label: 'athletic', note: 'V-taper, square jaw'},
-];
+const POSES: Pose[] = ['stand', 'arms-crossed', 'point'];
 
 export const CastSheet: React.FC = () => {
   const f = useCurrentFrame();
   return (
     <AbsoluteFill style={{backgroundColor: '#efe7d8'}}>
       <svg width="1080" height="1920" viewBox="0 0 1080 1920">
-        <text x={540} y={80} textAnchor="middle" fontSize={50} fontFamily="Georgia, serif" fill="#1a1a22">
-          BUILD SILHOUETTES
-        </text>
-        {COLS.map((col, i) => (
-          <g key={col.build} transform={`translate(${200 + i * 340},400) scale(0.46)`}>
-            <Character
-              frame={f}
-              build={col.build}
-              outfit="flannel"
-              pose="stand"
-              emotion="neutral"
-              hairstyle={col.build === 'hourglass' ? 'bob' : 'crop'}
-              hair="#2b1d12"
-              skin="#d8a07a"
-            />
-          </g>
-        ))}
-        {COLS.map((col, i) => (
-          <g key={`${col.build}-t`}>
-            <text x={200 + i * 340} y={470} textAnchor="middle" fontSize={32} fontFamily="Georgia, serif" fill="#1a1a22">
-              {col.label}
-            </text>
-            <text x={200 + i * 340} y={502} textAnchor="middle" fontSize={20} fontFamily="Georgia, serif" fill="#5a5a66">
-              {col.note}
-            </text>
-          </g>
-        ))}
-        {/* THE CAST AS ACTUALLY LOCKED, which is the pair that has to read apart
-            at thumbnail size. Same scale, same pose, side by side: if you cannot
-            tell them apart with the page squinted at, the silhouette work failed
-            and no amount of face detail will save it. */}
-        <text x={540} y={570} textAnchor="middle" fontSize={40} fontFamily="Georgia, serif" fill="#1a1a22">
+        <text x={540} y={72} textAnchor="middle" fontSize={46} fontFamily="Georgia, serif" fill="#1a1a22">
           THE CAST
         </text>
-        <g transform="translate(300,990) scale(0.82)">
+        <text x={540} y={106} textAnchor="middle" fontSize={20} fontFamily="Georgia, serif" fill="#5a5a66">
+          rebuilt from forms, not coordinates
+        </text>
+
+        {/* FULL FIGURES at the size a phone actually shows them. */}
+        <g transform="translate(230,150) scale(0.62)">
           <Ray frame={f} pose="stand" emotion="neutral" />
         </g>
-        <g transform="translate(780,990) scale(0.82)">
+        <g transform="translate(700,150) scale(0.62)">
           <Dee frame={f} pose="stand" emotion="neutral" />
         </g>
-        <text x={300} y={1060} textAnchor="middle" fontSize={30} fontFamily="Georgia, serif" fill="#1a1a22">
-          RAY (athletic)
+        <text x={230} y={620} textAnchor="middle" fontSize={28} fontFamily="Georgia, serif" fill="#1a1a22">RAY</text>
+        <text x={700} y={620} textAnchor="middle" fontSize={28} fontFamily="Georgia, serif" fill="#1a1a22">DEE</text>
+
+        {/* SILHOUETTE TEST. Same figures, filled solid black. If you cannot tell
+            who is who here, the design has failed and no amount of face work
+            will rescue it, because this is all a grid tile transmits. */}
+        <text x={540} y={700} textAnchor="middle" fontSize={26} fontFamily="Georgia, serif" fill="#5a5a66">
+          silhouette test
         </text>
-        <text x={780} y={1060} textAnchor="middle" fontSize={30} fontFamily="Georgia, serif" fill="#1a1a22">
-          DEE (hourglass)
-        </text>
-        {/* FACES AT SIZE. The silhouette decides who is speaking; the face decides
-            whether you want to look at them. They fail independently, so they get
-            looked at independently, big enough to actually judge. */}
-        <text x={540} y={1160} textAnchor="middle" fontSize={40} fontFamily="Georgia, serif" fill="#1a1a22">
-          FACES
-        </text>
-        <g transform="translate(300,1800) scale(2.1)">
-          <Ray frame={f} pose="stand" emotion="neutral" />
+        <g style={{filter: 'brightness(0) saturate(0)'}}>
+          <g transform="translate(300,730) scale(0.34)">
+            <Ray frame={f} pose="stand" emotion="neutral" />
+          </g>
+          <g transform="translate(560,730) scale(0.34)">
+            <Dee frame={f} pose="stand" emotion="neutral" />
+          </g>
+          <g transform="translate(800,730) scale(0.34)">
+            <Ray frame={f} pose="point" emotion="angry" />
+          </g>
         </g>
-        <g transform="translate(780,1800) scale(2.1)">
-          <Dee frame={f} pose="stand" emotion="neutral" />
-        </g>
-        <text x={540} y={1900} textAnchor="middle" fontSize={18} fontFamily="Georgia, serif" fill="#5a5a66">
-          {`ray ${RAY_PALETTE.skin} / dee ${DEE_PALETTE.skin}`}
+
+        {/* POSES. A pose here is three joint positions, so this row is also the
+            check that the rig poses rather than being redrawn. */}
+        <text x={540} y={1060} textAnchor="middle" fontSize={26} fontFamily="Georgia, serif" fill="#5a5a66">
+          poses
         </text>
+        {POSES.map((p, i) => (
+          <g key={p} transform={`translate(${190 + i * 250},1080) scale(0.38)`}>
+            <Ray frame={f} pose={p} emotion="angry" />
+          </g>
+        ))}
+        <g transform="translate(940,1080) scale(0.38)">
+          <Dee frame={f} pose="arms-crossed" emotion="smug" />
+        </g>
+
+        {/* FACES, big enough to actually judge. */}
+        <text x={540} y={1400} textAnchor="middle" fontSize={26} fontFamily="Georgia, serif" fill="#5a5a66">
+          faces
+        </text>
+        <g clipPath="url(#faceclip)">
+          <g transform="translate(280,1440) scale(2.6)">
+            <Ray frame={f} pose="stand" emotion="angry" />
+          </g>
+          <g transform="translate(780,1440) scale(2.6)">
+            <Dee frame={f} pose="stand" emotion="smug" />
+          </g>
+        </g>
+        <clipPath id="faceclip"><rect x={0} y={1420} width={1080} height={480} /></clipPath>
       </svg>
     </AbsoluteFill>
   );
