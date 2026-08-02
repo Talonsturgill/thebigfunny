@@ -144,7 +144,35 @@ pass is REJECTED, every position is tagged FACT / INFERENCE / ASSUMPTION, and
 every approved element ships with its kill criteria. Five agents agreeing
 politely is one mind billed five times.
 
+### A KILL is a work list, not an ending
+
+When the devil's advocate returns `kill`, the plan goes back into an EDITING
+LOOP whose work list is its own objections, each of which carries
+`what_would_refute_me` as its acceptance test. The producer revises against
+those objections specifically, the advocate re-attacks at pass 2 and may only
+raise what is NEW or unrepaired, and this runs to pass 3.
+
+At pass 3 the escalation is not to ship over the objection and not to stop: it
+is to change the INPUT. A different angle, a different world, or a different
+story. Three passes of unrepaired kills means the fault is upstream of anything
+this room can edit.
+
 `no-episode-here` is a legitimate producer verdict: go back to Phase 3.
+
+### Then check the two artifacts describe the same film
+
+```
+python3 scripts/coherence_check.py     # out/dispatch/{episode_plan,world}.json
+```
+
+Run this at the END of Phase 4.2, once the world exists. The first dry run
+produced a plan and a world that disagreed about the turn AND the button, both
+internally consistent, both good, and NOBODY IN THE ROOM NOTICED until an
+adversarial agent read them side by side. The turn and the button are named
+fields in both schemas, so a fork is arithmetic and does not need a model. It
+also catches a primitive the plan depends on that the world dropped as
+unnecessary: in the dry run `Queue` was dropped, and the pile of mail it stood
+for was the only force moving the cast past their own exit.
 
 ## PHASE 4: THE WRITERS ROOM
 

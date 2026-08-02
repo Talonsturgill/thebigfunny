@@ -72,6 +72,22 @@ OWNER = {
          "image and why Ray does not win BEFORE a line is written, and the plan "
          "binds every later phase. Ownership moved from 4.4, which is the "
          "director now."),
+    "beautiful_and_unfunny":
+        ("PHASE 3.7 (the producer room) and 4.2 (the world)",
+         "The set is excellent and the episode contains no joke. This is NOT "
+         "carried_by_fact, and the distinction matters because retro routes on "
+         "it: carried_by_fact is the DIALOGUE doing all the work under a live "
+         "fact, this is a live WORLD under no joke at all. The taxonomy was "
+         "written when the sets were inert and had no word for a set that is "
+         "doing everything and still is not funny. Count the gags that survive "
+         "their own safety guards unamended; if the answer is zero, the world "
+         "was designed on the assumption a laugh would arrive later."),
+    "artifacts_fork":
+        ("PHASE 4.2 (the world), at handoff",
+         "The plan and the world describe different films and nobody ruled on "
+         "it. The room converged on the SET and never on the STORY. "
+         "scripts/coherence_check.py catches the mechanical half; a recurrence "
+         "means it is missing a field."),
     "repeated_trick":
         ("PHASE 4 (the writers room)",
          "The same comic move twice in one episode."),
