@@ -40,6 +40,24 @@
       "camera_language": "push",
       "set": "MainStreetBG (dusk 0.72, banner off) under NightGrade",
       "new_assets": []
+    },
+    {
+      "run_date": "2026-08-03",
+      "episode_no": 3,
+      "hero_structure": "a flat machine FACE parallel to camera, full bleed: four tiled steps to a lit intake slot upper left, an odometer boss at centre, a panel painted shut on the right flank, one working chute and one plated dead chute at the lower right frame edge",
+      "atmosphere": "ONE registered practical over the intake and nothing else; every other surface falls to a crushed floor",
+      "palette_family": "enamel teal / brass",
+      "continuity_device": "edge-tease:the plated dead chute sits at the lower right frame edge from second five and does nothing for thirty-eight seconds, so S15 reverses an ABSENCE rather than introducing an object",
+      "camera_language": "height-ladder",
+      "set": "CountRoomBG, the first set built from the story rather than shopped off the ported shelf",
+      "new_assets": [
+        "CountRoomBG",
+        "DocketCard",
+        "CardPile",
+        "CardChute",
+        "VerifyDie",
+        "FilingPlate"
+      ]
     }
   ]
 }

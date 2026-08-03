@@ -26,6 +26,14 @@
       "subject": "ford-pedestrian-alert-recall-expansion-26V415000",
       "target": "Ford Motor Company",
       "summary": "Recalled 43,438 in Oct 2025 for a pedestrian warning sound, fixed by software, letters mailed Nov 5; in Jun 2026 the same recall came back covering 66,383 and the repaired cars must be repaired again."
+    },
+    {
+      "run_date": "2026-08-03",
+      "episode_no": 3,
+      "beat": "the-landlord",
+      "subject": "rentgrow-tenant-screening-duplicate-records-ftc",
+      "target": "RentGrow, Inc. (tenant screening)",
+      "summary": "The FTC alleges RentGrow's tenant screening reports carried duplicate entries for the same eviction action, so applicants looked like they had been sued for eviction more times than they actually had. Disputes were sometimes labelled invalid with no further action. Settled; a settlement is not an admission."
     }
   ]
 }
