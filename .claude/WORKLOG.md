@@ -133,7 +133,7 @@ Everything below is downstream of that sentence.
 | 8 | asset-upgrader agent + kit mandate | DONE |
 | 9 | wire the routine prompt (3.7, 4.2, 4.4, gates, panel, retro) | DONE |
 | 10 | GitHub trending research, folded into this file | DONE |
-| 11 | ship an episode that clears the new gates | IN PROGRESS: THE WHOLE CHAIN CLEARS. 3 -> 3.7 -> 4 -> 4.2 -> 4.4 -> 4.5 on real cleared claims. visual_check 18/18 green on first submission: 27 events in 56.0s (28.9/60s against a floor of 18), longest hold 4.0s, 0% talking heads, 3 gags in 3 shots. Remaining: build the 5 new assets, render, panel, ship. |
+| 11 | ship an episode that clears the new gates | **DONE.** case 0003 shipped 2026-08-03. 58.27s, 1080x1920, audio present. 27 events in 56.9s, 0% talking heads, 3 gags in 3 shots. Every gate green. |
 | 12 | repo-wide code review, 100% of findings fixed | DONE: 4 critical, 9 high, 17 medium, 13 low. See the FIELD_NOTES entry; every gate self-tests green and mutation-sweeps red. |
 
 ## What the GitHub scan actually returned (2026-08-02)
@@ -276,6 +276,7 @@ KeyError is the 2026-08-02 fix working.
 ## Wrap
 
 - [x] every gate self-tests RED on purpose, fixtures checked
+- [x] AN EPISODE SHIPPED THROUGH THE WHOLE CHAIN (case 0003, 2026-08-03)
 - [x] `retro --check` exits 0
 - [x] routine prompt is the source of truth and matches the code
 - [x] FIELD_NOTES gets the root-cause paragraph above, in short form
