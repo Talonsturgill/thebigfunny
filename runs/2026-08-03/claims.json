@@ -1,0 +1,86 @@
+{
+  "case": 3,
+  "run_date": "2026-08-02",
+  "beat": "the-landlord",
+  "subject": "rentgrow-tenant-screening-duplicate-records-ftc",
+  "target": "RentGrow, Inc. (tenant screening)",
+  "_rule": "Every factual line in the script cites an id here. If it is not in this file it does not go in the script. CUT claims may never be stated or implied on screen.",
+  "primary_sources": [
+    "https://www.ftc.gov/legal-library/browse/cases-proceedings/222-3002-rentgrow-inc-us-v",
+    "https://www.ftc.gov/news-events/news/press-releases/2026/07/rentgrow-pay-225-million-settle-ftc-allegations-company-violated-fair-credit-reporting-act-ftc-act"
+  ],
+  "claims": [
+    {
+      "id": "c1",
+      "status": "VERIFIED",
+      "text": "The United States, on behalf of the FTC, sued RentGrow, Inc. in the U.S. District Court for the District of Columbia on July 9, 2026.",
+      "cite": "FTC case page, matter 222 3002, civil action 1:26-cv-02415, filed 2026-07-09"
+    },
+    {
+      "id": "c2",
+      "status": "VERIFIED",
+      "text": "RentGrow provides consumer reports used for tenant screening.",
+      "cite": "FTC case summary: 'RentGrow, a provider of consumer reports for tenant screening'"
+    },
+    {
+      "id": "c3",
+      "status": "VERIFIED",
+      "text": "RentGrow will pay $2.25 million to settle the allegations.",
+      "cite": "FTC press release 2026-07-09 and FTC case summary; both state $2.25 million"
+    },
+    {
+      "id": "c4",
+      "status": "VERIFIED",
+      "text": "The FTC alleged RentGrow failed to maintain reasonable procedures to ensure maximum possible accuracy, by not preventing duplicate case records and multiple entries for the SAME criminal or eviction action on tenant screening reports.",
+      "cite": "FTC complaint summary, press release 2026-07-09"
+    },
+    {
+      "id": "c5",
+      "status": "VERIFIED",
+      "text": "The FTC alleged this gave the false impression that applicants had more criminal convictions, or had been sued for eviction more times, than they actually had.",
+      "cite": "FTC press release 2026-07-09, verbatim characterisation"
+    },
+    {
+      "id": "c6",
+      "status": "VERIFIED",
+      "text": "The FTC alleged RentGrow failed to disclose all the information and sources of data in its reports when consumers asked, including Lexis-Nexis Accurint, which made it harder for consumers to dispute inaccurate data.",
+      "cite": "FTC press release 2026-07-09"
+    },
+    {
+      "id": "c7",
+      "status": "VERIFIED",
+      "text": "The FTC alleged RentGrow sometimes labelled consumer disputes 'invalid' and took no further action on them.",
+      "cite": "FTC press release 2026-07-09"
+    },
+    {
+      "id": "c8",
+      "status": "VERIFIED",
+      "text": "The FTC alleged RentGrow gave property managers and consumers different information about the outcome of a dispute.",
+      "cite": "FTC press release 2026-07-09"
+    },
+    {
+      "id": "c9",
+      "status": "VERIFIED",
+      "text": "Christopher Mufarrige, Director of the FTC Bureau of Consumer Protection, said: 'Inaccurate background reports can have a real impact on people by affecting their ability to obtain housing or a job.'",
+      "cite": "FTC press release 2026-07-09, direct quote"
+    },
+    {
+      "id": "c10",
+      "status": "CUT",
+      "text": "Any specific number of consumers, reports or applicants affected.",
+      "why": "The FTC press release does not state one and the complaint PDF has no text layer to verify against. NOT USABLE: the script may never imply a count of victims."
+    },
+    {
+      "id": "c11",
+      "status": "CUT",
+      "text": "That any named individual was denied a home because of a duplicated record.",
+      "why": "No verified individual case. The show punches at institutions and never uses a private person as an example."
+    },
+    {
+      "id": "c12",
+      "status": "CUT",
+      "text": "That RentGrow admitted the allegations.",
+      "why": "It is a settlement. A settlement is not an admission and saying so is defamatory. Every line must say ALLEGED."
+    }
+  ]
+}

@@ -155,6 +155,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--case", type=int, help="episode number, e.g. 2 for Case0002")
     ap.add_argument("--vo-lines", default=os.path.join(OUT, "vo_lines.json"))
+    ap.add_argument("--script", default=os.path.join(OUT, "script.json"))
+    ap.add_argument("--from-script", action="store_true",
+                    help="DRAFT cues from the frozen script times, for staging "
+                         "before the VO exists. Never for a ship render.")
     ap.add_argument("--check", action="store_true",
                     help="fail if the committed file is not what would be generated")
     ap.add_argument("--self-test", action="store_true")
@@ -167,11 +171,41 @@ def main():
 
     name = f"case{a.case:04d}_captions.ts"
     dest = os.path.join(SRC, name)
-    try:
-        lines = json.load(open(a.vo_lines))["lines"]
-    except Exception as e:
-        print(f"gen_captions_ts: cannot read {a.vo_lines}: {e}", file=sys.stderr)
-        return 1
+
+    if a.from_script:
+        # DRAFT CUES FROM THE FROZEN SCRIPT TIMES, so staging can be rendered and
+        # LOOKED AT before a cent of TTS is spent.
+        #
+        # This is the standing lesson about ordering: iterate the picture against
+        # the free checks and synthesize audio ONCE, at the end. Six re-synthesis
+        # passes in one session is what exhausted the daily quota, and the run
+        # that did it had no way to see the board until it had paid for the VO.
+        #
+        # These cues are NOT ship quality and are not meant to be. A line's real
+        # end comes from its measured take; here it is the next line's start,
+        # which is the same assumption the storyboard is cut to. Once vo.wav
+        # exists, regenerate WITHOUT this flag: `--check` compares against the
+        # real takes and will call this file stale, which is correct.
+        try:
+            script = json.load(open(a.script))
+        except Exception as e:
+            print(f"gen_captions_ts: cannot read {a.script}: {e}", file=sys.stderr)
+            return 1
+        sl = sorted(script["lines"], key=lambda l: l["t"])
+        est = float(script.get("estimated_seconds") or 0.0)
+        lines = []
+        for i, l in enumerate(sl):
+            nxt = sl[i + 1]["t"] if i + 1 < len(sl) else est
+            lines.append({"idx": i, "who": l["who"], "start": float(l["t"]),
+                          "end": round(float(nxt) - 0.12, 3), "text": l["text"]})
+        print(f"gen_captions_ts: DRAFT cues from {os.path.relpath(a.script, REPO)} "
+              f"(frozen script times, NOT measured takes)")
+    else:
+        try:
+            lines = json.load(open(a.vo_lines))["lines"]
+        except Exception as e:
+            print(f"gen_captions_ts: cannot read {a.vo_lines}: {e}", file=sys.stderr)
+            return 1
     if not lines:
         print("gen_captions_ts: no lines in the VO", file=sys.stderr)
         return 1

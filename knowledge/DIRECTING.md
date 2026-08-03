@@ -241,7 +241,7 @@ Say out loud what the picture knows that the line does not say.
 
 If the answer is nothing, delete the shot. There is now a hole where it was, and
 the hole is the actual assignment. A shot that can be deleted without loss was
-never doing work, and it was taking up one of the twelve to sixteen visual events
+never doing work, and it was taking up one of the episode's visual events
 the episode is allowed.
 
 ---
@@ -303,19 +303,40 @@ Something a viewer could describe afterward that was not true a moment before.
 
 | | |
 | --- | --- |
-| Distinct visual events in 60s | **12 to 16.** Roughly one every four seconds. |
-| Longest any single image may hold | **4.0s**, and **2.5s** inside the first fifteen seconds. |
+| Distinct visual events in 60s | **18 minimum, 26 comfortable.** One new thing on screen every 2.3 to 3.3 seconds. |
+| Longest any single image may hold | **5.0s** hard ceiling, and **2.5s** inside the first fifteen seconds. Treat 4.0s as the number to aim at. |
 | Events before the wordmark stamps at ~2s | **at least one**, and it is the fact drawn. |
 | Runtime as a floating two-shot | **20.0s maximum.** |
 | Reveals | 1 |
 | Escalation ladders running under dialogue | at least 1, of at least 3 steps |
 
-Below twelve events the episode is a slideshow. Above about sixteen it is
-frantic, nothing is allowed to land, and the pauses `COMEDY_CRAFT.md` calls for
-have nowhere to sit. The flow critic's existing 2.5 second dead-air rule is the
-FLOOR, the absolute worst that is survivable; four seconds of a held image is the
-ceiling for the director, and the difference between those two numbers is where
-the craft is.
+**These numbers were WRONG and they contradicted the gate that enforces them.**
+Corrected 2026-08-02, found by the director in the first live Phase 4.4: this
+table said 12 to 16 events per 60s and `scripts/visual_check.py` refuses
+anything under 18. The two were mutually exclusive, so a director who followed
+the doc exactly would have built a board the gate rejects, and a director who
+followed the gate would have been amber against the doc no matter what it drew.
+
+The gate is right and the doc was guessing. Case 0002 has about 12 events per 60
+seconds and the owner called it two people doing nothing, which means 12 is not
+the floor of acceptable, it is a worked example of the failure. A threshold at
+12 would have passed the episode this whole phase exists because of.
+
+So: **when a doc and an executable gate disagree, the GATE is the spec.** A
+number in prose has never been tested against an episode. A number in a gate has
+a self-test and a fixture and has refused something. Fix the doc.
+
+The old ceiling of 16 came from a real worry, and the worry survives even though
+the number did not: above some rate nothing is allowed to land and the pauses
+`COMEDY_CRAFT.md` calls for have nowhere to sit. That ceiling is a matter of
+WHERE the events fall, not how many there are. Eighteen events with three of
+them inside one second is frantic; twenty-six spread against the dialogue is a
+film. Use the ladder rule below rather than a cap.
+
+The flow critic's 2.5 second dead-air rule is the FLOOR, the absolute worst that
+is survivable. Five seconds of a held image is the gate's ceiling and four is
+what a director should be aiming at, and the difference between those numbers is
+where the craft is.
 
 ### The ladder escalates
 Order the events so the last third has the largest ones. An episode whose biggest
@@ -344,7 +365,8 @@ picture draws a bank.
 
 This is the visual form of explaining the joke, and it is banned for the same
 reason: the audience is faster than the board. Drawing the noun that was just
-spoken adds zero information and consumes one of the sixteen events. Draw what
+spoken adds zero information and consumes an event that could have been
+something. Draw what
 the noun DID.
 
 ### THE FLOATING TWO-SHOT

@@ -182,7 +182,11 @@ def synth(text, voice=None, style=None, direction=None):
         if d:
             time.sleep(d)
         if tts_budget is not None:
-            tts_budget.check(1, model=MODEL)    # raises BudgetExceeded, per attempt
+            # SHIP mode releases the reserve, which is what the reserve is for:
+            # a finished episode, script locked and every gate green. Set by
+            # vo_cast --ship. Iteration never sees it.
+            tts_budget.check(1, model=MODEL,
+                             ship=os.environ.get("BIGFUNNY_TTS_SHIP") == "1")
             tts_budget.throttle(MODEL)
         try:
             if tts_budget is not None:

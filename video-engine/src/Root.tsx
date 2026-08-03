@@ -28,6 +28,7 @@ import { CityShowcase } from './CityShowcase';
 import { StationLook } from './StationLook';
 import { MaterialShowcase } from './MaterialShowcase';
 import { CastSheet } from './CastSheet';
+import { CountRoomSheet, CountRoomProps } from './CountRoomSheet';
 import { z } from 'zod';
 
 const standoffSchema = z.object({
@@ -74,6 +75,28 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="CastSheet"
         component={CastSheet}
+        durationInFrames={90}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+      {/* PROOF OF PIXELS for the case 0003 set, before a line of episode code is
+          written against it and before a cent of TTS is spent. Measure geometry,
+          do not reason about it: three renders have already been lost to a
+          change that was argued correctly from the source and invisible on
+          screen. CountRoomSheet answers the legibility gate's STILL A, which is
+          whether a pile of identical court cases reads as SAME or merely MANY. */}
+      <Composition
+        id="CountRoomSheet"
+        component={CountRoomSheet}
+        durationInFrames={90}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="CountRoomProps"
+        component={CountRoomProps}
         durationInFrames={90}
         fps={30}
         width={1080}

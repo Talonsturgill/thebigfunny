@@ -462,3 +462,98 @@ manifest that points at the wrong file, both read as working.
 **HOW TO USE THIS.** Two questions, cheap, and they found forty defects between
 them. Run the gate on `{}`. Then break the guard on purpose and check that the
 self-test notices.
+
+## A phase whose output cannot fit in its return channel fails at the last step (2026-08-02)
+
+The first live Phase 4.4 ran for twenty-five minutes, did the work correctly,
+and produced NOTHING. The director agent had `tools: Read`, so its only way out
+was the final message, and the board it was asked for is nineteen shots with
+eight prose fields each plus a per-shot event array. It stalled part-way through
+emitting the JSON. Everything it had figured out was still right and is now
+gone.
+
+Two things make this worth an entry rather than a one-line fix.
+
+**It fails silently and it fails LAST.** A stalled message looks exactly like a
+slow one, so there is nothing to react to until the task simply disappears from
+the runtime. The owner noticed it was gone before the machine did. And it burns
+the entire cost of the phase before failing, which is the most expensive place
+in a run to lose something.
+
+**The production designer never hit this**, because it writes its own artifact
+and has `Write`. Same brief size, same prose density, no problem. The difference
+was never the work, it was the channel.
+
+THE RULE: **if a phase produces an artifact, it WRITES the artifact.** The
+return message is a receipt, not the deliverable: a verdict, the counts, and
+anything that needs a ruling. Read-only is correct for critics, who return a
+judgement, and wrong for any room whose output is a document.
+
+The corollary, for the file it writes: write it ONCE and complete. A
+half-written `storyboard.json` at the right path is byte-for-byte
+indistinguishable from a finished one, and `build_scenes.py` will derive a scene
+map from it without knowing.
+
+## Editing an agent's frontmatter does not affect the running session (2026-08-02)
+
+Phase 4.4 died because the director had `tools: Read` and could not write the
+board it was asked for. I added `Write` to `.claude/agents/director.md`,
+committed it, and relaunched. **The relaunched agent still had no Write.** It did
+the whole job again, twenty-five minutes of it, and reported the same blocker.
+
+The agent registry is read once, at session start. A frontmatter edit is
+correct, it is durable, and it applies to the NEXT session, not this one. Two
+identical failures for one root cause, and the second one was avoidable.
+
+WHAT TO DO INSTEAD, when a capability is missing mid-run and the work is already
+done: do not relaunch, and do not rewrite the agent's job around the gap. RESUME
+it and change the CHANNEL. A resumed agent still has everything in context, so
+ask for the artifact in numbered chunks, one per reply, and persist each chunk
+yourself. Three round trips beat redoing the thinking, and the chunking also
+happens to fix the original stall, because no single message has to carry the
+whole board.
+
+The general shape, which is worth more than the specific fact: **a config change
+and a runtime change are not the same change.** Committing the config is not
+deploying it. Ask what is loaded RIGHT NOW, not what the file says.
+
+And the corollary that cost the second run: when a fix does not take, the next
+step is to verify the fix took, not to assume the tool was flaky and retry. I
+relaunched on the assumption the first death was a fluke. It was not, and the
+agent told me so precisely and immediately both times.
+
+## Audio is not the only input to a picture (2026-08-03)
+
+`mux_and_verify.sh` had a staleness guard that refused a video older than its
+audio, added the day before after a failed render was muxed onto a fresh voice
+track. It passed a mux of a render that was three minutes out of date.
+
+The scene file had just been fixed (a 0.9 second hole that would have rendered
+black), the re-render was still running, and the mux ran against the PREVIOUS
+render. Video newer than audio, which is all the guard knew how to ask, and
+older than the only change that mattered.
+
+A self-timed episode is drawn by its SCENE FILE and its generated sidecars.
+Those are inputs. A render older than any of them is a render of code that no
+longer exists, and it is indistinguishable from a correct one by every check
+that asks about the file rather than about the cut.
+
+THE GENERAL SHAPE: when you add a freshness guard, enumerate ALL the inputs, not
+the one that burned you. A guard that covers one input reads exactly like a
+guard that covers the category, and the next input to go stale is the one nobody
+listed.
+
+Two more from the same hour, both the same shape:
+
+**A background wrapper exiting is not the job finishing.** A command launched
+with `&` inside a backgrounded shell notifies on the WRAPPER's exit, which is
+immediate. I read "completed, exit 0" and muxed against a render that was 191
+frames into 1748. Wait on the ARTIFACT, and specifically on the artifact being
+newer than the thing that changed.
+
+**A contact sheet samples; it does not cover.** Twelve cells across 58 seconds
+is one frame every 4.8s, and the black hole was 0.9s wide. It was invisible to
+the only thing in this machine that looks at the episode. Sampling finds what is
+wrong with the frames it lands on, and a gate that reads the SOURCE is what
+finds a hole narrower than the sampling interval. That is why `retime_check.py`
+exists and why it runs on the scene file rather than on stills.

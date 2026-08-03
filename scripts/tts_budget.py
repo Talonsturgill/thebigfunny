@@ -244,9 +244,26 @@ class BudgetExceeded(RuntimeError):
     pass
 
 
-def check(n=1, day=None, model=None):
-    """Raise BEFORE spending if this call would cross the reserve line."""
-    r = remaining(day, model)
+def check(n=1, day=None, model=None, ship=False):
+    """Raise BEFORE spending if this call would cross the reserve line.
+
+    `ship=True` RELEASES THE RESERVE, and that is what the reserve is for.
+
+    2026-08-03: the reserve is described in this module as "held back so a
+    finished episode is always renderable", and there was no way to spend it. A
+    reserve that can never be released is not a reserve, it is a lower cap with a
+    reassuring docstring, and it would have blocked the one synthesis it exists
+    to protect: script locked, every gate green, board done, picture verified on
+    a contact sheet, 17 lines to buy.
+
+    It is deliberately not a flag on the daily cap. The HARD_CAP still holds, so
+    releasing the reserve can never spend past the account's real quota; it only
+    lets a finished episode reach into the buffer that was set aside for exactly
+    this call. Iteration keeps the old wall.
+    """
+    r = caps(model)["rpd"] - spent(day, model) if (ship and model) else remaining(day, model)
+    if ship and not model:
+        r = HARD_CAP - spent(day)
     if n > r:
         raise BudgetExceeded(
             f"TTS budget: {model or 'global'} would go to "
@@ -254,20 +271,28 @@ def check(n=1, day=None, model=None):
             f"  cap {caps(model)['rpd']}/day, {reserve_for(model)} held back so a "
             f"finished episode is always renderable.\n"
             f"  spent on this model: {spent(day, model)}   remaining: {r}\n"
+            f"  ship mode: {'ON, reserve released' if ship else 'off'}\n"
             f"  This is a REFUSAL, not an outage. Iterate the script against the "
             f"free gates (script_check, face_check, the funny critic) and "
             f"synthesize once. Raise BIGFUNNY_TTS_DAILY_CAP only if the account "
             f"quota actually went up.")
 
 
-def preview(uncached, label="synthesis", model=None):
+def preview(uncached, label="synthesis", model=None, ship=False):
     """Price a pass BEFORE it runs. Returns (ok, message).
 
     Takes a MODEL. The first cut asked the global counter, which is the very bug
     the per-model rewrite existed to kill: it refused a pass on a model with
     plenty of budget because a DIFFERENT model was exhausted."""
-    r = remaining(model=model)
-    cap = caps(model)["rpd"] - reserve_for(model) if model else SOFT_CAP
+    # SHIP releases the reserve here too. preview() and check() disagreeing about
+    # the budget is the same class of defect as two gates enforcing one rule:
+    # the pass would be priced as refused and then permitted, or the reverse.
+    if ship:
+        r = (caps(model)["rpd"] - spent(model=model)) if model else (HARD_CAP - spent())
+        cap = caps(model)["rpd"] if model else HARD_CAP
+    else:
+        r = remaining(model=model)
+        cap = caps(model)["rpd"] - reserve_for(model) if model else SOFT_CAP
     lines = [f"TTS budget: {label} needs {uncached} call(s) on "
              f"{model or 'the default model'}; {spent(model=model)} spent on it today, "
              f"{r} left of a {cap} working cap."]
@@ -360,6 +385,30 @@ def self_test():
             checks.append(("and it can differ from the UTC date", _today() != utc_day))
         finally:
             globals()["RESET_UTC_OFFSET"] = keep_off
+
+        # The reserve must be RELEASABLE, or it is a lower cap wearing a
+        # reassuring docstring. Spent to the reserve line, a ship synthesis gets
+        # through and an iteration pass does not.
+        globals()["_recent"] = []
+        m2 = "gemini-2.5-flash-preview-tts"
+        day2 = "2026-01-02"
+        record(m2, caps(m2)["rpd"] - reserve_for(m2), day2)      # exactly at the line
+        try:
+            check(3, day=day2, model=m2)
+            checks.append(("the reserve line refuses an ITERATION pass", False))
+        except BudgetExceeded:
+            checks.append(("the reserve line refuses an ITERATION pass", True))
+        try:
+            check(3, day=day2, model=m2, ship=True)
+            checks.append(("...and RELEASES for a ship synthesis", True))
+        except BudgetExceeded:
+            checks.append(("...and RELEASES for a ship synthesis", False))
+        # But never past the account's real cap, even in ship mode.
+        try:
+            check(reserve_for(m2) + 5, day=day2, model=m2, ship=True)
+            checks.append(("ship mode still stops at the HARD cap", False))
+        except BudgetExceeded:
+            checks.append(("ship mode still stops at the HARD cap", True))
 
         # RED on purpose: a ledger that is PRESENT and unreadable must never read
         # as an empty one. A torn write is what a killed process leaves behind,

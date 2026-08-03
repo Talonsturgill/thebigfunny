@@ -726,8 +726,17 @@ def main():
                     help="synthesize any UNCACHED line one at a time, naming the "
                          "line that fails. Uses the cache, so a diagnostic run "
                          "keeps the audio it paid for.")
+    ap.add_argument("--ship", action="store_true",
+                    help="RELEASE THE TTS RESERVE. For the finished episode only: "
+                         "script locked, every gate green, picture verified. The "
+                         "reserve exists so a finished episode is always "
+                         "renderable, and with no way to release it that is a "
+                         "lower cap rather than a reserve.")
     ap.add_argument("--self-test", action="store_true")
     a = ap.parse_args()
+    if getattr(a, "ship", False):
+        os.environ["BIGFUNNY_TTS_SHIP"] = "1"
+        print("vo_cast: SHIP mode. The TTS reserve is released for this pass.")
     if a.self_test:
         return self_test()
 
@@ -743,7 +752,8 @@ def main():
         import tts_budget
         uncached = sum(1 for p_ in planned if not os.path.exists(take_path(p_)))
         if uncached and not a.dry_run:
-            okb, msg = tts_budget.preview(uncached, "this pass", model=resolved_model())
+            okb, msg = tts_budget.preview(uncached, "this pass", model=resolved_model(),
+                                          ship=os.environ.get("BIGFUNNY_TTS_SHIP") == "1")
             print(msg)
             if not okb:
                 return 1

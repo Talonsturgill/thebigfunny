@@ -128,6 +128,24 @@
       "read": 1,
       "defects": [],
       "note": "Orbit invisible; 3.5s dead stretch."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-03",
+      "critic": "director",
+      "read": 1,
+      "defects": [],
+      "note": "board-it. 27 events in 56.9s, 0% talking heads, 3 gags in 3 shots."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-03",
+      "critic": "machine",
+      "read": 1,
+      "defects": [
+        "stale_artifact_passed_a_freshness_gate"
+      ],
+      "note": "mux_and_verify passed a render three minutes out of date because it compared the picture only against the audio and the input that had changed was the scene file."
     }
   ]
 }

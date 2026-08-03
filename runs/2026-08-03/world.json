@@ -1,0 +1,478 @@
+{
+  "designable": true,
+  "shippable": false,
+  "blocked_on": [
+    "out/dispatch/angle.json DOES NOT EXIST. This world was derived from the cleared claims plus out/dispatch/story.json, which carries the angle-room CONTENT (absurd_sentence, who_does_the_stupid_thing, why_absurd_not_just_bad, licensed_by c4/c5) under a different filename. That is enough to design from, and it is not enough to build from. If the angle room emits an angle.json whose absurd_sentence differs from story.json's, this world is void and the three tests must be re-run before a line of tsx is written.",
+    "THE INSTITUTION'S BODY IS AN UNMADE DIRECTOR DECISION, and it changes what CountRoomBG is, so nothing is built until it is ruled. kit.MachineShadow is real (kit.tsx L624) but its colours are module constants (MS_GRAPHITE '#3a4652', MS_GRAPHITE_D '#232c34', plus a hardcoded three-stop gradient), it has NO tint or livery prop, and its silhouette is a free-standing tapered tower with an antenna array on a flared foundation. It is not a wall and it cannot be made teal. Option (i), recommended: CountRoomBG IS the Institution for case 0003, authored to MachineShadow's shape language (cold, rectilinear, larger than frame, no face). Option (ii), fallback: add a `tint` prop to MachineShadow and stand the tower BEHIND the intake, visible through the slot. CAST_BIBLE says 'same silhouette, new livery'; option (i) changes the silhouette, and that deviation needs a ruling rather than a designer's assumption.",
+    "THERE IS NO LOCKED SCRIPT. The shot table below is a SET PLAN keyed to CAST_BIBLE's five-beat shape and episode_plan.json's 7.0s turn and its button. It is not a board. Timings will move when the script lands; the camera-height sequence and the world-state column are what must survive.",
+    "THE LEGIBILITY GATE (see `legibility_gate`) must pass on DRAFT stills before any final render. Every risk in this film sits on one prop face. If STILL A fails, this is a paper-mountain episode and the funny critic's 'infuriating but not absurd' verdict stands unrebutted.",
+    "THE ALLEGED GUARD. c4 and c5 are ALLEGATIONS and this world depicts them happening. Standing constraints, all board-enforceable: the button carries the case caption and the word ALLEGED (episode_plan already specifies it); the odometer may display ONLY the number of DocketCards visible in the same frame, so it captions the picture and asserts nothing beyond it; no crowd, no second person's card, no name, no address, no victim count (c10), no depiction of anyone being refused a home (c11), and nothing anywhere that reads as an admission (c12)."
+  ],
+  "missing_inputs": [
+    "out/dispatch/angle.json"
+  ],
+  "mechanism": {
+    "sentence": "The machine that assembles the report takes ONE eviction case in at the top, writes it out again at the bottom as another whole case, and advances its own count by one for every copy, so the intake never changes and the total does.",
+    "claim_ids": [
+      "c4",
+      "c5",
+      "c6",
+      "c7",
+      "c8",
+      "c1",
+      "c9"
+    ]
+  },
+  "rejected_worlds": [
+    {
+      "world": "THE COPY BED. Inside the flatbed of the machine itself: camera under the platen glass looking up, the cast lying on the glass, a hard lamp bar sweeping them end to end, and every sweep pushing another identical card out of the side.",
+      "killed_because": "It asserts a mechanism the fact-check did not license. c4 describes a failure to maintain reasonable procedures against duplicate case records in an assembled consumer report; it does not describe photocopying, and a photocopier on screen teaches a viewer a physical process the FTC never alleged. It also has no home for c6, c7 or c8, which is half the cleared set, and 'report, therefore copier' is the illustrated-noun anti-pattern wearing a set. Secondary and sufficient on its own: a hard light bar travelling across two bodies on glass is a moving-key lighting problem the shelf cannot do, because lighting.tsx's NightGrade registers static sources."
+    },
+    {
+      "world": "THE TALLY FLOOR. The cast shrunk to ratio 0.05 and standing ON the odometer drum inside the counter, a pawl the size of a car clicking over above them, one DocketCard leaning against the drum like a billboard.",
+      "killed_because": "It stages the COUNT and cannot stage the COPYING. The absurdity in story.json is 'every copy is accurate, and being accurate that many times is what makes the total false', and that needs two card faces side by side in one frame to read. Inside a drum there is no room for two. It is also the closest thing in this pass to WORLD_KIT worked example 5 (inside the engine: ScaleFrame, a machine cavity, one practical, standing on a moving part), which is exactly the prior art the divergence rule was extended to cover. And it is the worst possible decision on the film's actual risk: it puts the one prop whose text MUST be legible at 1080x1920 into the darkest, most cluttered, least frontal space available."
+    }
+  ],
+  "world": {
+    "name": "THE COUNT ROOM",
+    "the_inside_of": "the machine that ASSEMBLES a tenant screening report. Not the office that sells it, not the counter where you dispute it. The face of the assembler, with its intake, its count and BOTH of its outputs in one frame, so the whole allegation is one image and the film never travels.",
+    "establishing_image": "Low and wide from the tiled floor, a teal enamel wall filling the entire vertical frame with brass at its joints, one hard practical burning over a brass intake slot at the top of four steps at upper left, a brass odometer mounted dead centre, and at the bottom a chute pushing out another plywood-sized docket card that lands flat on the two already there, the paper the only bright value in the room and Ray and Dee small at the base of it.",
+    "swap_test": "PASSES, and the proof is mechanical rather than asserted. The film's central event is that shot 4 and shot 8 are THE SAME PICTURE at a different elevation, because the cast is standing on the quantity. Move that to an office and the event becomes two people saying 'it did it again', which is the line the world exists to replace. The c8 payoff independently requires two physical outputs at two different heights inside one frame, so any set with one exit cannot play it. Nothing here is portable.",
+    "mute_test": "PASSES ON THE MECHANISM, FAILS ON THE TOPIC, and DIRECTING.md sets the bar at the mechanism ('something about insurance' is a fail; 'they re-sorted his purchases' is a pass). Sound off, one second: one thing goes in at the top, identical things come out at the bottom, a number climbs, a man is standing on the output. That is copying-and-counting and it reads instantly. It does NOT read as tenant screening, and it cannot without a label, which is banned. The topic therefore rides entirely on the DocketCard head line, which is the second reason the legibility gate is the whole film.",
+    "worse_test": {
+      "start_state": "One card on the tiles. The floor tile pattern fully visible. The odometer reading a single digit. The lower chute dark, plated and half out of frame at the bottom edge, doing nothing. The panel on the flank shut. The intake lit and taking exactly one card.",
+      "end_state": "The pile has swallowed the tile pattern entirely and stands at Ray's shoulder with him on top of it, still below the odometer, which now reads 9. The panel is still shut and its hinges are still painted over. The lower chute has finally run, once, at 44.0s, and delivered exactly one card, which differs from the one at the top of Ray's pile by a single word. The intake at the top of the steps is unchanged and still taking exactly one card. That last clause is the thesis: the input never moved."
+    }
+  },
+  "scale": {
+    "relationship": "outnumbered",
+    "ratio": 0.72,
+    "reference_object": "Dee's letter-size dispute form, held and raised in frame beside a plywood-sized DocketCard. It is a true-human-size object, it is the only paper in the film at real scale, and it is the document c6 and c7 are about, so the size reference is also a story beat rather than a prop tax.",
+    "why": "I am OVERRIDING the producer's tag from 'working' to 'outnumbered', and the correction is load-bearing rather than clerical. 0.72 measured against the DocketCard long edge means the card is 1.39x Ray's height, i.e. 2.44m, plywood, exactly as specified. At working scale a person is bigger than the thing they handle and reads as an employee of the mechanism; here Ray is shorter than one court case, which is WORLD_KIT's 'cast normal, world enormous around them: use it when the point is that they are outnumbered'. The point of this story is literally that he is outnumbered by copies of himself. The tag matters because it tells the board Ray stays HUMAN-drawn and near camera, where the face carries the performance, instead of being staged as a small operator inside a big machine. ScaleFrame's real contract still binds even though the relationship is not 'tiny': a size reference is REQUIRED in frame, and Ray's crown must sit at 0.72 of the card long edge, plus or minus 0.03, in any frame containing both."
+  },
+  "palette": {
+    "key": "#3E8F8C",
+    "fill": "#1F5E5E",
+    "shade": "#123C3E",
+    "ink": "#101423",
+    "accent": "#A8763E",
+    "family": "enamel teal / brass"
+  },
+  "lighting_rig": "machine-cavity",
+  "cast_from_kit": [
+    {
+      "primitive": "props.TallyCounter variant='odometer'",
+      "status": "exists",
+      "file": "video-engine/src/lib/props.tsx",
+      "substituted_by": null,
+      "used_as": "the mounted brass count at centre wall. CAVEAT THE MANIFEST DOES NOT CARRY: `roll` animates the ONES DIGIT ONLY (`const isOnes = i === digits.length - 1`). A 09 to 10 transition renders as the ones digit rolling while the tens digit jumps instantly, on the one prop that carries the mechanism. Keep the visible count under 10, or budget a prop fix."
+    },
+    {
+      "primitive": "kit.MachineShadow",
+      "status": "substituted",
+      "file": "video-engine/src/lib/kit.tsx",
+      "substituted_by": "CountRoomBG",
+      "used_as": "NOT CAST. It is real and it is not castable here: no tint or livery prop (colours are module consts plus a hardcoded gradient), and the silhouette is an antenna-topped tower on a flared foundation, not a wall. Forcing it in would put a graphite tower in a teal room to earn a manifest tick. CountRoomBG is authored to its shape language instead. See blocked_on."
+    },
+    {
+      "primitive": "paper.Sheet",
+      "status": "exists",
+      "file": "video-engine/src/lib/paper.tsx",
+      "substituted_by": null,
+      "used_as": "Dee's letter-size dispute form ONLY. It is NOT sufficient for the DocketCard: its numeric shadow contract is a fixed 2px edge and a 4-down/2-right drop at 22%, which is invisible on a card occupying a third of a 1080x1920 frame, so a DocketCard drawn as a Sheet reads as a flat coloured rectangle rather than a slab. That is the honest reason DocketCard is a new prop and not a Sheet call."
+    },
+    {
+      "primitive": "paper.PaperFiber",
+      "status": "exists",
+      "file": "video-engine/src/lib/paper.tsx",
+      "substituted_by": null,
+      "used_as": "the ruled body-copy noise on every DocketCard face, so the two legible strings are the only readable things on it. Minor caveat: it is a 100x100 userSpaceOnUse pattern with 1.1px rules and sub-pixel speckle, which will alias when the card is scaled up; accept it as tooth or scale the pattern."
+    },
+    {
+      "primitive": "lighting.NightGrade + tones + FormGradient + RimLight + ContactShadow",
+      "status": "exists",
+      "file": "video-engine/src/lib/lighting.tsx",
+      "substituted_by": null,
+      "used_as": "the machine-cavity rig, implemented as ONE registered source over the intake practical and nothing else. NightGrade's black floor is what makes the plated dead chute a different STATE from 'dimly lit', which the 44s reveal depends on."
+    },
+    {
+      "primitive": "brand.Wordmark / brand.Highlighter / brand.Stamp",
+      "status": "exists",
+      "file": "video-engine/src/lib/brand.tsx",
+      "substituted_by": null,
+      "used_as": "the 2s stamp, the one marker swipe, the button's stamp. INTEGRATION FINDING: these are absolute-positioned HTML DIVs with mixBlendMode, not SVG, so they cannot be composited inside the scene graph and do not travel with a moving card. The wordmark must therefore stamp on a card AT REST. Second hazard: brand.Stamp and kit.Stamp are two different components with the same name and incompatible props."
+    },
+    {
+      "primitive": "cast.Ray / cast.Dee, Character pose 'raise'",
+      "status": "exists",
+      "file": "video-engine/src/lib/cast.tsx, video-engine/src/lib/Character.tsx",
+      "substituted_by": null,
+      "used_as": "the lock. 'raise' verified in the Pose union at Character.tsx L24, and cast only for Dee raising the letter-size dispute form; nobody raises a DocketCard, it weighs what a sheet of plywood weighs."
+    },
+    {
+      "primitive": "materials.brushedMetal, motion.vitals",
+      "status": "exists",
+      "file": "video-engine/src/lib/materials.tsx, video-engine/src/lib/motion.tsx",
+      "substituted_by": null,
+      "used_as": "the brass fittings, and the living idle on both cast members through the two-shot."
+    },
+    {
+      "primitive": "FX.PaperStorm",
+      "status": "not_required",
+      "file": "video-engine/src/lib/FX.tsx",
+      "substituted_by": null,
+      "used_as": "REFUSED. It exists, it is registered, and it draws hardcoded 44x60 white letter-size rects with no size and no colour parameter. In a film whose single visual thesis is that a court case is furniture, a storm of small white office paper contradicts the thesis directly. If a storm is wanted it must be DocketCards, which is the new prop's job."
+    },
+    {
+      "primitive": "stage3d (Stage3D/Plane/Extrude/Card/CameraMoves)",
+      "status": "not_required",
+      "file": "video-engine/src/lib/stage3d.tsx",
+      "substituted_by": null,
+      "used_as": "DELIBERATELY UNUSED, and I endorse it on craft grounds and not only on budget. It has never been wired into the Episode pipeline, so first use carries a real one-time integration cost, and this world has nothing to spend it on: the back plane is parallel to camera, there is no recession, and depth comes from overlap and from the pile advancing toward the lens. This is the best cost decision in the producer's spec."
+    },
+    {
+      "primitive": "Stack",
+      "status": "NOT_BUILT",
+      "file": null,
+      "substituted_by": "a `pile` 0..1 floor-line lift inside CountRoomBG plus at most 9 explicit DocketCard instances",
+      "used_as": "the one WORLD_KIT primitive I would genuinely have used. It is a prop-shape sketch and no .tsx exists. Capping the pile at 9 readable slabs removes the need for it entirely, and that same cap is forced independently by the odometer's ones-digit limitation and by the legibility gate."
+    },
+    {
+      "primitive": "Signage",
+      "status": "NOT_BUILT",
+      "file": null,
+      "substituted_by": "nothing, deliberately",
+      "used_as": "THIS WORLD CARRIES NO SIGNAGE AT ALL. The intake has no plate, the panel has no label, the chutes are unmarked. The Institution speaks only in paperwork here, which is stronger than a sign and which keeps the set clear of the diagram anti-pattern. Recorded as a deliberate refusal rather than an omission."
+    },
+    {
+      "primitive": "Paperwork",
+      "status": "NOT_BUILT",
+      "file": null,
+      "substituted_by": "paper.PaperFiber + paper.Sheet + the new DocketCard",
+      "used_as": "the Institution's only voice in this world."
+    },
+    {
+      "primitive": "WorldRig",
+      "status": "NOT_BUILT",
+      "file": null,
+      "substituted_by": "lighting.NightGrade with exactly one registered source",
+      "used_as": "the 'machine-cavity' preset, hand-rolled. WORLD_KIT already concedes the presets are mostly NightGrade with different arguments."
+    },
+    {
+      "primitive": "ScaleFrame",
+      "status": "not_required",
+      "file": null,
+      "substituted_by": "a review rule at handoff",
+      "used_as": "its only real contract is that a size reference is REQUIRED in frame. Enforced numerically here: Dee's letter-size sheet, and Ray's crown at 0.72 of the card long edge plus or minus 0.03."
+    },
+    {
+      "primitive": "Volume, Passage, Rotor, Piston, Conveyor, Flow, Queue, Grid",
+      "status": "not_required",
+      "file": null,
+      "substituted_by": null,
+      "used_as": "none of the eight is needed. No recession, no corridor, no rotation, no reciprocation, no belt, no fluid, no line of waiting figures, and the floor tiles are a flat pattern rather than a receding Grid. Zero of thirteen WORLD_KIT primitives exist as .tsx and this world casts zero of them, which is the entire reason it costs one run instead of two weeks."
+    }
+  ],
+  "new_assets": [
+    {
+      "name": "CountRoomBG",
+      "kind": "set",
+      "file": "video-engine/src/lib/countroom.tsx",
+      "prop_shape": "React.FC<{f: number; light?: number; pile?: number; intake?: number; panel?: number}> — a full-bleed teal enamel machine face parallel to camera with brass at every joint: four tiled steps rising to a lit brass intake slot at upper left, a brass mounting boss at centre for the odometer, a blank hinged panel with a real handle and PAINTED-OVER hinges on the right flank, a working chute mouth at lower centre and a plated chute at the lower right edge half out of frame. A tiled floor plane in the lower quarter that `pile` 0..1 progressively buries. Exactly ONE registered practical over the intake; everything else falls to the NightGrade black floor. No face, no eyes, no aperture that could read as an eye, ever.",
+      "manifest_line": "`CountRoomBG` — set — countroom.tsx — the Institution AS A WALL (case 0003, tenant-screening record assembly): teal enamel + brass, a lit intake slot at the top of four steps, a centre odometer boss, a hinged panel painted shut, one working chute and one plated dead chute at the frame edge, tiled floor. `light`/`pile`/`intake`/`panel` 0..1; ONE registered NightGrade source, no ambient. FACELESS BY CONSTRUCTION; authored to MachineShadow's shape language because MachineShadow has no livery prop and is a tower, not a wall — NEW 2026-08-02 — ACTIVE"
+    },
+    {
+      "name": "DocketCard",
+      "kind": "prop",
+      "file": "video-engine/src/lib/countroom.tsx",
+      "prop_shape": "React.FC<{x: number; y: number; w: number; rot?: number; head: string; caseNo: string; differs?: string; fiber?: string; thickness?: number}> — a plywood-proportioned 2:1 card drawn as a SLAB: a lit face, a visible extruded bottom edge and a shaded right edge, exactly TWO legible strings (the head line and the case number) at fixed cap heights and fixed positions, everything else PaperFiber ruled noise. `differs` swaps ONE word on ONE fixed line at ONE fixed x, so two instances can be compared by eye in under a second.",
+      "manifest_line": "`DocketCard` — prop — countroom.tsx — the court case as FURNITURE: a plywood-proportioned 2:1 slab with a real extruded edge, because paper.Sheet's numeric shadow contract (2px edge, 4-down/2-right at 22%) is invisible at this scale and renders a giant sheet as a flat rectangle. Exactly two legible strings over PaperFiber noise, plus `differs`, which replaces ONE word at ONE fixed position so two cards read as the same card with one difference — NEW 2026-08-02 — ACTIVE"
+    },
+    {
+      "name": "CardChute",
+      "kind": "prop",
+      "file": "video-engine/src/lib/countroom.tsx",
+      "prop_shape": "React.FC<{f: number; x: number; y: number; w: number; state: 'running' | 'plated'; emit?: number}> — a brass-lipped mouth in the enamel with a rubber curtain. `running` cams a DocketCard out and lets it fall flat; `plated` bolts a cover over the same mouth, emits nothing, and is the darkest value in the frame. ONE component, two states.",
+      "manifest_line": "`CardChute` — prop — countroom.tsx — one chute, two states: `running` cams a DocketCard out and drops it flat, `plated` bolts a cover over the identical mouth and is the frame's darkest value. Deliberately ONE component so the dead chute reads as the working chute switched off, which is the whole of the two-outputs beat — NEW 2026-08-02 — ACTIVE"
+    }
+  ],
+  "sight_gags": [
+    {
+      "gag": "THE SECOND CARD. A card slides out and lands flat. Ray steps up to read it. The machine makes the same card again and it lands ON TOP of the first, edges flush, so the picture on the floor does not change at all: the same head line, the same case number, in the same place. The only things that move are the odometer, which clicks, and Ray, who is now standing higher than he was. It happens again. And again. By the third he is on a step made of himself and nothing on screen has changed except his elevation.",
+      "requires_claim_shape": "c4 (duplicate case records and multiple entries for the SAME eviction action) and c5 (the false impression of having been sued more times than he actually was)",
+      "plays_with_sound_off": true,
+      "beat": "the turn, 7.0s, running as a three-step escalation ladder under whatever dialogue is written over it"
+    },
+    {
+      "gag": "THE PANEL THAT WILL NOT OPEN. On the machine's flank there is a hinged panel at a sensible height with a proper handle, hinges you can see, and no keyhole, no lock, no sign and no notice. Dee pulls it. It does not move. It is not locked: the hinges have been PAINTED OVER, in the same teal, and the brush stroke runs unbroken across the knuckle. She pulls it again anyway.",
+      "requires_claim_shape": "c6 (failed to disclose all the information and the sources of the data in its reports when consumers asked). The gag stages the asking and the not-opening and stops there: no source is named on screen, nothing is behind the panel, and no denial of housing is depicted.",
+      "plays_with_sound_off": true,
+      "beat": "13.8s, and it is deliberately never paid off, because nothing cleared says it was"
+    },
+    {
+      "gag": "A brass die embosses VERIFIED on each copy as it lands, while the intake in the same frame still holds the one original case and the counter above it reads a number that is not one.",
+      "the_joke": "The machine is being congratulated for accuracy while producing a false total. Nothing here is wrong and the answer is wrong.",
+      "requires_claim_shape": "c4, multiple entries for a single action in an assembled report",
+      "plays_with_sound_off": true
+    }
+  ],
+  "shots": [
+    {
+      "station": "the chute mouth, tile level (0.0-2.4s)",
+      "on_screen": "extreme low on the tiles at the chute lip, a plywood-sized DocketCard sliding out and slapping flat, its head line filling the lower third",
+      "camera": "height 0 (floor), square to the wall, card at frame width",
+      "world_is_doing": "making its first card, correctly. Nothing here is an error.",
+      "changed_since_last": "opening frame. The first image is the fact drawn, per DIRECTING."
+    },
+    {
+      "station": "the odometer boss, eye height (2.4-4.2s)",
+      "on_screen": "tight on the brass odometer, cream flip digits, the ones digit rolling 1 to 2; the Wordmark stamps at 2.6s in INK, multiply, over the cream digit field",
+      "camera": "height 2 (eye), tight",
+      "world_is_doing": "counting the copy as an event",
+      "changed_since_last": "camera jumped floor to eye; the count moved. The wordmark is spent on the one light field in the room and never on teal, where multiply vanishes."
+    },
+    {
+      "station": "the machine face, wide (4.2-7.0s)",
+      "on_screen": "THE ESTABLISHING IMAGE. The whole enamel wall, lit intake at the top of four steps upper left, odometer centre, the plated chute half out of frame lower right, Ray and Dee small at the base, two cards on the tiles",
+      "camera": "height 1 (low wide), full bleed",
+      "world_is_doing": "a third card sliding out",
+      "changed_since_last": "we see the apparatus entire, and how small a person is against one court case"
+    },
+    {
+      "station": "the pile edge, raking (7.0-10.4s) — THE TURN",
+      "on_screen": "the cards as slabs, edges flush, thickness reading along a raking three-quarter view; the tile pattern beginning to disappear under them",
+      "camera": "height 0 (tile), rotated off-square",
+      "world_is_doing": "accumulation begins; the quantity becomes terrain",
+      "changed_since_last": "the count stopped being a number on a wheel and became the floor"
+    },
+    {
+      "station": "Ray on the second card, mid (10.4-13.8s)",
+      "on_screen": "Ray standing on the pile at the card face; Dee at floor level holding her letter-size dispute form. THE SCALE REFERENCE FRAME.",
+      "camera": "height 2 (Ray's eye), mid",
+      "world_is_doing": "another card lands under Ray and lifts him",
+      "changed_since_last": "Ray is higher and has done nothing. Two paper sizes in one frame: what you send, and what it makes."
+    },
+    {
+      "station": "the painted panel, flank (13.8-17.2s)",
+      "on_screen": "Dee's hand on the handle, the hinge knuckle, the unbroken brush stroke across it",
+      "camera": "height 1 (hip), tight, arriving on a hard whip right",
+      "world_is_doing": "refusing, without a lock and without a sign",
+      "changed_since_last": "the machine turns out to have a door, and the door is a decoration"
+    },
+    {
+      "station": "the intake, top of the steps (17.2-20.8s)",
+      "on_screen": "the only high angle in the film: looking DOWN the four steps past the lit slot at the pile below, one card going IN",
+      "camera": "height 3 (above the intake), looking down",
+      "world_is_doing": "taking exactly one card, exactly as it always has",
+      "changed_since_last": "the input is proved unchanged while the output has multiplied. The thesis shot, and it should hold no dialogue."
+    },
+    {
+      "station": "the pile at shoulder, tile level (20.8-24.4s)",
+      "on_screen": "the pile from the floor, tile pattern gone, Ray on top of it, identical head lines readable all the way down the stack edge",
+      "camera": "height 0 (tile), looking up",
+      "world_is_doing": "a card lands; the stack edge shows every identical head line at once",
+      "changed_since_last": "camera drops from the highest position in the film to the lowest, back to back"
+    },
+    {
+      "station": "the odometer, tight (24.4-27.4s)",
+      "on_screen": "the same framing as shot 2, digits higher",
+      "camera": "height 2 (eye), tight, MATCHED to shot 2",
+      "world_is_doing": "counting",
+      "changed_since_last": "deliberately almost nothing. The count moved and the picture did not, which is the mechanism stated in one cut."
+    },
+    {
+      "station": "two-shot on the pile, low (27.4-31.4s) — THE ONLY TWO-SHOT",
+      "on_screen": "Ray and Dee on top of the pile, the wall towering behind and above them",
+      "camera": "height 0.5, looking up past the pile edge",
+      "world_is_doing": "the chute keeps running behind them and a card lands mid-line",
+      "changed_since_last": "4.0s of two-hander, inside the 20.0s ceiling, not in the first six seconds, not on the button, and the set is working through all of it"
+    },
+    {
+      "station": "the intake takes one more (31.4-34.6s)",
+      "on_screen": "tight on the slot, one card in, the practical hard on the brass lip",
+      "camera": "height 3, tight",
+      "world_is_doing": "the Institution answers, and it answers by being unchanged",
+      "changed_since_last": "the euphemism beat gets a physical form: the polite, correct, unaltered intake"
+    },
+    {
+      "station": "the dead chute, extreme low (34.6-41.8s, split on the line)",
+      "on_screen": "the plated mouth at the bottom edge, bolted, the darkest thing in frame; a card from the working chute lands beside it and it does not respond",
+      "camera": "height 0, extreme low, the frame edge cutting the chute",
+      "world_is_doing": "NOTHING, for the forty-fourth consecutive second, and that is the beat",
+      "changed_since_last": "the edge-tease finally gets a close-up. A viewer who has been noticing it since shot 3 has done work and is about to be paid."
+    },
+    {
+      "station": "the plate drops (41.8-44.0s) — THE REVEAL",
+      "on_screen": "fasteners falling to the tile, the cover plate dropping, the mouth opening, one card coming out",
+      "camera": "height 0, holding",
+      "world_is_doing": "the second output runs, once",
+      "changed_since_last": "the only reveal in the episode, and it reverses forty-four seconds of absence"
+    },
+    {
+      "station": "the two cards, overhead (44.0-47.8s)",
+      "on_screen": "straight down on the two cards lying adjacent on the tile, identical, differing by ONE WORD on one line at one position",
+      "camera": "overhead plate, the only top-down in the film",
+      "world_is_doing": "having told two different things to two different readers",
+      "changed_since_last": "a camera position never used before, saved for the payoff. STILL B lives here."
+    },
+    {
+      "station": "the button plate (47.8-56.0s)",
+      "on_screen": "the FTC filing flat to frame over the two cards, the Bureau Director's sentence highlighted once, the STAMP landing off-square, the word ALLEGED present, no cast",
+      "camera": "flat plate, 1080x1920",
+      "world_is_doing": "nothing. The world is finished and the paper is the last thing standing.",
+      "changed_since_last": "the receipt. Ray's card is unchanged and still under it, and the count is never shown being corrected, because nothing cleared says it was."
+    },
+    {
+      "station": "THE CERTIFICATE",
+      "at_s": [
+        30.0,
+        34.0
+      ],
+      "visual": "Split by the machine's own geometry, one frame, no cut. LEFT, macro: a copy lands and a small brass die drops onto its corner and embosses VERIFIED, and the case number under it matches the intake card exactly, both legible. RIGHT, in the same frame and in focus: the intake slot, still holding the ONE original case it has held since second one, and the odometer above it reading a number that is not one.",
+      "what_the_picture_knows_that_the_line_does_not": "That the machine is not making mistakes. Every copy it certifies is genuinely correct, and the total is false anyway. This is the only frame in the film that holds true and false about the same object at once, which is the difference between an absurdity and a complaint about volume.",
+      "claims": [
+        "c4",
+        "c5"
+      ],
+      "asserts": "Only that the report contained multiple entries for one action, which is c4 verbatim. The die embosses VERIFIED, not ACCURATE, and never a figure.",
+      "why_it_is_not_the_pile": "The pile says there was a lot of it, which the viewer already believed. This says nothing here is wrong and the answer is wrong, which the viewer cannot have believed, because it is a contradiction."
+    },
+    {
+      "station": "THE DISPUTE",
+      "at_s": [
+        34.0,
+        41.0
+      ],
+      "visual": "Ray climbs the four brass steps and pushes a card back INTO the intake, both arms up, the slot slightly too high for him. A beat with nothing in frame but the slot. The card comes straight back out and lands face up: INVALID, flat ink, no ceremony. Cut to the odometer, held: IT DOES NOT MOVE. It is the only time in the film the wheel is still.",
+      "what_the_picture_knows_that_the_line_does_not": "That the machine's one refusal is its fastest operation. Fifty seconds of a wheel that turns for every copy, and the one thing that will not make it turn is a person objecting.",
+      "claims": [
+        "c7"
+      ],
+      "asserts": "Only that disputes were sometimes labelled invalid with no further action taken, which is c7."
+    },
+    {
+      "station": "THE TWO ANSWERS",
+      "at_s": [
+        41.0,
+        48.0
+      ],
+      "visual": "Camera dead locked, flat on the lower machine face for the first time. Two chutes, two plates in the machine's own livery, one reading for the property manager and one for the applicant. The second chute, dark since the first second, opens with a breath of dust and BOTH fire at once. Two cards land. Insert, flat: identical headers, identical case number, one word that is not the same word.",
+      "what_the_picture_knows_that_the_line_does_not": "That the machine can be inconsistent after all, in the one place it was ever asked to be consistent. Forty seconds proving it can only make identical things, then two that are not.",
+      "claims": [
+        "c8"
+      ],
+      "asserts": "Only that different information was given to property managers and consumers about a dispute outcome, which is c8."
+    },
+    {
+      "station": "THE BUTTON",
+      "at_s": [
+        52.0,
+        60.0
+      ],
+      "visual": "The two contradicting cards on the floor, and a third sheet enters over them, differently set, official. Flat plate, held: United States v. RentGrow, Inc., with the Bureau Director's sentence highlighted in one crooked overshooting swipe. The single red STAMP mark of the episode lands. The word ALLEGED is on the plate. No cast in frame.",
+      "what_the_picture_knows_that_the_line_does_not": "That the paper which finally contradicts the machine is not his. He put a dispute in and got one word back; this came from a court and has nothing to do with his card, which is still on the floor underneath it.",
+      "claims": [
+        "c1",
+        "c9"
+      ],
+      "asserts": "The filing exists and the Director said what is quoted. ALLEGED is present and mandatory."
+    }
+  ],
+  "legibility_gate": {
+    "assumed_fps": 30,
+    "stills": [
+      {
+        "id": "STILL A — the same number again",
+        "frame": 300,
+        "at_s": 10.0,
+        "crop": "full frame 1080x1920 uncropped, PLUS a 25% downscale to 270x480 evaluated as a second image",
+        "settles": "whether a pile of identical court cases reads as SAME or merely as MANY. This is the producer's whole thesis and the funny critic's whole objection.",
+        "pass_conditions": [
+          "At least TWO DocketCard faces show the case number simultaneously.",
+          "Case-number cap height >= 34px in the 1080-wide frame (a 48px line at 2.5% of 1920, cap ~0.7 of line), stroke weight >= 4px.",
+          "The two on-screen instances are within 15% of each other in glyph height, so the eye reads repetition rather than two different documents at two depths.",
+          "Card field to ink lightness delta >= 60 L* (PAPER front #E8E2D4 at L*~89 against INK #101423 at L*~9 gives 80; stated so no board can tint the card toward teal and lose it).",
+          "The case-number string occupies >= 22% of the card's long edge on screen.",
+          "At 270x480 the two number blocks remain two dark blocks of EQUAL LENGTH at the same offset within their cards."
+        ],
+        "fail_action": "Re-stage with fewer and larger cards. The final pile is capped at 9 slabs for this reason and may go lower; it may never go higher."
+      },
+      {
+        "id": "STILL B — one word different",
+        "frame": 1350,
+        "at_s": 45.0,
+        "crop": "lower third, 1080x640, centred on the two adjacent cards, PLUS the same 25% downscale",
+        "settles": "whether the c8 payoff exists at all. If it is not readable in under a second at 45s with dialogue running, it is not a beat.",
+        "pass_conditions": [
+          "The two cards are the SAME component with the same params except the single `differs` string. Everything else pixel-identical.",
+          "The differing word sits on the same line index and the same x offset on both cards, so the eye lands on one spot and finds two strings.",
+          "Differing-word cap height >= 40px in the 1080-wide frame, i.e. LARGER than the case number, because it must be caught in under a second.",
+          "The two words differ by >= 3 characters in length OR in first letter, so the difference survives as silhouette at 25% scale.",
+          "The two cards are within 200px vertically and do not overlap on the differing line.",
+          "At 270x480 the two cards must NOT read as identical."
+        ],
+        "fail_action": "Move the c8 payoff onto the button plate, where legibility at 1080x1920 is already a gate, and give 44-48s back to the pile."
+      },
+      {
+        "id": "STILL C — the dead chute is dead before it runs",
+        "frame": 1170,
+        "at_s": 39.0,
+        "crop": "lower quarter, 1080x480",
+        "settles": "whether the 44s reveal has anything to reverse. An absence nobody registered is not a reveal, it is a new object arriving.",
+        "pass_conditions": [
+          "The plated chute mouth is the frame's darkest large region, at least 12 L* below the next darkest region of comparable area.",
+          "The cover plate and at least three fasteners are individually resolvable at full res.",
+          "The chute is visibly the SAME mouth geometry as the working chute (same component, `state='plated'`)."
+        ],
+        "fail_action": "If it does not read as covered it reads as shadow, and the plate dropping at 44s reads as a new prop rather than as a thing that was shut."
+      },
+      {
+        "id": "STILL D — the scale conceit",
+        "frame": 330,
+        "at_s": 11.0,
+        "crop": "full frame",
+        "settles": "whether a viewer reads a giant card or a normal-sized room. WORLD_KIT's named silent failure.",
+        "pass_conditions": [
+          "Dee's letter-size dispute sheet and a DocketCard both fully in frame.",
+          "DocketCard long edge >= 8.0x the dispute sheet long edge on screen (true ratio 2.44m to 0.297m = 8.2x), tolerance -15%.",
+          "Ray's crown at 0.72 of the DocketCard long edge, plus or minus 0.03."
+        ],
+        "fail_action": "The world is invisible and every other still is moot. Fix this before anything else."
+      },
+      {
+        "id": "STILL E — the odometer reads",
+        "frame": 72,
+        "at_s": 2.4,
+        "crop": "centre 1080x720",
+        "settles": "whether the count is a legible physical object or a brass smudge.",
+        "pass_conditions": [
+          "Digit cap height >= 44px in the 1080-wide frame.",
+          "Visible count <= 9 in every frame of the film (props.TallyCounter rolls the ones digit only; a tens flip renders as a jump).",
+          "The displayed number equals the number of DocketCards visible in the same frame, in EVERY frame. This is a claims guard as much as a legibility one: the odometer must caption the picture and never assert a figure the FTC did not state."
+        ],
+        "fail_action": "Scale the counter up, or mount it lower on the wall."
+      }
+    ]
+  },
+  "divergence": {
+    "clears_artwork_ledger": true,
+    "notes": "LEDGER (2 entries, so 'differs from the last four' certifies almost nothing and I am not leaning on it). hero_structure: 0001 was an interior two-hander against a filing-cabinet wall, 0002 an exterior night one-point recession resolving to two stacked federal records; this is a machine FACE as the back plane with a floor-level pile growing into the lower third and a human scale-locked against a 2.44m card. atmosphere: 0001 fluorescent records room, 0002 night exterior with rationed practical; this is a windowless enamel interior with EXACTLY ONE registered source, and the frame's brightest object MOVES (the paper) rather than sitting in fixed windows. This is the narrowest of the axes and I am flagging it rather than claiming it comfortably, because both this and 0002 route through NightGrade. palette_family: enamel teal / brass against manila-carbon and night-steel-sodium; clean. continuity_device: 0001 used motif and the rule blocks the last two, so MOTIF IS UNAVAILABLE and the device here is EDGE-TEASE, the second chute half out of frame at the lower edge from shot 3 and dead until 44.0s. That was already latent in the producer's design and costs nothing. camera_language: the last two were locked and push, so this is WHIP, hard pans between the intake at the top of the steps and the chute at the floor, which is also the mechanism, plus one drop to tile level and one overhead saved for the payoff. Orbit was the obvious alternative and it needs stage3d, which is unwired. WATCH ITEM, not a failure: 0002 resolved to 'two stacked federal records' and this resolves to two contradicting cards; the button here is ONE filing over two props rather than two stacked documents, and it must stay that way.\n\nWORLD_KIT'S FIVE WORKED EXAMPLES, run because the ledger cannot carry this alone. Ex1 sorting floor: no belt, no travel, no throughput; clear. Ex2 review inside the patient: no queue, no waiting, no body; clear. Ex3 pitch shaft: no descent, no narrowing, no passage; clear, and this is the example the killed pass-1 chute was genuinely close to. Ex5 inside the engine: shares the machine-cavity rig and a scale reversal, and diverges on everything that matters (cast at 0.72 not 0.04, the machine does not move them, there is no cavity, they are outside the machine looking at its face). The rig repeating is deliberate: one practical is what this set physically implies, and swapping it purely to diverge would be worse craft. EX4 IS THE CLOSE ONE AND NOBODY ASKED FOR IT TO BE CHECKED. The Warehouse Of You is a records interior whose world-job is ABSENCE, with paperwork, an intake that has not noticed the outflow, and a thing at the far edge that should be shut. Four points of contact. It clears on three: ex4 recedes to a vanishing point down an aisle the cast WALK and this world has no recession at all; ex4's absence is a container that should be full and this one is an output that should be running; and this world's job is primarily ACCUMULATION with the absence riding underneath, where ex4's is purely absence. Honest, but not comfortable.\n\nTHE RECORDS-ROOM QUESTION, adjudicated, because the producer was right to flag it. Case 0001 was PaperOfficeBG: an interior, a flat back wall, paper, a locked camera, two people in front of it. This is an interior, a flat back wall, and paper. The overlap is real and it is NOT the palette; palette is the easy axis, teal and brass clear manila and carbon by a mile, and the palette change is exactly what would CONCEAL the repeat. The dangerous overlap is hero structure, and the answer is three conditions rather than three assertions. ONE: a records room STORES and this wall MAKES. Storage is inert, which is why 0001 failed the swap test; production has a moving part, and the machine must be seen OPERATING in the establishing frame rather than discovered later. TWO: the paper here is FURNITURE. 0001's paper was letter-size and lay flat; here a card is 2.44m and the cast stands on it, and that scale relationship is a thing 0001 never had at any point. THREE: 0001 was `locked`, and this is whip plus a floor-to-above-the-intake height spread across fifteen shots. If the board ships a front-on locked wide of a flat wall with paper in front of it, it has shipped case 0001 in a new coat, and I will say so at the panel. That is the kill criterion, in writing, and it is the first place to look when this render comes back flat."
+  },
+  "handoff_to_board": [
+    "CAP THE VISIBLE COUNT AT 9, on the floor and on the odometer. props.TallyCounter rolls the ones digit only, so a tens flip renders as a jump, and past nine slabs the card faces stop being legible. The odometer must equal the cards visible in frame, always: it captions the picture and asserts nothing the FTC did not state.",
+    "CAMERA IS WHIP PLUS ONE DROP TO TILE LEVEL, never locked and never a push; the last two episodes spent both. No two consecutive shots may share a camera height AND a world state. The only high angle is at 17.2s and the only overhead is at 44.0s.",
+    "THE SIZE REFERENCE IS DEE'S LETTER-SIZE DISPUTE FORM in frame with a plywood-sized card, and Ray's crown sits at 0.72 of the card's long edge, plus or minus 0.03, in any frame containing both. Without it a viewer reads a normal room and the conceit is silently gone.",
+    "STAMP RED IS SPENT ONCE, ON THE BUTTON. The Wordmark stamps at 2.6s in INK, multiply, over a card's cream field and never over teal enamel, where multiply is invisible. brand.* are HTML divs and not SVG, so they cannot travel with a moving card: stamp on a card at rest.",
+    "Copies LAND FLUSH on top of each other so the picture on the floor does not change. That is the point: the count rises while the image does not. Where a shot needs two card faces legible at once, offset exactly one card edge and no more, and never scatter."
+  ],
+  "the_turn": {
+    "at_seconds": 7.0,
+    "what_gets_worse": "The copies stop landing in a stack and fan across the tiled floor until the floor is paper and Dee is standing on it, so the count stops being a number on a wheel and becomes terrain measured against their own bodies."
+  },
+  "the_joke": {
+    "is": "The machine is never wrong. Every copy is accurate and the total is false.",
+    "is_not": "There was a lot of paperwork.",
+    "ruled_by": "devil's advocate pass 2, upheld. The pile is the SETUP and the certificate is the PUNCHLINE.",
+    "source": "out/dispatch/story.json why_absurd_not_just_bad, which already said this and which no shot staged."
+  }
+}

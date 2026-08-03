@@ -467,8 +467,28 @@ Failing Gate 0 is cheap. Failing after a render is not.
    too. It is the agent that caught the red arc across Ray's legs the same day.
    It works when it runs.
 
+7b. **`python3 scripts/retime_check.py` BEFORE any render, and again after ANY
+   retime.** A self-timed episode is drawn from the script's frozen times, so a
+   script that moves has to move the board and the scene file with it. This gate
+   reads the SCENE SOURCE and refuses a degenerate interpolate range (which
+   crashes the whole composition at render time with a frame number and no shot
+   name), a shot that ends before it starts, a HOLE between shots (which renders
+   BLACK), and a scene that no longer matches its board.
+
+   It found a 0.9 second hole on its first live run that a twelve-cell contact
+   sheet could not: twelve cells across 58 seconds samples every 4.8s, and
+   sampling cannot find a hole narrower than its own interval.
+
 8. `bash scripts/render.sh final` only when the draft is right.
-9. `bash scripts/mux_and_verify.sh` for audio mux and integrity.
+
+   **WAIT FOR THE ARTIFACT, NOT FOR THE SHELL.** A render launched in the
+   background notifies when the WRAPPER exits, which is immediate. Check that
+   the mp4 is newer than the scene file that draws it before doing anything with
+   it. "The command completed" has already meant "191 frames into 1748" once.
+9. `bash scripts/mux_and_verify.sh` for audio mux and integrity. It refuses a
+   missing input, a video older than its audio, a video older than the SCENE
+   SOURCE that draws it, and an ffmpeg that failed (which used to leave the
+   previous episode at the output path and measure THAT).
 10. `python3 scripts/render_gate.py <final.mp4>` — the OBJECTIVE renders_clean
     gate. Dependency-free container parse: duration under 60.0s, 1080x1920, a
     real audio track, non-trivial size. Not a prose judgement, not optional.

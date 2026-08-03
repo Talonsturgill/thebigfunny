@@ -20,23 +20,27 @@
 export type Cue = {start: number; end: number; who: string; text: string};
 
 export const CAPTIONS: Cue[] = [
-  {start: 0.0, end: 3.359, who: 'RAY', text: 'There\'s a company whose job is deciding whether you\'re allowed to rent.'},
-  {start: 3.62, end: 6.692, who: 'DEE', text: 'Their whole job is telling a landlord what\'s in your court file.'},
-  {start: 6.95, end: 8.662, who: 'DEE', text: 'The government sued them in July.'},
-  {start: 8.92, end: 9.78, who: 'RAY', text: 'They type it in.'},
-  {start: 10.04, end: 13.576, who: 'DEE', text: 'Their reports showed people evicted more times than they\'d been evicted.'},
-  {start: 13.84, end: 16.292, who: 'DEE', text: 'They counted the same eviction twice.'},
-  {start: 16.55, end: 19.316, who: 'RAY', text: 'Yeah, that one\'s in there twice. Leave it.'},
-  {start: 19.58, end: 22.613, who: 'DEE', text: 'You can dispute it. They review it. They mark it invalid.'},
-  {start: 22.87, end: 24.683, who: 'RAY', text: 'Invalid. Like I made it up.'},
-  {start: 24.94, end: 27.778, who: 'DEE', text: 'They told the landlord something different than they told you.'},
-  {start: 28.04, end: 29.954, who: 'DEE', text: 'They paid two and a quarter million.'},
-  {start: 30.22, end: 36.763, who: 'INSTITUTION', text: 'Failure to maintain reasonable procedures to ensure the maximum possible accuracy of the information in its consumer reports.'},
-  {start: 37.02, end: 38.958, who: 'RAY', text: 'That\'s the legal way of saying count to one.'},
+  {start: 0.6, end: 2.248, who: 'DEE', text: 'One eviction case.'},
+  {start: 2.6, end: 3.044, who: 'RAY', text: 'Okay.'},
+  {start: 4.6, end: 6.631, who: 'DEE', text: 'That report goes to a landlord.'},
+  {start: 7.4, end: 11.27, who: 'RAY', text: 'Evicted. Evicted. Yeah, no. Career defendant.'},
+  {start: 11.6, end: 12.884, who: 'RAY', text: 'He got sued once.'},
+  {start: 14.0, end: 15.153, who: 'DEE', text: 'I asked where they got it.'},
+  {start: 16.2, end: 17.716, who: 'RAY', text: 'Somebody got paid to do that.'},
+  {start: 23.8, end: 25.23, who: 'RAY', text: 'I\'ve been standing here the whole time.'},
+  {start: 26.6, end: 27.128, who: 'DEE', text: 'I know.'},
+  {start: 32.6, end: 35.862, who: 'INSTITUTION', text: 'reasonable procedures to ensure maximum possible accuracy'},
+  {start: 36.1, end: 37.025, who: 'DEE', text: 'He disputed it.'},
+  {start: 37.9, end: 38.67, who: 'INSTITUTION', text: 'Invalid.'},
+  {start: 39.5, end: 42.739, who: 'RAY', text: 'That\'s not a decision. That\'s a fucking word.'},
+  {start: 43.1, end: 45.06, who: 'DEE', text: 'Sorry, is there a second word?'},
+  {start: 46.3, end: 49.368, who: 'DEE', text: 'The landlord\'s copy and his copy don\'t say the same thing.'},
+  {start: 50.3, end: 52.427, who: 'RAY', text: 'So. Which one of those do I live in?'},
+  {start: 54.1, end: 56.747, who: 'RAY', text: 'Mine\'s still under there.'},
 ];
 
 /** Seconds of finished episode: last spoken word plus the 1.5s tail. */
-export const TOTAL = 40.46;
+export const TOTAL = 58.25;
 
 /** Who is speaking at time t, or null in a gap. One definition, so the caption
  *  tint, the speaker label and the talk pose can never disagree. */

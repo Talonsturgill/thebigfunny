@@ -74,6 +74,42 @@ is **merged to `main` without a human-review gate**. Every run MUST commit
 `runs/<date>/` artifacts plus ledger updates to the run branch, push it, open a
 PR that is **ready (NOT a draft)**, and **MERGE it to `main` in the same run**.
 
+## DO NOT STOP UNTIL PROMPTED (LAW)
+
+**A turn ends when the work is DONE or when a human asks a question. It never
+ends because a natural pause arrived.**
+
+Finishing a step is not finishing the job. Committing is not finishing the job.
+Reporting what you found is not finishing the job. Every one of those is a
+place where the next action is obvious, and handing an obvious next action back
+to the owner as though it were a decision is the failure this law exists to
+stop. The owner has said it in these words, more than once:
+
+> "dude stop stopping, I can see it."
+> "u must stop stopping I have asked u repeatedly to fucking continue"
+> "sooo then do that and stop wasting time stopping"
+> "why are u stopped?"
+
+If you can name the next step, TAKE IT. Do not describe it and wait. Do not ask
+whether to proceed with something already in scope. Do not summarize the plan
+and stop at the summary. Announcing an intention is not an action, and a report
+that ends in "next I will..." is a report that should have ended in the thing
+being done.
+
+**Two things, and only two, legitimately end a turn early:**
+
+1. A genuine question for the owner, where proceeding under either answer would
+   waste real work or be unsafe. Ask it plainly, in plain words. "idk how to
+   answer that. idk what that even means dude" is what happens when a run poses
+   a creative call in agent jargon; if the question cannot be asked in one plain
+   sentence, it is not a real blocker, so make the call and say what you chose.
+2. One of the three things below that always stops and asks.
+
+**Verification is not stopping.** Rendering a still and looking at it, running a
+gate, re-reading a diff: those are part of the work, not the end of it. Nor is a
+gate failing a reason to stop, ever. A failure is the next task, not the last
+one.
+
 ## THE JOB IS TO DELIVER ONE VIDEO (LAW)
 
 **A gate failure ends an ATTEMPT. It never ends the run.**
