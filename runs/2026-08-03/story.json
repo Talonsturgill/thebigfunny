@@ -1,0 +1,14 @@
+{
+  "case": 3,
+  "absurd_sentence": "The report wrote the same eviction case out again and again, and counted each copy as another time he was sued.",
+  "who_does_the_stupid_thing": "the machine that assembles the report, which copies one court case and advances its own count for every copy",
+  "why_absurd_not_just_bad": "It is not wrong about anything. Every copy is accurate, and being accurate that many times is what makes the total false.",
+  "claims_ref": {
+    "file": "out/dispatch/claims.json",
+    "case": 3
+  },
+  "licensed_by": [
+    "c4",
+    "c5"
+  ]
+}

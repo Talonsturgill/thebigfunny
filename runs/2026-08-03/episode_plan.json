@@ -1,0 +1,46 @@
+{
+  "plannable": true,
+  "shippable": false,
+  "blocked_on": [
+    "out/dispatch/angle.json does not exist; the angle room must re-emit it before the writers room scripts against it."
+  ],
+  "case": 3,
+  "claims_ref": {
+    "file": "out/dispatch/claims.json",
+    "case": 3
+  },
+  "logline": "One court case goes into the machine that builds a tenant screening report, and a crowd of identical court cases comes out taller than the man they belong to.",
+  "world": {
+    "name": "THE COUNT ROOM",
+    "drawn_from": [
+      "report",
+      "record",
+      "eviction",
+      "case",
+      "count",
+      "copies",
+      "screening",
+      "dispute"
+    ],
+    "why_this_world": "The mechanism is record ASSEMBLY, so the set is the assembler: intake, count and both outputs are three features of one machine face, which puts the whole allegation in one frame and means the film never travels.",
+    "new_props": [
+      "CountRoomBG",
+      "DocketCard",
+      "CardChute"
+    ],
+    "missing_primitives": [],
+    "rejected_world": "THE DISPUTE WINDOW",
+    "why_it_lost": "It stages c7 and c8 beautifully and cannot stage c4 or c5 at all, which are the first two cleared claims and the actual mechanism. The duplication has no physical home in a service counter, so the central allegation would have to be told in dialogue, which is the defect the verdict ledger has recorded six times on this case."
+  },
+  "the_turn": {
+    "at_seconds": 7.0,
+    "what_gets_worse": "The count stops being a number on a wheel and becomes the floor. The copies fan out until the cast is standing on them, so the quantity is measured against their own bodies instead of against a digit."
+  },
+  "the_button": {
+    "document": "The FTC filing, United States v. RentGrow, Inc., with the Bureau Director's verbatim sentence highlighted",
+    "claim": "c1",
+    "image": "Flat plate at 1080x1920, the filing filling frame over the two contradicting cards on the floor, one highlighted line, one STAMP red mark off-square, the word ALLEGED present. No cast in frame.",
+    "why_ray_does_not_win": "The paper that finally contradicts the machine is not his. He put a dispute in twice and got one word back. His card is unchanged and still on the floor under it, and the count is never shown being corrected, because nothing cleared says it was."
+  },
+  "sight_gags_surviving_claim_guards": 3
+}

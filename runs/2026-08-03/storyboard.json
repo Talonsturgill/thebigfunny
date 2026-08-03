@@ -1,0 +1,713 @@
+{
+  "case": 3,
+  "title": "One eviction case, counted nine times",
+  "angle": "The report wrote the same eviction case out again and again, and counted each copy as another time he was sued.",
+  "target": "the tenant screening report assembler that copies one eviction case and advances its own count for every copy",
+  "angle_type": "the-machine-is-never-wrong",
+  "phase": "4.4 director",
+  "written_by": "the director agent, returned in three chunks and assembled here because the agent had no Write in this session; see FIELD_NOTES",
+  "delivered_runtime_seconds": 56.9,
+  "estimated_seconds": 56.5,
+  "visual_system": {
+    "set": "THE COUNT ROOM",
+    "world": {
+      "name": "THE COUNT ROOM",
+      "drawn_from": [
+        "report",
+        "record",
+        "eviction",
+        "case",
+        "count",
+        "copies",
+        "screening",
+        "dispute"
+      ],
+      "why_this_world": "the machine that ASSEMBLES a tenant screening report. Not the office that sells it, not the counter where you dispute it. The face of the assembler, with its intake, its count and BOTH of its outputs in one frame, so the whole allegation is one image and the film never travels."
+    },
+    "lighting_rig": "machine-cavity",
+    "palette": {
+      "key": "#3E8F8C",
+      "fill": "#1F5E5E",
+      "shade": "#123C3E",
+      "ink": "#101423",
+      "accent": "#A8763E",
+      "family": "enamel teal / brass"
+    }
+  },
+  "the_turn": {
+    "at_seconds": 7.0,
+    "what_gets_worse": "The count stops being a number on a wheel and becomes the floor. The copies fan out until the cast is standing on them, so the quantity is measured against their own bodies instead of against a digit."
+  },
+  "the_button": {
+    "document": "The FTC filing, United States v. RentGrow, Inc., with the Bureau Director's verbatim sentence highlighted",
+    "claim": "c1",
+    "image": "Flat plate at 1080x1920, the filing filling frame over the two contradicting cards on the floor, one highlighted line, one STAMP red mark off-square, the word ALLEGED present. No cast in frame.",
+    "why_ray_does_not_win": "The paper that finally contradicts the machine is not his. He put a dispute in twice and got one word back. His card is unchanged and still on the floor under it, and the count is never shown being corrected, because nothing cleared says it was."
+  },
+  "the_joke": {
+    "is": "The machine is never wrong. Every copy is accurate and the total is false.",
+    "is_not": "There was a lot of paperwork.",
+    "ruled_by": "devil's advocate pass 2, upheld. The pile is the SETUP and the certificate is the PUNCHLINE.",
+    "source": "out/dispatch/story.json why_absurd_not_just_bad, which already said this and which no shot staged."
+  },
+  "rulings": {
+    "institution_body": "OPTION (i). CountRoomBG IS the Institution for case 0003. The MachineShadow tower is NOT stood behind the intake even though `tint` now exists, because a tower through the slot puts something BEHIND the process and this case's thesis is that nothing is. A tapered tower reads as a body and an eye looks for a face on a body; the antenna array is a broadcast affordance this story does not have. The deviation from CAST_BIBLE's 'same silhouette' is bound by building CountRoomBG on MachineShadow's tone triple (MS_GRAPHITE / MS_GRAPHITE_D through lighting.tones) for its shade and joint values, with enamel as livery over them. Faceless by construction: no aperture paired, symmetric about centre, or above the odometer boss.",
+    "what_the_viewer_looks_at_while_it_speaks": "32.6s, the intake lip taking one card and the curtain dropping. 37.0s, DEE'S FACE. The machine's only line with a reaction shot, and the reaction belongs to the listener.",
+    "directing_doc_vs_gate": "knowledge/DIRECTING.md said 12 to 16 events per 60s and scripts/visual_check.py refuses under 18. Mutually exclusive. Ruled for the executable gate and reported amber against the doc. The doc has since been corrected to match the gate."
+  },
+  "unillustratable_lines": [
+    {
+      "line": 6,
+      "text": "Somebody got paid to do that.",
+      "why": "c6 licenses a failure to disclose sources, not a payment. Drawing the payment asserts an uncleared transaction.",
+      "handled": "S6 stages the painted-shut door and the line rides on audio alone.",
+      "rewrite_ask": "make it about the disclosure that did not happen, so the door is an answer to a question",
+      "severity": "note to the writers room, not a rejection: one line, not the turn, not the button"
+    }
+  ],
+  "do_not_cut": [
+    "S7 and S8 are ONE move. The highest camera in the film and the lowest, back to back, with the fall itself as the measurement. Cutting either strands the other.",
+    "S11 lands the punchline BEFORE the euphemism S12 answers. That order is the joke.",
+    "S5 is the only true-human-size object in the film. Without it the scale conceit is invisible.",
+    "S14 is the only still wheel in the film, in the matched framing of second 2.6."
+  ],
+  "new_assets": [
+    "CountRoomBG",
+    "DocketCard",
+    "CardChute",
+    "VerifyDie",
+    "FilingPlate"
+  ],
+  "alleged_guard": "c10, c11 and c12 are CUT and are never stated, implied, badged or labelled. No crowd, no second person's card, no name, no address, no victim count, no depiction of anyone being refused a home, nothing that reads as an admission. c3 ($2.25M) is cleared and deliberately excluded. The odometer never shows more than the cards visible in the same frame and tops out at 9.",
+  "verdict": "board-it",
+  "shots": [
+    {
+      "id": "S1",
+      "t": [
+        0.0,
+        2.4
+      ],
+      "beat": "the hook, the fact drawn",
+      "visual": "Extreme low at tile level. A plywood-proportioned docket card fires out of the brass-lipped chute and slaps flat on the tile, its head line and case number filling the lower third at full legibility. No people, no wide, no title.",
+      "visual_contributes": "The first image is a court case being MANUFACTURED, at furniture size, before anyone has said the word report. A viewer learns in half a second that a legal proceeding here is a physical slab something else ejected, which is a size judgement the words never make.",
+      "staging": {
+        "RAY": "off",
+        "DEE": "off"
+      },
+      "camera": "height 0, on the tiles at the chute lip, square to the wall, card at frame width",
+      "captions": [
+        "One eviction case."
+      ],
+      "assets": [
+        "NEW: CountRoomBG",
+        "NEW: DocketCard",
+        "NEW: CardChute",
+        "paper.PaperFiber",
+        "lighting.NightGrade",
+        "lighting.RimLight",
+        "lighting.ContactShadow",
+        "materials.brushedMetal"
+      ],
+      "events": [
+        {
+          "t": 0.5,
+          "kind": "prop",
+          "what": "a plywood-sized docket card fires out of the chute at tile level and slaps flat, head line and case number filling the lower third"
+        }
+      ]
+    },
+    {
+      "id": "S2",
+      "t": [
+        2.4,
+        4.6
+      ],
+      "beat": "the count is an object",
+      "visual": "Tight on the brass odometer on its boss, cream flip digits. The top edges of two landed cards sit just inside the bottom of frame. The wordmark stamps at 2.6s in ink, multiply, over the cream digit field. The ones digit rolls 1 to 2 as the second card's edge enters.",
+      "visual_contributes": "The digit and the thing it is counting are put in one frame at one moment, so the room's only rule is taught before anybody explains it: one slab equals one click. Every later wheel can then be read without a caption and never has to assert a figure of its own.",
+      "staging": {
+        "RAY": "off",
+        "DEE": "off"
+      },
+      "camera": "height 2, eye, tight on the odometer boss, whipped up the wall from S1",
+      "captions": [
+        "Okay."
+      ],
+      "assets": [
+        "props.TallyCounter variant='odometer'",
+        "NEW: DocketCard",
+        "brand.Wordmark",
+        "materials.brushedMetal"
+      ],
+      "events": [
+        {
+          "t": 2.6,
+          "kind": "text_card",
+          "what": "the wordmark stamps in ink, multiply, over the cream digit field, the one light surface in the room"
+        },
+        {
+          "t": 3.6,
+          "kind": "prop",
+          "what": "the ones digit rolls from 1 to 2 as the top edge of the second card enters the bottom of frame"
+        }
+      ]
+    },
+    {
+      "id": "S3",
+      "t": [
+        4.6,
+        7.4
+      ],
+      "beat": "the establishing image, and the edge-tease begins",
+      "visual": "The whole enamel wall. Four tiled steps to a lit brass intake slot upper left, the odometer boss dead centre, a hinged panel with a real handle on the right flank, the working chute lower centre, and a second chute plated and bolted, half out of frame at the lower right edge. Ray and Dee small at the base. A third card ejects and lands dead flush on the two already there; the wheel goes to 3.",
+      "visual_contributes": "One frame states the whole apparatus: where the case goes in, where the count is kept, where copies come out, and one output bolted shut since before the film started. It also fixes the size law, Ray's crown at 0.72 of a card's long edge, so a man is measured against one court case rather than against a room.",
+      "staging": {
+        "RAY": "left",
+        "DEE": "right"
+      },
+      "camera": "height 1, low wide, full bleed, square to the wall",
+      "captions": [
+        "That report goes to a landlord."
+      ],
+      "assets": [
+        "NEW: CountRoomBG",
+        "NEW: CardChute",
+        "NEW: DocketCard",
+        "props.TallyCounter",
+        "cast.Ray",
+        "cast.Dee",
+        "motion.vitals",
+        "lighting.FormGradient"
+      ],
+      "events": [
+        {
+          "t": 5.4,
+          "kind": "scale",
+          "what": "the whole enamel wall arrives and Ray and Dee resolve at the base of it, crown height 0.72 of one card's long edge"
+        },
+        {
+          "t": 6.8,
+          "kind": "prop",
+          "what": "a third card ejects and lands dead flush on the first two, so the picture on the floor does not change, and the wheel goes to 3"
+        }
+      ]
+    },
+    {
+      "id": "S4",
+      "t": [
+        7.4,
+        11.6
+      ],
+      "beat": "THE TURN at 7.0s. The count stops being a number and becomes the floor.",
+      "visual": "Raking three-quarter across the pile at tile level so the slab thickness reads. Cards land flush on the beat of the repeated word, each landing lifting Ray's boots one card-thickness. The tiled floor pattern disappears completely under the pile by the end of the shot. Odometer deliberately out of frame.",
+      "visual_contributes": "Three landings run under a line that was going to be spoken anyway, so the escalation costs the script nothing. Because the cards land exactly flush the floor image is identical before and after each one, and the only measurable change in the frame is the height of the man standing on it.",
+      "staging": {
+        "RAY": "left",
+        "DEE": "right"
+      },
+      "camera": "height 0, tile level, rotated off-square, raking along the card edges",
+      "captions": [
+        "Evicted. [short pause] Evicted. [short pause] Yeah, no. Career defendant."
+      ],
+      "assets": [
+        "NEW: DocketCard",
+        "NEW: CardChute",
+        "NEW: CountRoomBG",
+        "cast.Ray",
+        "cast.Dee",
+        "paper.PaperFiber",
+        "lighting.ContactShadow"
+      ],
+      "events": [
+        {
+          "t": 7.8,
+          "kind": "sight_gag",
+          "what": "a card lands dead flush on the one already on the tile, edges exactly aligned, so the picture on the floor does not change at all",
+          "the_joke": "Three identical court cases land in a stack so exact that the floor picture never changes, and the only thing in the frame that goes up is the man standing on it."
+        },
+        {
+          "t": 9.4,
+          "kind": "prop",
+          "what": "a fourth card lands flush and Ray's boots rise another card-thickness without him moving a muscle"
+        },
+        {
+          "t": 10.8,
+          "kind": "scale",
+          "what": "the tiled floor pattern disappears completely under the pile; the quantity has become terrain"
+        }
+      ]
+    },
+    {
+      "id": "S5",
+      "t": [
+        11.6,
+        14.0
+      ],
+      "beat": "the scale reference frame",
+      "visual": "Ray standing on the pile at card-face height. Dee at floor level, camera right, raising her letter-size dispute form so it sits in frame beside a card 8.2 times its long edge. Two paper sizes in one frame: what a person sends, and what the machine makes.",
+      "visual_contributes": "The conceit is silently invisible unless one true-human-size object shares a frame with a card, and this is the only shot that supplies it. The small sheet is also the dispute form the next act turns on, so the size reference and the coming premise arrive in the same gesture.",
+      "staging": {
+        "RAY": "left",
+        "DEE": "right"
+      },
+      "camera": "height 2, Ray's eye, mid",
+      "captions": [
+        "[medium pause] He got sued once."
+      ],
+      "assets": [
+        "paper.Sheet",
+        "NEW: DocketCard",
+        "cast.Ray",
+        "cast.Dee (pose 'raise')",
+        "motion.vitals"
+      ],
+      "events": [
+        {
+          "t": 12.6,
+          "kind": "scale",
+          "what": "Dee raises her letter-size dispute form beside a card 8.2 times its long edge, the only true-human-size object in the film"
+        }
+      ]
+    },
+    {
+      "id": "S6",
+      "t": [
+        14.0,
+        18.2
+      ],
+      "beat": "the asking, and the not-opening",
+      "visual": "Dee's hand on the handle of the hinged panel on the machine's flank. Macro on the hinge knuckle: no keyhole, no lock, no sign, no notice, and the teal enamel brush stroke runs unbroken straight across the knuckle. She pulls. It does not move. She pulls again. Behind her, out of focus, another card lands anyway.",
+      "visual_contributes": "The refusal is drawn as a maintenance decision rather than a policy: nobody said no, somebody painted over the hinge, and the paint proves the door has not opened since. That is meaner than a sign because there is nobody to appeal it to.",
+      "staging": {
+        "RAY": "off",
+        "DEE": "right"
+      },
+      "camera": "height 1, hip, tight on the flank panel, arriving on a hard whip right",
+      "captions": [
+        "I asked where they got it.",
+        "Somebody got paid to do that."
+      ],
+      "assets": [
+        "NEW: CountRoomBG",
+        "cast.Dee",
+        "materials.brushedMetal",
+        "lighting.RimLight",
+        "NEW: DocketCard"
+      ],
+      "events": [
+        {
+          "t": 15.2,
+          "kind": "sight_gag",
+          "what": "macro on the hinge: no lock, no keyhole, no sign, and the teal brush stroke runs unbroken straight across the knuckle",
+          "the_joke": "It is not locked and nothing is refusing her; somebody simply painted the door shut, and the brush stroke across the hinge is the proof that nobody has opened it since."
+        }
+      ]
+    },
+    {
+      "id": "S7",
+      "t": [
+        18.2,
+        21.2
+      ],
+      "beat": "the thesis shot, silent by design",
+      "visual": "Looking down past the lit brass slot at the top of the four steps to the buried floor far below. One card goes in. Exactly one. The slot is the same size it was at second one and takes the same single card at the same rate. Odometer out of frame. No dialogue anywhere in this shot.",
+      "visual_contributes": "The film's only high angle is spent proving the INPUT never changed, which no other camera position can hold in one frame: from above the slot the single card going in and the buried floor it produced are the same picture. Looking down is also the only way the intake is ever seen from where the machine's own paperwork enters, so the viewer occupies the one position that has no person in it.",
+      "staging": {
+        "RAY": "left",
+        "DEE": "right"
+      },
+      "camera": "height 3, the only high angle in the film, craned above the intake looking down four steps",
+      "captions": [],
+      "assets": [
+        "NEW: CountRoomBG",
+        "NEW: DocketCard",
+        "lighting.NightGrade",
+        "cast.Ray",
+        "cast.Dee",
+        "materials.brushedMetal"
+      ],
+      "events": [
+        {
+          "t": 19.0,
+          "kind": "camera",
+          "what": "the camera cranes above the intake, the only high angle in the film, and looks down four steps at the buried floor"
+        },
+        {
+          "t": 20.2,
+          "kind": "prop",
+          "what": "exactly one card goes into the lit slot, the same single card the slot has taken since second one"
+        }
+      ]
+    },
+    {
+      "id": "S8",
+      "t": [
+        21.2,
+        23.8
+      ],
+      "beat": "the stack edge reads",
+      "visual": "From the tile, looking up the face of the pile. The tile pattern is gone. Eight identical head lines and eight identical case numbers stack down the visible edge, all at the same offset within their cards. Ray is on top of it. The odometer above reads 8, and eight cards are in the same frame.",
+      "visual_contributes": "The stack edge is the only place where SAME and MANY can be told apart by eye, because eight repetitions of one string at one offset is a pattern and eight different documents is a mess. Dropping from the highest camera to the lowest back to back makes the fall itself the measurement.",
+      "staging": {
+        "RAY": "left",
+        "DEE": "right"
+      },
+      "camera": "height 0, tile level, looking up, arriving on a whip straight down from the highest camera in the film",
+      "captions": [],
+      "assets": [
+        "NEW: DocketCard",
+        "props.TallyCounter",
+        "cast.Ray",
+        "paper.PaperFiber",
+        "lighting.ContactShadow"
+      ],
+      "events": [
+        {
+          "t": 22.2,
+          "kind": "scale",
+          "what": "whip from the highest camera in the film to the lowest, back to back; eight identical head lines stack down the pile edge and the wheel above reads eight, with eight cards in frame"
+        }
+      ]
+    },
+    {
+      "id": "S9",
+      "t": [
+        23.8,
+        26.6
+      ],
+      "beat": "he did nothing and it happened to him",
+      "visual": "Low, past the edge of the pile. Ray on top of it, flat, motionless. A card lands underneath him mid-line and lifts him a card-thickness; he does not look down and does not react. The camera racks down to Dee at the bottom of frame, worried, her small dispute form now well below the top of the pile.",
+      "visual_contributes": "The line claims stillness and the picture proves it by making him move without moving, so the only thing acting in the frame is the floor. The rack down ends on the person who is not speaking, registering that the pile has passed her own document.",
+      "staging": {
+        "RAY": "left",
+        "DEE": "right"
+      },
+      "camera": "height 0.5, looking up past the pile edge, racking down to Dee on the line's tail",
+      "captions": [
+        "[flat] I've been standing here the whole time."
+      ],
+      "assets": [
+        "cast.Ray",
+        "cast.Dee",
+        "NEW: DocketCard",
+        "paper.Sheet",
+        "motion.vitals"
+      ],
+      "events": [
+        {
+          "t": 24.8,
+          "kind": "prop",
+          "what": "a card lands under Ray mid-line and lifts him another card-thickness; he does not look down"
+        }
+      ]
+    },
+    {
+      "id": "S10",
+      "t": [
+        26.6,
+        30.0
+      ],
+      "beat": "the only two-shot, 3.4s, and the set works through all of it",
+      "visual": "Ray and Dee together on top of the pile, the enamel wall going up out of frame behind them. The chute runs behind them mid-line and a card lands; they rise without acknowledging it. At 28.8s Ray's crown crosses the bottom edge of the odometer boss. The wheel reads 9 with nine cards in frame, and it never rolls again.",
+      "visual_contributes": "The one floating two-hander is spent on the only thing a two-hander can buy, two people not reacting while the world moves them, and it ends on a hard geometric event: a man's head reaching the number that is about him. The wheel topping out is what makes the silence after it feel like something stopped rather than like a pause.",
+      "staging": {
+        "RAY": "left",
+        "DEE": "right"
+      },
+      "camera": "height 0.5, looking up past the pile edge, the wall towering into the top of frame",
+      "captions": [
+        "I know."
+      ],
+      "assets": [
+        "cast.Ray",
+        "cast.Dee",
+        "props.TallyCounter",
+        "NEW: DocketCard",
+        "NEW: CardChute",
+        "motion.vitals",
+        "NEW: CountRoomBG"
+      ],
+      "events": [
+        {
+          "t": 28.8,
+          "kind": "scale",
+          "what": "Ray's crown crosses the bottom edge of the odometer boss; he is level with the count for the first time and the wheel stops at 9, with nine cards in frame"
+        }
+      ]
+    },
+    {
+      "id": "S11",
+      "t": [
+        30.0,
+        32.6
+      ],
+      "beat": "the punchline picture, delivered before the euphemism",
+      "visual": "One frame split by the machine's own geometry, no cut, both halves in focus. Left, macro: a landed copy, and a small brass die drops onto its corner and embosses VERIFIED, its case number legible and matching exactly. Right, same frame: the lit intake still holding the ONE original it has held since second one, the odometer above reading 9 with nine cards in frame. The die lifts. The emboss holds. Nothing is corrected.",
+      "visual_contributes": "This is the only frame that holds true and false about the same object at once, which is the difference between an absurdity and a complaint about volume. Everything the machine did is right and the answer is wrong, and the split makes that a contradiction the eye can see instead of an argument the script has to make.",
+      "staging": {
+        "RAY": "off",
+        "DEE": "off"
+      },
+      "camera": "split by the machine's own geometry, one frame, no cut, both halves in focus",
+      "captions": [],
+      "assets": [
+        "NEW: DocketCard",
+        "NEW: VerifyDie",
+        "props.TallyCounter",
+        "NEW: CountRoomBG",
+        "materials.brushedMetal",
+        "lighting.RimLight"
+      ],
+      "events": [
+        {
+          "t": 31.0,
+          "kind": "sight_gag",
+          "what": "a brass die embosses VERIFIED on the copy while, in the same frame, the intake still holds the single original and the wheel above it reads nine",
+          "the_joke": "The machine is congratulating itself for being right about every single copy, and being right that many times is the only reason the total is a lie."
+        }
+      ]
+    },
+    {
+      "id": "S12",
+      "t": [
+        32.6,
+        35.2
+      ],
+      "beat": "the Institution speaks and is not given a face",
+      "visual": "Tight on the brass intake lip from above, under the single practical. One card enters. The rubber curtain drops behind it and the slot is empty and lit exactly as at second one. Nothing brightens, nothing flickers, no aperture opens, no part of the wall turns toward camera. The only moving object in frame is the card.",
+      "visual_contributes": "The euphemism is answered by the equipment it describes, doing precisely what it claims, politely and on time. Refusing to editorialise is what makes the politeness menacing: no glow, no reaction, nothing to negotiate with, only a slot and a curtain running a correct procedure at the moment correct procedure is being named as a defence.",
+      "staging": {
+        "RAY": "off",
+        "DEE": "off"
+      },
+      "camera": "height 3, tight on the brass intake lip from above, whipping down the wall at the tail",
+      "captions": [
+        "[extremely fast] reasonable procedures to ensure maximum possible accuracy"
+      ],
+      "assets": [
+        "NEW: CountRoomBG",
+        "NEW: DocketCard",
+        "lighting.NightGrade",
+        "materials.brushedMetal"
+      ],
+      "events": [
+        {
+          "t": 33.6,
+          "kind": "prop",
+          "what": "one card enters the slot and the rubber curtain drops behind it, leaving the slot empty and lit exactly as it was at second one"
+        }
+      ]
+    },
+    {
+      "id": "S13",
+      "t": [
+        36.1,
+        38.7
+      ],
+      "beat": "the dispute goes in, and the answer lands on the listener",
+      "visual": "Ray climbs into frame at the top of the four brass steps, both arms up, the slot slightly too high for him, and pushes his card in. A beat with nothing in frame but the slot. The card comes straight back out and lands face up on the tiles reading INVALID, flat ink, no ceremony. The camera is holding on Dee at the foot of the steps as it lands, and her composure goes.",
+      "visual_contributes": "The refusal is timed to be the fastest thing that happens in the film: every copy took a beat to make and this returns before he has got his arms down. Holding on the person who is not talking makes the word a thing done to two people rather than a message delivered to one, and it spends her single crack on the only moment the machine ever answers a person directly.",
+      "staging": {
+        "RAY": "left",
+        "DEE": "right"
+      },
+      "camera": "height 1, on the steps, then holding on Dee at the foot of them for the word",
+      "captions": [
+        "He disputed it.",
+        "[flat] Invalid."
+      ],
+      "assets": [
+        "cast.Ray",
+        "cast.Dee",
+        "NEW: DocketCard",
+        "NEW: CountRoomBG",
+        "materials.brushedMetal"
+      ],
+      "events": [
+        {
+          "t": 37.3,
+          "kind": "entrance",
+          "what": "Ray climbs into frame at the top of the steps with both arms up, the slot slightly too high for him, and pushes his card in"
+        },
+        {
+          "t": 38.1,
+          "kind": "prop",
+          "what": "the same card comes straight back out and lands face up on the tiles reading INVALID, flat ink, no ceremony"
+        }
+      ]
+    },
+    {
+      "id": "S14",
+      "t": [
+        38.7,
+        43.1
+      ],
+      "beat": "the only still wheel in the film",
+      "visual": "A cut to the odometer in the identical framing used at 2.6s, except nine card edges are stacked into the bottom of frame instead of two. The wheel reads 9 and does not move. Ray's hand enters and turns the INVALID card over; the back is blank. He pushes it at the slot again from below. The wheel still does not move.",
+      "visual_contributes": "Fifty seconds of a wheel that turns for every copy, and the one thing that will not make it turn is a person disagreeing. The matched framing does the arithmetic without a caption: same lens, same boss, and the only two differences are a number and a floor.",
+      "staging": {
+        "RAY": "left",
+        "DEE": "right"
+      },
+      "camera": "height 2, eye, tight on the odometer, matched exactly to the framing of second 2.6",
+      "captions": [
+        "That's not a decision. [short pause] That's a fucking word."
+      ],
+      "assets": [
+        "props.TallyCounter",
+        "NEW: DocketCard",
+        "cast.Ray",
+        "cast.Dee",
+        "materials.brushedMetal"
+      ],
+      "events": [
+        {
+          "t": 39.1,
+          "kind": "cut",
+          "what": "a cut to the odometer in the exact framing of second 2.6, and for the only time in the film the wheel is completely still"
+        },
+        {
+          "t": 41.5,
+          "kind": "prop",
+          "what": "Ray turns the INVALID card over and the back of it is blank"
+        }
+      ]
+    },
+    {
+      "id": "S15",
+      "t": [
+        43.1,
+        46.3
+      ],
+      "beat": "the one reveal, and the edge-tease pays after thirty-eight seconds",
+      "visual": "The plated chute mouth at the lower right frame edge, the darkest region in the film, bolted over. Three fasteners drop to the tile. The cover plate falls off. The mouth underneath is visibly the same geometry as the working chute. One card comes out of it and lands face up beside the last card from the working chute.",
+      "visual_contributes": "The reveal reverses thirty-eight seconds of absence rather than introducing an object, and what it costs him is the last thing he had: until this moment there was one machine telling one story, badly, and now there are two exits and he was only ever standing in front of one of them. Every dispute he made was aimed at the mouth that was pointed at him, and the mouth that mattered was bolted shut in a direction he could not see.",
+      "staging": {
+        "RAY": "off",
+        "DEE": "off"
+      },
+      "camera": "height 0, extreme low, the frame edge cutting the plated chute exactly as it has since S3",
+      "captions": [
+        "Sorry, is there a second word?"
+      ],
+      "assets": [
+        "NEW: CardChute",
+        "NEW: DocketCard",
+        "lighting.NightGrade",
+        "materials.brushedMetal",
+        "NEW: CountRoomBG"
+      ],
+      "events": [
+        {
+          "t": 44.3,
+          "kind": "reveal",
+          "what": "three fasteners drop to the tile and the cover plate falls off the second chute, which has been bolted shut at the lower right frame edge since second five"
+        },
+        {
+          "t": 45.5,
+          "kind": "prop",
+          "what": "one card comes out of the second chute, the only thing that output has ever produced"
+        }
+      ]
+    },
+    {
+      "id": "S16",
+      "t": [
+        46.3,
+        50.3
+      ],
+      "beat": "the payoff, and the only overhead in the film",
+      "visual": "Straight down on the two cards lying adjacent on the tile. Same head line, same case number, same offsets, identical except one word on one line at one fixed position: RESOLVED on the landlord's copy, INVALID on his. The differing word is set larger than the case number so the eye lands on one spot and finds two strings.",
+      "visual_contributes": "Forty-five seconds have proved this machine can only make identical things, and this is the one frame where two of its outputs are not identical, in the single place it was ever asked to be consistent. A camera position never used before tells the viewer to compare rather than to count, without a line asking them to.",
+      "staging": {
+        "RAY": "off",
+        "DEE": "off"
+      },
+      "camera": "the only overhead in the film, straight down on the tile, held back forty-five seconds for this",
+      "captions": [
+        "The landlord's copy and his copy don't say the same thing."
+      ],
+      "assets": [
+        "NEW: DocketCard",
+        "paper.PaperFiber",
+        "lighting.ContactShadow"
+      ],
+      "events": [
+        {
+          "t": 48.5,
+          "kind": "text_card",
+          "what": "one word at one fixed position is not the same word on the two cards: RESOLVED on the landlord's copy, INVALID on his"
+        }
+      ]
+    },
+    {
+      "id": "S17",
+      "t": [
+        50.3,
+        52.3
+      ],
+      "beat": "he has to live in one of them",
+      "visual": "Low, from the tile between the two cards. Ray steps in and puts one boot on each, standing on both answers at once; each card is longer than he is tall. Behind him the working chute runs and lands one more copy of the original on the pile, which by now nobody is looking at. The pile fills the back of frame and his card is the one at the bottom of it.",
+      "visual_contributes": "The question is a joke until the frame turns it into a floor plan, and then it is an address. Straddling both cards makes a rhetorical line into a physical impossibility, and the chute still running behind him says the machine moved on to the next copy while he is deciding which of its two answers he is legally inside.",
+      "staging": {
+        "RAY": "left",
+        "DEE": "right"
+      },
+      "camera": "height 0, low, from the tile between the two cards, the pile filling the back of frame",
+      "captions": [
+        "So which one of those do I live in?"
+      ],
+      "assets": [
+        "cast.Ray",
+        "cast.Dee",
+        "NEW: DocketCard",
+        "NEW: CardChute",
+        "motion.vitals"
+      ],
+      "events": [
+        {
+          "t": 51.1,
+          "kind": "scale",
+          "what": "Ray puts one boot on each card and stands on both answers at once; both are longer than he is tall"
+        }
+      ]
+    },
+    {
+      "id": "S18",
+      "t": [
+        52.3,
+        56.9
+      ],
+      "beat": "the button, the receipt, no cast in frame",
+      "visual": "Flat plate at 1080x1920. The FTC filing enters flat over the two contradicting cards and covers them: United States v. RentGrow, Inc., legible, the Bureau Director's sentence highlighted in one crooked overshooting swipe, the word ALLEGED present. The single red stamp of the episode lands off-square. One corner of the card Ray was standing on stays visible under the filing's bottom edge, unchanged, and no wheel is shown.",
+      "visual_contributes": "The document that finally contradicts the machine came from a court and has nothing to do with his dispute, and the frame proves it by burying his card instead of correcting it. The corner left sticking out is the place the last line points at, already established two shots earlier as the thing he was standing on, so under there is somewhere the viewer can find without being told.",
+      "staging": {
+        "RAY": "off",
+        "DEE": "off"
+      },
+      "camera": "flat plate, 1080x1920, locked; legibility at full res is a gate on this shot",
+      "captions": [
+        "[sigh] Mine's still under there."
+      ],
+      "assets": [
+        "NEW: FilingPlate",
+        "brand.Highlighter",
+        "brand.Stamp",
+        "NEW: DocketCard",
+        "paper.PaperFiber"
+      ],
+      "events": [
+        {
+          "t": 53.1,
+          "kind": "text_card",
+          "what": "the FTC filing enters flat over the two cards and covers them; the case caption and the word ALLEGED sit legible under it"
+        },
+        {
+          "t": 55.3,
+          "kind": "text_card",
+          "what": "the single red stamp of the episode lands off-square over the highlighted Director's sentence, and one corner of Ray's card stays visible underneath"
+        }
+      ]
+    }
+  ]
+}
