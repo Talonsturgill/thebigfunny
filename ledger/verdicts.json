@@ -228,6 +228,17 @@
         "caption_held_over_static_frame"
       ],
       "note": "First recut. Laughs at 40.4 and 50.5. Stopped being new at 25.2, up from 16.2. Would finish. Scroll risks 10.1/15.2/25.2/27.8/30.3/42.9; the 10.1 one is a caption re-read the 12-cell sheet never sampled."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-03",
+      "critic": "reader-sim",
+      "read": 3,
+      "defects": [
+        "static_cold_open",
+        "caption_over_static_frame"
+      ],
+      "note": "Retimed cut. THREE laughs (9.2, 34.6, 39.2) up from two. Scroll risks down 6 to 3. 'The middle you asked about mostly holds now.' New top defect: first 3s is a frozen frame."
     }
   ]
 }

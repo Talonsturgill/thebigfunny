@@ -207,6 +207,26 @@
       "verified_by": "Module parses and --help reports the new defaults. The defect itself was proven empirically first: nine extra frames pulled from the SHIPPED mp4 at 19.5/22.2/25.5/27.6/29.0/31.0/34.5/45.0/48.5s show the eight identical head lines, the VERIFIED emboss, both figures full-frame in a clean two-shot, and the RESOLVED-vs-INVALID payoff, refuting both findings.",
       "commit": null,
       "addresses": []
+    },
+    {
+      "run_date": "2026-08-03",
+      "upgrade": "vo_gemini: a 429 now gets ONE cooled retry instead of an immediate raise. The handler asserted 'a 429 is the quota wall, not a transient error' and that is FALSE: the per-minute request limit and the daily wall surface as the same status code, and the 429 that stopped case 0003's retime carried `limit: 10`, which is the per-minute one. The run believed its own error text, abandoned the retime the episode most needed, and discovered by accident an hour later that the quota had been replenishing the whole time. The two cases are distinguishable by exactly one cheap experiment, so the code now runs the experiment: sleep 65s, retry once. Success means it was the limiter. A second 429 sets a process-level _HARD_WALL so the remaining lines fail fast rather than each paying its own minute to re-prove the same sentence across seventeen lines.",
+      "files": [
+        ".claude/skills/bigfunny-dispatch/vo_gemini.py"
+      ],
+      "verified_by": "Proven empirically before it was written: the same --fit invocation that raised HTTP 429 at 09:24 completed all 17 takes at 09:43 with no change but elapsed time, and the run's TTS ledger shows 20 calls against a 75 cap. Module compiles and imports with _HARD_WALL False.",
+      "commit": null,
+      "addresses": []
+    },
+    {
+      "run_date": "2026-08-03",
+      "upgrade": "Case0003 cold open: the first 2.4s was a static frame with no animated property at all. A simulated viewer's first scroll risk landed at 3.0s with the note 'pixel-for-pixel what it was at 0.0'. On short form those are the only three seconds that decide anything. The card now rides up into frame and settles under a slow push, which is what the board said the shot was for: 'a court case being MANUFACTURED'.",
+      "files": [
+        "video-engine/src/Case0003.tsx"
+      ],
+      "verified_by": "retime_check PASS, render_gate PASS, and frames pulled at 0.3/1.0/2.0s and compared.",
+      "commit": null,
+      "addresses": []
     }
   ]
 }

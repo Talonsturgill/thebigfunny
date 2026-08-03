@@ -578,6 +578,36 @@ evidence than `--check` would have given, because `--check` only ever compares
 two derived files to each other. Verify against the thing that will actually be
 used; the rest of this file has been saying so since before episode 1.
 
+## The repo told itself a 429 was a wall, and it was a minute (2026-08-03)
+
+`vo_gemini.synth` raised on the first 429 with the sentence "A 429 is the quota
+wall, not a transient error. Retrying it spends more of a budget that is already
+gone." The run read its own error message, believed it, and abandoned the retime
+that case 0003 most needed. About an hour later a retry of `--fit` went straight
+through and synthesized all seventeen lines. **The quota had been replenishing
+the whole time.**
+
+The body of the 429 even said `limit: 10`, which is the PER-MINUTE request limit
+for the preview TTS model. The daily wall and the per-minute limiter surface as
+the same status code, and the message body does not reliably distinguish them.
+
+What makes this worth an entry rather than a one-line fix is the shape, which is
+one this file already knows in a different costume: **a comment that is wrong is
+worse than no comment, because the comment is what the next author trusts
+instead of testing.** That was written here about a gate whose docstring lied.
+This is the same thing wearing an exception message, and an exception message is
+read at exactly the moment nobody has the appetite to go and check.
+
+THE FIX, and the shape of it generalises: the two cases are distinguishable by
+exactly one cheap experiment, so DO the experiment instead of asserting the
+answer. One cooled retry after 65s. If it succeeds it was the limiter; if it
+429s again it is the wall, and a process-level flag makes every later line fail
+fast so seventeen lines do not each pay their own minute to re-prove it.
+
+The general rule: when your error handler states a diagnosis it did not measure,
+either measure it or say you did not. "This is the quota wall" was a guess
+written in the voice of a fact, and it cost more than the retry ever would have.
+
 ## A contact sheet's gaps read as absences, and critics report them as facts (2026-08-03)
 
 Already on file: "a contact sheet samples; it does not cover." Today it cost

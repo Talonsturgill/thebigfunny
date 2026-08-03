@@ -142,3 +142,31 @@ final` correctly refuses to rebuild this episode at all, because
 matched. `out/dispatch/` is gitignored scratch that does not survive the
 container, so an episode whose only copy of that file lived there was
 unrebuildable the moment its session ended.
+
+## Pass 3: the cold open was a frozen frame
+
+The retimed cut fixed the middle and the final viewer read confirmed it in
+those words: three laughs where there had been two (9.2s, 34.6s, 39.2s), scroll
+risks down from six to three, and "the middle you asked about mostly holds now."
+
+It also moved the worst remaining hold to the front of the film. The first 2.4s
+had no animated property at all, and the viewer's first scroll risk landed at
+3.0s with the note "pixel-for-pixel what it was at 0.0". On short form those are
+the only three seconds that decide anything, and the shot was spending them on a
+still life.
+
+The board's own description of the shot is "a court case being MANUFACTURED", so
+it is now manufactured: the card rides up into frame and settles under a slow
+push, and the premise is stated by motion before it is stated by a word.
+Frame-to-frame delta across the cold open went from zero to 58.4 between 0.3s
+and 1.0s. `stills/cold_open_0.3_1.0_2.0.png` is the proof.
+
+## Known and open, in priority order
+
+1. **The first thirty seconds still read as fog on the page.** Funny 64 is a cold
+   script read and no recut changed a line. This is a writers-room rewrite and it
+   is the only thing standing between this episode and the 78 threshold.
+2. **The institution beat, around 27.4s to 31.8s**, is an empty lectern holding a
+   teal-on-teal legal caption the viewer could not finish reading. Last remaining
+   wordless-and-static stretch.
+3. The caption overlaps the buried card slightly at ~52s.

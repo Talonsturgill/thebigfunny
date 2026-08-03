@@ -198,14 +198,24 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             A court case being MANUFACTURED, at furniture size, before anyone
             has said the word report. No people, no wide, no title.
             ============================================================ */}
+        {/* THE COLD OPEN WAS A FROZEN JPEG FOR THE FIRST THREE SECONDS, and a
+            simulated viewer put their thumb on the screen at 3.0s: "pixel-for-
+            pixel what it was at 0.0". On short form that is the only three
+            seconds that decides anything, and this shot was spending them on a
+            still life. The board's own line is "a court case being
+            MANUFACTURED", so the card is now manufactured: it rides up into
+            frame and settles, under a slow push. The premise is stated by
+            motion before it is stated by a word. */}
         <Shot from={0} to={2.364}>
-          <Cam cy={0.82} zoom={1.35}>
+          <Cam cy={0.82} zoom={interpolate(f, [0, s(2.364)], [1.35, 1.42], clamp)}>
             <CountRoomBG f={f} w={W} h={H} light={0.9} pile={0.02} />
             {/* The card is sized so BOTH legible strings sit inside the frame at
                 this zoom. Cropping a case number mid-word reads as a mistake and
                 not as a choice, and it is the one string the whole film asks the
                 viewer to match. */}
-            <DocketCard x={W * 0.06} y={H * 0.78} w={W * 0.88} {...card} light={1} />
+            <DocketCard x={W * 0.06} w={W * 0.88} {...card} light={1}
+                        y={interpolate(f, [0, s(0.55), s(0.75)],
+                                       [H * 1.02, H * 0.765, H * 0.78], clamp)} />
           </Cam>
         </Shot>
 
