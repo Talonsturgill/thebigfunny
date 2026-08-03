@@ -1,0 +1,124 @@
+{
+  "lines": [
+    {
+      "idx": 0,
+      "who": "DEE",
+      "start": 0.6,
+      "end": 2.248,
+      "text": "One eviction case."
+    },
+    {
+      "idx": 1,
+      "who": "RAY",
+      "start": 2.6,
+      "end": 3.044,
+      "text": "Okay."
+    },
+    {
+      "idx": 2,
+      "who": "DEE",
+      "start": 4.6,
+      "end": 6.631,
+      "text": "That report goes to a landlord."
+    },
+    {
+      "idx": 3,
+      "who": "RAY",
+      "start": 7.4,
+      "end": 11.27,
+      "text": "Evicted. Evicted. Yeah, no. Career defendant."
+    },
+    {
+      "idx": 4,
+      "who": "RAY",
+      "start": 11.6,
+      "end": 12.884,
+      "text": "He got sued once."
+    },
+    {
+      "idx": 5,
+      "who": "DEE",
+      "start": 14.0,
+      "end": 15.153,
+      "text": "I asked where they got it."
+    },
+    {
+      "idx": 6,
+      "who": "RAY",
+      "start": 16.2,
+      "end": 17.716,
+      "text": "Somebody got paid to do that."
+    },
+    {
+      "idx": 7,
+      "who": "RAY",
+      "start": 23.8,
+      "end": 25.23,
+      "text": "I've been standing here the whole time."
+    },
+    {
+      "idx": 8,
+      "who": "DEE",
+      "start": 26.6,
+      "end": 27.128,
+      "text": "I know."
+    },
+    {
+      "idx": 9,
+      "who": "INSTITUTION",
+      "start": 32.6,
+      "end": 35.862,
+      "text": "reasonable procedures to ensure maximum possible accuracy"
+    },
+    {
+      "idx": 10,
+      "who": "DEE",
+      "start": 36.1,
+      "end": 37.025,
+      "text": "He disputed it."
+    },
+    {
+      "idx": 11,
+      "who": "INSTITUTION",
+      "start": 37.9,
+      "end": 38.67,
+      "text": "Invalid."
+    },
+    {
+      "idx": 12,
+      "who": "RAY",
+      "start": 39.5,
+      "end": 42.739,
+      "text": "That's not a decision. That's a fucking word."
+    },
+    {
+      "idx": 13,
+      "who": "DEE",
+      "start": 43.1,
+      "end": 45.06,
+      "text": "Sorry, is there a second word?"
+    },
+    {
+      "idx": 14,
+      "who": "DEE",
+      "start": 46.3,
+      "end": 49.368,
+      "text": "The landlord's copy and his copy don't say the same thing."
+    },
+    {
+      "idx": 15,
+      "who": "RAY",
+      "start": 50.3,
+      "end": 52.427,
+      "text": "So. Which one of those do I live in?"
+    },
+    {
+      "idx": 16,
+      "who": "RAY",
+      "start": 54.1,
+      "end": 56.747,
+      "text": "Mine's still under there."
+    }
+  ],
+  "_provenance": "RECONSTRUCTED 2026-08-03 from the shipped take record. out/dispatch/ is scratch and did not survive the container, so the original was gone. Every start here was independently validated against the SHIPPED AUDIO: all 17 speech onsets measured 0.04-0.06s after their cue start, a constant decoder priming offset. gen_captions_ts --check against this file is VACUOUS and was not treated as a passing gate."
+}

@@ -259,9 +259,15 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             <CountRoomBG f={f} w={W} h={H} light={0.85} pile={pile} />
             <CardPile x={W * 0.5 - CARD_W / 2} y={H * 0.92} w={CARD_W} count={landed}
                       mode="flush" {...card} />
+            {/* AT THIS ZOOM THE FRAME ONLY SHOWS x 168..912. Ray at 0.10W and
+                Dee at 0.90W both sit OUTSIDE it, so the shipped cut rendered a
+                floating forearm and a footless leg at the two frame edges and
+                nothing else of either of them, on the funniest line in the
+                film. Both are now inside the visible band, Ray standing on the
+                pile the shot is about. Measure the camera, do not eyeball it. */}
             <Cast f={f} crown={CARD_W * CAST_TO_CARD}
                   ground={H * 0.92 - landed * (CARD_W * 0.018)}
-                  rayX={W * 0.10} deeX={W * 0.90} rayPose="point" />
+                  rayX={W * 0.28} deeX={W * 0.72} rayPose="point" />
           </Cam>
         </Shot>
 
@@ -489,7 +495,14 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             in front of one of them.
             ============================================================ */}
         <Shot from={43.1} to={46.3}>
-          <Cam cx={0.86} cy={0.70} zoom={2.2}>
+          {/* WIDENED from cx 0.86 zoom 2.2, which framed the chute alone. Dee's
+              "is there a second word?" is the funniest line in the episode and
+              it was playing over a closed panel with nobody on screen: the
+              plate does not start moving until 44.1, so the first second of the
+              shot was an inert wall. The house rule is that the joke lands on
+              the face of the person who is NOT talking, and a reaction costs
+              zero runtime. Ray is now in frame with the chute still in it. */}
+          <Cam cx={0.66} cy={0.70} zoom={1.5}>
             <CountRoomBG f={f} w={W} h={H} light={0.7} pile={1} />
             {/* THE PLATE COMES OFF the chute that has been at the lower right
                 frame edge since second five. Thirty-eight seconds of absence,
@@ -498,6 +511,12 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
               <CardChute f={f} x={0} y={0} w={W * 0.3} state="plated"
                          open={interpolate(f, [s(44.1), s(45.0)], [0, 1], clamp)} />
             </g>
+            {/* Dropped clear of the chute lip, which cut his neck at ground
+                0.86H. A horizontal edge through a head reads as decapitation
+                and this repo has shipped that once already. */}
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.8} ground={H * 0.90}
+                  rayX={W * 0.44} deeX={W * 0.9} rayPose="arms-crossed"
+                  show="ray" />
             {f > s(45.4) && (
               <DocketCard x={W * 0.62} y={H * 0.80} w={W * 0.42} {...card}
                           differs="RESOLVED" rot={3} light={1} />
@@ -527,15 +546,23 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             line a physical impossibility.
             ============================================================ */}
         <Shot from={50.3} to={52.3}>
-          <Cam cy={0.74} zoom={1.5}>
+          {/* PULLED BACK from 1.5. At that zoom the frame showed x 180..900
+              while the two cards ran -43..605 and 518..1166, so RESOLVED
+              rendered as "LVED" and INVALID ran off the right edge. Those two
+              words ARE the payoff of the whole comparison; cropping them is
+              cropping the joke. Both cards now sit inside the visible band and
+              still meet exactly at 0.5W so he straddles the seam. */}
+          <Cam cy={0.74} zoom={1.15}>
             <CountRoomBG f={f} w={W} h={H} light={0.7} pile={1} />
             {/* ONE BOOT ON EACH ANSWER. The question is a joke until the frame
                 turns it into a floor plan, and then it is an address. */}
-            <DocketCard x={-W * 0.04} y={H * 0.86} w={W * 0.56} {...card}
+            <DocketCard x={W * 0.08} y={H * 0.86} w={W * 0.42} {...card}
                         differs="RESOLVED" light={0.92} />
-            <DocketCard x={W * 0.48} y={H * 0.86} w={W * 0.56} {...card}
+            <DocketCard x={W * 0.50} y={H * 0.86} w={W * 0.42} {...card}
                         differs="INVALID" light={0.92} />
-            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.85} ground={H * 0.88}
+            {/* Ground dropped 0.88 -> 0.910: the chute lip was landing on his
+                crown and reading as a shelf through the skull. */}
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.85} ground={H * 0.910}
                   rayX={W * 0.5} deeX={W * 0.9} rayPose="stand" show="ray" />
           </Cam>
         </Shot>
@@ -553,7 +580,13 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
           {/* HIS CARD, unchanged, and the filing lands ON it rather than
               correcting it. Only a corner stays visible under the bottom edge,
               which is the place the last line points at. */}
-          <DocketCard x={W * 0.05} y={H * 0.86} w={W * 0.9} {...card}
+          {/* A CORNER, not most of a card. At 0.9W its head type set LARGER
+              than the filing's own case caption and landed under the burned-in
+              subtitle, so the receipt collided with the line that points at it
+              and the thing being buried out-typed the thing burying it. Smaller
+              and higher: the type now sits in the band between the filing's
+              bottom edge and the caption, and the filing wins the frame. */}
+          <DocketCard x={W * 0.06} y={H * 0.815} w={W * 0.55} {...card}
                       differs="INVALID" light={0.95} />
           <FilingPlate
             w={W} h={H}
