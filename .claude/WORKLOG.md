@@ -201,10 +201,13 @@ lateral move from Remotion), any framework dependency at all.
 
 - **C:** Institution costume system (designed, never built).
 - **E:** trigger config (lives outside this repo).
-- **Dee's voice pick is still with the owner.** An audition of seven candidates
-  went out; `main` carries Pulcherrima. The soundcheck measured every candidate
-  between 3.46 and 4.12 semitones of pitch variance INCLUDING the one the owner
-  called robotic, so the machine cannot rank them and does not pretend to.
+- **Dee's voice is DECIDED: Pulcherrima.** Chosen by the owner, carried in
+  `scripts/vo_cast.py`'s CAST table, and used for every take in case 0003. This
+  entry sat here for days saying the pick was "still with the owner" after it had
+  been made, which is worse than saying nothing: a stale open question makes a
+  settled decision look re-openable and invites a future run to re-audition
+  something nobody asked about.
+  CLOSE AN ITEM WHEN IT CLOSES. A worklog is a ledger, not a diary.
 - **TTS model:** temporarily overridden to 2.5-flash by env var after the daily
   quota exhausted on 3.1. This reverts by itself; the override is not in code.
 

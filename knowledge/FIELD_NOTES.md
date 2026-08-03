@@ -557,3 +557,41 @@ the only thing in this machine that looks at the episode. Sampling finds what is
 wrong with the frames it lands on, and a gate that reads the SOURCE is what
 finds a hole narrower than the sampling interval. That is why `retime_check.py`
 exists and why it runs on the scene file rather than on stills.
+
+## A pgrep watcher that greps for its own command line never exits (2026-08-03)
+
+Four background loops were still spinning after the episode shipped. Every one
+of them was mine, and every one had the same bug:
+
+    until ! pgrep -f "remotion render" >/dev/null; do sleep 10; done
+
+The watcher's OWN command line contains the string "remotion render", so pgrep
+matches the watcher itself. The process it is waiting for exits, the condition
+stays false forever, and the loop spins until something kills it.
+
+It also fails in the direction that costs the most: it never reports done, so it
+looks like the job is still running long after the job finished. The owner
+noticed four dead-end loops before the machine did, which is the second time in
+one session that a human saw a stuck process first.
+
+THE FIX, when watching for a process to end: match on something the watcher
+cannot contain, or exclude your own pid.
+
+    until ! pgrep -f "[r]emotion render" >/dev/null; do sleep 10; done
+    # or
+    until ! pgrep -f "remotion render" | grep -qv "^$$\$"; do sleep 10; done
+
+And the rule under it: **CLEAN UP WHAT YOU START.** A watcher outlives the thing
+it watched unless somebody ends it. When the work is done, kill the watchers in
+the same breath, because a leftover loop is indistinguishable from work still in
+progress and that is exactly the wrong thing to be ambiguous about.
+
+## Close an item when it closes (2026-08-03)
+
+The worklog said "Dee's voice pick is still with the owner" for days after the
+owner had picked it. The chosen voice was in the CAST table the whole time and
+every take in case 0003 used it.
+
+A stale open question is worse than no note at all. It makes a settled decision
+look re-openable, invites a future run to re-audition something nobody asked
+about, and costs the owner a correction. A worklog is a LEDGER, not a diary.

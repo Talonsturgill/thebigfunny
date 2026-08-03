@@ -60,11 +60,15 @@ closed this: three voices, cast per line from a table, and `vo_cast --self-test`
 refuses a script that invents a fourth character or casts a human to a voice
 whose descriptor is flat.
 
-What is still open is the CHOICE of Dee's voice, which is with the owner. An
-audition of seven candidates went out and `main` carries Pulcherrima. The
-soundcheck measured every candidate between 3.46 and 4.12 semitones of pitch
-variance including the one the owner called robotic, so the machine cannot rank
-them and does not pretend to.
+The casting is settled too: RAY=Algenib, DEE=Pulcherrima, INSTITUTION=Despina,
+chosen by the owner and locked in `scripts/vo_cast.py`'s CAST table.
+
+The one thing worth keeping from the audition is the NEGATIVE result, because it
+stops a future run from rebuilding a tool that cannot work. The soundcheck
+measured all seven candidates between 3.46 and 4.12 semitones of pitch variance,
+INCLUDING the one the owner called robotic. Prosody statistics do not measure
+"robotic" here; they ran backwards against the ear. `vo_soundcheck.py` prints
+those numbers and never fails a take on them, and that is deliberate.
 
 ## Environment
 
