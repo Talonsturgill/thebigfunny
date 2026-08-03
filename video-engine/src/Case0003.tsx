@@ -430,7 +430,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             toward camera. Refusing to editorialise is what makes the
             politeness menacing: there is nothing to negotiate with.
             ============================================================ */}
-        <Shot from={32.6} to={35.2}>
+        <Shot from={32.6} to={36.1}>
           <Cam cx={0.16} cy={0.20} zoom={3.2}>
             <CountRoomBG f={f} w={W} h={H} light={1} pile={0}
                          intake={interpolate(f, [s(33.1), s(34.0)], [0, 1], clamp)} />
