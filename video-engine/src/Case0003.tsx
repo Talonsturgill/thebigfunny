@@ -199,9 +199,13 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             has said the word report. No people, no wide, no title.
             ============================================================ */}
         <Shot from={0} to={2.4}>
-          <Cam cy={0.86} zoom={1.9}>
+          <Cam cy={0.82} zoom={1.35}>
             <CountRoomBG f={f} w={W} h={H} light={0.9} pile={0.02} />
-            <DocketCard x={W * 0.02} y={H * 0.80} w={W * 0.96} {...card} light={1} />
+            {/* The card is sized so BOTH legible strings sit inside the frame at
+                this zoom. Cropping a case number mid-word reads as a mistake and
+                not as a choice, and it is the one string the whole film asks the
+                viewer to match. */}
+            <DocketCard x={W * 0.06} y={H * 0.78} w={W * 0.88} {...card} light={1} />
           </Cam>
         </Shot>
 
@@ -217,8 +221,8 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             <g transform={`translate(${W * 0.5},${H * 0.42})`}>
               <TallyCounter x={-62} y={-22} s={0.78} f={f} variant="odometer" count={count} />
             </g>
-            <CardPile x={W * 0.5 - CARD_W / 2} y={H * 0.70} w={CARD_W} count={2}
-                      mode="stacked" {...card} />
+            <CardPile x={W * 0.5 - CARD_W * 0.42} y={H * 0.66} w={CARD_W * 0.84}
+                      count={2} mode="stacked" {...card} />
           </Cam>
         </Shot>
 
@@ -311,7 +315,12 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             since second one. No dialogue anywhere in this shot.
             ============================================================ */}
         <Shot from={18.2} to={21.2}>
-          <Cam cy={0.24} zoom={1.35}>
+          {/* THE ONLY HIGH ANGLE IN THE FILM, and it is pointed at the INTAKE,
+              which lives upper LEFT. The first cut craned to the middle of the
+              wall and proved nothing: the shot's whole job is that exactly one
+              card goes in, the same single card the slot has taken since second
+              one, and you have to be able to SEE the slot for that to land. */}
+          <Cam cx={0.22} cy={0.22} zoom={2.0}>
             <CountRoomBG f={f} w={W} h={H} light={1} pile={1}
                          intake={interpolate(f, [s(19.4), s(20.6)], [0, 1], clamp)} />
           </Cam>
@@ -344,7 +353,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
         <Shot from={23.8} to={26.6}>
           <Cam cy={0.72} zoom={1.6}>
             <CountRoomBG f={f} w={W} h={H} light={0.7} pile={1} />
-            <CardPile x={W * 0.02} y={H * 0.98} w={W * 0.96} count={4} mode="flush" {...card} />
+            <CardPile x={W * 0.08} y={H * 0.96} w={W * 0.84} count={4} mode="flush" {...card} />
             <Cast f={f} crown={CARD_W * CAST_TO_CARD}
                   ground={H * 0.72 - interpolate(f, [s(24.7), s(24.95)], [0, 14], clamp)}
                   rayX={W * 0.26} deeX={W * 0.84} />
@@ -454,8 +463,8 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             <g transform={`translate(${W * 0.5},${H * 0.42})`}>
               <TallyCounter x={-62} y={-22} s={0.78} f={f} variant="odometer" count={count} />
             </g>
-            <CardPile x={W * 0.5 - CARD_W / 2} y={H * 0.74} w={CARD_W} count={5}
-                      mode="stacked" reveal={0.4} {...card} />
+            <CardPile x={W * 0.5 - CARD_W * 0.42} y={H * 0.70} w={CARD_W * 0.84}
+                      count={5} mode="stacked" reveal={0.4} {...card} />
           </Cam>
         </Shot>
 
@@ -528,8 +537,11 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             ============================================================ */}
         <Shot from={51.4} to={56.0}>
           <rect x={0} y={0} width={W} height={H} fill={COUNTROOM.ink} />
-          <DocketCard x={W * 0.05} y={H * 0.80} w={W * 0.9} {...card}
-                      differs="INVALID" light={0.8} />
+          {/* HIS CARD, unchanged, and the filing lands ON it rather than
+              correcting it. Only a corner stays visible under the bottom edge,
+              which is the place the last line points at. */}
+          <DocketCard x={W * 0.05} y={H * 0.86} w={W * 0.9} {...card}
+                      differs="INVALID" light={0.95} />
           <FilingPlate
             w={W} h={H}
             enter={interpolate(f, [s(51.7), s(52.5)], [0, 1], clamp)}

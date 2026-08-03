@@ -90,11 +90,22 @@ export const COUNTROOM = {
  * there when somebody eyeballed it and wrong for the next string. A case number
  * one character longer, an institution with a longer name, and it spills.
  *
- * Barlow Condensed averages about 0.44 em per character at these weights,
- * measured off the failing render rather than looked up. Return the size that
- * fits, capped at the design size so short strings do not balloon.
+ * THE EM CONSTANT IS MEASURED, AND IT WAS WRONG ONCE ALREADY. The first value
+ * was 0.44, taken from Barlow Condensed's real metrics, and the button still
+ * overflowed: "UNITED STATES v. RENTGROW, INC." ran off the plate. The reason is
+ * that BARLOW CONDENSED IS NOT INSTALLED IN THE RENDER CONTAINER, so every
+ * `fontFamily: 'Barlow Condensed, Impact, sans-serif'` in this repo falls back
+ * to a NON-CONDENSED sans, whose glyphs are about 40% wider.
+ *
+ * So the number that matters is not the font we asked for, it is the font that
+ * renders. 0.62 em per character, measured off the overflowing frame: 30
+ * characters at 56px filled just over 1000px.
+ *
+ * If a condensed face is ever actually installed, this becomes conservative
+ * rather than wrong, which is the correct direction for a fitting constant to
+ * fail in.
  */
-export const fitText = (text: string, boxW: number, designSize: number, em = 0.44) =>
+export const fitText = (text: string, boxW: number, designSize: number, em = 0.62) =>
   Math.min(designSize, boxW / Math.max(1, text.length * em));
 
 /** The card is 2:1, plywood-proportioned. One number, everywhere. */
