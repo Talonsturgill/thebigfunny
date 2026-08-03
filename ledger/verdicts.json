@@ -146,6 +146,21 @@
         "stale_artifact_passed_a_freshness_gate"
       ],
       "note": "mux_and_verify passed a render three minutes out of date because it compared the picture only against the audio and the input that had changed was the scene file."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-03",
+      "critic": "funny",
+      "score": 64,
+      "read": 7,
+      "defects": [
+        "premise_under_set",
+        "explaining_lines",
+        "dead_air",
+        "button_doesnt_land",
+        "carried_by_written_line"
+      ],
+      "note": "Cold read of the SHIPPED cut, run 2026-08-03 because the shipped episode never got a panel. First 30s are unparseable cold; the working third is 37.9 to 43.4."
     }
   ]
 }
