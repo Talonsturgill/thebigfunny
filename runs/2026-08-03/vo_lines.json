@@ -4,121 +4,197 @@
       "idx": 0,
       "who": "DEE",
       "start": 0.6,
-      "end": 2.248,
-      "text": "One eviction case."
+      "end": 2.013,
+      "text": "[flat] One eviction case.",
+      "voice": "Pulcherrima",
+      "claims": [
+        "c4"
+      ],
+      "verbatim": false
     },
     {
       "idx": 1,
       "who": "RAY",
-      "start": 2.6,
-      "end": 3.044,
-      "text": "Okay."
+      "start": 2.56,
+      "end": 3.278,
+      "text": "Okay.",
+      "voice": "Algenib",
+      "claims": [],
+      "verbatim": false
     },
     {
       "idx": 2,
       "who": "DEE",
-      "start": 4.6,
-      "end": 6.631,
-      "text": "That report goes to a landlord."
+      "start": 3.63,
+      "end": 5.756,
+      "text": "That report goes to a landlord.",
+      "voice": "Pulcherrima",
+      "claims": [
+        "c2"
+      ],
+      "verbatim": false
     },
     {
       "idx": 3,
       "who": "RAY",
-      "start": 7.4,
-      "end": 11.27,
-      "text": "Evicted. Evicted. Yeah, no. Career defendant."
+      "start": 6.46,
+      "end": 12.616,
+      "text": "Evicted. [short pause] Evicted. Yeah, no. Career defendant.",
+      "voice": "Algenib",
+      "claims": [
+        "c5"
+      ],
+      "verbatim": false
     },
     {
       "idx": 4,
       "who": "RAY",
-      "start": 11.6,
-      "end": 12.884,
-      "text": "He got sued once."
+      "start": 13.92,
+      "end": 15.045,
+      "text": "[medium pause] He got sued once.",
+      "voice": "Algenib",
+      "claims": [
+        "c5"
+      ],
+      "verbatim": false
     },
     {
       "idx": 5,
       "who": "DEE",
-      "start": 14.0,
-      "end": 15.153,
-      "text": "I asked where they got it."
+      "start": 16.04,
+      "end": 17.221,
+      "text": "I asked where they got it.",
+      "voice": "Pulcherrima",
+      "claims": [
+        "c6"
+      ],
+      "verbatim": false
     },
     {
       "idx": 6,
       "who": "RAY",
-      "start": 16.2,
-      "end": 17.716,
-      "text": "Somebody got paid to do that."
+      "start": 17.77,
+      "end": 19.748,
+      "text": "Somebody got paid to do that.",
+      "voice": "Algenib",
+      "claims": [
+        "c6"
+      ],
+      "verbatim": false
     },
     {
       "idx": 7,
       "who": "RAY",
-      "start": 23.8,
-      "end": 25.23,
-      "text": "I've been standing here the whole time."
+      "start": 22.15,
+      "end": 23.592,
+      "text": "[flat] I've been standing here the whole time.",
+      "voice": "Algenib",
+      "claims": [],
+      "verbatim": false
     },
     {
       "idx": 8,
       "who": "DEE",
-      "start": 26.6,
-      "end": 27.128,
-      "text": "I know."
+      "start": 24.29,
+      "end": 24.988,
+      "text": "I know.",
+      "voice": "Pulcherrima",
+      "claims": [],
+      "verbatim": false
     },
     {
       "idx": 9,
       "who": "INSTITUTION",
-      "start": 32.6,
-      "end": 35.862,
-      "text": "reasonable procedures to ensure maximum possible accuracy"
+      "start": 27.39,
+      "end": 31.017,
+      "text": "[extremely fast] reasonable procedures to ensure maximum possible accuracy",
+      "voice": "Despina",
+      "claims": [
+        "c4"
+      ],
+      "verbatim": true
     },
     {
       "idx": 10,
       "who": "DEE",
-      "start": 36.1,
-      "end": 37.025,
-      "text": "He disputed it."
+      "start": 31.77,
+      "end": 32.754,
+      "text": "He disputed it.",
+      "voice": "Pulcherrima",
+      "claims": [
+        "c7"
+      ],
+      "verbatim": false
     },
     {
       "idx": 11,
       "who": "INSTITUTION",
-      "start": 37.9,
-      "end": 38.67,
-      "text": "Invalid."
+      "start": 33.1,
+      "end": 33.936,
+      "text": "[flat] Invalid.",
+      "voice": "Despina",
+      "claims": [
+        "c7"
+      ],
+      "verbatim": false
     },
     {
       "idx": 12,
       "who": "RAY",
-      "start": 39.5,
-      "end": 42.739,
-      "text": "That's not a decision. That's a fucking word."
+      "start": 34.54,
+      "end": 37.83,
+      "text": "That's not a decision. [short pause] That's a fucking word.",
+      "voice": "Algenib",
+      "claims": [
+        "c7"
+      ],
+      "verbatim": false
     },
     {
       "idx": 13,
       "who": "DEE",
-      "start": 43.1,
-      "end": 45.06,
-      "text": "Sorry, is there a second word?"
+      "start": 38.88,
+      "end": 40.937,
+      "text": "Sorry, is there a second word?",
+      "voice": "Pulcherrima",
+      "claims": [
+        "c7"
+      ],
+      "verbatim": false
     },
     {
       "idx": 14,
       "who": "DEE",
-      "start": 46.3,
-      "end": 49.368,
-      "text": "The landlord's copy and his copy don't say the same thing."
+      "start": 42.19,
+      "end": 45.359,
+      "text": "The landlord's copy and his copy don't say the same thing.",
+      "voice": "Pulcherrima",
+      "claims": [
+        "c8"
+      ],
+      "verbatim": false
     },
     {
       "idx": 15,
       "who": "RAY",
-      "start": 50.3,
-      "end": 52.427,
-      "text": "So. Which one of those do I live in?"
+      "start": 46.31,
+      "end": 48.886,
+      "text": "So. Which one of those do I live in?",
+      "voice": "Algenib",
+      "claims": [
+        "c8"
+      ],
+      "verbatim": false
     },
     {
       "idx": 16,
       "who": "RAY",
-      "start": 54.1,
-      "end": 56.747,
-      "text": "Mine's still under there."
+      "start": 50.09,
+      "end": 51.775,
+      "text": "[sigh] Mine's still under there.",
+      "voice": "Algenib",
+      "claims": [],
+      "verbatim": false
     }
-  ],
-  "_provenance": "RECONSTRUCTED 2026-08-03 from the shipped take record. out/dispatch/ is scratch and did not survive the container, so the original was gone. Every start here was independently validated against the SHIPPED AUDIO: all 17 speech onsets measured 0.04-0.06s after their cue start, a constant decoder priming offset. gen_captions_ts --check against this file is VACUOUS and was not treated as a passing gate."
+  ]
 }

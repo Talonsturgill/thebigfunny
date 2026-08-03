@@ -1,0 +1,219 @@
+{
+  "case": 3,
+  "estimated_seconds": 51.78,
+  "word_count": 90,
+  "funniest_line_intended": "Evicted. [short pause] Evicted. Yeah, no. Career defendant.",
+  "lines": [
+    {
+      "t": 0.6,
+      "who": "DEE",
+      "text": "[flat] One eviction case.",
+      "claims": [
+        "c4"
+      ],
+      "needs_claim": false,
+      "face": {
+        "RAY": "squint",
+        "DEE": "flat"
+      }
+    },
+    {
+      "t": 2.56,
+      "who": "RAY",
+      "text": "Okay.",
+      "claims": [],
+      "needs_claim": false,
+      "face": {
+        "RAY": "angry"
+      }
+    },
+    {
+      "t": 3.63,
+      "who": "DEE",
+      "text": "That report goes to a landlord.",
+      "claims": [
+        "c2"
+      ],
+      "needs_claim": false,
+      "face": {
+        "RAY": "squint"
+      }
+    },
+    {
+      "t": 6.46,
+      "who": "RAY",
+      "text": "Evicted. [short pause] Evicted. Yeah, no. Career defendant.",
+      "claims": [
+        "c5"
+      ],
+      "needs_claim": false,
+      "face": {
+        "RAY": "smug",
+        "DEE": "squint"
+      }
+    },
+    {
+      "t": 13.92,
+      "who": "RAY",
+      "text": "[medium pause] He got sued once.",
+      "claims": [
+        "c5"
+      ],
+      "needs_claim": false,
+      "face": {
+        "RAY": "angry",
+        "DEE": "flat"
+      }
+    },
+    {
+      "t": 16.04,
+      "who": "DEE",
+      "text": "I asked where they got it.",
+      "claims": [
+        "c6"
+      ],
+      "needs_claim": false,
+      "face": {
+        "RAY": "flat",
+        "DEE": "squint"
+      }
+    },
+    {
+      "t": 17.77,
+      "who": "RAY",
+      "text": "Somebody got paid to do that.",
+      "claims": [
+        "c6"
+      ],
+      "needs_claim": false,
+      "face": {
+        "RAY": "angry",
+        "DEE": "flat"
+      }
+    },
+    {
+      "t": 22.15,
+      "who": "RAY",
+      "text": "[flat] I've been standing here the whole time.",
+      "claims": [],
+      "needs_claim": false,
+      "face": {
+        "RAY": "flat",
+        "DEE": "worried"
+      }
+    },
+    {
+      "t": 24.29,
+      "who": "DEE",
+      "text": "I know.",
+      "claims": [],
+      "needs_claim": false,
+      "face": {
+        "RAY": "angry",
+        "DEE": "flat"
+      }
+    },
+    {
+      "t": 27.39,
+      "who": "INSTITUTION",
+      "text": "[extremely fast] reasonable procedures to ensure maximum possible accuracy",
+      "claims": [
+        "c4"
+      ],
+      "needs_claim": false,
+      "face": {
+        "RAY": "squint",
+        "DEE": "squint"
+      },
+      "verbatim": true
+    },
+    {
+      "t": 31.77,
+      "who": "DEE",
+      "text": "He disputed it.",
+      "claims": [
+        "c7"
+      ],
+      "needs_claim": false,
+      "face": {
+        "RAY": "flat"
+      }
+    },
+    {
+      "t": 33.1,
+      "who": "INSTITUTION",
+      "text": "[flat] Invalid.",
+      "claims": [
+        "c7"
+      ],
+      "needs_claim": false,
+      "face": {
+        "RAY": "squint",
+        "DEE": "shock"
+      }
+    },
+    {
+      "t": 34.54,
+      "who": "RAY",
+      "text": "That's not a decision. [short pause] That's a fucking word.",
+      "claims": [
+        "c7"
+      ],
+      "needs_claim": false,
+      "face": {
+        "RAY": "angry",
+        "DEE": "flat"
+      }
+    },
+    {
+      "t": 38.88,
+      "who": "DEE",
+      "text": "Sorry, is there a second word?",
+      "claims": [
+        "c7"
+      ],
+      "needs_claim": false,
+      "face": {
+        "RAY": "flat",
+        "DEE": "angry"
+      }
+    },
+    {
+      "t": 42.19,
+      "who": "DEE",
+      "text": "The landlord's copy and his copy don't say the same thing.",
+      "claims": [
+        "c8"
+      ],
+      "needs_claim": false,
+      "face": {
+        "RAY": "squint",
+        "DEE": "flat"
+      }
+    },
+    {
+      "t": 46.31,
+      "who": "RAY",
+      "text": "So. Which one of those do I live in?",
+      "claims": [
+        "c8"
+      ],
+      "needs_claim": false,
+      "face": {
+        "RAY": "angry",
+        "DEE": "worried"
+      }
+    },
+    {
+      "t": 50.09,
+      "who": "RAY",
+      "text": "[sigh] Mine's still under there.",
+      "claims": [],
+      "needs_claim": false,
+      "face": {
+        "RAY": "flat",
+        "DEE": "flat"
+      }
+    }
+  ]
+}

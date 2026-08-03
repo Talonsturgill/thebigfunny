@@ -202,6 +202,32 @@
         "dead_air"
       ],
       "note": "Laughs at 12.0 and 43.4. Scroll risks at 19.0, 21.2, 29.0, 31.0. Stopped being new at 16.2. Would have finished."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-03",
+      "critic": "storyboard",
+      "score": 62,
+      "read": 3,
+      "defects": [
+        "card_type_collision",
+        "figure_cropped_at_frame_edge",
+        "head_cropped_at_frame_top",
+        "chute_lip_through_figure",
+        "alleged_invalid_type_stack"
+      ],
+      "note": "fix-then-proceed on the first recut, up from 44. Two named fixes CONFIRMED, two fell in unsampled gaps and it correctly refused to sign them off. Found the systemic card leading bug: zero leading by construction on every card."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-03",
+      "critic": "reader-sim",
+      "read": 2,
+      "defects": [
+        "dead_air_25_to_33",
+        "caption_held_over_static_frame"
+      ],
+      "note": "First recut. Laughs at 40.4 and 50.5. Stopped being new at 25.2, up from 16.2. Would finish. Scroll risks 10.1/15.2/25.2/27.8/30.3/42.9; the 10.1 one is a caption re-read the 12-cell sheet never sampled."
     }
   ]
 }

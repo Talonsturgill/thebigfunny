@@ -14,9 +14,9 @@
       }
     },
     "2026-08-03": {
-      "calls": 11,
+      "calls": 20,
       "by_model": {
-        "gemini-3.1-flash-tts-preview": 11
+        "gemini-3.1-flash-tts-preview": 20
       }
     }
   }

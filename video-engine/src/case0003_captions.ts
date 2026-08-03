@@ -20,27 +20,27 @@
 export type Cue = {start: number; end: number; who: string; text: string};
 
 export const CAPTIONS: Cue[] = [
-  {start: 0.6, end: 2.248, who: 'DEE', text: 'One eviction case.'},
-  {start: 2.6, end: 3.044, who: 'RAY', text: 'Okay.'},
-  {start: 4.6, end: 6.631, who: 'DEE', text: 'That report goes to a landlord.'},
-  {start: 7.4, end: 11.27, who: 'RAY', text: 'Evicted. Evicted. Yeah, no. Career defendant.'},
-  {start: 11.6, end: 12.884, who: 'RAY', text: 'He got sued once.'},
-  {start: 14.0, end: 15.153, who: 'DEE', text: 'I asked where they got it.'},
-  {start: 16.2, end: 17.716, who: 'RAY', text: 'Somebody got paid to do that.'},
-  {start: 23.8, end: 25.23, who: 'RAY', text: 'I\'ve been standing here the whole time.'},
-  {start: 26.6, end: 27.128, who: 'DEE', text: 'I know.'},
-  {start: 32.6, end: 35.862, who: 'INSTITUTION', text: 'reasonable procedures to ensure maximum possible accuracy'},
-  {start: 36.1, end: 37.025, who: 'DEE', text: 'He disputed it.'},
-  {start: 37.9, end: 38.67, who: 'INSTITUTION', text: 'Invalid.'},
-  {start: 39.5, end: 42.739, who: 'RAY', text: 'That\'s not a decision. That\'s a fucking word.'},
-  {start: 43.1, end: 45.06, who: 'DEE', text: 'Sorry, is there a second word?'},
-  {start: 46.3, end: 49.368, who: 'DEE', text: 'The landlord\'s copy and his copy don\'t say the same thing.'},
-  {start: 50.3, end: 52.427, who: 'RAY', text: 'So. Which one of those do I live in?'},
-  {start: 54.1, end: 56.747, who: 'RAY', text: 'Mine\'s still under there.'},
+  {start: 0.6, end: 2.013, who: 'DEE', text: 'One eviction case.'},
+  {start: 2.56, end: 3.278, who: 'RAY', text: 'Okay.'},
+  {start: 3.63, end: 5.756, who: 'DEE', text: 'That report goes to a landlord.'},
+  {start: 6.46, end: 12.616, who: 'RAY', text: 'Evicted. Evicted. Yeah, no. Career defendant.'},
+  {start: 13.92, end: 15.045, who: 'RAY', text: 'He got sued once.'},
+  {start: 16.04, end: 17.221, who: 'DEE', text: 'I asked where they got it.'},
+  {start: 17.77, end: 19.748, who: 'RAY', text: 'Somebody got paid to do that.'},
+  {start: 22.15, end: 23.592, who: 'RAY', text: 'I\'ve been standing here the whole time.'},
+  {start: 24.29, end: 24.988, who: 'DEE', text: 'I know.'},
+  {start: 27.39, end: 31.017, who: 'INSTITUTION', text: 'reasonable procedures to ensure maximum possible accuracy'},
+  {start: 31.77, end: 32.754, who: 'DEE', text: 'He disputed it.'},
+  {start: 33.1, end: 33.936, who: 'INSTITUTION', text: 'Invalid.'},
+  {start: 34.54, end: 37.83, who: 'RAY', text: 'That\'s not a decision. That\'s a fucking word.'},
+  {start: 38.88, end: 40.937, who: 'DEE', text: 'Sorry, is there a second word?'},
+  {start: 42.19, end: 45.359, who: 'DEE', text: 'The landlord\'s copy and his copy don\'t say the same thing.'},
+  {start: 46.31, end: 48.886, who: 'RAY', text: 'So. Which one of those do I live in?'},
+  {start: 50.09, end: 51.775, who: 'RAY', text: 'Mine\'s still under there.'},
 ];
 
 /** Seconds of finished episode: last spoken word plus the 1.5s tail. */
-export const TOTAL = 58.25;
+export const TOTAL = 53.27;
 
 /** Who is speaking at time t, or null in a gap. One definition, so the caption
  *  tint, the speaker label and the talk pose can never disagree. */
