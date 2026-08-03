@@ -205,8 +205,19 @@ export const DocketCard: React.FC<{
         ))}
       </g>
 
-      {/* STRING ONE: the head line. FITTED, never merely scaled. */}
-      <text x={w * 0.07} y={h * 0.17}
+      {/* STRING ONE: the head line. FITTED, never merely scaled.
+
+          BASELINES, and why these two numbers are not free. The head sat at
+          0.17h and the case number at 0.325h, a gap of exactly 0.155h, which is
+          exactly `noCap`. That is ZERO leading by construction, so the digits'
+          cap-tops landed on the head line's baseline and the two strings
+          touched or overlapped on EVERY card in the episode. On the eight-card
+          wall it is visible eight times at once, and legible paperwork is the
+          brand's whole promise. Head up to 0.155h, number down to 0.34h: 0.185h
+          of gap against a 0.155h cap, so 0.03h of real leading. The printed band
+          still ends by 0.34h, which is what CardPile's 0.36 reveal floor
+          protects, so the stack spacing does not move. */}
+      <text x={w * 0.07} y={h * 0.155}
             fontSize={fitText(head, w * 0.86, headCap / 0.7)} fontWeight={800}
             fill={INK} letterSpacing={w * 0.003}
             style={{fontFamily: 'Barlow Condensed, Impact, sans-serif'}}>
@@ -217,7 +228,7 @@ export const DocketCard: React.FC<{
           larger than the head line on purpose: it is the string the eye is being
           asked to match card to card, and the gate wants it at 22% or more of
           the long edge. */}
-      <text x={w * 0.07} y={h * 0.325}
+      <text x={w * 0.07} y={h * 0.34}
             fontSize={fitText(caseNo, w * 0.86, noCap / 0.7)} fontWeight={900}
             fill={INK} letterSpacing={w * 0.006}
             style={{fontFamily: 'Barlow Condensed, Impact, sans-serif'}}>

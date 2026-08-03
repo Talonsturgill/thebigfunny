@@ -146,6 +146,88 @@
         "stale_artifact_passed_a_freshness_gate"
       ],
       "note": "mux_and_verify passed a render three minutes out of date because it compared the picture only against the audio and the input that had changed was the scene file."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-03",
+      "critic": "funny",
+      "score": 64,
+      "read": 7,
+      "defects": [
+        "premise_under_set",
+        "explaining_lines",
+        "dead_air",
+        "button_doesnt_land",
+        "carried_by_written_line"
+      ],
+      "note": "Cold read of the SHIPPED cut, run 2026-08-03 because the shipped episode never got a panel. First 30s are unparseable cold; the working third is 37.9 to 43.4."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-03",
+      "critic": "flow",
+      "score": 58,
+      "read": 2,
+      "defects": [
+        "dead_air_18_2_to_23_8",
+        "dead_air_27_6_to_32_6",
+        "ray_absent_from_his_own_escalation",
+        "caption_occludes_button_receipt",
+        "runtime_over_target_band"
+      ],
+      "note": "Recut verdict on the shipped cut. Two 5s silences. NOTE: its spine-image-absent and board-events-not-in-render findings were REFUTED by frames it did not have."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-03",
+      "critic": "storyboard",
+      "score": 44,
+      "read": 2,
+      "defects": [
+        "limb_floating_unattached",
+        "head_tangent_impale",
+        "payoff_word_occluded",
+        "figure_cropped_into_fragment",
+        "critic_graded_an_undersampled_sheet"
+      ],
+      "note": "fix-then-proceed on the shipped cut. Floating limbs at 7.4 and head-through-shelf at 50.5 CONFIRMED and fixed. Its pile-never-rendered finding was REFUTED: the pile renders at 22.2s."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-03",
+      "critic": "reader-sim",
+      "read": 1,
+      "defects": [
+        "first_scroll_risk_at_19s",
+        "dead_air"
+      ],
+      "note": "Laughs at 12.0 and 43.4. Scroll risks at 19.0, 21.2, 29.0, 31.0. Stopped being new at 16.2. Would have finished."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-03",
+      "critic": "storyboard",
+      "score": 62,
+      "read": 3,
+      "defects": [
+        "card_type_collision",
+        "figure_cropped_at_frame_edge",
+        "head_cropped_at_frame_top",
+        "chute_lip_through_figure",
+        "alleged_invalid_type_stack"
+      ],
+      "note": "fix-then-proceed on the first recut, up from 44. Two named fixes CONFIRMED, two fell in unsampled gaps and it correctly refused to sign them off. Found the systemic card leading bug: zero leading by construction on every card."
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-03",
+      "critic": "reader-sim",
+      "read": 2,
+      "defects": [
+        "dead_air_25_to_33",
+        "caption_held_over_static_frame"
+      ],
+      "note": "First recut. Laughs at 40.4 and 50.5. Stopped being new at 25.2, up from 16.2. Would finish. Scroll risks 10.1/15.2/25.2/27.8/30.3/42.9; the 10.1 one is a caption re-read the 12-cell sheet never sampled."
     }
   ]
 }

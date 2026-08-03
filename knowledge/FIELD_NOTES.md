@@ -522,6 +522,128 @@ step is to verify the fix took, not to assume the tool was flaky and retry. I
 relaunched on the assumption the first death was a fluke. It was not, and the
 agent told me so precisely and immediately both times.
 
+## A whole PHASE can fail to run, and it looks exactly like a phase that passed (2026-08-03)
+
+Case 0003 was merged to `main` with no scorer verdict, no panel report and no
+score card. `runs/2026-08-03/README.md` is detailed and confident, every
+objective gate was green, and the WORKLOG says "Every gate green." All of that
+is true. It is also true that the gates which decide whether the episode is any
+GOOD never ran at all.
+
+Read cold the next morning, the shipped cut scored **funny 64, flow 58, craft
+44**, against a ship threshold of 78. The simulated viewer took their thumb off
+the screen at 19 seconds. Nothing in the machine objected, because every
+objective gate asks about the FILE and the panel is the only thing that asks
+about the EPISODE, and a panel that is skipped leaves no trace.
+
+This is the repo's oldest lesson at a scale nobody had applied it to. It was
+written about a `if a and b:` that emitted no row; it turns out to hold for a
+whole phase of the routine. **A check that did not run reads exactly like a
+check that passed** applies to Phase 6 the same way it applies to a line of
+Python, and Phase 6 is the expensive one to skip.
+
+The tell that would have caught it, and it is arithmetic: `ledger/verdicts.json`
+had six funny reads for case 3 and **all six predated the count-room rewrite**.
+A verdict ledger that has no entry from the phase that supposedly just ran is
+the same evidence as a red gate. Nothing looked.
+
+### Four ledgers agreeing reads exactly like six
+
+`topics`, `bits`, `artwork` and `verdicts` all recorded case 3 on 2026-08-03.
+`cases.json` did not, and `next_case` was still `3`. So today's run, following
+Phase 0 step 2b exactly as written, would have TAKEN case number 0003 a second
+time, which the register's own spec calls the show lying about its own record.
+
+The partial write is nastier than no write. Had every ledger missed it, the omission
+would have been obvious on the first read. Four out of six agreeing is what made
+it invisible, and the one that got missed is the one that hands out identity.
+
+### out/dispatch is scratch, and the ship gate depends on it
+
+`render.sh final` refuses to re-render an episode whose `caseNNNN_captions.ts`
+exists without `out/dispatch/vo_lines.json`, on the correct grounds that nothing
+can then prove the cues still match the takes. But `out/dispatch/` is gitignored
+scratch and does not survive the container, and Phase 7 does not commit
+`vo_lines.json` to `runs/`. **So the episode became unrenderable the moment the
+session that made it ended**, and the gate that says so is right.
+
+The fix is not to weaken the gate. It is that `runs/<date>/` must carry
+`vo_lines.json`, which Phase 7 already lists and this run had not done. A
+deliverable you cannot rebuild is a deliverable with a half-life.
+
+What unblocked it today was measurement, not a bypass: every one of the 17 cue
+starts was checked against speech onset in the SHIPPED AUDIO and every one
+landed 0.04 to 0.06s late, a constant decoder priming offset. That is stronger
+evidence than `--check` would have given, because `--check` only ever compares
+two derived files to each other. Verify against the thing that will actually be
+used; the rest of this file has been saying so since before episode 1.
+
+## A contact sheet's gaps read as absences, and critics report them as facts (2026-08-03)
+
+Already on file: "a contact sheet samples; it does not cover." Today it cost
+something new. Two critics, independently, reported beats as MISSING FROM THE
+RENDER that render perfectly well:
+
+- the flow critic: "S8 promised eight identical head lines ... Neither is in the
+  render."
+- the storyboard critic, as its single systemic finding: `pile-never-rendered`,
+  "in twelve frames spanning the whole episode, the floor is an empty black
+  band."
+
+Nine frames pulled from the shipped mp4 at the un-sampled timestamps show the
+eight stacked head lines at 22.2s, the VERIFIED emboss at 31.0s, both figures
+full-figure in a clean two-shot at 27.6s and 29.0s, and the RESOLVED-vs-INVALID
+payoff clean and legible at 48.5s. Every one of those falls in a gap between
+cells.
+
+**The critics were not careless and they did not hallucinate.** They reported
+what the grid showed, and the grid showed gaps. The defect is that a grid does
+not LOOK sampled. It looks complete. Twelve cells across 58 seconds is one frame
+every 4.8s, which is wider than most shots in the film.
+
+Two things came out of it. The sheet is now 24 cells, and **the sampling
+interval is printed on the sheet itself**, because anything the reader of an
+artifact is supposed to hold in mind has to be IN the artifact. A caveat that
+lives in the prompt is a caveat that is not there when the picture is.
+
+The general shape, which is worth more than the fix: when you hand a sampled
+view to a judge, the sample rate is part of the evidence. Omit it and you have
+not given them less information, you have given them WRONG information, because
+they will read completeness into whatever you show them.
+
+And the practical rule for the next run: **an agent's finding that something is
+ABSENT is the one class of finding to verify before acting on it.** A finding
+that something is wrong points at a frame you can go and look at. A finding that
+something is missing points at nothing, and nothing is also what an unsampled
+beat looks like.
+
+## Measure the camera, do not eyeball it (2026-08-03)
+
+The single worst artifact in case 0003 was two disconnected body parts floating
+at the frame edges on the film's funniest line: a navy sleeve ending in a fist,
+attached to nothing, and a skin-tone limb fragment with no body. It had a
+one-line cause and it is pure arithmetic.
+
+S4 frames at `cx` default 0.5, `zoom` 1.45. That maps visible x to
+`[W/2 - 540/1.45, W/2 + 540/1.45]`, which is 168..912. Ray was placed at
+`W*0.10` (108) and Dee at `W*0.90` (972). **Both figures were positioned outside
+the frame**, so the only thing that rendered of either was whichever extremity
+happened to poke in.
+
+Same class at 50.5s, where the brass chute lip passed exactly through Ray's
+crown and he read as decapitated by a shelf, and at 50.5s again where the two
+payoff words rendered as `LVED` and a cropped `INVALID` because the cards ran
+-43..605 and 518..1166 through a window of 180..900.
+
+`Cam` is three composed transforms and the visible band is four lines of
+arithmetic. Nobody did the arithmetic; positions were chosen by eye against a
+mental picture of an unzoomed frame. The WORKLOG already says "measure geometry,
+do not reason about it" and lists three renders lost to it. This is the fourth,
+fifth and sixth.
+
+Write the visible band down before placing anything in a shot that zooms. It is
+`W/2 ± (W/2)/zoom` around `W*cx`, and it takes ten seconds.
+
 ## Audio is not the only input to a picture (2026-08-03)
 
 `mux_and_verify.sh` had a staleness guard that refused a video older than its

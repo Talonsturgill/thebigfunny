@@ -183,11 +183,11 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
   // stops at 9 and never rolls again: S10's wheel topping out is what makes the
   // silence after it feel like something stopped rather than like a pause.
   const landed = Math.min(9, Math.max(1, Math.round(interpolate(
-    t, [0.4, 7.0, 11.6, 21.2, 28.8], [1, 3, 5, 8, 9], clamp))));
+    t, [0.4, 6.056, 13.92, 20.652, 25.427], [1, 3, 5, 8, 9], clamp))));
   const count = String(landed).padStart(4, '0');
 
   // How buried the tile is. The pattern going completely IS the turn.
-  const pile = interpolate(t, [4.6, 7.4, 11.6, 21.2], [0.05, 0.35, 0.75, 1], clamp);
+  const pile = interpolate(t, [3.63, 6.46, 13.92, 20.652], [0.05, 0.35, 0.75, 1], clamp);
 
   return (
     <AbsoluteFill style={{background: COUNTROOM.ink}}>
@@ -198,7 +198,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             A court case being MANUFACTURED, at furniture size, before anyone
             has said the word report. No people, no wide, no title.
             ============================================================ */}
-        <Shot from={0} to={2.4}>
+        <Shot from={0} to={2.364}>
           <Cam cy={0.82} zoom={1.35}>
             <CountRoomBG f={f} w={W} h={H} light={0.9} pile={0.02} />
             {/* The card is sized so BOTH legible strings sit inside the frame at
@@ -215,7 +215,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             the room's only rule is taught before anybody explains it: one slab
             equals one click. Every later wheel reads without a caption.
             ============================================================ */}
-        <Shot from={2.4} to={4.6}>
+        <Shot from={2.364} to={3.63}>
           <Cam cy={0.44} zoom={2.6}>
             <CountRoomBG f={f} w={W} h={H} light={1} pile={0.05} />
             <g transform={`translate(${W * 0.5},${H * 0.42})`}>
@@ -233,7 +233,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             since before the film started. And how small a person is against
             one court case.
             ============================================================ */}
-        <Shot from={4.6} to={7.4}>
+        <Shot from={3.63} to={6.46}>
           {/* THE ONLY SHOT THAT SEES THE WHOLE WALL. Everything before and
               after it is a fragment, which is what makes this one land. */}
           <Cam cy={0.5} zoom={1}>
@@ -254,14 +254,20 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             the floor does not change at all and the only measurable change in
             the frame is the height of the man standing on it.
             ============================================================ */}
-        <Shot from={7.4} to={11.6}>
+        <Shot from={6.46} to={13.92}>
           <Cam cy={0.82} zoom={1.45}>
             <CountRoomBG f={f} w={W} h={H} light={0.85} pile={pile} />
             <CardPile x={W * 0.5 - CARD_W / 2} y={H * 0.92} w={CARD_W} count={landed}
                       mode="flush" {...card} />
+            {/* AT THIS ZOOM THE FRAME ONLY SHOWS x 168..912. Ray at 0.10W and
+                Dee at 0.90W both sit OUTSIDE it, so the shipped cut rendered a
+                floating forearm and a footless leg at the two frame edges and
+                nothing else of either of them, on the funniest line in the
+                film. Both are now inside the visible band, Ray standing on the
+                pile the shot is about. Measure the camera, do not eyeball it. */}
             <Cast f={f} crown={CARD_W * CAST_TO_CARD}
                   ground={H * 0.92 - landed * (CARD_W * 0.018)}
-                  rayX={W * 0.10} deeX={W * 0.90} rayPose="point" />
+                  rayX={W * 0.28} deeX={W * 0.72} rayPose="point" />
           </Cam>
         </Shot>
 
@@ -271,7 +277,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             edge. The ONLY true-human-size object in the film, and it is also
             the document c6 and c7 are about. Do not cut it for pace.
             ============================================================ */}
-        <Shot from={11.6} to={14.0}>
+        <Shot from={13.92} to={16.04}>
           <Cam cy={0.76} zoom={1.5}>
             <CountRoomBG f={f} w={W} h={H} light={0.9} pile={0.85} />
             <CardPile x={W * 0.14} y={H * 0.86} w={CARD_W * 1.2} count={3}
@@ -298,7 +304,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             uncleared transaction. The board files this as a note to the
             writers room rather than a rejection.
             ============================================================ */}
-        <Shot from={14.0} to={18.2}>
+        <Shot from={16.04} to={18.923}>
           {/* MACRO ON THE HINGE KNUCKLE. This is one of the film's three sight
               gags and the gate counted it, so it has to be READABLE: no keyhole,
               no lock, no sign, and the teal brush stroke running unbroken
@@ -306,7 +312,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
               were a few pixels and the gag was a rumour. */}
           <Cam cx={0.845} cy={0.525} zoom={3.3}>
             <CountRoomBG f={f} w={W} h={H} light={0.95} pile={0}
-                         panel={interpolate(f, [s(14.6), s(15.2), s(15.8), s(16.6), s(17.2)],
+                         panel={interpolate(f, [s(16.512), s(16.984), s(17.455), s(18.001), s(18.346)],
                                             [0, 1, 0, 1, 0], clamp)} />
             {/* SHE HAS TO BE AT THE HANDLE, and the hinge has to be in the same
                 frame, or the gag is two separate facts. `point` reads as
@@ -322,7 +328,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             Exactly one card goes in, the same single card the slot has taken
             since second one. No dialogue anywhere in this shot.
             ============================================================ */}
-        <Shot from={18.2} to={21.2}>
+        <Shot from={18.923} to={20.652}>
           {/* THE ONLY HIGH ANGLE IN THE FILM, and it is pointed at the INTAKE,
               which lives upper LEFT. The first cut craned to the middle of the
               wall and proved nothing: the shot's whole job is that exactly one
@@ -330,7 +336,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
               one, and you have to be able to SEE the slot for that to land. */}
           <Cam cx={0.22} cy={0.22} zoom={2.0}>
             <CountRoomBG f={f} w={W} h={H} light={1} pile={1}
-                         intake={interpolate(f, [s(19.4), s(20.6)], [0, 1], clamp)} />
+                         intake={interpolate(f, [s(19.614), s(20.306)], [0, 1], clamp)} />
           </Cam>
         </Shot>
 
@@ -341,7 +347,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             lines at one offset is a PATTERN; eight different documents is a
             mess. This is the only place SAME and MANY can be told apart.
             ============================================================ */}
-        <Shot from={21.2} to={23.8}>
+        <Shot from={20.652} to={22.15}>
           <Cam cy={0.88} zoom={1.25}>
             <CountRoomBG f={f} w={W} h={H} light={0.75} pile={1} />
             <g transform={`translate(${W * 0.5},${H * 0.42})`}>
@@ -358,7 +364,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             move WITHOUT moving. The only thing acting in the frame is the
             floor, and he does not look down.
             ============================================================ */}
-        <Shot from={23.8} to={26.6}>
+        <Shot from={22.15} to={24.29}>
           <Cam cy={0.72} zoom={1.6}>
             <CountRoomBG f={f} w={W} h={H} light={0.7} pile={1} />
             {/* THE PILE IS FLOOR HERE, not a document. Its printing is pushed
@@ -368,8 +374,8 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
                 an accident. */}
             <CardPile x={W * 0.08} y={H * 1.18} w={W * 0.84} count={4} mode="flush" {...card} />
             <Cast f={f} crown={CARD_W * CAST_TO_CARD}
-                  ground={H * 0.72 - interpolate(f, [s(24.7), s(24.95)], [0, 14], clamp)}
-                  rayX={W * 0.26} deeX={W * 0.84} />
+                  ground={H * 0.72 - interpolate(f, [s(22.838), s(23.029)], [0, 14], clamp)}
+                  rayX={W * 0.32} deeX={W * 0.70} />
           </Cam>
         </Shot>
 
@@ -380,8 +386,8 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             crown crossing the odometer boss, and the wheel tops out at 9 and
             never rolls again.
             ============================================================ */}
-        <Shot from={26.6} to={30.0}>
-          <Cam cy={interpolate(f, [s(26.6), s(30.0)], [0.66, 0.58], clamp)} zoom={1.5}>
+        <Shot from={24.29} to={26.047}>
+          <Cam cy={interpolate(f, [s(24.29), s(26.047)], [0.66, 0.58], clamp)} zoom={1.5}>
             <CountRoomBG f={f} w={W} h={H} light={0.7} pile={1} />
             <g transform={`translate(${W * 0.5},${H * 0.42})`}>
               <TallyCounter x={-62} y={-22} s={0.78} f={f} variant="odometer" count={count} />
@@ -390,7 +396,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             {/* Ray RISES until his crown crosses the odometer boss at 28.8s.
                 The wheel stops at 9 there and never rolls again. */}
             <Cast f={f} crown={CARD_W * CAST_TO_CARD * 1.15}
-                  ground={interpolate(f, [s(26.6), s(30.0)], [H * 0.90, H * 0.70], clamp)}
+                  ground={interpolate(f, [s(24.29), s(26.047)], [H * 0.90, H * 0.70], clamp)}
                   rayX={W * 0.30} deeX={W * 0.74} />
           </Cam>
         </Shot>
@@ -405,7 +411,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             once, which is the difference between an absurdity and a complaint
             about volume.
             ============================================================ */}
-        <Shot from={30.0} to={32.6}>
+        <Shot from={26.047} to={27.39}>
           {/* ONE FRAME, split by the machine's own geometry. No cut, both
               halves in focus. Left: VERIFIED going onto a copy. Right, same
               frame: the intake still holding the ONE original. */}
@@ -413,7 +419,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
           <rect x={W * 0.5 - 4} y={0} width={8} height={H} fill={COUNTROOM.brassLo} opacity={0.9} />
           <DocketCard x={W * 0.015} y={H * 0.34} w={W * 0.46} {...card} light={1} />
           <VerifyDie x={W * 0.06} y={H * 0.47} w={W * 0.16}
-                     press={interpolate(f, [s(30.5), s(31.0), s(32.0)], [0, 1, 1], clamp)} />
+                     press={interpolate(f, [s(26.305), s(26.563), s(27.08)], [0, 1, 1], clamp)} />
           <g transform={`translate(${W * 0.75},${H * 0.30}) scale(1.15)`}>
             <TallyCounter x={-62} y={-22} s={0.9} f={f} variant="odometer" count={count} />
           </g>
@@ -430,10 +436,10 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             toward camera. Refusing to editorialise is what makes the
             politeness menacing: there is nothing to negotiate with.
             ============================================================ */}
-        <Shot from={32.6} to={36.1}>
+        <Shot from={27.39} to={31.77}>
           <Cam cx={0.16} cy={0.20} zoom={3.2}>
             <CountRoomBG f={f} w={W} h={H} light={1} pile={0}
-                         intake={interpolate(f, [s(33.1), s(34.0)], [0, 1], clamp)} />
+                         intake={interpolate(f, [s(28.016), s(29.142)], [0, 1], clamp)} />
           </Cam>
         </Shot>
 
@@ -444,19 +450,24 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             down. The machine's only line with a reaction shot, and the
             reaction belongs to Dee. This is where her single crack is spent.
             ============================================================ */}
-        <Shot from={36.1} to={38.7}>
-          <Cam cx={0.34} cy={0.52} zoom={1.55}>
+        <Shot from={31.77} to={33.82}>
+          {/* PULLED BACK from 1.55, which made the visible band y 379..1618.
+              Ray's crown sat at 338, so 80% of his head was above the top edge
+              and he read as a headless suit with a red tie, and Dee was low
+              enough for the chute lip to cross both her upper arms. Same
+              body-integrity class this recut exists to kill, one shot along. */}
+          <Cam cx={0.34} cy={0.52} zoom={1.3}>
             <CountRoomBG f={f} w={W} h={H} light={0.95} pile={1}
-                         intake={interpolate(f, [s(37.0), s(37.7)], [0, 1], clamp)} />
+                         intake={interpolate(f, [s(32.435), s(32.952)], [0, 1], clamp)} />
             {/* The card comes STRAIGHT back out, before he has got his arms down. */}
-            {f > s(38.05) && (
+            {f > s(33.235) && (
               <DocketCard x={W * 0.10} y={H * 0.66} w={W * 0.52} {...card}
                           differs="INVALID" rot={-4} light={1} />
             )}
-            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.62} ground={H * 0.32}
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.62} ground={H * 0.35}
                   rayX={W * 0.06} deeX={W * 0.62} rayPose="raise" show="ray" />
-            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.72} ground={H * 0.80}
-                  rayX={W * 0.06} deeX={W * 0.56} show="dee" />
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.72} ground={H * 0.84}
+                  rayX={W * 0.06} deeX={W * 0.50} show="dee" />
           </Cam>
         </Shot>
 
@@ -467,7 +478,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             seconds of a wheel that turns for every copy, and the one thing that
             will not make it turn is a person disagreeing.
             ============================================================ */}
-        <Shot from={38.7} to={43.1}>
+        <Shot from={33.82} to={38.88}>
           {/* MATCHED EXACTLY to S2's framing. Same lens, same boss. The only
               two differences are a number and a floor, and that comparison is
               the whole shot. */}
@@ -488,17 +499,30 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             an object: there were always two exits and he was only ever standing
             in front of one of them.
             ============================================================ */}
-        <Shot from={43.1} to={46.3}>
-          <Cam cx={0.86} cy={0.70} zoom={2.2}>
+        <Shot from={38.88} to={42.19}>
+          {/* WIDENED from cx 0.86 zoom 2.2, which framed the chute alone. Dee's
+              "is there a second word?" is the funniest line in the episode and
+              it was playing over a closed panel with nobody on screen: the
+              plate does not start moving until 44.1, so the first second of the
+              shot was an inert wall. The house rule is that the joke lands on
+              the face of the person who is NOT talking, and a reaction costs
+              zero runtime. Ray is now in frame with the chute still in it. */}
+          <Cam cx={0.66} cy={0.70} zoom={1.5}>
             <CountRoomBG f={f} w={W} h={H} light={0.7} pile={1} />
             {/* THE PLATE COMES OFF the chute that has been at the lower right
                 frame edge since second five. Thirty-eight seconds of absence,
                 reversed. */}
             <g transform={`translate(${W * 0.80},${H * 0.62})`}>
               <CardChute f={f} x={0} y={0} w={W * 0.3} state="plated"
-                         open={interpolate(f, [s(44.1), s(45.0)], [0, 1], clamp)} />
+                         open={interpolate(f, [s(39.914), s(40.845)], [0, 1], clamp)} />
             </g>
-            {f > s(45.4) && (
+            {/* Dropped clear of the chute lip, which cut his neck at ground
+                0.86H. A horizontal edge through a head reads as decapitation
+                and this repo has shipped that once already. */}
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.8} ground={H * 0.90}
+                  rayX={W * 0.44} deeX={W * 0.9} rayPose="arms-crossed"
+                  show="ray" />
+            {f > s(41.259) && (
               <DocketCard x={W * 0.62} y={H * 0.80} w={W * 0.42} {...card}
                           differs="RESOLVED" rot={3} light={1} />
             )}
@@ -512,7 +536,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             one frame where two of its outputs are not identical, in the single
             place it was ever asked to be consistent.
             ============================================================ */}
-        <Shot from={46.3} to={50.3}>
+        <Shot from={42.19} to={46.31}>
           <rect x={0} y={0} width={W} height={H} fill={COUNTROOM.ink} />
           <DocketCard x={W * 0.04} y={H * 0.20} w={W * 0.92} {...card}
                       differs="RESOLVED" light={1} />
@@ -526,16 +550,24 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             and then it is an address. Straddling both cards makes a rhetorical
             line a physical impossibility.
             ============================================================ */}
-        <Shot from={50.3} to={52.3}>
-          <Cam cy={0.74} zoom={1.5}>
+        <Shot from={46.31} to={48.299}>
+          {/* PULLED BACK from 1.5. At that zoom the frame showed x 180..900
+              while the two cards ran -43..605 and 518..1166, so RESOLVED
+              rendered as "LVED" and INVALID ran off the right edge. Those two
+              words ARE the payoff of the whole comparison; cropping them is
+              cropping the joke. Both cards now sit inside the visible band and
+              still meet exactly at 0.5W so he straddles the seam. */}
+          <Cam cy={0.74} zoom={1.15}>
             <CountRoomBG f={f} w={W} h={H} light={0.7} pile={1} />
             {/* ONE BOOT ON EACH ANSWER. The question is a joke until the frame
                 turns it into a floor plan, and then it is an address. */}
-            <DocketCard x={-W * 0.04} y={H * 0.86} w={W * 0.56} {...card}
+            <DocketCard x={W * 0.08} y={H * 0.86} w={W * 0.42} {...card}
                         differs="RESOLVED" light={0.92} />
-            <DocketCard x={W * 0.48} y={H * 0.86} w={W * 0.56} {...card}
+            <DocketCard x={W * 0.50} y={H * 0.86} w={W * 0.42} {...card}
                         differs="INVALID" light={0.92} />
-            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.85} ground={H * 0.88}
+            {/* Ground dropped 0.88 -> 0.910: the chute lip was landing on his
+                crown and reading as a shelf through the skull. */}
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.85} ground={H * 0.910}
                   rayX={W * 0.5} deeX={W * 0.9} rayPose="stand" show="ray" />
           </Cam>
         </Shot>
@@ -548,17 +580,23 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             under the filing's bottom edge, unchanged, which is the place the
             last line points at.
             ============================================================ */}
-        <Shot from={52.3} to={56.9}>
+        <Shot from={48.299} to={53.27}>
           <rect x={0} y={0} width={W} height={H} fill={COUNTROOM.ink} />
           {/* HIS CARD, unchanged, and the filing lands ON it rather than
               correcting it. Only a corner stays visible under the bottom edge,
               which is the place the last line points at. */}
-          <DocketCard x={W * 0.05} y={H * 0.86} w={W * 0.9} {...card}
+          {/* A CORNER, not most of a card. At 0.9W its head type set LARGER
+              than the filing's own case caption and landed under the burned-in
+              subtitle, so the receipt collided with the line that points at it
+              and the thing being buried out-typed the thing burying it. Smaller
+              and higher: the type now sits in the band between the filing's
+              bottom edge and the caption, and the filing wins the frame. */}
+          <DocketCard x={W * 0.06} y={H * 0.845} w={W * 0.52} {...card}
                       differs="INVALID" light={0.95} />
           <FilingPlate
             w={W} h={H}
-            enter={interpolate(f, [s(52.6), s(53.4)], [0, 1], clamp)}
-            highlight={interpolate(f, [s(54.0), s(54.9)], [0, 1], clamp)}
+            enter={interpolate(f, [s(48.598), s(49.394)], [0, 1], clamp)}
+            highlight={interpolate(f, [s(49.991), s(50.999)], [0, 1], clamp)}
             alleged
           />
         </Shot>
@@ -569,19 +607,19 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
       {/* THE WORDMARK stamps at 2.6s over the odometer's cream digit field, the
           one light surface in the room. Multiply vanishes on teal, which is why
           it is spent here and nowhere else. */}
-      {t >= 2.5 && t < 4.6 && (
-        <Wordmark frame={f - s(2.6)} fps={FPS} x={540} y={700} scale={0.94}
+      {t >= 2.462 && t < 3.63 && (
+        <Wordmark frame={f - s(2.56)} fps={FPS} x={540} y={700} scale={0.94}
                   color={BRAND.INK} blend="multiply" />
       )}
 
       {/* THE ONE STAMP IN THE EPISODE, on the filing at the button. */}
-      {t >= 54.3 && (
-        <Stamp frame={f - s(55.3)} fps={FPS} x={640} y={1120} rotate={-8} scale={3.2}>
+      {t >= 50.317 && (
+        <Stamp frame={f - s(51.453)} fps={FPS} x={640} y={1120} rotate={-8} scale={3.2}>
           ALLEGED
         </Stamp>
       )}
 
-      {t < 9 && <CaseNumber n={3} y={92} color={BRAND.PAPER} />}
+      {t < 9.302 && <CaseNumber n={3} y={92} color={BRAND.PAPER} />}
 
       <CaptionLayer f={f} />
 

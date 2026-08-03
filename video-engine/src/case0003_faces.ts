@@ -14,8 +14,8 @@
 export type FaceBeat = {t: number; emotion: string};
 
 export const FACES: Record<string, FaceBeat[]> = {
-  DEE: [{t: 0, emotion: 'neutral'}, {t: 0.6, emotion: 'flat'}, {t: 7.4, emotion: 'squint'}, {t: 11.6, emotion: 'flat'}, {t: 14, emotion: 'squint'}, {t: 16.2, emotion: 'flat'}, {t: 23.8, emotion: 'worried'}, {t: 26.6, emotion: 'flat'}, {t: 32.6, emotion: 'squint'}, {t: 37.9, emotion: 'shock'}, {t: 39.5, emotion: 'flat'}, {t: 43.1, emotion: 'angry'}, {t: 46.3, emotion: 'flat'}, {t: 50.3, emotion: 'worried'}, {t: 54.1, emotion: 'flat'}],
-  RAY: [{t: 0, emotion: 'neutral'}, {t: 0.6, emotion: 'squint'}, {t: 2.6, emotion: 'angry'}, {t: 4.6, emotion: 'squint'}, {t: 7.4, emotion: 'smug'}, {t: 11.6, emotion: 'angry'}, {t: 14, emotion: 'flat'}, {t: 16.2, emotion: 'angry'}, {t: 23.8, emotion: 'flat'}, {t: 26.6, emotion: 'angry'}, {t: 32.6, emotion: 'squint'}, {t: 36.1, emotion: 'flat'}, {t: 37.9, emotion: 'squint'}, {t: 39.5, emotion: 'angry'}, {t: 43.1, emotion: 'flat'}, {t: 46.3, emotion: 'squint'}, {t: 50.3, emotion: 'angry'}, {t: 54.1, emotion: 'flat'}],
+  DEE: [{t: 0, emotion: 'neutral'}, {t: 0.6, emotion: 'flat'}, {t: 6.46, emotion: 'squint'}, {t: 13.92, emotion: 'flat'}, {t: 16.04, emotion: 'squint'}, {t: 17.77, emotion: 'flat'}, {t: 22.15, emotion: 'worried'}, {t: 24.29, emotion: 'flat'}, {t: 27.39, emotion: 'squint'}, {t: 33.1, emotion: 'shock'}, {t: 34.54, emotion: 'flat'}, {t: 38.88, emotion: 'angry'}, {t: 42.19, emotion: 'flat'}, {t: 46.31, emotion: 'worried'}, {t: 50.09, emotion: 'flat'}],
+  RAY: [{t: 0, emotion: 'neutral'}, {t: 0.6, emotion: 'squint'}, {t: 2.56, emotion: 'angry'}, {t: 3.63, emotion: 'squint'}, {t: 6.46, emotion: 'smug'}, {t: 13.92, emotion: 'angry'}, {t: 16.04, emotion: 'flat'}, {t: 17.77, emotion: 'angry'}, {t: 22.15, emotion: 'flat'}, {t: 24.29, emotion: 'angry'}, {t: 27.39, emotion: 'squint'}, {t: 31.77, emotion: 'flat'}, {t: 33.1, emotion: 'squint'}, {t: 34.54, emotion: 'angry'}, {t: 38.88, emotion: 'flat'}, {t: 42.19, emotion: 'squint'}, {t: 46.31, emotion: 'angry'}, {t: 50.09, emotion: 'flat'}],
 };
 
 /** The expression in force for `who` at a global frame. */

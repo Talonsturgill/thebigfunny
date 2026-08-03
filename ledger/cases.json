@@ -11,7 +11,7 @@
       "killed_reason": "null unless shipped is false, in which case it names the OUTAGE. Never a quality reason: quality failures are fixed, not recorded as an ending."
     }
   },
-  "next_case": 3,
+  "next_case": 4,
   "entries": [
     {
       "case": 1,
@@ -27,6 +27,14 @@
       "shipped": true,
       "title": "CASE No. 0002 - They Fixed It In October. It Came Back Bigger.",
       "beat": "cross-cutting",
+      "killed_reason": null
+    },
+    {
+      "case": 3,
+      "run_date": "2026-08-03",
+      "shipped": true,
+      "title": "CASE No. 0003 - One Eviction Case, Counted Again",
+      "beat": "the-landlord",
       "killed_reason": null
     }
   ]
