@@ -14,8 +14,8 @@
 export type FaceBeat = {t: number; emotion: string};
 
 export const FACES: Record<string, FaceBeat[]> = {
-  DEE: [{t: 0, emotion: 'squint'}, {t: 3.62, emotion: 'flat'}, {t: 8.92, emotion: 'smug'}, {t: 10.04, emotion: 'flat'}, {t: 16.55, emotion: 'squint'}, {t: 19.58, emotion: 'flat'}, {t: 24.94, emotion: 'squint'}, {t: 28.04, emotion: 'flat'}, {t: 30.22, emotion: 'squint'}, {t: 37.02, emotion: 'smug'}],
-  RAY: [{t: 0, emotion: 'flat'}, {t: 3.62, emotion: 'squint'}, {t: 6.95, emotion: 'angry'}, {t: 8.92, emotion: 'squint'}, {t: 10.04, emotion: 'angry'}, {t: 13.84, emotion: 'shock'}, {t: 16.55, emotion: 'smug'}, {t: 19.58, emotion: 'shock'}, {t: 22.87, emotion: 'angry'}, {t: 24.94, emotion: 'shock'}, {t: 28.04, emotion: 'squint'}, {t: 30.22, emotion: 'flat'}, {t: 37.02, emotion: 'smug'}],
+  DEE: [{t: 0, emotion: 'neutral'}, {t: 0.6, emotion: 'flat'}, {t: 7.4, emotion: 'squint'}, {t: 11.6, emotion: 'flat'}, {t: 14, emotion: 'squint'}, {t: 16.2, emotion: 'flat'}, {t: 23.8, emotion: 'worried'}, {t: 26.6, emotion: 'flat'}, {t: 32.6, emotion: 'squint'}, {t: 37, emotion: 'shock'}, {t: 38.6, emotion: 'flat'}, {t: 42.2, emotion: 'angry'}, {t: 45.4, emotion: 'flat'}, {t: 49.4, emotion: 'worried'}, {t: 53.2, emotion: 'flat'}],
+  RAY: [{t: 0, emotion: 'neutral'}, {t: 0.6, emotion: 'squint'}, {t: 2.6, emotion: 'angry'}, {t: 4.6, emotion: 'squint'}, {t: 7.4, emotion: 'smug'}, {t: 11.6, emotion: 'angry'}, {t: 14, emotion: 'flat'}, {t: 16.2, emotion: 'angry'}, {t: 23.8, emotion: 'flat'}, {t: 26.6, emotion: 'angry'}, {t: 32.6, emotion: 'squint'}, {t: 35.2, emotion: 'flat'}, {t: 37, emotion: 'squint'}, {t: 38.6, emotion: 'angry'}, {t: 42.2, emotion: 'flat'}, {t: 45.4, emotion: 'squint'}, {t: 49.4, emotion: 'angry'}, {t: 53.2, emotion: 'flat'}],
 };
 
 /** The expression in force for `who` at a global frame. */

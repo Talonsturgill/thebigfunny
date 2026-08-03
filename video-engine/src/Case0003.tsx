@@ -1,347 +1,621 @@
 /**
  * Case0003.tsx — THE BIG FUNNY, case 0003.
- * "You Are Not The Customer."
+ * "One eviction case, counted nine times."
  *
- * Angle (who-benefits, exactly one step): you are not the tenant screening
- * company's customer, the landlord is, and that one step explains every
- * allegation in US v. RentGrow.
+ * REWRITTEN 2026-08-02 against out/dispatch/storyboard.json, the first board
+ * produced by the Phase 4.4 director room. The previous version of this file was
+ * a different episode ("You Are Not The Customer", staged in a stairwell) and it
+ * is in git history if anyone wants it back.
  *
- * Every factual string on screen traces to out/dispatch/claims.json.
+ * Angle, from out/dispatch/story.json: the report wrote the same eviction case
+ * out again and again, and counted each copy as another time he was sued. It is
+ * not wrong about anything. Every copy is accurate, and being accurate that many
+ * times is what makes the total false.
  *
- * GUARDS FROM THE FACT-CHECK GATE, all load-bearing:
- *   1. c10 is CUT. NOTHING may state or imply a number of people affected. The
- *      FTC does not give one and the complaint PDF has no text layer to check.
- *   2. c11 is CUT. No named individual was denied a home. Ray is the show's
- *      everyman reacting, never a case study, and no on-screen card claims one.
- *   3. c12 is CUT. This is a SETTLEMENT and a settlement is not an admission.
- *      Every card says ALLEGED. Saying otherwise is defamatory, not edgy.
+ * ========================= THE FACT-CHECK GUARDS ==========================
+ * All load-bearing, all board-enforced, none of them squeamishness:
  *
- * VISUAL SYSTEM (diverges from cases 0001 and 0002 on all five hard axes in
- * ledger/artwork.json):
- *   hero_structure   a stairwell landing with the shaft climbing BEHIND the
- *                    pair. Vertical emphasis, not case 0001's flat cabinet wall
- *                    and not case 0002's horizontal one-point recession. A
- *                    corridor of receding doors would have been 0002 in a hat.
- *   atmosphere       hard skylight bars falling DOWN the shaft, dust in the
- *                    light. Not fluorescent, not night exterior.
- *   palette_family   putty green / oxblood / brass. Not manila-carbon, not
- *                    night steel-sodium.
- *   continuity_device EDGE-TEASE. The door number sits at the frame edge and the
- *                    episode ends on a different one.
- *   camera_language  ORBIT. The camera arcs around the landing rather than
- *                    pushing into it or locking off.
+ *   c10 is CUT. NOTHING may state or imply a number of people affected. The FTC
+ *   does not give one.
+ *   c11 is CUT. No named individual was denied a home. Ray is the show's everyman
+ *   reacting, never a case study.
+ *   c12 is CUT. This is a SETTLEMENT and a settlement is NOT an admission. The
+ *   button carries the case caption and the word ALLEGED, and FilingPlate
+ *   defaults `alleged` to true so a scene has to work to turn it off.
+ *   c3 ($2.25M) is CLEARED and deliberately EXCLUDED. The verdict ledger recorded
+ *   that the number reverses the irony: a settlement figure invites the viewer to
+ *   read the story as resolved, and nothing cleared says the count was corrected.
  *
- * ONE-STAMP AUDIT: the Wordmark is BRAND.PAPER, the EndCard is BRAND.INK, and
- * the only BRAND.STAMP in the episode is the stamp on the filing at the button.
+ *   THE ODOMETER MAY ONLY EVER DISPLAY THE NUMBER OF CARDS VISIBLE IN THE SAME
+ *   FRAME. That is the ALLEGED guard drawn rather than written down: the wheel
+ *   captions the picture and asserts nothing beyond it. It tops out at 9.
+ *
+ * ============================ THE VISUAL SYSTEM ===========================
+ * Diverges from cases 0001 and 0002 on every axis in ledger/artwork.json:
+ *   world             THE COUNT ROOM, the inside of the machine that assembles
+ *                     the report. Not a room the story is discussed in.
+ *   hero_structure    a flat machine FACE parallel to camera. Not 0001's cabinet
+ *                     wall, not 0002's one-point recession, not a stairwell.
+ *   atmosphere        ONE hard practical over the intake and nothing else. Every
+ *                     other surface falls to the crushed floor.
+ *   palette_family    enamel teal / brass. Not manila-carbon, not night steel.
+ *   continuity_device EDGE-TEASE. The plated chute sits at the lower right frame
+ *                     edge from second five and does nothing for thirty-eight
+ *                     seconds, which is what makes S15 a reveal and not an
+ *                     introduction.
+ *   camera_language   HEIGHT LADDER. The camera changes ELEVATION rather than
+ *                     arcing or pushing: floor, eye, crane, floor again. S7 and
+ *                     S8 are the highest and lowest cameras in the film, back to
+ *                     back, so the fall itself is the measurement.
+ *
+ * ONE-STAMP AUDIT: the Wordmark stamps at 2.6s over the odometer's cream digit
+ * field, which is the one light surface in the room (multiply vanishes on teal),
+ * and the only BRAND Stamp in the episode is the red mark on the filing at the
+ * button.
  *
  * MOUNTING CONTRACT: everything from src/lib/ that returns SVG MUST be inside
- * <svg viewBox=...>. brand.tsx and GradeLayer are HTML divs and MUST stay
- * outside it.
+ * <svg viewBox=...>. brand.tsx and GradeLayer are HTML and MUST stay outside it.
+ *
+ * SELF-TIMED, like cases 0001 and 0002: the Sequences below carry their own
+ * frame numbers from the FROZEN script times the board is cut to, so there is no
+ * episode_props.json for this composition and build_scenes.py's scene map is
+ * never consulted.
  */
 import React from 'react';
-import {AbsoluteFill, Sequence, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Sequence, interpolate, useCurrentFrame} from 'remotion';
 import {z} from 'zod';
 import {Ray, Dee} from './lib/cast';
-// From the LIVE rig. lib/cast.tsx says Character.tsx "is not the cast any
-// more" and takes its Emotion from Figure, while these files took theirs
-// from the retired crowd rig. The two unions are identical today, so
-// nothing is broken and tsc cannot warn: they are structurally compatible
-// until they are not, and the first divergence would land as a browless,
-// mouthless face at render time.
 import type {Emotion} from './lib/Figure';
-import {Wordmark, CaseNumber, EndCard, Highlighter, Stamp, BRAND} from './lib/brand';
-import {StairwellBG} from './lib/biomes';
+import {Wordmark, CaseNumber, EndCard, Stamp, BRAND} from './lib/brand';
 import {GradeLayer} from './lib/lighting';
+import {TallyCounter} from './lib/props';
+import {
+  CountRoomBG, DocketCard, CardPile, CardChute, VerifyDie, FilingPlate,
+  COUNTROOM, CAST_TO_CARD,
+} from './lib/countroom';
 import {CAPTIONS, speakerAt, TOTAL as TOTAL_S} from './case0003_captions';
-import {openAt, spreadAt} from './case0003_mouth';
 import {emotionAt} from './case0003_faces';
 
 export const case0003Schema = z.object({total: z.number().optional()});
 
 const FPS = 30;
+const W = 1080;
+const H = 1920;
 const s = (sec: number) => Math.round(sec * FPS);
-const TOTAL = s(TOTAL_S);
-const TAIL_AT = TOTAL - s(1.5);
 
-/** Shot ladder as CUE INDICES, never hand-typed seconds. A re-fit of the VO
- *  retimes the picture for free; see the note in Case0002. */
-const CUT_ON = [0, 3, 5, 6, 8, 9, 11, 12];
-
-/* CUT_ON is hand-maintained INDICES into a generated array, which is the one
-   seam the derived-timing system does not close: shortening the script silently
-   orphans a cut point, TypeScript cannot see an out-of-range index, and the
-   render dies mid-frame with "Cannot read properties of undefined". That is
-   exactly what happened when this script went from 19 lines to 16. Fail at
-   module load with a sentence that says what to do instead. */
-if (CUT_ON.some((c) => c >= CAPTIONS.length)) {
-  throw new Error(
-    `Case0003 CUT_ON references cue ${CUT_ON.filter((c) => c >= CAPTIONS.length).join(', ')} ` +
-    `but the script only has ${CAPTIONS.length} lines (0-${CAPTIONS.length - 1}). ` +
-    `The script was rewritten and the shot ladder was not. Update CUT_ON.`);
-}
-
-const at = (cue: number) => s(CAPTIONS[cue].start);
-const shot = (i: number) =>
-  (i + 1 < CUT_ON.length ? at(CUT_ON[i + 1]) : TAIL_AT) - at(CUT_ON[i]);
-
-const HEAD = 'Arial Black, DejaVu Sans, FreeSans, sans-serif';
-const BODY = 'Arial, DejaVu Sans, FreeSans, sans-serif';
+/** The card long edge in the wide shots. Ray's crown is CAST_TO_CARD of this. */
+const CARD_W = 620;
 
 /**
- * THE ORBIT. The episode's continuity device and its point of difference from
- * case 0002's push.
+ * FIGURE DRAWS DOWNWARD FROM ITS CROWN. lib/Figure.tsx line 59:
+ * Y = {crown: 0, ... ground: 680}, so `y` is the CROWN line and a whole body is
+ * 680 local units.
  *
- * A push scales about a vanishing point and reads as walking forward. An orbit
- * TRANSLATES the plate laterally while rotating it a degree or two about a point
- * behind the figures, so the back wall slides against them and you feel the
- * camera travelling around the landing rather than into it. `rate` gives each
- * layer its own share, which is what makes it parallax instead of a pan.
+ * The proof sheet put both of the cast off the bottom of frame by assuming a
+ * -440..+10 bbox, which belongs to Character, the RETIRED crowd rig. Measured
+ * off a render rather than read off the source, because reading it has now been
+ * wrong three separate times. To stand somebody ON a line:
+ *
+ *   scale = wanted crown height / 680,  y = that line minus the crown height.
  */
-const Orbit: React.FC<{frame: number; rate?: number; children: React.ReactNode}> = ({
-  frame, rate = 1, children,
-}) => {
-  // MEASURED, not guessed. At the first amplitude the plate travelled 3.5 px/s
-  // and the figures 0.8 to 1.2 px/s across the whole episode, which is below
-  // what anyone perceives as a camera move: the flow critic called the orbit
-  // invisible and it was, arithmetically. 260px puts the plate near 9.5 px/s and
-  // the near figures around 2 to 3, so the wall visibly slides against them.
-  // The differential is what makes it an orbit rather than a pan.
-  const a = interpolate(frame, [0, TOTAL], [-1, 1], {extrapolateRight: 'clamp'});
-  const dx = a * 260 * rate;
-  const rot = a * 2.4 * rate;
-  return (
-    <svg width="1080" height="1920" viewBox="0 0 1080 1920"
-         style={{position: 'absolute', inset: 0}}>
-      <g transform={`translate(${dx},0) rotate(${rot} 540 1240)`}>{children}</g>
-    </svg>
-  );
-};
+const stand = (crownPx: number, x: number, groundY: number) => ({
+  x, y: groundY - crownPx, scale: crownPx / 680,
+});
 
-const SPEAKER_TINT: Record<string, string> = {
-  RAY: '#F2B36B',
-  DEE: '#8FD3E8',
-  INSTITUTION: '#C9D2D8',
-};
+const CASE_NO = 'C-2026-4417';
+const HEAD = 'EVICTION ACTION';
+/** ONE spelling of the case number, everywhere. A second spelling anywhere and
+    the repetition stops reading, which is the whole thesis. */
+const card = {head: HEAD, caseNo: CASE_NO};
 
-/** Burned-in caption from the MEASURED VO timings. The show is watched muted
- *  more often than not, so this is not a subtitle, it is the script. */
-const Caption: React.FC<{frame: number; onLight?: boolean}> = ({frame, onLight = false}) => {
-  const t = frame / FPS;
-  const cue = CAPTIONS.find((c) => t >= c.start && t <= c.end + 0.14);
-  if (!cue) return null;
-  const tint = SPEAKER_TINT[cue.who] ?? BRAND.PAPER;
-  return (
-    <div style={{position: 'absolute', left: 54, right: 54, top: 1486, textAlign: 'center'}}>
-      <div style={{
-        fontFamily: BODY, fontSize: 27, fontWeight: 700, letterSpacing: '0.28em',
-        color: onLight ? 'rgba(16,20,35,0.66)' : tint, marginBottom: 10,
-        textShadow: onLight ? 'none' : '0 2px 0 rgba(16,20,35,0.95), 0 0 16px rgba(16,20,35,0.9)',
-      }}>{cue.who}</div>
-      <div style={{
-        fontFamily: HEAD, fontWeight: 900, fontSize: 55, lineHeight: 1.14,
-        color: onLight ? BRAND.INK : BRAND.PAPER,
-        textShadow: onLight ? 'none' : '0 4px 0 rgba(16,20,35,0.92), 0 0 26px rgba(16,20,35,0.8)',
-        letterSpacing: '-0.01em',
-      }}>{cue.text}</div>
-    </div>
-  );
-};
+const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
-/** A notice taped to the door. The INSTITUTION speaks here and nowhere else, and
- *  it has no face, no voice of its own and no opinion: it is a process quoting
- *  the standard it is alleged to have missed. */
-const Notice: React.FC<{frame: number}> = ({frame}) => {
-  const op = interpolate(frame, [0, 7], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
-  const dy = interpolate(frame, [0, 10], [18, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
-  return (
-    <div style={{
-      position: 'absolute', left: 132, right: 132, top: 470 + dy, opacity: op,
-      background: BRAND.PAPER, color: BRAND.INK, transform: 'rotate(-1.2deg)',
-      border: '2px solid rgba(16,20,35,0.5)', boxShadow: '5px 7px 0 rgba(16,20,35,0.34)',
-      padding: '30px 34px 34px',
-    }}>
-      <div style={{fontFamily: BODY, fontSize: 26, letterSpacing: '0.22em', opacity: 0.72}}>
-        THE STANDARD IT IS ALLEGED TO HAVE MISSED
-      </div>
-      <div style={{fontFamily: HEAD, fontWeight: 900, fontSize: 58, lineHeight: 1.1, marginTop: 14}}>
-        REASONABLE PROCEDURES TO ASSURE MAXIMUM POSSIBLE ACCURACY
-      </div>
-      <div style={{fontFamily: BODY, fontSize: 25, marginTop: 18, opacity: 0.66}}>
-        Fair Credit Reporting Act
-      </div>
-    </div>
-  );
-};
+/**
+ * THE CAMERA, and it is the difference between a board and a render.
+ *
+ * The first full render of this episode put every shot at the same framing: the
+ * whole wall, square on, from the same distance, eighteen times. The board's
+ * camera language is a HEIGHT LADDER (floor, eye, crane, floor again) and none
+ * of it existed on screen, because the set was drawn full-frame in every shot
+ * with no transform. Twelve cells of a contact sheet that all look identical is
+ * the owner's original complaint arriving through a different door: "the scenes
+ * are boring and not actually illustrating anything".
+ *
+ * A shot is therefore a POSITION, not just a time window. `cy` is the height the
+ * camera is at expressed in fractions of the wall, `zoom` is how close, and the
+ * world is transformed under it. That makes the ladder a thing that renders
+ * rather than a thing the board asserts.
+ *
+ * Scale about the frame CENTRE, then translate, so zooming does not also slide
+ * the shot sideways. Getting that order wrong is why the S6 macro landed on the
+ * odometer instead of the panel.
+ */
+const Cam: React.FC<{
+  /** 0 = the top of the wall, 1 = the floor line. */
+  cy?: number;
+  /** 0 = frame centre, 1 = the right edge. */
+  cx?: number;
+  zoom?: number;
+  children: React.ReactNode;
+}> = ({cx = 0.5, cy = 0.5, zoom = 1, children}) => (
+  <g transform={
+    `translate(${W / 2},${H / 2}) scale(${zoom}) ` +
+    `translate(${-W * cx},${-H * cy})`
+  }>
+    {children}
+  </g>
+);
+
+/** A shot. Every one carries its own window from the board, so a retimed script
+    moves one number in one place. */
+const Shot: React.FC<{from: number; to: number; children: React.ReactNode}> = ({
+  from, to, children,
+}) => (
+  <Sequence from={s(from)} durationInFrames={s(to) - s(from)} layout="none">
+    {children}
+  </Sequence>
+);
+
+/** The cast, wired to the generated face track so nobody holds an expression. */
+const Cast: React.FC<{
+  f: number; crown: number; ground: number; rayX: number; deeX: number;
+  rayPose?: 'stand' | 'arms-crossed' | 'point' | 'panic' | 'raise';
+  deePose?: 'stand' | 'arms-crossed' | 'point' | 'panic' | 'raise';
+  show?: 'both' | 'ray' | 'dee';
+}> = ({f, crown, ground, rayX, deeX, rayPose = 'arms-crossed', deePose = 'stand', show = 'both'}) => (
+  <>
+    {show !== 'dee' && (
+      <Ray frame={f} {...stand(crown, rayX, ground)}
+           emotion={emotionAt('RAY', f) as Emotion} pose={rayPose} />
+    )}
+    {show !== 'ray' && (
+      <Dee frame={f} {...stand(crown, deeX, ground)}
+           emotion={emotionAt('DEE', f) as Emotion} pose={deePose} />
+    )}
+  </>
+);
 
 export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
-  const frame = useCurrentFrame();
-  const {fps} = useVideoConfig();
+  const f = useCurrentFrame();
+  const t = f / FPS;
 
-  /* The SPEAKER's mouth runs on their own voice, shaped on two axes (openness
-     from loudness, spread from the spectral centroid). The LISTENER's mouth is
-     shut and their idle is damped, so the only real motion belongs to whoever is
-     talking. Expressions come from the FACE TRACK, authored per line in the
-     script; never set `emotion=` as a per-shot constant here, face_check.py
-     exists to catch that. */
-  const who = speakerAt(frame / FPS);
-  const spr = spreadAt(frame);
-  const rayVoice = {
-    mouth: who === 'RAY' ? openAt(frame) : undefined,
-    mouthSpread: spr,
-    idleGain: who === 'RAY' ? 1 : 0.32,
-    emotion: emotionAt('RAY', frame) as Emotion,
-  };
-  const deeVoice = {
-    mouth: who === 'DEE' ? openAt(frame) : undefined,
-    mouthSpread: spr,
-    idleGain: who === 'DEE' ? 1 : 0.32,
-    emotion: emotionAt('DEE', frame) as Emotion,
-  };
+  // THE COUNT. It only ever equals the cards visible in the same frame, and it
+  // stops at 9 and never rolls again: S10's wheel topping out is what makes the
+  // silence after it feel like something stopped rather than like a pause.
+  const landed = Math.min(9, Math.max(1, Math.round(interpolate(
+    t, [0.4, 7.0, 11.6, 21.2, 28.8], [1, 3, 5, 8, 9], clamp))));
+  const count = String(landed).padStart(4, '0');
 
-  const set = <StairwellBG f={frame} light={0.85} doorNo="4C" />;
-  const grade = <GradeLayer f={frame} bloom={0.16} vignette={0.5} grain={0.06} warmth={0.05} />;
+  // How buried the tile is. The pattern going completely IS the turn.
+  const pile = interpolate(t, [4.6, 7.4, 11.6, 21.2], [0.05, 0.35, 0.75, 1], clamp);
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#6d7767'}}>
+    <AbsoluteFill style={{background: COUNTROOM.ink}}>
+      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}
+           style={{position: 'absolute', inset: 0}}>
+        {/* ============================================================
+            S1  0.0-2.4  THE HOOK. The fact drawn, at tile level.
+            A court case being MANUFACTURED, at furniture size, before anyone
+            has said the word report. No people, no wide, no title.
+            ============================================================ */}
+        <Shot from={0} to={2.4}>
+          <Cam cy={0.86} zoom={1.9}>
+            <CountRoomBG f={f} w={W} h={H} light={0.9} pile={0.02} />
+            <DocketCard x={W * 0.02} y={H * 0.80} w={W * 0.96} {...card} light={1} />
+          </Cam>
+        </Shot>
 
-      {/* ---------- S1  the hook, flat. Both of them, the door shut behind. ---------- */}
-      <Sequence from={at(CUT_ON[0])} durationInFrames={shot(0)}>
-        <Orbit frame={frame} rate={1}>{set}</Orbit>
-        <Orbit frame={frame} rate={0.34}>
-          <Ray frame={frame} x={392} y={1592} scale={1.42} {...rayVoice} />
-          <Dee frame={frame} x={694} y={1586} scale={1.44} {...deeVoice} />
-        </Orbit>
-        {grade}
-      </Sequence>
+        {/* ============================================================
+            S2  2.4-4.6  THE COUNT IS AN OBJECT.
+            The digit and the thing it counts, in ONE frame at ONE moment, so
+            the room's only rule is taught before anybody explains it: one slab
+            equals one click. Every later wheel reads without a caption.
+            ============================================================ */}
+        <Shot from={2.4} to={4.6}>
+          <Cam cy={0.44} zoom={2.6}>
+            <CountRoomBG f={f} w={W} h={H} light={1} pile={0.05} />
+            <g transform={`translate(${W * 0.5},${H * 0.42})`}>
+              <TallyCounter x={-62} y={-22} s={0.78} f={f} variant="odometer" count={count} />
+            </g>
+            <CardPile x={W * 0.5 - CARD_W / 2} y={H * 0.70} w={CARD_W} count={2}
+                      mode="stacked" {...card} />
+          </Cam>
+        </Shot>
 
-      {/* the wordmark STAMPS after the hook, never before it */}
-      <Sequence from={s(2.0)} durationInFrames={s(2.4)}>
-        <Wordmark frame={frame - s(2.0)} fps={fps} x={540} y={470} scale={0.9}
-                  color={BRAND.PAPER} blend="normal" />
-      </Sequence>
+        {/* ============================================================
+            S3  4.6-7.4  THE ESTABLISHING IMAGE.
+            The whole apparatus in one frame: where the case goes in, where the
+            count is kept, where copies come out, and one output bolted shut
+            since before the film started. And how small a person is against
+            one court case.
+            ============================================================ */}
+        <Shot from={4.6} to={7.4}>
+          {/* THE ONLY SHOT THAT SEES THE WHOLE WALL. Everything before and
+              after it is a fragment, which is what makes this one land. */}
+          <Cam cy={0.5} zoom={1}>
+            <CountRoomBG f={f} w={W} h={H} light={1} pile={pile} intake={0.5} />
+            <g transform={`translate(${W * 0.5},${H * 0.42})`}>
+              <TallyCounter x={-62} y={-22} s={0.78} f={f} variant="odometer" count={count} />
+            </g>
+            <CardPile x={W * 0.5 - CARD_W / 2} y={H * 0.88} w={CARD_W} count={landed}
+                      mode="stacked" {...card} />
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD} ground={H * 0.955}
+                  rayX={W * 0.13} deeX={W * 0.88} />
+          </Cam>
+        </Shot>
 
-      {/* ---------- S2  closer. Dee lays it out, Ray is already narrowing. ---------- */}
-      <Sequence from={at(CUT_ON[1])} durationInFrames={shot(1)}>
-        <Orbit frame={frame} rate={1}>{set}</Orbit>
-        <Orbit frame={frame} rate={0.34}>
-          <Ray frame={frame} x={372} y={1672} scale={1.72} {...rayVoice} />
-          <Dee frame={frame} x={724} y={1664} scale={1.74} {...deeVoice} />
-        </Orbit>
-        {grade}
-      </Sequence>
+        {/* ============================================================
+            S4  7.4-11.6  THE TURN. The count becomes the floor.
+            Cards land FLUSH on the beat of the repeated word, so the picture on
+            the floor does not change at all and the only measurable change in
+            the frame is the height of the man standing on it.
+            ============================================================ */}
+        <Shot from={7.4} to={11.6}>
+          <Cam cy={0.82} zoom={1.45}>
+            <CountRoomBG f={f} w={W} h={H} light={0.85} pile={pile} />
+            <CardPile x={W * 0.5 - CARD_W / 2} y={H * 0.92} w={CARD_W} count={landed}
+                      mode="flush" {...card} />
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD}
+                  ground={H * 0.92 - landed * (CARD_W * 0.018)}
+                  rayX={W * 0.10} deeX={W * 0.90} rayPose="point" />
+          </Cam>
+        </Shot>
 
-      {/* ---------- S3  THE PIVOT. "They counted the same eviction twice."
-           Dee dead flat and large. The funniest verified fact is the turn the
-           episode is built to arrive at, not the fourth item in a data block. */}
-      <Sequence from={at(CUT_ON[2])} durationInFrames={shot(2)}>
-        <Orbit frame={frame} rate={1}>{set}</Orbit>
-        <Orbit frame={frame} rate={0.22}>
-          <Dee frame={frame} x={598} y={1806} scale={2.46} {...deeVoice} />
-        </Orbit>
-        {grade}
-      </Sequence>
+        {/* ============================================================
+            S5  11.6-14.0  THE SCALE REFERENCE.
+            Dee raises her letter-size dispute form beside a card 8.2x its long
+            edge. The ONLY true-human-size object in the film, and it is also
+            the document c6 and c7 are about. Do not cut it for pace.
+            ============================================================ */}
+        <Shot from={11.6} to={14.0}>
+          <Cam cy={0.76} zoom={1.5}>
+            <CountRoomBG f={f} w={W} h={H} light={0.9} pile={0.85} />
+            <CardPile x={W * 0.14} y={H * 0.86} w={CARD_W * 1.2} count={3}
+                      mode="stacked" {...card} />
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD} ground={H * 0.955}
+                  rayX={W * 0.06} deeX={W * 0.90} deePose="raise" />
+            {/* THE DISPUTE FORM, at real letter scale against the card. It is the
+                only true-human-size object in the film and the conceit is
+                invisible without it. */}
+            <rect x={W * 0.84} y={H * 0.60} width={(CARD_W * 1.2) / 8.2}
+                  height={((CARD_W * 1.2) / 8.2) * 1.29}
+                  fill={COUNTROOM.card} stroke={COUNTROOM.ink} strokeWidth={3} />
+          </Cam>
+        </Shot>
 
-      {/* ---------- S4  and we sit on RAY. The listener's face is the joke. ---------- */}
-      <Sequence from={at(CUT_ON[3])} durationInFrames={shot(3)}>
-        <Orbit frame={frame} rate={1}>{set}</Orbit>
-        <Orbit frame={frame} rate={0.22}>
-          <Ray frame={frame} x={508} y={1822} scale={2.52} {...rayVoice} />
-        </Orbit>
-        {grade}
-      </Sequence>
+        {/* ============================================================
+            S6  14.0-18.2  THE PANEL THAT WILL NOT OPEN.
+            No keyhole, no lock, no sign, no notice, and the enamel brush stroke
+            runs unbroken across the hinge knuckle. It is not locked. Somebody
+            painted it shut, and the paint proves it has not opened since. That
+            is meaner than a sign because there is nobody to appeal it to.
+            Line 6 rides on AUDIO here: c6 licenses a failure to disclose
+            SOURCES, not a payment, so drawing the payment would assert an
+            uncleared transaction. The board files this as a note to the
+            writers room rather than a rejection.
+            ============================================================ */}
+        <Shot from={14.0} to={18.2}>
+          <Cam cx={0.84} cy={0.53} zoom={2.9}>
+            <CountRoomBG f={f} w={W} h={H} light={0.9} pile={0.9}
+                         panel={interpolate(f, [s(14.6), s(15.2), s(15.8), s(16.6), s(17.2)],
+                                            [0, 1, 0, 1, 0], clamp)} />
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.62} ground={H * 0.615}
+                  rayX={W * 0.1} deeX={W * 0.64} deePose="raise" show="dee" />
+          </Cam>
+        </Shot>
 
-      {/* ---------- S5  they cannot even see where the record came from ---------- */}
-      <Sequence from={at(CUT_ON[4])} durationInFrames={shot(4)}>
-        <Orbit frame={frame} rate={1}>{set}</Orbit>
-        <Orbit frame={frame} rate={0.34}>
-          <Ray frame={frame} x={352} y={1700} scale={1.82} {...rayVoice} />
-          <Dee frame={frame} x={742} y={1692} scale={1.84} {...deeVoice} />
-        </Orbit>
-        {grade}
-      </Sequence>
+        {/* ============================================================
+            S7  18.2-21.2  THE THESIS SHOT. Silent by design.
+            The film's ONLY high angle, spent proving the INPUT never changed.
+            Exactly one card goes in, the same single card the slot has taken
+            since second one. No dialogue anywhere in this shot.
+            ============================================================ */}
+        <Shot from={18.2} to={21.2}>
+          <Cam cy={0.24} zoom={1.35}>
+            <CountRoomBG f={f} w={W} h={H} light={1} pile={1}
+                         intake={interpolate(f, [s(19.4), s(20.6)], [0, 1], clamp)} />
+          </Cam>
+        </Shot>
 
-      {/* ---------- S6  Ray states the ANGLE as a verdict, not an argument ---------- */}
-      <Sequence from={at(CUT_ON[5])} durationInFrames={shot(5)}>
-        <Orbit frame={frame} rate={1}>{set}</Orbit>
-        <Orbit frame={frame} rate={0.2}>
-          <Ray frame={frame} x={470} y={1846} scale={2.72} {...rayVoice} />
-        </Orbit>
-        {grade}
-      </Sequence>
+        {/* ============================================================
+            S8  21.2-23.8  THE STACK EDGE.
+            A whip from the highest camera in the film to the LOWEST, back to
+            back, so the fall itself is the measurement. Eight identical head
+            lines at one offset is a PATTERN; eight different documents is a
+            mess. This is the only place SAME and MANY can be told apart.
+            ============================================================ */}
+        <Shot from={21.2} to={23.8}>
+          <Cam cy={0.88} zoom={1.25}>
+            <CountRoomBG f={f} w={W} h={H} light={0.75} pile={1} />
+            <g transform={`translate(${W * 0.5},${H * 0.42})`}>
+              <TallyCounter x={-62} y={-22} s={0.9} f={f} variant="odometer" count={count} />
+            </g>
+            <CardPile x={W * 0.06} y={H * 1.14} w={W * 0.88} count={8}
+                      mode="stacked" reveal={0.38} {...card} />
+          </Cam>
+        </Shot>
 
-      {/* ---------- S7  THE INSTITUTION. A notice on a shut door. No face. ---------- */}
-      <Sequence from={at(CUT_ON[6])} durationInFrames={shot(6)}>
-        <Orbit frame={frame} rate={1}>{set}</Orbit>
-        <Orbit frame={frame} rate={0.34}>
-          <Ray frame={frame} x={300} y={1730} scale={1.5} {...rayVoice} />
-          <Dee frame={frame} x={790} y={1724} scale={1.52} {...deeVoice} />
-        </Orbit>
-        <Notice frame={frame - at(CUT_ON[6])} />
-        {grade}
-      </Sequence>
+        {/* ============================================================
+            S9  23.8-26.6  he did nothing and it happened to him.
+            The line claims stillness and the picture proves it by making him
+            move WITHOUT moving. The only thing acting in the frame is the
+            floor, and he does not look down.
+            ============================================================ */}
+        <Shot from={23.8} to={26.6}>
+          <Cam cy={0.72} zoom={1.6}>
+            <CountRoomBG f={f} w={W} h={H} light={0.7} pile={1} />
+            <CardPile x={W * 0.02} y={H * 0.98} w={W * 0.96} count={4} mode="flush" {...card} />
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD}
+                  ground={H * 0.72 - interpolate(f, [s(24.7), s(24.95)], [0, 14], clamp)}
+                  rayX={W * 0.26} deeX={W * 0.84} />
+          </Cam>
+        </Shot>
 
-      {/* ---------- S8  THE BUTTON. The real filing, and the camera stops. ---------- */}
-      <Sequence from={at(CUT_ON[7])}>
-        <AbsoluteFill style={{backgroundColor: BRAND.PAPER}} />
-        <div style={{position: 'absolute', left: 84, right: 84, top: 300, color: BRAND.INK}}>
-          <div style={{fontFamily: BODY, fontSize: 27, letterSpacing: '0.2em', opacity: 0.66}}>
-            UNITED STATES DISTRICT COURT, DISTRICT OF COLUMBIA
-          </div>
-          <div style={{fontFamily: HEAD, fontWeight: 900, fontSize: 76, lineHeight: 1.04, marginTop: 16}}>
-            UNITED STATES<br />v. RENTGROW, INC.
-          </div>
-          <div style={{
-            fontFamily: BODY, fontSize: 34, marginTop: 30,
-            opacity: interpolate(frame - at(CUT_ON[7]), [6, 16], [0, 0.82],
-                                 {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
-          }}>
-            Civil action 1:26-cv-02415 &nbsp;/&nbsp; filed July 9, 2026
-          </div>
-          <div style={{
-            marginTop: 54,
-            opacity: interpolate(frame - at(CUT_ON[7]), [20, 30], [0, 1],
-                                 {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
-          }}>
-            <div style={{fontFamily: BODY, fontSize: 27, letterSpacing: '0.2em', opacity: 0.66}}>
-              CIVIL PENALTY
-            </div>
-            <div style={{position: 'relative', display: 'inline-block', marginTop: 8}}>
-              <Highlighter frame={frame - at(CUT_ON[7]) - 26} width={430} height={82} x={-12} y={14} />
-              <div style={{position: 'relative', fontFamily: HEAD, fontWeight: 900, fontSize: 96}}>
-                $2,250,000
-              </div>
-            </div>
-          </div>
-          <div style={{
-            fontFamily: BODY, fontSize: 30, lineHeight: 1.34, marginTop: 56,
-            opacity: interpolate(frame - at(CUT_ON[7]), [34, 44], [0, 0.72],
-                                 {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}),
-          }}>
-            Settled. A settlement is not an admission.<br />
-            Every claim above is an FTC ALLEGATION.
-          </div>
-        </div>
-        {/* the ONE stamp in the episode */}
-        {/* The ONE stamp in the episode. scale is explicit: at the default it
-            rendered as small red text rather than a rubber stamp, which spends
-            the show's single red token on something nobody reads. */}
-        <Stamp frame={frame - at(CUT_ON[7]) - s(1.9)} fps={fps} x={600} y={1180}
-               rotate={-11} scale={3.4}>
+        {/* ============================================================
+            S10  26.6-30.0  THE ONLY FLOATING TWO-SHOT, and it is 3.4s.
+            Spent on the one thing a two-hander can buy: two people NOT reacting
+            while the world moves them. It ends on a hard geometric event, Ray's
+            crown crossing the odometer boss, and the wheel tops out at 9 and
+            never rolls again.
+            ============================================================ */}
+        <Shot from={26.6} to={30.0}>
+          <Cam cy={interpolate(f, [s(26.6), s(30.0)], [0.66, 0.58], clamp)} zoom={1.5}>
+            <CountRoomBG f={f} w={W} h={H} light={0.7} pile={1} />
+            <g transform={`translate(${W * 0.5},${H * 0.42})`}>
+              <TallyCounter x={-62} y={-22} s={0.78} f={f} variant="odometer" count={count} />
+            </g>
+            <CardPile x={W * 0.02} y={H * 1.02} w={W * 0.96} count={3} mode="flush" {...card} />
+            {/* Ray RISES until his crown crosses the odometer boss at 28.8s.
+                The wheel stops at 9 there and never rolls again. */}
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 1.15}
+                  ground={interpolate(f, [s(26.6), s(30.0)], [H * 0.90, H * 0.70], clamp)}
+                  rayX={W * 0.30} deeX={W * 0.74} />
+          </Cam>
+        </Shot>
+
+        {/* ============================================================
+            S11  30.0-32.6  THE PUNCHLINE, delivered BEFORE the euphemism.
+            One frame split by the machine's own geometry, no cut. Left: a brass
+            die embosses VERIFIED on a copy. Right, SAME FRAME: the intake still
+            holding the ONE original it has held since second one, the wheel
+            above it reading nine.
+            The only frame that holds true and false about the same object at
+            once, which is the difference between an absurdity and a complaint
+            about volume.
+            ============================================================ */}
+        <Shot from={30.0} to={32.6}>
+          {/* ONE FRAME, split by the machine's own geometry. No cut, both
+              halves in focus. Left: VERIFIED going onto a copy. Right, same
+              frame: the intake still holding the ONE original. */}
+          <CountRoomBG f={f} w={W} h={H} light={0.9} pile={1} intake={0.55} />
+          <rect x={W * 0.5 - 4} y={0} width={8} height={H} fill={COUNTROOM.brassLo} opacity={0.9} />
+          <DocketCard x={W * 0.015} y={H * 0.34} w={W * 0.46} {...card} light={1} />
+          <VerifyDie x={W * 0.06} y={H * 0.47} w={W * 0.16}
+                     press={interpolate(f, [s(30.5), s(31.0), s(32.0)], [0, 1, 1], clamp)} />
+          <g transform={`translate(${W * 0.75},${H * 0.30}) scale(1.15)`}>
+            <TallyCounter x={-62} y={-22} s={0.9} f={f} variant="odometer" count={count} />
+          </g>
+          <g transform={`translate(${W * 0.52},${H * 0.52}) scale(0.9)`}>
+            <CardChute f={f} x={0} y={0} w={W * 0.42} state="running" emit={0.15} />
+          </g>
+        </Shot>
+
+        {/* ============================================================
+            S12  32.6-35.2  the Institution speaks and is NOT given a face.
+            The euphemism is answered by the equipment it describes, doing
+            precisely what it claims, politely and on time. Nothing brightens,
+            nothing flickers, no aperture opens, no part of the wall turns
+            toward camera. Refusing to editorialise is what makes the
+            politeness menacing: there is nothing to negotiate with.
+            ============================================================ */}
+        <Shot from={32.6} to={35.2}>
+          <Cam cx={0.16} cy={0.20} zoom={3.2}>
+            <CountRoomBG f={f} w={W} h={H} light={1} pile={0}
+                         intake={interpolate(f, [s(33.1), s(34.0)], [0, 1], clamp)} />
+          </Cam>
+        </Shot>
+
+        {/* ============================================================
+            S13  35.2-37.8  the dispute goes in, and the answer lands on the
+            LISTENER. The refusal is the fastest thing in the film: every copy
+            took a beat to make and this returns before he has got his arms
+            down. The machine's only line with a reaction shot, and the
+            reaction belongs to Dee. This is where her single crack is spent.
+            ============================================================ */}
+        <Shot from={35.2} to={37.8}>
+          <Cam cx={0.34} cy={0.52} zoom={1.55}>
+            <CountRoomBG f={f} w={W} h={H} light={0.95} pile={1}
+                         intake={interpolate(f, [s(36.1), s(36.8)], [0, 1], clamp)} />
+            {/* The card comes STRAIGHT back out, before he has got his arms down. */}
+            {f > s(37.15) && (
+              <DocketCard x={W * 0.10} y={H * 0.66} w={W * 0.52} {...card}
+                          differs="INVALID" rot={-4} light={1} />
+            )}
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.62} ground={H * 0.32}
+                  rayX={W * 0.06} deeX={W * 0.62} rayPose="raise" show="ray" />
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.72} ground={H * 0.80}
+                  rayX={W * 0.06} deeX={W * 0.56} show="dee" />
+          </Cam>
+        </Shot>
+
+        {/* ============================================================
+            S14  37.8-42.2  THE ONLY STILL WHEEL IN THE FILM.
+            The odometer in the identical framing used at 2.6s, except nine card
+            edges are stacked into the bottom of frame instead of two. Fifty
+            seconds of a wheel that turns for every copy, and the one thing that
+            will not make it turn is a person disagreeing.
+            ============================================================ */}
+        <Shot from={37.8} to={42.2}>
+          {/* MATCHED EXACTLY to S2's framing. Same lens, same boss. The only
+              two differences are a number and a floor, and that comparison is
+              the whole shot. */}
+          <Cam cy={0.44} zoom={2.6}>
+            <CountRoomBG f={f} w={W} h={H} light={1} pile={1} />
+            <g transform={`translate(${W * 0.5},${H * 0.42})`}>
+              <TallyCounter x={-62} y={-22} s={0.78} f={f} variant="odometer" count={count} />
+            </g>
+            <CardPile x={W * 0.5 - CARD_W / 2} y={H * 0.74} w={CARD_W} count={5}
+                      mode="stacked" reveal={0.4} {...card} />
+          </Cam>
+        </Shot>
+
+        {/* ============================================================
+            S15  42.2-45.4  THE ONE REVEAL, and the edge-tease pays after
+            thirty-eight seconds. Three fasteners drop and the cover plate falls
+            off the second chute. It reverses an ABSENCE rather than introducing
+            an object: there were always two exits and he was only ever standing
+            in front of one of them.
+            ============================================================ */}
+        <Shot from={42.2} to={45.4}>
+          <Cam cx={0.86} cy={0.70} zoom={2.2}>
+            <CountRoomBG f={f} w={W} h={H} light={0.7} pile={1} />
+            {/* THE PLATE COMES OFF the chute that has been at the lower right
+                frame edge since second five. Thirty-eight seconds of absence,
+                reversed. */}
+            <g transform={`translate(${W * 0.80},${H * 0.62})`}>
+              <CardChute f={f} x={0} y={0} w={W * 0.3} state="plated"
+                         open={interpolate(f, [s(43.2), s(44.1)], [0, 1], clamp)} />
+            </g>
+            {f > s(44.5) && (
+              <DocketCard x={W * 0.62} y={H * 0.80} w={W * 0.42} {...card}
+                          differs="RESOLVED" rot={3} light={1} />
+            )}
+          </Cam>
+        </Shot>
+
+        {/* ============================================================
+            S16  45.4-49.4  THE PAYOFF, and the ONLY overhead in the film,
+            held back forty-five seconds for this. Forty-five seconds have
+            proved this machine can only make identical things, and this is the
+            one frame where two of its outputs are not identical, in the single
+            place it was ever asked to be consistent.
+            ============================================================ */}
+        <Shot from={45.4} to={49.4}>
+          <rect x={0} y={0} width={W} height={H} fill={COUNTROOM.ink} />
+          <DocketCard x={W * 0.04} y={H * 0.20} w={W * 0.92} {...card}
+                      differs="RESOLVED" light={1} />
+          <DocketCard x={W * 0.04} y={H * 0.56} w={W * 0.92} {...card}
+                      differs="INVALID" light={1} />
+        </Shot>
+
+        {/* ============================================================
+            S17  49.4-51.4  he has to live in one of them.
+            The question is a joke until the frame turns it into a floor plan,
+            and then it is an address. Straddling both cards makes a rhetorical
+            line a physical impossibility.
+            ============================================================ */}
+        <Shot from={49.4} to={51.4}>
+          <Cam cy={0.74} zoom={1.5}>
+            <CountRoomBG f={f} w={W} h={H} light={0.7} pile={1} />
+            {/* ONE BOOT ON EACH ANSWER. The question is a joke until the frame
+                turns it into a floor plan, and then it is an address. */}
+            <DocketCard x={-W * 0.04} y={H * 0.86} w={W * 0.56} {...card}
+                        differs="RESOLVED" light={0.92} />
+            <DocketCard x={W * 0.48} y={H * 0.86} w={W * 0.56} {...card}
+                        differs="INVALID" light={0.92} />
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.85} ground={H * 0.88}
+                  rayX={W * 0.5} deeX={W * 0.9} rayPose="stand" show="ray" />
+          </Cam>
+        </Shot>
+
+        {/* ============================================================
+            S18  51.4-56.0  THE BUTTON. No cast in frame.
+            The document that finally contradicts the machine came from a court
+            and has nothing to do with his dispute, and the frame proves it by
+            BURYING his card instead of correcting it. One corner stays visible
+            under the filing's bottom edge, unchanged, which is the place the
+            last line points at.
+            ============================================================ */}
+        <Shot from={51.4} to={56.0}>
+          <rect x={0} y={0} width={W} height={H} fill={COUNTROOM.ink} />
+          <DocketCard x={W * 0.05} y={H * 0.80} w={W * 0.9} {...card}
+                      differs="INVALID" light={0.8} />
+          <FilingPlate
+            w={W} h={H}
+            enter={interpolate(f, [s(51.7), s(52.5)], [0, 1], clamp)}
+            highlight={interpolate(f, [s(53.1), s(54.0)], [0, 1], clamp)}
+            alleged
+          />
+        </Shot>
+      </svg>
+
+      {/* ==== HTML layers, OUTSIDE the svg, per the mounting contract. ==== */}
+
+      {/* THE WORDMARK stamps at 2.6s over the odometer's cream digit field, the
+          one light surface in the room. Multiply vanishes on teal, which is why
+          it is spent here and nowhere else. */}
+      {t >= 2.5 && t < 4.6 && (
+        <Wordmark frame={f - s(2.6)} fps={FPS} x={540} y={700} scale={0.94}
+                  color={BRAND.INK} blend="multiply" />
+      )}
+
+      {/* THE ONE STAMP IN THE EPISODE, on the filing at the button. */}
+      {t >= 54.3 && (
+        <Stamp frame={f - s(54.4)} fps={FPS} x={640} y={1120} rotate={-8} scale={3.2}>
           ALLEGED
         </Stamp>
-      </Sequence>
+      )}
 
-      {/* Captions everywhere except under the Institution's notice, which already
-          carries its words. Ray's closing lines get theirs back, inverted for the
-          light button page. */}
-      {(frame < at(CUT_ON[6]) || frame >= at(CUT_ON[7])) &&
-        <Caption frame={frame} onLight={frame >= at(CUT_ON[7])} />}
+      {t < 9 && <CaseNumber n={3} y={92} color={BRAND.PAPER} />}
 
-      <Sequence from={TAIL_AT}>
-        <EndCard n={3} frame={frame - TAIL_AT} fps={fps} color={BRAND.INK} />
-      </Sequence>
+      <CaptionLayer f={f} />
 
-      {frame < at(CUT_ON[7]) && <CaseNumber n={3} y={92} color={BRAND.PAPER} />}
+      <GradeLayer f={f} bloom={0.14} vignette={0.52} grain={0.06} warmth={0.04} />
+
+      {t > TOTAL_S - 1.5 && (
+        <EndCard n={3} frame={f - s(TOTAL_S - 1.5)} fps={FPS} color={BRAND.INK} />
+      )}
     </AbsoluteFill>
+  );
+};
+
+/**
+ * THE BURNED-IN CAPTION. Tinted by speaker, because this show has no narrator
+ * and three voices reading in one colour is a podcast with drawings over it.
+ *
+ * Direction tags are stripped at GENERATION, in scripts/captions_text.py, which
+ * is the one definition of what a viewer is allowed to read. Two copies of that
+ * rule drifted apart once already and put "[sarcasm, medium pause]" on screen.
+ */
+const SPEAKER_TINT: Record<string, string> = {
+  RAY: '#F2EADA',
+  DEE: '#F6D9E4',
+  INSTITUTION: '#9FD8D2',
+};
+
+const CaptionLayer: React.FC<{f: number}> = ({f}) => {
+  const t = f / FPS;
+  const cue = CAPTIONS.find((c) => t >= c.start && t <= c.end);
+  if (!cue) return null;
+  const who = speakerAt(t) ?? 'RAY';
+  return (
+    <div style={{
+      position: 'absolute', left: 0, right: 0, bottom: 132,
+      display: 'flex', justifyContent: 'center', padding: '0 44px',
+    }}>
+      {/* A PLATE UNDER THE TYPE, not a text shadow.
+      
+          The first full render put white captions straight over the cards and
+          the two fought: cream type on a cream card, with the card's own
+          printing behind it. A drop shadow does not fix that, it just makes two
+          unreadable things. The plate is the show's ink at 78%, so the caption
+          always has its own value band no matter what is behind it. */}
+      <div style={{
+        background: 'rgba(16,20,35,0.78)',
+        borderRadius: 6,
+        padding: '14px 26px 18px',
+        maxWidth: 940,
+      }}>
+        <div style={{
+          fontFamily: 'Barlow Condensed, Impact, sans-serif',
+          fontWeight: 800, fontSize: 62, lineHeight: 1.06,
+          color: SPEAKER_TINT[who] ?? '#F2EADA',
+          textAlign: 'center',
+          textShadow: '0 3px 0 rgba(16,20,35,0.9)',
+        }}>
+          {cue.text}
+        </div>
+      </div>
+    </div>
   );
 };
