@@ -521,3 +521,39 @@ And the corollary that cost the second run: when a fix does not take, the next
 step is to verify the fix took, not to assume the tool was flaky and retry. I
 relaunched on the assumption the first death was a fluke. It was not, and the
 agent told me so precisely and immediately both times.
+
+## Audio is not the only input to a picture (2026-08-03)
+
+`mux_and_verify.sh` had a staleness guard that refused a video older than its
+audio, added the day before after a failed render was muxed onto a fresh voice
+track. It passed a mux of a render that was three minutes out of date.
+
+The scene file had just been fixed (a 0.9 second hole that would have rendered
+black), the re-render was still running, and the mux ran against the PREVIOUS
+render. Video newer than audio, which is all the guard knew how to ask, and
+older than the only change that mattered.
+
+A self-timed episode is drawn by its SCENE FILE and its generated sidecars.
+Those are inputs. A render older than any of them is a render of code that no
+longer exists, and it is indistinguishable from a correct one by every check
+that asks about the file rather than about the cut.
+
+THE GENERAL SHAPE: when you add a freshness guard, enumerate ALL the inputs, not
+the one that burned you. A guard that covers one input reads exactly like a
+guard that covers the category, and the next input to go stale is the one nobody
+listed.
+
+Two more from the same hour, both the same shape:
+
+**A background wrapper exiting is not the job finishing.** A command launched
+with `&` inside a backgrounded shell notifies on the WRAPPER's exit, which is
+immediate. I read "completed, exit 0" and muxed against a render that was 191
+frames into 1748. Wait on the ARTIFACT, and specifically on the artifact being
+newer than the thing that changed.
+
+**A contact sheet samples; it does not cover.** Twelve cells across 58 seconds
+is one frame every 4.8s, and the black hole was 0.9s wide. It was invisible to
+the only thing in this machine that looks at the episode. Sampling finds what is
+wrong with the frames it lands on, and a gate that reads the SOURCE is what
+finds a hole narrower than the sampling interval. That is why `retime_check.py`
+exists and why it runs on the scene file rather than on stills.

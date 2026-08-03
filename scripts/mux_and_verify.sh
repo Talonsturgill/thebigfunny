@@ -232,6 +232,33 @@ for f in "$VIDEO" "$AUDIO"; do
   fi
 done
 
+# AND THE PICTURE MUST BE NEWER THAN THE SOURCE THAT DRAWS IT.
+#
+# 2026-08-03: the scene file was fixed (a 0.9s hole that rendered black), the
+# re-render was still running, and a mux against the PREVIOUS render passed
+# every check here. The video was newer than the audio, which is all this file
+# knew how to ask, and it was three minutes older than the fix that mattered.
+#
+# Audio is not the only input to a picture. A self-timed episode is drawn by its
+# scene file and its generated sidecars, so those are inputs too, and a render
+# older than any of them is a render of code that no longer exists.
+_SRC_GLOB="$(dirname "$0")/../video-engine/src"
+for src in "$_SRC_GLOB"/Case*.tsx "$_SRC_GLOB"/case*_captions.ts \
+           "$_SRC_GLOB"/case*_faces.ts "$_SRC_GLOB"/case*_mouth.ts \
+           "$_SRC_GLOB"/lib/countroom.tsx; do
+  [ -f "$src" ] || continue
+  if [ "$src" -nt "$VIDEO" ]; then
+    echo "MUX REFUSED: the picture is OLDER than the source that draws it." >&2
+    echo "  video:  $VIDEO  ($(date -r "$VIDEO" '+%H:%M:%S'))" >&2
+    echo "  source: $src  ($(date -r "$src" '+%H:%M:%S'))" >&2
+    echo "  This render is of code that no longer exists. Re-render." >&2
+    echo "  Audio is not the only input to a picture, and comparing only against" >&2
+    echo "  the audio is how a fixed scene got muxed against the render that" >&2
+    echo "  still had the bug in it." >&2
+    exit 1
+  fi
+done
+
 if [ "$AUDIO" -nt "$VIDEO" ]; then
   echo "MUX REFUSED: the video is OLDER than the audio." >&2
   echo "  video: $VIDEO  ($(date -r "$VIDEO" '+%H:%M:%S'))" >&2
