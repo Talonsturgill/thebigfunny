@@ -607,9 +607,17 @@ export const CountRoomBG: React.FC<{
             <rect x={give - w * 0.008} y={h * 0.14 * fy - h * 0.012}
                   width={w * 0.018} height={h * 0.024} rx={w * 0.003}
                   fill={COUNTROOM.shade} stroke={INK} strokeWidth={w * 0.004} />
-            <rect x={give - w * 0.012} y={h * 0.14 * fy - h * 0.005}
-                  width={w * 0.03} height={h * 0.009}
-                  fill={COUNTROOM.fill} opacity={0.92} />
+            {/* THE BRUSH STROKE, straight across the knuckle and UNBROKEN.
+                This is the whole gag and it has to survive a downscale: the
+                stroke is the proof the door has not opened since it was
+                painted, so it runs wider than the hinge and carries a lit edge
+                so it reads as wet paint rather than as a gap in the hinge. */}
+            <rect x={give - w * 0.019} y={h * 0.14 * fy - h * 0.0075}
+                  width={w * 0.044} height={h * 0.014}
+                  fill={COUNTROOM.key} opacity={0.95} />
+            <rect x={give - w * 0.019} y={h * 0.14 * fy - h * 0.0075}
+                  width={w * 0.044} height={h * 0.004}
+                  fill="#6FB3AE" opacity={0.75} />
           </g>
         ))}
         <rect x={give + w * 0.15} y={h * 0.06} width={w * 0.028} height={h * 0.018} rx={w * 0.004}

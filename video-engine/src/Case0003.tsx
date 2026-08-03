@@ -299,12 +299,20 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             writers room rather than a rejection.
             ============================================================ */}
         <Shot from={14.0} to={18.2}>
-          <Cam cx={0.84} cy={0.53} zoom={2.9}>
-            <CountRoomBG f={f} w={W} h={H} light={0.9} pile={0.9}
+          {/* MACRO ON THE HINGE KNUCKLE. This is one of the film's three sight
+              gags and the gate counted it, so it has to be READABLE: no keyhole,
+              no lock, no sign, and the teal brush stroke running unbroken
+              straight across the knuckle. At the previous framing the hinges
+              were a few pixels and the gag was a rumour. */}
+          <Cam cx={0.845} cy={0.525} zoom={3.3}>
+            <CountRoomBG f={f} w={W} h={H} light={0.95} pile={0}
                          panel={interpolate(f, [s(14.6), s(15.2), s(15.8), s(16.6), s(17.2)],
                                             [0, 1, 0, 1, 0], clamp)} />
-            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.62} ground={H * 0.615}
-                  rayX={W * 0.1} deeX={W * 0.64} deePose="raise" show="dee" />
+            {/* SHE HAS TO BE AT THE HANDLE, and the hinge has to be in the same
+                frame, or the gag is two separate facts. `point` reads as
+                reaching for it; `raise` read as celebrating. */}
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.42} ground={H * 0.625}
+                  rayX={W * 0.1} deeX={W * 0.905} deePose="point" show="dee" />
           </Cam>
         </Shot>
 
@@ -353,7 +361,12 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
         <Shot from={23.8} to={26.6}>
           <Cam cy={0.72} zoom={1.6}>
             <CountRoomBG f={f} w={W} h={H} light={0.7} pile={1} />
-            <CardPile x={W * 0.08} y={H * 0.96} w={W * 0.84} count={4} mode="flush" {...card} />
+            {/* THE PILE IS FLOOR HERE, not a document. Its printing is pushed
+                fully below the frame rather than cropped: a case number cut in
+                half reads as a mistake, and it is the one string the whole film
+                asks a viewer to match. Off-frame is a choice, half-cropped is
+                an accident. */}
+            <CardPile x={W * 0.08} y={H * 1.18} w={W * 0.84} count={4} mode="flush" {...card} />
             <Cast f={f} crown={CARD_W * CAST_TO_CARD}
                   ground={H * 0.72 - interpolate(f, [s(24.7), s(24.95)], [0, 14], clamp)}
                   rayX={W * 0.26} deeX={W * 0.84} />
@@ -431,12 +444,12 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             down. The machine's only line with a reaction shot, and the
             reaction belongs to Dee. This is where her single crack is spent.
             ============================================================ */}
-        <Shot from={35.2} to={37.8}>
+        <Shot from={36.1} to={38.7}>
           <Cam cx={0.34} cy={0.52} zoom={1.55}>
             <CountRoomBG f={f} w={W} h={H} light={0.95} pile={1}
-                         intake={interpolate(f, [s(36.1), s(36.8)], [0, 1], clamp)} />
+                         intake={interpolate(f, [s(37.0), s(37.7)], [0, 1], clamp)} />
             {/* The card comes STRAIGHT back out, before he has got his arms down. */}
-            {f > s(37.15) && (
+            {f > s(38.05) && (
               <DocketCard x={W * 0.10} y={H * 0.66} w={W * 0.52} {...card}
                           differs="INVALID" rot={-4} light={1} />
             )}
@@ -454,7 +467,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             seconds of a wheel that turns for every copy, and the one thing that
             will not make it turn is a person disagreeing.
             ============================================================ */}
-        <Shot from={37.8} to={42.2}>
+        <Shot from={38.7} to={43.1}>
           {/* MATCHED EXACTLY to S2's framing. Same lens, same boss. The only
               two differences are a number and a floor, and that comparison is
               the whole shot. */}
@@ -463,7 +476,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             <g transform={`translate(${W * 0.5},${H * 0.42})`}>
               <TallyCounter x={-62} y={-22} s={0.78} f={f} variant="odometer" count={count} />
             </g>
-            <CardPile x={W * 0.5 - CARD_W * 0.42} y={H * 0.70} w={CARD_W * 0.84}
+            <CardPile x={W * 0.5 - CARD_W * 0.42} y={H * 0.86} w={CARD_W * 0.72}
                       count={5} mode="stacked" reveal={0.4} {...card} />
           </Cam>
         </Shot>
@@ -475,7 +488,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             an object: there were always two exits and he was only ever standing
             in front of one of them.
             ============================================================ */}
-        <Shot from={42.2} to={45.4}>
+        <Shot from={43.1} to={46.3}>
           <Cam cx={0.86} cy={0.70} zoom={2.2}>
             <CountRoomBG f={f} w={W} h={H} light={0.7} pile={1} />
             {/* THE PLATE COMES OFF the chute that has been at the lower right
@@ -483,9 +496,9 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
                 reversed. */}
             <g transform={`translate(${W * 0.80},${H * 0.62})`}>
               <CardChute f={f} x={0} y={0} w={W * 0.3} state="plated"
-                         open={interpolate(f, [s(43.2), s(44.1)], [0, 1], clamp)} />
+                         open={interpolate(f, [s(44.1), s(45.0)], [0, 1], clamp)} />
             </g>
-            {f > s(44.5) && (
+            {f > s(45.4) && (
               <DocketCard x={W * 0.62} y={H * 0.80} w={W * 0.42} {...card}
                           differs="RESOLVED" rot={3} light={1} />
             )}
@@ -499,7 +512,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             one frame where two of its outputs are not identical, in the single
             place it was ever asked to be consistent.
             ============================================================ */}
-        <Shot from={45.4} to={49.4}>
+        <Shot from={46.3} to={50.3}>
           <rect x={0} y={0} width={W} height={H} fill={COUNTROOM.ink} />
           <DocketCard x={W * 0.04} y={H * 0.20} w={W * 0.92} {...card}
                       differs="RESOLVED" light={1} />
@@ -513,7 +526,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             and then it is an address. Straddling both cards makes a rhetorical
             line a physical impossibility.
             ============================================================ */}
-        <Shot from={49.4} to={51.4}>
+        <Shot from={50.3} to={52.3}>
           <Cam cy={0.74} zoom={1.5}>
             <CountRoomBG f={f} w={W} h={H} light={0.7} pile={1} />
             {/* ONE BOOT ON EACH ANSWER. The question is a joke until the frame
@@ -535,7 +548,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             under the filing's bottom edge, unchanged, which is the place the
             last line points at.
             ============================================================ */}
-        <Shot from={51.4} to={56.0}>
+        <Shot from={52.3} to={56.9}>
           <rect x={0} y={0} width={W} height={H} fill={COUNTROOM.ink} />
           {/* HIS CARD, unchanged, and the filing lands ON it rather than
               correcting it. Only a corner stays visible under the bottom edge,
@@ -544,8 +557,8 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
                       differs="INVALID" light={0.95} />
           <FilingPlate
             w={W} h={H}
-            enter={interpolate(f, [s(51.7), s(52.5)], [0, 1], clamp)}
-            highlight={interpolate(f, [s(53.1), s(54.0)], [0, 1], clamp)}
+            enter={interpolate(f, [s(52.6), s(53.4)], [0, 1], clamp)}
+            highlight={interpolate(f, [s(54.0), s(54.9)], [0, 1], clamp)}
             alleged
           />
         </Shot>
@@ -563,7 +576,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
 
       {/* THE ONE STAMP IN THE EPISODE, on the filing at the button. */}
       {t >= 54.3 && (
-        <Stamp frame={f - s(54.4)} fps={FPS} x={640} y={1120} rotate={-8} scale={3.2}>
+        <Stamp frame={f - s(55.3)} fps={FPS} x={640} y={1120} rotate={-8} scale={3.2}>
           ALLEGED
         </Stamp>
       )}

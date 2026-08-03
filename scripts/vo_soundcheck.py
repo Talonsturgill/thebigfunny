@@ -66,6 +66,9 @@ import sys
 import wave
 
 import numpy as np
+
+# scripts/ on the path for captions_text, the ONE definition of a spoken word.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import re as _re
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -238,7 +241,18 @@ def measure(path, text=None):
         dyn = 0.0
 
     n_pause, pause_s = pauses_over(a, sr)
-    words = len(text.split()) if text else None
+    # WORDS MEANS SPOKEN WORDS. This counted `text.split()` on the RAW line, so
+    # "[flat] One eviction case." came to FOUR tokens instead of three and
+    # "[short pause]" added two more, which broke this file in both directions at
+    # once: the inflated count raises the computed words-per-second, so a
+    # genuinely sedated take can pass, and it also pushes a short line over
+    # SHORT_LINE_WORDS and DEFEATS the very exemption written to protect it.
+    #
+    # A tag is direction. scripts/captions_text.py is the one definition of what
+    # is a word a person says, and it is the same definition the burned-in
+    # caption uses, so the gate and the screen can never disagree about it.
+    from captions_text import strip_tags as _strip
+    words = len(_strip(text).split()) if text else None
     # Time actually spent SPEAKING. The owner picked a take this file called
     # "sedated" at 1.92 gross w/s, because its tags buy deliberate pauses. Rate
     # has to be measured over the speech, or the gate punishes exactly the
@@ -250,8 +264,19 @@ def measure(path, text=None):
         "words": words,
         # Tags that are PERFORMED as sound rather than spoken. [short pause] and
         # [extremely fast] shape existing words and are not counted here.
+        # NON-VERBAL means AUDIBLE TIME THAT IS NOT WORDS, and a directed PAUSE
+        # is the purest example. The set listed [sigh] and [scoffs] and left the
+        # pause tags out, so a line built on a deliberate beat measured sedated
+        # for having the beat in it: "Evicted. [short pause] Evicted." came to
+        # 1.55 w/s, and the pause IS the joke. Articulation rate measured across
+        # a directed silence is measuring the silence.
+        #
+        # The three lines this flagged are the three funniest in the episode,
+        # which is the tell. A pacing gate that pushes the writer away from comic
+        # timing is fighting the standard it serves.
         "nonverbal": bool(_re.search(r"\[(sigh|sighs|laughs|laughing|giggles|gasp|"
-                                     r"scoffs|uhm|crying|trembling)\]",
+                                     r"scoffs|uhm|crying|trembling|"
+                                     r"short pause|medium pause|long pause|pause|beat)\]",
                                      (text or ""), _re.I)),
         "rate_wps": round(words / dur, 2) if words and dur else None,
         "artic_wps": round(words / speech_s, 2) if words else None,

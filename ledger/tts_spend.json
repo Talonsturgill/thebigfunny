@@ -6,10 +6,10 @@
   },
   "days": {
     "2026-08-02": {
-      "calls": 199,
+      "calls": 218,
       "by_model": {
         "gemini-3.1-flash-tts-preview": 105,
-        "gemini-2.5-flash-preview-tts": 60,
+        "gemini-2.5-flash-preview-tts": 79,
         "gemini-2.5-pro-preview-tts": 34
       }
     }
