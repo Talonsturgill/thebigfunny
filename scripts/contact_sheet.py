@@ -69,8 +69,20 @@ BATCH_STILL_SINCE = (4, 0, 502)
 # is roughly one per SHOT on a seven-shot board plus the transitions. Fewer than
 # that and a whole beat can hide between cells; many more and each cell gets too
 # small to judge staging in a 4-wide grid.
-DEFAULT_N = 12
-DEFAULT_COLS = 4
+# 2026-08-03: was 12, which is one frame every 4.8s on a 58s episode. On case
+# 0003 that interval cost two critics their credibility in the same round: the
+# flow critic reported "S8 promised eight identical head lines ... not in the
+# render" and the storyboard critic reported `pile-never-rendered` as its single
+# systemic finding, and BOTH were wrong. The eight stacked head lines render at
+# 22.2s, the VERIFIED emboss at 31.0s and the RESOLVED/INVALID payoff at 48.5s,
+# all of them in windows the twelve-cell sheet never sampled. They did not
+# hallucinate; they reported what the grid showed and the grid showed gaps.
+#
+# 24 cells halves the interval to ~2.4s, which is under the show's shortest
+# shot. The sampling caveat now also ships ON the sheet, because the reader of
+# a grid cannot know its interval by looking at it.
+DEFAULT_N = 24
+DEFAULT_COLS = 6
 
 # Render at half res and display smaller still. This is deliberate: the platform
 # decides on a thumbnail, so a contact sheet that reads at thumbnail size is
@@ -371,7 +383,17 @@ def main():
                   f"  not a warning. Fix the render and re-run.", file=sys.stderr)
             return 1
 
-        title = f"{a.comp}   {total} frames @ {fps}fps   {total / float(fps):.2f}s"
+        # THE INTERVAL SHIPS ON THE SHEET. A grid does not look sampled, it
+        # looks complete, so a critic grading it reads a gap as an absence and
+        # reports a beat as "never rendered" when it simply fell between cells.
+        # That happened twice in one round on case 0003. Anything the reader is
+        # supposed to hold in mind has to be IN the artifact they are reading.
+        secs = total / float(fps)
+        interval = secs / max(1, len(jobs) - 1) if len(jobs) > 1 else secs
+        title = (f"{a.comp}   {total} frames @ {fps}fps   {secs:.2f}s   "
+                 f"SAMPLED every {interval:.1f}s ({len(jobs)} cells). "
+                 f"Anything shorter than {interval:.1f}s CANNOT appear here: "
+                 f"a beat you do not see is not a beat that is missing.")
         try:
             size = stitch(jobs, fps, a.out, max(1, a.cols), a.cell_width, title)
         except Exception as e:

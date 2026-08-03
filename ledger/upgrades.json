@@ -185,6 +185,28 @@
         "artifacts_fork",
         "beautiful_and_unfunny"
       ]
+    },
+    {
+      "run_date": "2026-08-03",
+      "upgrade": "script_check gains a RESTATEMENT guard, closing the standing repeat offender `explaining_lines`. The funny critic named it on case 0003 in two separate runs and CAST_BIBLE has banned it in prose since the start (\"nothing explains a joke that already landed\"), which is exactly the shape retro.py exists to escalate: a rule enforced only by a critic reading the draft afterwards is not enforced, because the critic is downstream of the decision. The guard fires when a line's content words are >=60% contained in the line immediately above it AND it cites no claim that line did not already carry. Deliberately narrow: INSTITUTION and verbatim lines are exempt (policy text repeating itself is the JOKE), and lines under two content words are exempt (\"Okay.\" reacts, it does not restate). A guard that fires on taste gets switched off, so this one only fires on the restatement SHAPE.",
+      "files": [
+        "scripts/script_check.py"
+      ],
+      "verified_by": "Self-test case added that trips ONLY this guard (both lines are Ray's, at 30.0 and 34.0, inside the middle third and inside every Ray-gap bound, so no neighbouring guard can cover for it). MUTATION-TESTED per the repo's oldest law: neutering the threshold to 99.0 makes the self-test print 'did NOT fire: [restates]' and 'THE GATE IS WRONG', and restoring it goes green again. Also run against the real case 0003 script, where it is clean: it does NOT fire on \"He got sued once.\", the line the funny critic wanted cut and the simulated viewer LAUGHED at, which is the false positive this design was shaped to avoid.",
+      "commit": null,
+      "addresses": [
+        "explaining_lines"
+      ]
+    },
+    {
+      "run_date": "2026-08-03",
+      "upgrade": "contact_sheet: 12 cells -> 24, 4 cols -> 6, and the SAMPLING INTERVAL is now printed on the sheet itself. Twelve cells across 58s is one frame every 4.8s, and on case 0003 that interval produced two confidently WRONG critic findings in a single round: the flow critic reported the eight stacked head lines as 'not in the render' and the storyboard critic made `pile-never-rendered` its single systemic finding. Both beats render fine, at 22.2s, 31.0s and 48.5s, in windows the sheet never sampled. The critics were not careless; a grid does not LOOK sampled, it looks complete, so a gap reads as an absence. The caveat therefore ships ON the artifact the critic reads, not in a prompt they may not get.",
+      "files": [
+        "scripts/contact_sheet.py"
+      ],
+      "verified_by": "Module parses and --help reports the new defaults. The defect itself was proven empirically first: nine extra frames pulled from the SHIPPED mp4 at 19.5/22.2/25.5/27.6/29.0/31.0/34.5/45.0/48.5s show the eight identical head lines, the VERIFIED emboss, both figures full-frame in a clean two-shot, and the RESOLVED-vs-INVALID payoff, refuting both findings.",
+      "commit": null,
+      "addresses": []
     }
   ]
 }

@@ -141,6 +141,63 @@ def stilted(lines):
     return out
 
 
+def restating(lines):
+    """-> [(t, prev_t, shared)] for a line that RESTATES the line before it.
+
+    `explaining_lines` is a standing repeat offender: the funny critic named it
+    on case 0003 twice, in two different runs. CAST_BIBLE already says "nothing
+    explains a joke that already landed. Cut every such line", so a recurrence
+    means the rule exists only in prose and nothing enforces it. retro.py's whole
+    thesis is that a defect seen twice belongs to the phase that MADE the
+    decision, and a critic reading the draft afterwards is not that phase.
+
+    What it fires on, deliberately narrowly: a line whose content words are
+    mostly already in the line immediately above it, and which cites no claim
+    that line did not already cite. That is the restatement shape. It is not an
+    attempt to detect every weak line, because a guard that fires on taste gets
+    switched off.
+
+    Exemptions with reasons, not conveniences:
+      - INSTITUTION and any `verbatim` line. Policy text repeating itself is the
+        JOKE, and quoted source wording is not ours to rewrite.
+      - lines under 2 content words. "Okay." restates nothing; it reacts.
+    """
+    import re as _re
+    STOP = {"a", "an", "the", "and", "or", "but", "so", "of", "to", "in", "on",
+            "for", "at", "it", "its", "is", "was", "are", "were", "be", "been",
+            "that", "this", "those", "these", "there", "here", "i", "you", "he",
+            "she", "they", "them", "his", "her", "their", "we", "us", "me", "my",
+            "do", "does", "did", "not", "no", "yes", "yeah", "with", "as", "by",
+            "from", "have", "has", "had", "what", "which", "who", "how", "just",
+            "one", "up", "out", "get", "got", "go", "said", "say", "says"}
+
+    def words(txt):
+        txt = _re.sub(r"\[[^\]]*\]", " ", txt or "").lower()
+        toks = _re.findall(r"[a-z']+", txt)
+        return [t for t in toks if t not in STOP and len(t) > 1]
+
+    ordered = sorted(lines, key=lambda l: l.get("t", 0))
+    out = []
+    for i in range(1, len(ordered)):
+        cur, prev = ordered[i], ordered[i - 1]
+        if cur.get("verbatim") or cur.get("who") == "INSTITUTION":
+            continue
+        if prev.get("who") == "INSTITUTION":
+            continue
+        cw, pw = words(cur.get("text", "")), set(words(prev.get("text", "")))
+        if len(cw) < 2:
+            continue
+        shared = [w for w in cw if w in pw]
+        if len(shared) / len(cw) < 0.6:
+            continue
+        # A line that brings a NEW sourced fact is doing work, however it reads.
+        new_claims = set(cur.get("claims") or []) - set(prev.get("claims") or [])
+        if new_claims:
+            continue
+        out.append((cur.get("t"), prev.get("t"), sorted(set(shared))))
+    return out
+
+
 def spans(lines):
     """[(t, end, who)]. A line runs until the next line starts. Pre-VO there are
     no durations, so this is the only honest span available, and it is the same
@@ -233,6 +290,11 @@ def check(script, claims_doc):
     st = stilted(script["lines"])
     row("the cast speak like people, not documents", not st,
         "clean" if not st else "; ".join(f"t={a}: '{b}' -> '{c}'" for a, b, c in st[:4]))
+
+    re_ = restating(script["lines"])
+    row("no line restates the line above it", not re_,
+        "clean" if not re_ else "; ".join(
+            f"t={a} repeats t={b} ({', '.join(w)})  <- cut it" for a, b, w in re_[:3]))
 
     row("Ray speaks in the middle third", bool(inside),
         f"{len(inside)} line(s) in {lo:.1f}-{hi:.1f}s" if inside
@@ -337,6 +399,20 @@ def self_test():
         # instead of the run reading four dangling ids as a writer's typo.
         ("a claims.json that cleared nothing", "carries a cleared claim set|resolves",
          good, {"claims": []}),
+        # RED: the standing repeat offender. Ray's second line adds no content
+        # word and no claim the line above it did not already carry, which is the
+        # restatement shape CAST_BIBLE bans in prose and nothing enforced. Both
+        # lines are Ray's and sit at 30.0/34.0, inside the middle third and
+        # inside every Ray gap bound, so ONLY this guard can fire.
+        ("a line that restates the line above it", "restates",
+         script([{"t": 0.0, "who": "RAY", "text": "They charged a fee.", "claims": ["c1"]},
+                 {"t": 6.0, "who": "DEE", "text": "The detail.", "claims": ["c2"]},
+                 {"t": 14.0, "who": "RAY", "text": "So fix it.", "claims": []},
+                 {"t": 22.0, "who": "DEE", "text": "They did.", "claims": ["c2"]},
+                 {"t": 30.0, "who": "RAY", "text": "Charged a fee for nothing.", "claims": []},
+                 {"t": 34.0, "who": "RAY", "text": "Charged a fee.", "claims": []},
+                 {"t": 40.0, "who": "INSTITUTION", "text": "We value you.", "claims": ["c1"]},
+                 {"t": 50.0, "who": "RAY", "text": "The button.", "claims": []}])),
         ("a document with no lines at all", "has lines", {"lines": []}),
     ]
 

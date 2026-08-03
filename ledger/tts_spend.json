@@ -12,6 +12,12 @@
         "gemini-2.5-flash-preview-tts": 79,
         "gemini-2.5-pro-preview-tts": 34
       }
+    },
+    "2026-08-03": {
+      "calls": 11,
+      "by_model": {
+        "gemini-3.1-flash-tts-preview": 11
+      }
     }
   }
 }

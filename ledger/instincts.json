@@ -58,6 +58,30 @@
         "A gate that fails for the wrong reason is worse than no gate: mux_and_verify used a filter the vendored ffmpeg does not ship, so its documented fallback could never pass.",
         "Manifest drift bit again, on the one asset the show cannot ship without."
       ]
+    },
+    {
+      "run_date": "2026-08-03",
+      "case": 3,
+      "shipped": true,
+      "weighted_score": null,
+      "what_landed": [
+        "The world-of-the-story law works and the frames prove it. The count room is a real set doing real comedy work: the odometer climbing 0002 to 0009, eight identical head lines filling a whole frame at 22.2s, the VERIFIED emboss at 31.0s, and the RESOLVED-vs-INVALID overhead at 48.5s. This is the first episode where the SET carries jokes the dialogue does not, which was the entire point of the overhaul.",
+        "The button is the strongest thing in the film. A real court filing with the verbatim sentence highlighted, ALLEGED stamped off-square as the episode's one red, and Ray's card still poking out underneath. The simulated viewer sat on the last frame instead of scrolling.",
+        "The fact gate's guards held. c10, c11 and c12 stayed cut, the odometer never displays more cases than the frame can show, and the caption asserts no count. Savage and sourced.",
+        "Two of the three graded critics made confident findings that were FALSE, and catching that mattered more than any single fix. Pulling nine frames from the un-sampled windows refuted 'the pile never renders' outright. A panel is evidence, not a verdict."
+      ],
+      "what_did_not": [
+        "THE PANEL NEVER RAN ON THE SHIPPED CUT. Merged to main with no scorer verdict and no score card, and every funny read on file predated the count-room rewrite. Read cold the next morning: funny 64, flow 58, craft 44 against a bar of 78. Objective gates cannot see an episode.",
+        "The cast was placed outside the visible frame in the film's funniest shot. Pure camera arithmetic: visible x at zoom 1.45 is 168..912 and the figures sat at 108 and 972, so a floating forearm and a footless leg were all that rendered. Same class put a chute lip through Ray's crown at 50.5s and cropped RESOLVED to 'LVED'.",
+        "The middle is hollow in TIME even though it is full in PICTURE. From 16.2s to 32.6s there are two lines and eight words, with silences of 7.6s and 6.0s. The viewer's first scroll risk is 19.0s. Frames are not the same thing as momentum, and this run fixed the frames and did not fix the pacing.",
+        "cases.json was never closed for case 3, so next_case stayed at 3 and this run would have reused the number. Four ledgers out of six agreeing is what made it invisible."
+      ],
+      "do_differently": [
+        "Run the panel BEFORE the merge, not after, and treat an empty scorer row in verdicts.json as a red gate. A phase that leaves no trace has not run.",
+        "Write the visible band down before placing a figure in any shot that zooms: W/2 +/- (W/2)/zoom around W*cx. Three of today's six visual defects were that one line of arithmetic.",
+        "Commit vo_lines.json into runs/<date>/. Without it the episode cannot be re-rendered in a later container at all, because the ship gate correctly refuses a cue file whose source is gone.",
+        "Distrust an agent finding of the form 'X is absent'. Absence is what an unsampled beat looks like too, and today that produced two wrong findings out of three critics."
+      ]
     }
   ]
 }
