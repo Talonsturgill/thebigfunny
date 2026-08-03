@@ -87,6 +87,11 @@ def _check_tags(text):
                   f"aloud rather than perform it. Verify the take.")
 
 
+# Set once a cooled 429 retry has PROVEN the daily wall, so the remaining
+# lines of an episode fail fast instead of each paying its own 65s.
+_HARD_WALL = False
+
+
 def synth(text, voice=None, style=None, direction=None):
     """Synthesize one or two whole sentences -> float32 mono @ 44100.
 
@@ -172,10 +177,10 @@ def synth(text, voice=None, style=None, direction=None):
     # loop for empty responses, which made the worst case twenty billed calls
     # against a budget that had approved one.
     #
-    # And 429 is no longer retried at all. A 429 means the quota is gone; that is
-    # what this function's own error text says three lines down, and retrying it
-    # spends four more calls against a wall to arrive at the same sentence. The
-    # per-minute limiter is throttle()'s job and it runs before every attempt.
+    # 429 gets exactly ONE cooled retry, not four (see the handler below): the
+    # per-minute limiter and the daily wall both surface as 429 and only a wait
+    # longer than a minute tells them apart. The per-minute limiter is also
+    # throttle()'s job and it runs before every attempt.
     delays = [0, 4, 10, 20, 35]
     last = None
     for d in delays:
@@ -198,10 +203,46 @@ def synth(text, voice=None, style=None, direction=None):
             body = e.read().decode("utf-8", "ignore")[:400]
             last = f"HTTP {e.code}: {body}"
             if e.code == 429:
-                raise RuntimeError(
-                    f"Gemini TTS {last}\n"
-                    f"  A 429 is the quota wall, not a transient error. Retrying it "
-                    f"spends more of a budget that is already gone.")
+                # 2026-08-03: THIS USED TO RAISE IMMEDIATELY, saying "a 429 is the
+                # quota wall, not a transient error". That is wrong, and being
+                # wrong about it cost a run the better part of an hour.
+                #
+                # A 429 on this model is EITHER the per-minute request limit or
+                # the daily wall, and the message body does not reliably say
+                # which: the one that stopped case 0003's retime read
+                # `limit: 10`, which is the PER-MINUTE limit. The run believed
+                # its own error text, abandoned the retime, and only found out
+                # by accident an hour later that the quota had replenished the
+                # whole time.
+                #
+                # The two cases are distinguishable by exactly one thing: wait
+                # longer than a minute and try once more. So do that ONCE, and
+                # remember the answer for the rest of the process, because if it
+                # IS the daily wall then paying 65s per line across seventeen
+                # lines is twenty minutes spent proving the same sentence.
+                global _HARD_WALL
+                if _HARD_WALL:
+                    raise RuntimeError(
+                        f"Gemini TTS {last}\n"
+                        f"  Daily wall, already proven this process: a cooled "
+                        f"retry got a second 429.")
+                _HARD_WALL = True
+                time.sleep(65)
+                try:
+                    if tts_budget is not None:
+                        tts_budget.record(MODEL, 1)
+                    with urllib.request.urlopen(req, timeout=120, context=ctx) as r:
+                        resp = json.loads(r.read().decode("utf-8"))
+                    _HARD_WALL = False      # it was the per-minute limiter
+                    break
+                except urllib.error.HTTPError as e2:
+                    if e2.code != 429:
+                        raise RuntimeError(f"Gemini TTS HTTP {e2.code} after cooling")
+                    raise RuntimeError(
+                        f"Gemini TTS {last}\n"
+                        f"  Still 429 after a 65s cool-down, so this is the DAILY "
+                        f"wall and not the per-minute limiter. Takes already "
+                        f"synthesized are cached on disk and cost nothing to reuse.")
             if e.code in (500, 503):
                 continue
             raise RuntimeError(f"Gemini TTS {last}")
