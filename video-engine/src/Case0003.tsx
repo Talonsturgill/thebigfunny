@@ -64,7 +64,7 @@
 import React from 'react';
 import {AbsoluteFill, Sequence, interpolate, useCurrentFrame} from 'remotion';
 import {z} from 'zod';
-import {Ray, Dee} from './lib/cast';
+import {Ray, Dee, watchSpeaker} from './lib/cast';
 import type {Emotion} from './lib/Figure';
 import {Wordmark, CaseNumber, EndCard, Stamp, BRAND} from './lib/brand';
 import {GradeLayer} from './lib/lighting';
@@ -187,6 +187,15 @@ const Shot: React.FC<{from: number; to: number; children: React.ReactNode}> = ({
   </Sequence>
 );
 
+/* EYELINES, built once from the caption cues.
+   Ray stands screen-LEFT of Dee in every two-shot in this film, so he turns
+   RIGHT (+1) toward her and she turns LEFT (-1) toward him, and each faces out
+   while speaking. Until `look` was wired these were physically impossible: the
+   head transform consumed headTurn in full and it was hardcoded to zero, so
+   nobody in this show had ever looked at anything. */
+const RAY_LOOK = watchSpeaker(CAPTIONS, 'RAY', 1);
+const DEE_LOOK = watchSpeaker(CAPTIONS, 'DEE', -1);
+
 /** The cast, wired to the generated face track so nobody holds an expression. */
 const Cast: React.FC<{
   f: number; crown: number; ground: number; rayX: number; deeX: number;
@@ -196,11 +205,11 @@ const Cast: React.FC<{
 }> = ({f, crown, ground, rayX, deeX, rayPose = 'arms-crossed', deePose = 'stand', show = 'both'}) => (
   <>
     {show !== 'dee' && (
-      <Ray frame={f} {...stand(crown, rayX, ground)}
+      <Ray frame={f} {...stand(crown, rayX, ground)} look={RAY_LOOK}
            emotion={emotionAt('RAY', f) as Emotion} pose={rayPose} />
     )}
     {show !== 'ray' && (
-      <Dee frame={f} {...stand(crown, deeX, ground)}
+      <Dee frame={f} {...stand(crown, deeX, ground)} look={DEE_LOOK}
            emotion={emotionAt('DEE', f) as Emotion} pose={deePose} />
     )}
   </>
