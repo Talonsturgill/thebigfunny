@@ -137,14 +137,45 @@ const Cam: React.FC<{
   cx?: number;
   zoom?: number;
   children: React.ReactNode;
-}> = ({cx = 0.5, cy = 0.5, zoom = 1, children}) => (
-  <g transform={
-    `translate(${W / 2},${H / 2}) scale(${zoom}) ` +
-    `translate(${-W * cx},${-H * cy})`
-  }>
-    {children}
-  </g>
-);
+  /** Opt OUT of the automatic drift. Not the default, on purpose. */
+  locked?: boolean;
+}> = ({cx = 0.5, cy = 0.5, zoom = 1, locked = false, children}) => {
+  // THE DEFAULT SLOW PUSH. Every shot breathes unless it explicitly refuses to.
+  //
+  // Case 0003 had camera movement in 2 of its 18 shots, which is why the owner
+  // said "no scene motion, no camera motion". A static camera on static art is
+  // a photograph, and eighteen photographs with a voiceover is what the machine
+  // was shipping.
+  //
+  // MOTION_BIBLE section 5.3: a 4-8% scale drift over 3-5s with an ease-out is
+  // the cheapest continuous motion available, because ONE transform on the root
+  // group moves 100% of the pixels. It also cannot be gamed by cutting more,
+  // which is the loophole motion_check's live-share floor now closes.
+  //
+  // useCurrentFrame() inside a Shot returns the frame relative to THAT shot's
+  // Sequence, so each push starts when its own shot starts rather than running
+  // off the episode clock. That is what makes this safe to apply globally.
+  const sf = useCurrentFrame();
+  const t = sf / FPS;
+  // Ease-out: fast at the top of the shot where attention arrives, settling as
+  // the beat lands. Never moving THROUGH a punchline, which buries it.
+  const ease = 1 - Math.pow(1 - Math.min(1, t / 4.2), 3);
+  // AND THEN IT NEVER SETTLES. First cut of this eased to rest over 4.2s, which
+  // left every shot longer than that frozen for its whole tail: measured, the
+  // longest static hold stayed at 3.0s even after the push landed. That is the
+  // moving-hold principle at camera scale, and missing it is the same mistake
+  // one level up. A held camera is never actually at rest.
+  const push = locked ? 1 : 1 + 0.045 * ease + 0.009 * t;
+  const slideX = locked ? 0 : 9 * ease + 2.4 * t;
+  return (
+    <g transform={
+      `translate(${W / 2 + slideX},${H / 2}) scale(${zoom * push}) ` +
+      `translate(${-W * cx},${-H * cy})`
+    }>
+      {children}
+    </g>
+  );
+};
 
 /** A shot. Every one carries its own window from the board, so a retimed script
     moves one number in one place. */
