@@ -557,11 +557,24 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
               <CardChute f={f} x={0} y={0} w={W * 0.3} state="plated"
                          open={interpolate(f, [s(39.914), s(40.845)], [0, 1], clamp)} />
             </g>
-            {/* Dropped clear of the chute lip, which cut his neck at ground
-                0.86H. A horizontal edge through a head reads as decapitation
-                and this repo has shipped that once already. */}
-            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.8} ground={H * 0.90}
-                  rayX={W * 0.44} deeX={W * 0.9} rayPose="arms-crossed"
+            {/* THE FIRST CLOSE-UP THIS SHOW HAS EVER CUT TO.
+                Measured with scripts/face_size.py: every cast placement in this
+                episode put a head under 8% of frame height, median 4.7%, which
+                at 1920px is a 90px head and about SEVEN MILLIMETRES on a phone.
+                Largest head in the whole film was 5.9%. So the seven-emotion eye
+                table, the 34 generated expression changes, the face_check gate
+                and the eyelines were all rendering at a size nobody could see,
+                and the owner's "they're just furniture" was literally true: at
+                4.7% a character IS a prop.
+
+                Dee's line is the funniest in the episode and the house rule is
+                that the joke lands on the face of the person who is NOT talking.
+                So this is Ray, big enough to actually read: crown 4.6x puts his
+                head near 27% of frame height, which is reaction-shot scale in
+                any animated comedy. The figure is taller than the frame on
+                purpose. That is what a close-up IS. */}
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 4.6} ground={H * 1.62}
+                  rayX={W * 0.42} deeX={W * 0.9} rayPose="arms-crossed"
                   show="ray" />
             {f > s(41.259) && (
               <DocketCard x={W * 0.62} y={H * 0.80} w={W * 0.42} {...card}
