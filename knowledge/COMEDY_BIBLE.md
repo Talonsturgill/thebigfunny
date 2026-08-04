@@ -289,6 +289,65 @@ It belongs in angle hygiene, not just here.
 
 ---
 
+## 4.5 CRAZY SCENES: THE STAGING COMMITS AS HARD AS THE WRITING
+
+**Owner:** *"I also like south park how its not afraid to make crazy scenes and
+break boundaries and really make fun of people and things."*
+
+**CRAZY SCENES is the note, and it is one we have been failing quietly.**
+
+Our world-of-the-story law says stage the episode inside the mechanism, and case
+0003 obeyed it: a count room, tasteful, apt, legible. It was a good METAPHOR and
+it was not an insane IMAGE. South Park does not stop at apt. It builds a giant
+robot Barbra Streisand, a human centipede made of an iPad, a town buried in its
+own bullshit. The picture is as deranged as the premise.
+
+**The rule: LITERALISE THE MECHANISM UNTIL IT IS PHYSICALLY ABSURD.**
+
+This is section 4's escalation-by-rigor principle applied to the IMAGE instead of
+the plot. Do not ask what would be funnier to draw. Ask:
+
+> **If this mechanism were a physical object obeying its own rules in a room with
+> a man in it, what would the room look like by the end?**
+
+Worked, against our own shipped episode:
+
+| the mechanism | what we drew | what the rule demands |
+| --- | --- | --- |
+| the report copies one case nine times | nine cards on a floor, tidy | Ray waist-deep and RISING, the pile lifting him toward the ceiling, only his head showing by the button |
+| a dispute returns INVALID | a card comes back stamped | the chute fires it back so fast and so often that it builds a second pile out of refusals |
+| a fee compounds | a number on a counter | the counter physically outgrows its housing and cracks the wall |
+
+**Three ways to build a crazy scene, in order of cost:**
+
+1. **SCALE VIOLATION.** The document is furniture-sized. The machine is a
+   building. The person is a detail in the corner of his own paperwork. Cheapest
+   and most reliable, and it is already native to our kit.
+2. **ACCUMULATION.** The thing keeps happening and the evidence PILES UP in
+   frame, physically, until it dominates. This one doubles as the motion budget,
+   because a growing pile is continuous movement that also does comedy work.
+3. **PHYSICAL CONSEQUENCE.** The absurd process moves a body. Ray is lifted,
+   buried, carried, sorted, filed. The moment the mechanism touches him
+   physically, the episode stops being about a document.
+
+**THE TEST, and it is now a question the director room must answer on the record:**
+
+> **What is the one image from this episode that somebody would describe to a
+> friend?**
+
+If the answer is "two people in a room discussing a document", there is no crazy
+scene and the board is not finished. Case 0003's honest answer was "a wall of
+identical eviction cards", which is why that beat is the only one either
+simulated viewer called impressive. **One such image per episode, minimum.**
+
+**The fact gate is not in tension with this and never has been.** Ray buried in a
+pile of identical filings asserts nothing false: the record says the case was
+duplicated. The PILE is a picture of a true thing. What we may never do is invent
+a fact, and drawing a true fact enormous is not inventing it. Being timid with
+the picture buys us nothing legally and costs us the show.
+
+---
+
 ## 5. THE MOVES
 
 ### 5.1 The deadpan functionary says the worst thing
