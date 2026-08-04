@@ -169,53 +169,46 @@ The document still appears on screen, still verbatim, still sourced in the first
 comment. It is now the thing Ray is trapped inside rather than the thing he is
 reading out.
 
-### Which current events, given the no-partisan law
+### Which current events: ALL OF THEM
 
-**CORRECTED 2026-08-03, same day, because the first version of this section was
-too conservative and the owner caught it.**
+**Owner, 2026-08-03, overruling an earlier timid version of this section:**
 
-The first draft said the no-partisan law "rules out the biggest and most searched
-stories of any given week, and that costs reach." That conflated two different
-things, and the craft research commissioned in the same session contradicts it.
+> "we can cover ANY topic, we are beholden to NO single POV, and we will DUNK on
+> everyone, and make fun of ANYTHING that is funny. this is a bold show."
 
-**The law bans taking a SIDE. It does not ban a TOPIC.** Parker, on NPR,
-describing the actual formula:
+The first draft of this section ruled out "the biggest and most searched stories
+of any given week" on the grounds that they are usually political, and called it
+a cost of the no-partisan law. That was wrong twice over.
 
-> "we take an issue, and we sort of always have **two sides about to kill each
-> other over it and the boys in the middle** going, doing fart jokes and saying,
-> who cares?"
+**First, it confused a topic ban with a side ban.** The law bans carrying a
+party's water. It has never banned a subject. Parker's formula puts two sides in
+frame and hits both, with the POV character stuck in the middle, and that is how
+South Park has covered the biggest political story of a given week for 27 years
+without being a Democrat show or a Republican show.
 
-That is a STAGING instruction, and it is how South Park has covered the single
-biggest political story of a given week for 27 years without being a Democrat
-show or a Republican show. Both sides are in frame, both are the target, and the
-POV character is the person stuck between them who did not ask to be there.
+**Second, and worse, it was cowardice with a policy voice.** No topic is off
+limits. Politics, religion, ideology, celebrity, culture war, industry, the
+media, our own audience. A run that ducks a story because the topic is
+uncomfortable has failed the job.
 
-**So the genuinely off-limits set is much smaller than the first draft claimed.**
-It is not "political stories." It is:
+**What we actually give up is the CHEAP joke**, the one that works only because
+half the audience already hates the target. That is the most-shared kind of
+political comedy and it is also the version that makes an account dismissible.
+Dropping it is not a constraint on boldness, it is the difference between a dunk
+and a team chant.
 
-- stories whose only available villain is a PARTY rather than an institution
-- stories where the funny angle requires the audience to already agree with one
-  side
-- stories where we would have to assert a contested claim rather than quote a
-  document
+The one line is DIRECTION, and it is craft rather than caution: power and
+self-importance get hit, the powerless person inside the system does not. Not
+because we are nice, but because punching down is the weak version. Anybody can
+mock somebody with no power. The charge in a dunk comes from the size of what is
+being dunked on.
 
-Everything else is available, including the top of the news, provided the target
-is the machinery and Ray is its hostage rather than its partisan. A shutdown, an
-agency rule, a procurement, a subsidy, an enforcement action: all of these have
-an institution doing something insane to a person, which is the show.
-
-**The reach cost is therefore real but small,** and it is a cost of ANGLE
-selection rather than of topic selection. What we give up is the cheap version:
-the joke that works only because half the audience already hates the target. That
-one is easy, it is the most-shared kind of political comedy, and it is also the
-one that makes the account dismissible and eventually killable. Giving it up is
-the trade, and it is a much narrower trade than the first draft described.
-
-**The lane still holds as the DEFAULT**, because the universal indignities are
-where the absurd primary documents are: fees, denials, hold music, insurance,
-rent, screening reports, airlines, subscriptions, medical billing, and decisions
-made about you by something with no phone number. That is where the show is
-strongest. It is a default, not a fence.
+**The universal-indignities beat stays as a strong DEFAULT** (fees, denials, hold
+music, rent, screening reports, medical billing, decisions made about you by
+something with no phone number), because that is where the absurd primary
+documents are and documents are our pre-loaded joke connector. **A default, not a
+fence.** If the funniest provable thing in America today is the top story, that
+is the episode.
 
 ## Approved scope
 
