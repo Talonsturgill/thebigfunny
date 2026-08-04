@@ -790,3 +790,48 @@ Read this list every run. These are not style notes.
 - A slur, hate, sexual content, or harassment
 - Taking a party's side
 - Posting automatically. **We draft. A human posts.**
+
+---
+
+## THE ENFORCEMENT MATRIX
+
+Owner, 2026-08-03: *"anything that we updated need to be enforceable, so it
+should go in the pre-planning phases, plus in the quality gates to hold the
+automation accountable and everything should be checked by the judges."*
+
+That is this repo's oldest law restated: **a prose rule with nothing enforcing it
+is being violated right now.** Every doctrine rule therefore lands in at least
+one of three places, and the ones that matter land in all three.
+
+| rule | pre-planning (a gate BEFORE production) | mechanical gate | judge |
+| --- | --- | --- | --- |
+| BUT/THEREFORE on every seam | `beat_check`, Phase 3 | `beat_check` | flow-critic: deletion, swap, named-expectation |
+| the causal six, beat 4 present | `beat_check` (count) | `beat_check` | flow-critic |
+| Ray and Dee want different things | `beat_check`, Phase 3 | `beat_check` | funny-critic |
+| the joke is nameable (connector / assumption / reinterpretation) | `beat_check`, Phase 3 | `beat_check` | funny-critic Q1 |
+| no hedging, winking, pre-apologising | — | `script_check` | funny-critic Q4 |
+| no verb of interpretation | — | `script_check` | funny-critic |
+| no line restates the line above | — | `script_check` | funny-critic |
+| the crazy scene exists | Phase 4.4 board field | `visual_check` | storyboard-critic Q1-3 |
+| the paint and what is under it, same frame | Phase 4.4 | — | storyboard-critic Q4 |
+| things MOVE | — | `motion_check` | storyboard-critic Q5 |
+| the cast ACTS, not merely moves | — | *(not yet mechanical)* | storyboard-critic Q5 |
+| punch direction (laugh location) | — | — | funny-critic Q2 |
+| stupid vs cruel proportion | — | — | funny-critic Q3 |
+| Ray is not a commentator | — | — | funny-critic Q5 |
+| every claim sourced | Phase 2 | `script_check` | fact-checker |
+| 60 seconds | — | `render_gate`, `delivery_check` | — |
+| the deliverable is postable, with a URL | — | `delivery_check` | — |
+
+**Three rows have no mechanical column and that is stated rather than hidden.**
+Punch direction, the stupid/cruel proportion and whether Ray is a commentator are
+genuine judgements, and a regex that pretended to check them would be worse than
+nothing, because a green row that certifies nothing is how this machine has
+failed before. They are judge questions, they are MANDATORY, and the critic must
+answer them explicitly rather than implicitly.
+
+**One row is honestly marked NOT YET.** The cast acting rather than merely moving
+has no mechanical check, because `motion_check` measures pixel change and acting
+is about INTENT. That gap is real: the motion pass took frozen share from 59% to
+25% while the owner still called the characters furniture, which is the proof
+that a proxy improving is not the thing improving.

@@ -48,3 +48,25 @@ sequence you cannot see.
   "verdict": "ship | recut"
 }
 ```
+
+## THE JUDGEMENT HALF OF THE CAUSAL CHAIN (COMEDY_BIBLE section 1)
+
+`scripts/beat_check.py` lints the chain: a connective on every seam, no banned
+words, alternation, every BUT naming its expectation. **It cannot check whether
+the labels are TRUE**, because a writer can label any two beats THEREFORE and no
+string check can disprove it. That is your job, and a run that passed the lint
+and skipped this has not passed Gate 0.
+
+Run all three, per seam, and report per seam:
+
+1. **THE DELETION TEST.** Delete beat N. Does beat N+1 still make sense? If yes,
+   the link was "and then" wearing a THEREFORE label. FAIL that seam.
+2. **THE SWAP TEST.** Swap beats N and N+1. Does the script still parse? If yes
+   they are not causally linked. A true chain is order-rigid.
+3. **THE NAMED-EXPECTATION TEST.** For every BUT, does the stated `expects`
+   actually follow from beat N, or was a clause written to satisfy the gate?
+
+Then: **is beat 4 present and is it doing its job?** Beat 4 is where the remedy
+IS the mechanism and the escape route is the trap. It is where the argument gets
+EXECUTED instead of stated, and the retired five-beat shape did not have it. An
+episode without it is a reaction sequence.

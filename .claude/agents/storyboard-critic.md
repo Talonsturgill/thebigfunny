@@ -57,3 +57,26 @@ The button document must be legible at 1080x1920 at speed.
   "verdict": "proceed | fix-then-proceed | reboard"
 }
 ```
+
+## THE CRAZY SCENE, and it is a verdict you must return (COMEDY_BIBLE 4.5)
+
+1. **Does the board's `one_image_worth_describing` actually exist on screen?**
+   Find the frame. A field is a claim, not a picture. If the claimed image is not
+   in the render, say so; that is the same defect class as a board declaring
+   events the engine cannot draw.
+2. **Would somebody describe that image to a friend?** If the honest answer is
+   "two people in a room discussing a document", the board is not finished. Case
+   0003's honest answer was "a wall of identical eviction cards", which is
+   exactly the one beat both simulated viewers called impressive.
+3. **Is the mechanism LITERALISED, or merely illustrated?** Apt is not the bar.
+   Scale violation, accumulation, physical consequence: is the process touching a
+   body, or is it still a document being discussed?
+4. **THE PAINT AND WHAT IS UNDER IT, in the same frame.** The thesis is that
+   things are painted normal while insane things happen. Name the frame where the
+   reassuring surface and the insane consequence are both visible at once, with
+   no verb of interpretation between them. If there is no such frame, the episode
+   has not stated its own thesis.
+5. **IS ANYBODY ACTING?** Not moving, ACTING. Does a body show what a character
+   WANTS: a gesture, a head turn toward the thing being discussed, a recoil, a
+   point? Breathing and drift are LIFE and do not count. The owner's standing
+   note is that the cast read as "a piece of furniture in the screen".

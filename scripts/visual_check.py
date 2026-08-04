@@ -262,6 +262,33 @@ def check(sb):
         rows.append((n, bool(ok), d))
         return ok
 
+    # THE CRAZY SCENE, required as a FIELD on the board (COMEDY_BIBLE 4.5).
+    #
+    # The world-of-the-story law says stage the episode inside the mechanism, and
+    # case 0003 obeyed it and produced a count room that was tasteful, apt and
+    # legible. That is a good METAPHOR and not an insane IMAGE, and the owner
+    # watched it and asked for scenes that break boundaries.
+    #
+    # This is a field rather than a judgement because the question has one honest
+    # answer and writing it down is what exposes a board that has none. If the
+    # answer is "two people in a room discussing a document", the board is not
+    # finished.
+    img = str(sb.get("one_image_worth_describing", "")).strip()
+    row("the board names one image worth describing to a friend", bool(img),
+        img[:64] if img else
+        "no `one_image_worth_describing`. Literalise the mechanism until it is "
+        "physically absurd: what would the room look like by the end?")
+    if img:
+        low = img.lower()
+        dud = any(p in low for p in ("two people", "talking", "discussing",
+                                     "standing in a room", "looking at a document"))
+        row("that image is not two people discussing something", not dud,
+            "specific" if not dud else
+            f"'{img[:48]}' is the shot we already know does not work")
+        row("that image is described, not gestured at", len(img.split()) >= 6,
+            f"{len(img.split())} words"
+            + ("" if len(img.split()) >= 6 else "   <- name the picture")) 
+
     ss = shots_of(sb)
     total = runtime(sb)
     if not ss or total <= 0:
@@ -564,6 +591,9 @@ def _board(shots, **over):
     gate exists to enforce. Overrides let each red fixture break ONE thing."""
     sb = {
         "title": "CASE No. 0004 - The Repair That Needed A Repair",
+        "one_image_worth_describing":
+            "Ray waist deep in a rising tide of identical recall notices, "
+            "lifted toward the ceiling of the engine bay he is standing in",
         "angle": "Ford recalled 43,438 SUVs in October for a speaker sound they "
                  "would not make, then the same recall came back covering 66,383.",
         "target": "Ford Motor Company (an institution)",

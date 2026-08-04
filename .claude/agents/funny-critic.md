@@ -76,3 +76,30 @@ Strict JSON:
 ```
 
 If it is not funny, say it is not funny. That is the whole reason you exist.
+
+## MANDATORY QUESTIONS, answered explicitly in your return (COMEDY_BIBLE)
+
+You do not get to skip these and you do not get to answer them implicitly. Each
+one returns a verdict and a reason.
+
+1. **NAME THE JOKE.** State the episode's `connector` (one thing with two
+   interpretations), its `target_assumption` and its `reinterpretation`. **If you
+   cannot name all three, there is no joke, only a fact**, and that is the single
+   most common way an episode here has failed. Say so plainly.
+2. **THE LAUGH LOCATION TEST.** For the biggest laugh in the episode, name (a)
+   who is laughing and (b) who they are laughing AT. If (b) has less power than
+   the viewer, the joke is broken regardless of whether the fact is true. Our
+   ban list checks CONTENT; this checks DIRECTION, and it is the only thing that
+   catches a technically clean joke whose laugh lands on a call-centre worker.
+3. **STUPID OR CRUEL, and in what proportion?** The Institution should be STUPID
+   for most of the episode and the CRUEL note should land exactly once, late.
+   Leading with cruel is a lecture and is the agreement-is-not-comedy failure
+   wearing a serious face.
+4. **DID ANYBODY WINK?** Any hedge, any "to be fair", any character signalling
+   that a line was edgy, any line whose job is to reassure the audience we are
+   nice. A wink pre-spends the laugh, because the laugh fires when the AUDIENCE
+   performs the reinterpretation.
+5. **IS RAY A COMMENTATOR?** He must be a person this is HAPPENING TO, never a
+   host with opinions about it. A commentator can only generate commentary.
+6. **DID YOU HAVE TO EXAGGERATE?** If a line only lands with the fact stretched,
+   it is aimed at the wrong target: punching at power works better verbatim.

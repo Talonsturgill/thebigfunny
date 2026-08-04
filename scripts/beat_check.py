@@ -193,6 +193,28 @@ def check(doc):
         "distinct" if not same else
         "identical. Two people who agree cannot generate a scene.")
 
+    # ---- THE JOKE ITSELF (Dean's anatomy) ------------------------------------
+    # The mechanical answer to "is this funny or is it just true". Our document is
+    # a permanent pre-loaded connector: one thing with two interpretations, the
+    # routine reading and the deranged one. If a run cannot name all three parts,
+    # it has a fact and not a joke, and that is the single most common way an
+    # episode here has failed.
+    conn = str(doc.get("connector", "")).strip()
+    targ = str(doc.get("target_assumption", "")).strip()
+    reint = str(doc.get("reinterpretation", "")).strip()
+    missing = [n for n, v in (("connector", conn),
+                              ("target_assumption", targ),
+                              ("reinterpretation", reint)) if not v]
+    row("the joke is named: connector, assumption, reinterpretation", not missing,
+        "all three named" if not missing else
+        f"missing {', '.join(missing)}   <- cannot name all three means there is "
+        f"no joke, only a fact")
+
+    row("the reinterpretation is not the assumption restated",
+        not (targ and reint and targ.lower() == reint.lower()),
+        "distinct" if not (targ and reint and targ.lower() == reint.lower())
+        else "identical. Nothing is being reinterpreted, so nothing breaks.")
+
     row("the script names why both cannot be satisfied", bool(inc),
         inc[:60] if inc else
         "no `incompatible`. Comic tension is two people who want incompatible "
@@ -231,6 +253,9 @@ def self_test():
     """
     def good():
         return {
+            "connector": "the phrase 'processing fee' on the second bill",
+            "target_assumption": "a fee is charged for doing work",
+            "reinterpretation": "the work was charging him",
             "ray_wants": "to be told the number is wrong",
             "dee_wants": "to close the ticket and go home",
             "incompatible": "the ticket cannot close while he disputes it",
@@ -281,6 +306,11 @@ def self_test():
          mutate(lambda d: d.update({"dee_wants": d["ray_wants"]}))),
         ("no declared incompatibility", "why both cannot be satisfied",
          mutate(lambda d: d.pop("incompatible"))),
+        ("a joke with no connector named", "connector, assumption, reinterpretation",
+         mutate(lambda d: d.pop("connector"))),
+        ("a reinterpretation that just restates the assumption",
+         "not the assumption restated",
+         mutate(lambda d: d.update({"reinterpretation": d["target_assumption"]}))),
         ("a story with no beats block", "declares a beats block",
          mutate(lambda d: d.pop("beats"))),
     ]
