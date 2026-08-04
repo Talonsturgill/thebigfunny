@@ -742,13 +742,30 @@ plain language so it cannot be missed.
 
 ## PHASE 8: RETROSPECTIVE + SELF-UPGRADE
 
+**This phase is DEV WORK, not paperwork.** The run ends with the agent upgrading
+the machine and fixing what needed fixing, and a retro that only writes notes has
+not run. Owner, 2026-08-03: *"essentially at the end of the automation is the
+agent doing dev work to upgrade the automation plus fix anything that needed
+fixing."*
+
 Every run, pass or fail:
-0. Record EVERY panel verdict to the cross-run ledger, then run the check:
+0. Record EVERY panel verdict **and every GATE FAILURE** to the cross-run
+   ledger, then run the check:
 
    ```
-   python3 scripts/retro.py --record <verdict.json>   # one per critic read
-   python3 scripts/retro.py --check                   # must exit 0
+   python3 scripts/retro.py --record <verdict.json>          # one per critic read
+   python3 scripts/retro.py --record-gate script_check \
+       --case <n> --run-date <date> \
+       --failed "row name, row name"                         # EVERY gate that went red
+   python3 scripts/retro.py --check                          # must exit 0
    ```
+
+   **Record a gate failure even when you fixed it in the same run.** That is the
+   whole point: a gate that goes red on the same guard every run is a PROCESS
+   defect, and a run that quietly fixes the artifact and moves on is exactly how
+   the cause survives forever. Until 2026-08-03 this ledger only remembered what
+   the CRITICS said, so gate failures were invisible to the escalation and each
+   run re-learned them.
 
    A defect seen in 2+ distinct runs is a PROCESS defect owned by the phase
    that made the decision, not the phase that caught it, and `--check` FAILS
@@ -759,9 +776,23 @@ Every run, pass or fail:
    `knowledge/FIELD_NOTES.md`).
 2. Append the run to `ledger/instincts.json`: what landed, what did not, what
    you would do differently.
-3. Spawn `upgrade-engineer` for 0 to 3 bounded, verified improvements to the
+3. **Fix the ROOT CAUSE of every repeat offender**, critic note or gate row
+   alike. `--check` names the phase that owns each one and refuses to pass until
+   an entry in `ledger/upgrades.json` claims that defect by slug. Rewriting the
+   artifact again is not a fix; the decision upstream is.
+4. Spawn `upgrade-engineer` for 0 to 3 bounded, VERIFIED improvements to the
    machine. Log them to `ledger/upgrades.json`. Each set reverts as one
    `upgrade(<date>):` commit.
+
+   **Verified means it was RUN, not that it typechecks.** Every gate added or
+   changed here ships with a `--self-test` that goes red on purpose, and the
+   engineer breaks each new guard in turn to prove the self-test notices. A gate
+   that cannot fail certifies nothing, and this repo has shipped three
+   self-tests that stayed green with a guard fully disabled.
+5. **What went well is part of the retro too.** `instincts.json` takes
+   `what_landed` as well as `what_did_not`, because a machine that only records
+   failures deletes its own successes and re-derives them. If a move worked, name
+   it so the next run reaches for it first.
 
 **Commit Phase 8 separately.** Phase 7 already merged the run branch, so
 anything written now would otherwise be stranded in a dirty tree on a dead
