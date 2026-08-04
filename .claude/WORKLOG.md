@@ -1,283 +1,178 @@
-# WORKLOG — THE SHORT FILM OVERHAUL
+# WORKLOG — THE 100x OVERHAUL
 
-Durable plan for a task too large for one context. Resume from the status table.
-Delete this file when every wrap task is DONE.
+Durable plan for a task far too large for one context. Resume from the status
+table. Delete this file when every wrap task is DONE.
 
-Supersedes the "faces that move" worklog, whose scope shipped (expression engine,
-case 0003 rendered). Its three still-open items are carried into "Inherited"
-below so nothing is lost by replacing it.
+Supersedes the "short film overhaul" worklog, whose scope shipped (the rooms,
+the world kit, the gates) and which was NOT ENOUGH. That worklog fixed the SET.
+It did not fix the MOTION, the STORY LOGIC or the COMEDY, and the owner watched
+case 0003 and said so.
 
-## The owner's diagnosis, 2026-08-02
+## The owner's verdict on case 0003, 2026-08-03
 
-Verbatim, because paraphrasing loses the diagnosis:
+Verbatim, because paraphrasing loses it:
 
-> "no its not funny, kinda cause the speed is slow, kinda cause the scenes are
-> boring and not actually illustrating anything, and kinda cause the whole story
-> is just like incoherent, like it wasn't planned out to be a funny short film,
-> you made it two ppl talking and doing nothing for the most part, and didn't
-> really add in the producer room, the director room either"
+> good: "nice images", "voices sound better and not robotic"
 
-> "there should be real time spent in the pre-planning room discussing what to
-> place on screen and how, that will make ppl genuinely laugh, make agents all
-> argue with each other so they can work together to end up with a combined
-> amazing flow of on-screen stuff, should be a product that took like 20 minds
-> put together"
+> bad: "It wasn't funny" / "it made no sense" / "there was no like no motion, no
+> character motion, no scene motion, no camera motion" / "there wasn't anything
+> like coherent about it"
 
-> "Alaska is rugged (where the chars came from), this show is appeasing... we
-> don't have to be people in parkas and cold places, the entire scene can be
-> super meta, for example if the topic was about an engine issue on Ford motors,
-> u could put the chars inside a Ford engine, point being u can get creative and
-> really put the chars inside the world of whatever the topic is"
+> "maybe you need to like study rick and morty" / "study south park"
 
-## THE ROOT CAUSE (this is the important part)
+> "its cool that it was automated, but if we don't output a good show, we are
+> nothing, so I think you need to get clear on what this is and what it takes to
+> make a good and engaging show"
 
-These read as four complaints. They are ONE.
+> "5 second rule, scene change or something happen every 5 seconds to drive
+> attention"
 
-The art library was ported from `alaska-ai-weekly`. It is a shelf of parkas,
-snow, spruce, wolves, glaciers and boreal night. `ASSET_MANIFEST.md` says to cast
-from the shelf before drawing anything new, which is a good rule that has been
-quietly doing enormous damage: the shelf is ALASKA and the stories are national.
-So every board casts an Alaska set for a story that has nothing to do with
-Alaska, the set therefore cannot illustrate anything, and once the set is inert
-the only thing left for an episode to do is HAVE TWO PEOPLE TALK.
+> "overall we need to find a comedic lane, I like raunchy, pushing the boundary,
+> like south park or Dave chappelle, I also like sophisticated, so we need a show
+> that people will actually wanna watch, I think u rushed through and just put
+> something out. we def need more directors and planners going to plan the whole
+> thing out before it starts and discuss with each other like what is a good
+> script, maybe study some writer and directors and stuff to learn better"
 
-"Two people talking and doing nothing" is not a staging failure. It is what is
-left over after the world has been amputated from the story.
+> "we need this to be 100x better"
 
-It also explains the standing repeat offenders. `retro.py` has `carried_by_fact`
-and `agreement_not_comedy` in both runs on file, and the funny critic blamed the
-STORY both times. It was half right. The fact was carrying the episode because
-nothing else was ALLOWED to: not the set, not the props, not the world. A joke
-that exists only in the dialogue is a podcast with drawings over it.
+He is right on every count, and two of the four are provable in numbers, which
+is how we will know when they are fixed.
 
-## THE FIX, in one sentence
+## THE MEASURED BASELINE (case 0003, the shipped recut)
 
-**The world of the story becomes the set.** A Ford engine story is staged INSIDE
-a Ford engine. The cast is dropped into whatever world the story is about, and
-the world does comedy work the dialogue cannot.
+Do not re-derive these. They are the before-numbers for every later comparison.
 
-Everything below is downstream of that sentence.
+| metric | measured | verdict |
+| --- | --- | --- |
+| frames visually frozen (delta < 3/255 across 0.5s) | **59% of the film** | it is a slideshow |
+| longest frozen stretch | 3.0s from 9.0s | dead air with a picture on it |
+| total character animation in the rig | `Math.sin(f/34)` breathe + **3.4px** sway | invisible at 1080 wide |
+| shots with ANY camera movement | 2 of 18 | the camera is a still tripod |
+| funny (cold script read) | 64 / 100 | below the 78 bar |
+| what motion exists | almost entirely CUTS between static shots | motion is being faked by editing |
+
+The 3.4px number is the whole story in one figure. `Figure.tsx` line 223 is
+`3.4 * idleGain * Math.sin(f / 62)`. That is the entire body movement vocabulary
+of this show. Everything else on screen is a still drawing.
+
+## THE ROOT CAUSE, and it is three separate failures wearing one coat
+
+The last overhaul concluded "two people talking is what is left after the world
+is amputated from the story", built a world kit, and shipped. The world got
+better and the owner's verdict did not, because **the world was only one of
+three things missing.** Naming them separately is the point of this document,
+because a single fix aimed at all three will miss all three.
+
+### FAILURE 1: NOTHING MOVES (the engine)
+The rig can stand, and that is all it can do. There is no gesture, no pose
+change within a shot, no head turn, no walk, no weight shift, no reach, no prop
+handling, no follow-through, no camera push, no parallax. A shot is a still
+drawing held for four seconds while audio plays over it. 59% frozen is not a
+pacing problem to be edited around, it is an ENGINE CAPABILITY THAT DOES NOT
+EXIST.
+
+### FAILURE 2: THE BEATS ARE A LIST, NOT A CHAIN (the writing)
+"It made no sense" and "there wasn't anything coherent about it" are the same
+note, and the diagnosis is precise: case 0003's beats are connected by AND THEN.
+One eviction case, and then a report goes to a landlord, and then he got sued
+once, and then somebody got paid, and then I've been standing here. Nothing
+causes anything. Trey Parker's rule is that beats must be joined by BUT or
+THEREFORE, and a script that fails it reads as a list of observations no matter
+how good each observation is. Ours fails it on nearly every seam.
+
+### FAILURE 3: THERE IS NO COMEDIC LANE (the show)
+The show currently has a FORMAT (verified outrage, deadpan reaction) and mistakes
+it for a VOICE. It is polite. It is not raunchy, not boundary-pushing, and not
+sophisticated either; it is careful. The owner named the lane he wants and it is
+a real and coherent one: **smart filth.** South Park and Chappelle are both rude
+AND precise, and the rudeness is what buys attention while the precision is what
+earns the respect. We have been spending the precision and never buying the
+attention.
+
+Note what is NOT on this list: the art and the voices. The owner praised both.
+Do not touch the visual identity or the casting. They are the two things working.
+
+## WHAT THIS SHOW IS (get clear, per the owner)
+
+One sentence, and every later decision is bound by it:
+
+> **A 60-second animated bit in which two people discover, out loud and with
+> escalating disbelief, that a real institution did something genuinely insane,
+> and the proof is on screen.**
+
+It is a BIT, not a report. The distinction is the whole overhaul:
+
+- A report states a true thing with attitude. Case 0003 is a report.
+- A bit has a premise, an escalation, a turn and a tag, and it commits totally to
+  an absurd frame. The fact is the PREMISE of the bit, not the payload.
+
+The fact-check gate does not soften for this and never will. Savage and sourced.
+What changes is that being sourced stops being mistaken for being funny.
 
 ## Approved scope
 
-1. **De-Alaska the library.** The shelf stops being a PLACE and becomes a KIT:
-   parametric primitives assembleable into any world in one run, plus a rule that
-   every episode BUILDS its world instead of shopping for one. The Alaska assets
-   stay (paid-for craft, and one day a story is about Alaska); they stop being
-   the default.
-2. **The rooms.** A producer room that decides what the episode IS as a short
-   film, and a director room that decides what is ON SCREEN every second. Both
-   sit UPSTREAM of the writers room, because that is where the decision they own
-   actually gets made. This is the standing `retro.py` lesson applied.
-3. **Argument, not a pipeline.** Agents with genuinely opposed mandates, run in
-   parallel, forced to disagree on the record, then a synthesis that must RESOLVE
-   conflicts rather than average them. Averaging N opinions produces the blandest
-   member of the set, which is the opposite of the ask.
-4. **A gate that refuses talking heads.** Critics downstream of a decision never
-   fix that decision, so this is mechanical and runs on the BOARD: before a frame
-   is rendered and before a cent of audio is bought.
-5. **Silhouettes.** DONE and shipped; kept in the file map.
+1. **A motion system in the engine.** Gesture and pose keyframing, camera moves
+   as a first-class property of a shot, parallax layers, moving holds, weight
+   shifts, prop handling. Measurable goal: frozen share under 15%, from 59%.
+2. **A comedy bible with an actual lane**, built from real craft research rather
+   than taste. But/therefore, bit construction (premise, act-out, tag, callback),
+   the escalation ladder, and the taboo line drawn where South Park actually
+   draws it: cruelty aimed at power, never at the powerless.
+3. **A writers room that argues.** Opposed mandates, a real disagreement on the
+   record, and a beat sheet that must pass but/therefore BEFORE a line is
+   written. Planning before production, which the owner asked for twice.
+4. **Mechanical gates for all of it**, because prose rules in this repo have a
+   100% historical rate of being violated until something checks them:
+   `beat_check` (the but/therefore chain), `motion_check` (measured frozen share
+   and max static hold), and an events-per-5s rule from the owner's note.
+5. **An episode that proves it**, produced end to end, with the before/after
+   motion numbers in the run record.
 
-## The measured reasons (do not re-litigate)
-
-- A downstream critic never fixes an upstream decision. Proven twice: the funny
-  critic named the same cause on cases 0002 and 0003 and six rewrites moved the
-  score 57 -> 69 -> 63. The ceiling was the STORY and the SET and no amount of
-  rewriting reached either. Every new gate here runs at the phase that MAKES the
-  decision, not the phase that notices.
-- A gate that cannot fail certifies nothing. Every gate ships with a
-  `--self-test` that must go RED on purpose, and the FIXTURES get checked too:
-  three have been wrong on first write (face_check's "good" fixture held one face
-  12s, tts_budget's over-budget preview actually fit, vo_soundcheck's short
-  fixture was exempt under its own new rule).
-- A prop that typechecks and renders can still change nothing on screen. The
-  `mouth` prop was dead for a whole episode behind a `talking !== undefined`
-  guard while every gate stayed green. Verify a PIXEL.
-- Measure geometry, do not reason about it. The Orbit amplitude (96px,
-  invisible), the athletic shoulder (+8 units, invisible) and the CastSheet bbox
-  (wrong twice from reading the source) each cost a render.
-- Iterate the SCRIPT against the free critic; synthesize audio ONCE at the end.
-  Six re-synthesis passes in one session is what exhausted the TTS quota.
-
-## File map
-
-| path | state | what it is |
-| --- | --- | --- |
-| `video-engine/src/lib/Character.tsx` | DONE | `build` prop: broad / hourglass / athletic. Silhouette, clip, belt, jaw, lashes, brow weight, stance. |
-| `video-engine/src/lib/cast.tsx` | DONE | Ray athletic, Dee hourglass. |
-| `video-engine/src/CastSheet.tsx` | DONE | Proof-of-pixels sheet. `broad` is the control column. |
-| `scripts/retro.py` | DONE | Cross-run verdict memory, repeat-offender escalation, phase ownership. |
-| `scripts/story_check.py` | DONE | Phase 3 gate: the absurd mechanism, in writing, before anything is paid for. |
-| `ledger/verdicts.json` | DONE | Every critic verdict, every run. |
-| `knowledge/DIRECTING.md` | TODO | The brain for the director room: world-of-the-story, visual comedy, what separates a short film from two talking heads. |
-| `scripts/visual_check.py` | TODO | The gate. Refuses talking heads; refuses a set with nothing to do with the story. |
-| `.claude/agents/producer.md` | TODO | Owns the episode AS A FILM. Upstream of the writers room. |
-| `.claude/agents/director.md` | TODO | Owns what is on screen, second by second. |
-| `.claude/agents/production-designer.md` | TODO | Builds the WORLD of the story. The Ford-engine agent. |
-| `.claude/agents/devils-advocate.md` | TODO | Mandated to attack. Defaults to kill. |
-| `.claude/agents/asset-upgrader.md` | TODO | De-Alaskas the ported library, one bounded pass per run. |
-| `prompts/BIGFUNNY_ROUTINE.md` | TODO | Wire phases 3.7 (producer), 4.2 (world), 4.6 (director), 8 (retro). |
-| `video-engine/src/lib/ASSET_MANIFEST.md` | TODO | Kit-not-place mandate. |
+## Explicitly NOT in scope
+- The art style, the palette, the cast design. The owner likes them.
+- The voice casting and the TTS stack. Praised; leave alone.
+- The fact-check gate. It is not the problem and it never bends.
+- The 60-second law. The owner did not complain about length.
 
 ## Status
 
 | # | task | state |
 | --- | --- | --- |
-| 1 | build silhouettes + cast lock + proof sheet | DONE |
-| 2 | retro.py cross-run memory + verdict ledger | DONE |
-| 3 | story_check.py phase 3 gate | DONE |
-| 4 | `button_doesnt_land` closed: the producer room owns the button | DONE |
-| 5 | knowledge/DIRECTING.md | DONE |
-| 6 | scripts/visual_check.py + self-test | DONE |
-| 7 | the room agents (producer, director, designer, devils-advocate, reader-sim) | DONE |
-| 8 | asset-upgrader agent + kit mandate | DONE |
-| 9 | wire the routine prompt (3.7, 4.2, 4.4, gates, panel, retro) | DONE |
-| 10 | GitHub trending research, folded into this file | DONE |
-| 11 | ship an episode that clears the new gates | **DONE.** case 0003 shipped 2026-08-03. 58.27s, 1080x1920, audio present. 27 events in 56.9s, 0% talking heads, 3 gags in 3 shots. Every gate green. |
-| 12 | repo-wide code review, 100% of findings fixed | DONE: 4 critical, 9 high, 17 medium, 13 low. See the FIELD_NOTES entry; every gate self-tests green and mutation-sweeps red. |
+| 1 | measure the baseline, name the three failures | **DONE** — table above |
+| 2 | craft research: South Park, Harmon/R&M, Chappelle, motion, retention | IN FLIGHT (3 agents) |
+| 3 | `knowledge/COMEDY_BIBLE.md` — the lane, the bit, but/therefore, the taboo line | TODO |
+| 4 | `knowledge/MOTION_BIBLE.md` — what moves and when, the moving hold, camera language | TODO |
+| 5 | ENGINE: the motion system (gesture, pose keys, camera moves, parallax) | TODO — biggest single task |
+| 6 | `scripts/beat_check.py` + self-test — the but/therefore chain, mechanical | TODO |
+| 7 | `scripts/motion_check.py` + self-test — frozen share, max hold, events/5s | TODO |
+| 8 | the writers room rebuilt: beat sheet before script, opposed agents, real argument | TODO |
+| 9 | rewrite the routine prompt around the new order of operations | TODO |
+| 10 | produce an episode that clears every new gate, with before/after numbers | TODO |
 
-## What the GitHub scan actually returned (2026-08-02)
+## The measured reasons (do not re-litigate)
 
-A survey of repos that gained traction May to Aug 2026. Full sourcing is in the
-run transcript; what matters here is the short list and the one warning.
-
-**THE WARNING, and it lands directly on the "make agents argue" ask.** The July
-2026 multi-agent-debate survey (arXiv 2607.26212) finds the field settled on
-fully-connected debate topologies and majority voting BY CONVENTION rather than
-by comparison, and that the documented failure modes are conformity, cost and
-degeneration. Other 2026 work finds debate UNDERPERFORMS a single strong model
-when the agents share a base model, because the panel collapses toward the
-majority rather than toward the truth.
-
-So: **a debate between five Claude subagents with different system prompts is
-theatre.** Five voices that agree politely is not twenty minds, it is one mind
-billed five times. The value is entirely in (a) heterogeneity and (b)
-ANTI-CONFORMITY ENFORCEMENT. The room we build has to reject a round in which
-everyone agreed immediately, or it is worse than the single agent it replaced.
-
-Adoption order, cheapest and highest-leverage first:
-
-1. **Remotion `--frames=0,10,20` contact sheets** (landed 2026-07-30, a flag on a
-   tool already in the stack). One render call produces a strip across the whole
-   episode; stitch it into a grid and give the storyboard and flow critics EYES.
-   They currently grade JSON. This is why "the scenes are boring" was invisible
-   to every gate: nothing in the machine ever LOOKED at the episode.
-2. **Deterministic detectors before LLM critics** (Impeccable). Claim-id
-   resolution, verbatim numeral matching, the 58-second law, screen-side
-   continuity and staging-fingerprint distance are all RULES. Zero model calls,
-   zero grade inflation, and they cannot be talked out of a verdict.
-3. **Slideshow / motion-energy risk score** (OpenMontage). A measure of WITHIN
-   episode staticness. This is exactly "two people talking and doing nothing",
-   made mechanical, and it is the core of `visual_check.py`.
-4. **Reader-sim agent** (creative-writing-skills). Reports a second-by-second
-   experiential timeline ("at 14 I was waiting, at 31 I laughed, at 44 I would
-   have scrolled") instead of a holistic score. A 60-second show needs a
-   TIMELINE, not a grade.
-5. **Side-swapped, reference-anchored scoring** (lechmazur/debate). Never an
-   absolute 1-10 in isolation: rank today's script against two fixed prior
-   episodes, one good and one marginal, presented in BOTH orders, and only trust
-   a result that survives the swap. Fixes both drift and position bias.
-6. **Anti-conformity check + kill criteria + FACT/INFERENCE/ASSUMPTION tags**
-   (council-of-high-intelligence). Reject any round where everyone agreed on the
-   first pass. Every approved angle ships with the condition that would
-   INVALIDATE it, so Phase 2 knows what to hunt.
-7. **Layered fact-check cascade + numeral sanitizer** (AutoResearchClaw).
-   Cheapest verification first, LLM last; any figure not appearing verbatim in a
-   source is stripped mechanically before a critic ever reads the draft. Also:
-   their skills DECAY after 30 days, which is what stops `instincts.json` from
-   becoming a superstition ledger.
-8. **Tiered duration rescue** (ai-shortVideo-pipeline). At 63 seconds the options
-   are not "rewrite" or "ship long": trim gaps, then nudge rate under 4%
-   (inaudible), then cut the weakest sourced line, then rewrite.
-9. **Rhubarb Lip Sync** with `--dialogFile`. Boring, correct, a decade old, and
-   nothing from 2026 beats it for 2D with pre-locked dialogue. We have the
-   advantage most users do not: the script is locked before synthesis.
-
-Explicitly NOT adopting: the Chinese short-drama cluster (six near-identical
-repos in eight weeks, aimed at diffusion video, a gold rush), HyperFrames (a
-lateral move from Remotion), any framework dependency at all.
+- **59% frozen, 3.4px of sway.** Motion is not a polish pass, it is missing
+  capability. Any plan that treats it as "add some animation at the end" fails.
+- **A downstream critic never fixes an upstream decision.** Proven three times.
+  The funny critic named the same cause on 0002 and 0003 and six rewrites moved
+  57 -> 69 -> 63. Every new gate runs at the phase that MAKES the decision.
+- **A prose rule with nothing enforcing it is being violated right now.** True of
+  the one-stamp rule, the manifest mandate and the explaining-lines ban. So
+  but/therefore and the motion floor ship as CODE or they do not ship.
+- **Sampling lies.** A 12-cell contact sheet made two critics report a rendered
+  beat as missing. Motion measurement samples at 0.5s and states its interval.
 
 ## Inherited from the previous worklog, still open
-
 - **C:** Institution costume system (designed, never built).
 - **E:** trigger config (lives outside this repo).
-- **Dee's voice pick is still with the owner.** An audition of seven candidates
-  went out; `main` carries Pulcherrima. The soundcheck measured every candidate
-  between 3.46 and 4.12 semitones of pitch variance INCLUDING the one the owner
-  called robotic, so the machine cannot rank them and does not pretend to.
-- **TTS model:** temporarily overridden to 2.5-flash by env var after the daily
-  quota exhausted on 3.1. This reverts by itself; the override is not in code.
-
-## The code review, 2026-08-02
-
-Ran across `scripts/`, `video-engine/src/lib/` and `.claude/skills/`. 43
-findings, all fixed. The headline is that 40 of them are ONE bug: a check that
-did not run reads exactly like a check that passed. Full account in
-`knowledge/FIELD_NOTES.md`; the three that would have cost an episode:
-
-1. `mux_and_verify.sh` would have shipped the PREVIOUS episode under today's
-   date, with MUX OK and exit 0, and passed `render_gate` on the way out.
-2. `script_check.py` green-lit a script citing nothing against an empty
-   claims.json, which is the house's first law certifying its own absence.
-3. Both ledgers reset to zero on a torn write and reported success, handing a
-   run a second full TTS quota and erasing the machine's cross-run memory.
-
-Also closed: `run_guard.py` had no callers at all, the four castability gaps
-this manifest had listed open for weeks, and ten SVG ids derived from POSITION
-rather than instance, which is the ghost-parka bug still live in ten components.
-
-## The board, case 0003 (2026-08-02)
-
-18 shots, 0.0 to 56.0, continuous, no gaps. Written by the director agent and
-assembled here in three chunks because the agent had no Write in this session
-(see FIELD_NOTES: an agent frontmatter edit does not reach the running session).
-
-The four things the phase was asked to decide:
-
-1. **The Institution's body: option (i).** CountRoomBG IS the Institution for
-   this case. The MachineShadow tower is NOT stood behind the intake even though
-   `tint` now exists, because a tower through the slot puts something BEHIND the
-   process and this case's thesis is that nothing is. A tapered tower reads as a
-   body and an eye looks for a face on a body. The deviation from CAST_BIBLE's
-   "same silhouette" is bound by building CountRoomBG on MachineShadow's tone
-   triple for its shade and joint values, enamel as livery over them.
-2. **While the machine speaks:** 32.6s the intake lip taking one card, 37.0s
-   DEE'S FACE. Its only line with a reaction shot, and the reaction belongs to
-   the listener. That is where her one `shock` is spent.
-3. **27 events in 56.0s.** Longest hold 4.0s, 0% talking heads, 3 gags in S4,
-   S6, S11, one reveal at 43.4s.
-4. **A doc/gate contradiction it found and ruled on** rather than picking one
-   silently: DIRECTING.md said 12 to 16 events per 60s, visual_check refuses
-   under 18. Ruled for the gate, reported itself amber against the doc. The doc
-   is fixed.
-
-Verdict `board-it`, with one note to the writers room: line 6, "Somebody got
-paid to do that", cannot be illustrated because c6 licenses a failure to
-disclose sources and not a payment, so drawing it would assert an uncleared
-transaction. S6 stages the painted-shut door and the line rides on audio.
-
-**DO NOT CUT, recorded because a later pace pass will want to:**
-- S7 and S8 are ONE move. Highest camera in the film and lowest, back to back,
-  the fall itself as the measurement. Cutting either strands the other.
-- S11 lands the punchline BEFORE the euphemism S12 answers. That order is the
-  joke.
-- S5 is the only true-human-size object in the film. Without it the scale
-  conceit is invisible.
-- S14 is the only still wheel, in the matched framing of second 2.6.
-
-**Five new assets to build and register in the same commit:** CountRoomBG,
-DocketCard, CardChute, VerifyDie, FilingPlate.
-
-**Known and correct:** `build_scenes.py` reports 12 scene boundaries against
-Episode.tsx's 9 SCENE_COMPONENTS. That is the generic path; case 0003 renders
-through Case0003.tsx. The gate reporting the mismatch instead of raising
-KeyError is the 2026-08-02 fix working.
+- Dee's voice pick is with the owner. `main` carries Pulcherrima and the owner
+  has now called the voices good, so treat this as SETTLED unless he reopens it.
 
 ## Wrap
-
-- [x] every gate self-tests RED on purpose, fixtures checked
-- [x] AN EPISODE SHIPPED THROUGH THE WHOLE CHAIN (case 0003, 2026-08-03)
-- [x] `retro --check` exits 0
-- [x] routine prompt is the source of truth and matches the code
-- [x] FIELD_NOTES gets the root-cause paragraph above, in short form
+- [ ] frozen share under 15%, measured, on a real episode
+- [ ] a script whose every seam is BUT or THEREFORE, checked mechanically
+- [ ] the comedy bible names a lane and the writers room is bound to it
+- [ ] every new gate self-tests RED on purpose and is mutation-tested
+- [ ] an episode the owner watches and does not call a slideshow
 - [ ] delete this file
