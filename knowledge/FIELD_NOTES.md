@@ -709,3 +709,55 @@ the only thing in this machine that looks at the episode. Sampling finds what is
 wrong with the frames it lands on, and a gate that reads the SOURCE is what
 finds a hole narrower than the sampling interval. That is why `retime_check.py`
 exists and why it runs on the scene file rather than on stills.
+
+## A capability that exists and is never called looks exactly like one that does not (2026-08-03)
+
+The owner, after watching me wire up head turns:
+
+> "wow crazy u had it there and just not wired, what else do u have and are not
+> using?"
+
+`headTurn` and `headTilt` were consumed IN FULL by the head transform, including
+the horizontal squeeze that sells a three-quarter view, and both were hardcoded
+to `0`. The rig could always turn a head. Nobody in this show has ever looked at
+anything, and a character who never looks at the thing being discussed is not in
+the scene. That is a large part of why the cast reads as furniture, and it was
+one line.
+
+So I audited the whole engine, and the answer to his question is **56 exported
+symbols with no caller outside their own file.** The ones that matter:
+
+- **`stage3d.tsx` holds a complete 2.5D camera vocabulary** that has never been
+  used: `dollyThrough`, `orbitReveal`, `craneDown`, `truckAcross`, `riseWith`,
+  `composeCams`, and `Atmosphere`, which is the aerial-perspective depth cue
+  MOTION_BIBLE asks for BY NAME. **Earlier the same day I hand-rolled a linear
+  camera push directly into an episode file.** The named move `craneDown` is
+  documented in its own source as "the establish -> intimate move", which is
+  exactly what that shot wanted.
+- **`motion.tsx`**: `squashStretch`, `holdPayoff`, `staggerDelay`, `Entrance`,
+  spring presets. An animation primitive library, complete, unused, while the
+  character rig ran its own hand-rolled `Math.sin`.
+- **`cast.tsx`: `RAY_HERO_POSES`**, commented "poses that read at thumbnail size,
+  which is where the platform decides." Somebody already did the work of deciding
+  which poses survive a phone screen. Nothing has ever read it.
+- **`Character.tsx`: `Headgear` and `Outfit`** exist, while the WORKLOG carries
+  "Institution costume system (designed, never built)" as an open item.
+
+**THE FAILURE MODE, stated precisely:** an unreached capability is
+indistinguishable from an absent one, so the next run BUILDS IT AGAIN. This is
+not new here. FIELD_NOTES already records `run_guard.py` shipping with the
+freshness invariant implemented correctly and NO CALLERS anywhere, while three
+opportunistic reads did exactly what it was written to prevent. Same shape,
+bigger surface.
+
+**Why it happens, which is the part worth fixing:** building is legible and
+searching is not. A run that writes a camera push can point at the diff. A run
+that finds `CameraMoves` and uses it has nothing to show, and the ASSET_MANIFEST
+mandate ("cast from the shelf before drawing anything new") covers ART and has no
+equivalent for BEHAVIOUR. The shelf rule stopped at props.
+
+`scripts/unused_engine.py` now answers the question mechanically. It is
+deliberately NOT a gate: a show that de-Alaska'd itself legitimately leaves
+Alaska props unused, and the tool cannot tell a retired asset from a forgotten
+capability. It is a PROMPT, to be read before building something new, because the
+step that was skipped was looking.
