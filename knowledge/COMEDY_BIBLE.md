@@ -467,6 +467,95 @@ That is not an argument for being timid about topics; he was right that the topi
 was fair game. It is an argument for being **precise about direction**, because
 precision is the only standing a new account has.
 
+## 6.6 FEARLESSNESS IS A CRAFT REQUIREMENT, NOT A RISK POSTURE
+
+**Owner:** *"I like how Dave Chappelle never feared any categories and didn't
+fear getting cancelled."*
+
+Take it, and understand WHY it works, because the reason is mechanical and it
+makes fearlessness non-optional rather than brave.
+
+**Fear shows up in a script as hedging, winking and pre-apologising, and all
+three kill the joke independently of any safety question.**
+
+Dean's model makes it exact. The laugh fires at the moment the AUDIENCE performs
+the reinterpretation. A wink is the performer performing it for them. So:
+
+> **A wink pre-spends the laugh.** If the script signals "I know this is edgy,"
+> the target assumption never installs, and the punchline has nothing left to
+> break.
+
+That is why Chappelle's most dangerous material lands and a nervous version of
+the same material dies. Not nerve. **Total commitment to the frame.** Clayton
+Bigsby is played entirely straight: the correspondent is earnest, the Klansmen
+are sincere, nobody in the sketch acknowledges the premise is absurd. The
+absurdity is structural, and the audience does all the work, which is why they
+laugh.
+
+**The banned moves, and they are banned for comedy reasons:**
+
+- "I'm just saying..." / "to be fair..." / "obviously not everyone..."
+- A character signalling that a line was edgy
+- Softening a verb to make a claim feel safer (that is also the move that ends
+  channels: soften the CLAIM and you are lying, so kill the claim instead)
+- Any line whose job is to reassure the audience that we are nice
+
+**The Institution must never know it is in a comedy.** The moment it is arch,
+sardonic or self-aware, it has winked. It is unfailingly polite and completely
+sincere, and that is what makes it terrifying and funny at once.
+
+Same for Dee. Her deadpan is not a flat delivery, it is **total commitment to a
+frame in which the insane number is a normal number.**
+
+The two bans in 6.4 are not fear and never were. They are the four things that
+end a channel outright, and none of them has ever been the difference between a
+funny script and a scared one.
+
+---
+
+## 6.7 THE INSTITUTION IS STUPID, NOT EVIL
+
+**Owner:** *"I also like Rick and Morty how it has humor that highlights funny
+stupid stuff in a funny way."*
+
+This is a distinct register from satire and we should be running it constantly.
+Satire says *look what they did to you.* This says *look how DUMB this is.* The
+second one is funnier, it is more accurate, and it is far harder to argue with.
+
+**The absurdity in our stories is almost never malice. It is banality.**
+
+- Someone pressed paste twice.
+- A field was the wrong type.
+- Nobody owns the form.
+- The remedy is under development.
+- A number got rounded and a person lost an apartment.
+
+**Nobody is in the room. That is the joke.** A sinister institution implies a
+mastermind, which is flattering, arguable, and gives the audience someone to
+imagine reasoning with. A STUPID institution is worse, funnier, and unfalsifiable,
+because the paperwork proves it.
+
+The Rick technique for delivering it: **be bored by your own mechanism.** The
+explainer's attitude instructs the audience how much to care about the
+machinery, and the answer is: not much. Contempt for the mechanism, attention on
+the consequence. Our Institution's `[extremely fast]` tag is exactly this
+instrument and it is underused.
+
+**Where the two registers sit:**
+
+| register | who carries it | the line it produces |
+| --- | --- | --- |
+| this is STUPID | Dee, and the Institution's own indifference | "It counted the same case nine times." |
+| this is CRUEL | Ray, once, late | "So which one of those do I live in?" |
+
+**Run stupid for most of the episode and cruel exactly once, at beat 5.** Stupid
+is the engine; cruel is the payload. Leading with cruel is a lecture, and it is
+the "agreement is not comedy" failure wearing a serious face. Arriving at cruel
+after sixty seconds of stupid is what makes it land, because the viewer got there
+first and you only had to stop talking.
+
+---
+
 ## 7. ANTI-PATTERNS, the standing list
 
 - **The reaction sequence.** Beats joined by "and then." The defect this file
