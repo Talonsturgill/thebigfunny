@@ -383,6 +383,26 @@ Character-free shots need PROP AND WORLD animation, which MOTION_BIBLE ranks
 Tier 2 and which pays twice, because a counter incrementing or a stack growing
 also does comedy work the dialogue cannot.
 
+## THE UNUSED-ENGINE AUDIT (2026-08-03, owner asked)
+
+56 exported symbols have no caller outside their own file. Wire these BEFORE
+building anything new that overlaps them:
+
+| capability | file | why it matters |
+| --- | --- | --- |
+| `CameraMoves` (dollyThrough, orbitReveal, craneDown, truckAcross, riseWith), `composeCams`, `PERSPECTIVE` | `stage3d.tsx` | A complete 2.5D camera vocabulary. A linear push was hand-rolled into an episode the same day this was found. `craneDown` documents itself as "the establish -> intimate move". |
+| `Atmosphere` | `stage3d.tsx` | Aerial perspective, which MOTION_BIBLE section 6 asks for by name as the depth cue to pair with parallax. |
+| `squashStretch`, `holdPayoff`, `staggerDelay`, `Entrance`, spring presets | `motion.tsx` | A complete animation primitive library, while the character rig ran hand-rolled sines. |
+| `RAY_HERO_POSES` | `cast.tsx` | "Poses that read at thumbnail size, which is where the platform decides." The thumbnail question is already answered and never consulted. |
+| `Headgear`, `Outfit` | `Character.tsx` | The WORKLOG lists "Institution costume system (designed, never built)" as OPEN. It is built. |
+| `SmellRings`, `ScanReticle` | `FX.tsx` | Comedy FX. |
+| `FormGradients`, `HazeOverlay`, `Tones` | `lighting.tsx` | Lighting tools. |
+
+Ignore the Alaska residue in `kit.tsx`, `fishcraft.tsx` and `biomes.tsx`: those
+are correctly unused since the show de-Alaska'd, and `unused_engine.py` cannot
+tell a retired asset from a forgotten capability, which is why it is a prompt and
+not a gate.
+
 ## Wrap
 - [ ] frozen share under 15%, measured, on a real episode
 - [ ] a script whose every seam is BUT or THEREFORE, checked mechanically

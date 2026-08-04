@@ -57,6 +57,27 @@ export type PoseTrack = PoseKey[];
 
 const GESTURE_EASE_S = 0.34;
 
+/** A keyed scalar in EPISODE seconds. Same shape and easing as a PoseKey. */
+export type ScalarKey = {t: number; v: number; ease?: number};
+
+/** -> the scalar at this frame, smoothstepped. Shares poseAt's completion rule:
+ *  advance only past keys whose transition has FINISHED, because advancing the
+ *  instant a key's time arrives is what made every gesture snap. */
+export function scalarAt(track: ScalarKey[], f: number, fps: number,
+                         fallback = 0): number {
+  if (!track.length) return fallback;
+  const t = f / fps;
+  const ks = [...track].sort((a, b) => a.t - b.t);
+  let i = 0;
+  while (i + 1 < ks.length
+         && t >= ks[i + 1].t + (ks[i + 1].ease ?? GESTURE_EASE_S)) i++;
+  const cur = ks[i], nxt = ks[i + 1];
+  if (!nxt || t < nxt.t) return cur.v;
+  const dur = Math.max(1e-3, nxt.ease ?? GESTURE_EASE_S);
+  const u = Math.min(1, (t - nxt.t) / dur);
+  return cur.v + (nxt.v - cur.v) * (u * u * (3 - 2 * u));
+}
+
 /**
  * -> [{pose, w}] weights summing to 1 for the frame.
  *
@@ -225,6 +246,22 @@ export type FigureProps = {
   emotion?: Emotion;
   /** A single pose HOLDS. A track GESTURES. See PoseTrack. */
   pose?: Pose | PoseTrack;
+  /**
+   * WHERE THE HEAD IS POINTED. -1 hard screen-left, +1 hard screen-right, 0 dead
+   * on. A number holds it; a track turns the head over time.
+   *
+   * The cheapest acting beat that exists, and the rig has supported it since it
+   * was written: the head transform already consumed `headTurn`, including the
+   * horizontal squeeze that sells a three-quarter view. It was HARDCODED TO 0,
+   * so nobody in this show has ever looked at anything. A character who never
+   * looks at the thing being discussed is not in the scene.
+   *
+   * Clamped to +/-0.5, a limit the rig already documented: past that the flat
+   * features stop selling the turn and it needs a real redraw.
+   */
+  look?: number | ScalarKey[];
+  /** Head tilt in degrees. A number holds; a track tilts over time. */
+  tilt?: number | ScalarKey[];
   skin?: string; hair?: string; eyes?: string;
   /** garment + accent. Two colours is all a flat figure should carry. */
   wear?: {top: string; bottom: string; accent?: string};
@@ -264,6 +301,7 @@ export const Figure: React.FC<FigureProps> = ({
   frame: f, sex,
   x = 0, y = 0, scale = 1, facing = 1,
   emotion = 'neutral', pose = 'stand', still = false, fps = 30,
+  look = 0, tilt = 0,
   skin = '#e0a882', hair = '#2a1c16', eyes = '#3d5a72',
   wear = {top: '#3f6f8f', bottom: '#2f3a52', accent: '#e8dcc8'},
   hairstyle = 'short',
@@ -329,8 +367,14 @@ export const Figure: React.FC<FigureProps> = ({
   // horizontal squeeze of the head plus a shift of the features inside it, so
   // the far cheek compresses. Small on purpose: past about 0.5 the flat
   // features stop selling it and you need a real redraw.
-  const headTurn = 0;
-  const headTilt = 0;
+  // WIRED 2026-08-03. These were hardcoded to 0 while the head transform below
+  // consumed them in full, so the rig could always turn a head and never did.
+  // The ambient term keeps a held head from being welded in place.
+  const lookV = Array.isArray(look) ? scalarAt(look, f, fps) : look;
+  const tiltV = Array.isArray(tilt) ? scalarAt(tilt, f, fps) : tilt;
+  const headTurn = Math.max(-0.5, Math.min(0.5,
+    lookV + g * 0.018 * Math.sin(f / 139 + ph * 1.9)));
+  const headTilt = tiltV + g * 0.55 * Math.sin(f / 101 + ph * 0.7);
 
   /* ---- CONTRAPPOSTO. Weight on the figure's right (screen left when facing 1).
      The hip on the weight side rides UP, the shoulders counter-tilt the other
