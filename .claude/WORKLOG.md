@@ -222,11 +222,11 @@ than a free win.
 | # | task | state |
 | --- | --- | --- |
 | 1 | measure the baseline, name the three failures | **DONE** — table above |
-| 2 | craft research: South Park, Harmon/R&M, Chappelle, motion, retention | IN FLIGHT (3 agents) |
-| 3 | `knowledge/COMEDY_BIBLE.md` — the lane, the bit, but/therefore, the taboo line | TODO |
-| 4 | `knowledge/MOTION_BIBLE.md` — what moves and when, the moving hold, camera language | TODO |
+| 2 | craft research: South Park, Harmon/R&M, Chappelle, motion, retention | **DONE.** 3 briefs, all sourced. Headline: our own CAST_BIBLE beat shape fails the deletion test and was manufacturing the defect. |
+| 3 | `knowledge/COMEDY_BIBLE.md` — the lane, the bit, but/therefore, the taboo line | **DONE.** 610 lines, every rule sourced to a practitioner. |
+| 4 | `knowledge/MOTION_BIBLE.md` — what moves and when, the moving hold, camera language | **DONE.** Three motion budgets, the moving hold with frame numbers, Lang's EDIT-vs-CUT finding, measured retention. |
 | 5 | ENGINE: the motion system (gesture, pose keys, camera moves, parallax) | TODO — biggest single task |
-| 6 | `scripts/beat_check.py` + self-test — the but/therefore chain, mechanical | TODO |
+| 6 | `scripts/beat_check.py` + self-test — the but/therefore chain, mechanical | **DONE.** Lint half only, and it says so: the deletion/swap/named-expectation tests belong to the flow critic. |
 | 7 | `scripts/motion_check.py` + self-test — frozen share, max hold, events/5s | **DONE.** Reads the RENDER, not the board. Fails case 0003 at 59% frozen / 3.0s hold. Mutation-tested on the frozen-share and cut-share guards. Discriminates a slideshow (87% frozen, 100% cuts) from a pan (0%, 0%), so cutting more often cannot game it. |
 | 8 | the writers room rebuilt: beat sheet before script, opposed agents, real argument | TODO |
 | 9 | rewrite the routine prompt around the new order of operations | TODO |
