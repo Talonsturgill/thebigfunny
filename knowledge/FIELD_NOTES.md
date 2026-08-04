@@ -729,14 +729,32 @@ symbols with no caller outside their own file.** The ones that matter:
 
 - **`stage3d.tsx` holds a complete 2.5D camera vocabulary** that has never been
   used: `dollyThrough`, `orbitReveal`, `craneDown`, `truckAcross`, `riseWith`,
-  `composeCams`, and `Atmosphere`, which is the aerial-perspective depth cue
-  MOTION_BIBLE asks for BY NAME. **Earlier the same day I hand-rolled a linear
-  camera push directly into an episode file.** The named move `craneDown` is
-  documented in its own source as "the establish -> intimate move", which is
-  exactly what that shot wanted.
-- **`motion.tsx`**: `squashStretch`, `holdPayoff`, `staggerDelay`, `Entrance`,
-  spring presets. An animation primitive library, complete, unused, while the
-  character rig ran its own hand-rolled `Math.sin`.
+  `composeCams`, and `Atmosphere`, the aerial-perspective depth cue MOTION_BIBLE
+  asks for by name.
+
+  **CORRECTION, made the same day and before anyone relied on it.** I first wrote
+  that I had "hand-rolled a linear camera push while `craneDown` sat there", and
+  that overclaimed. `CameraMoves` returns a 3D `Camera` for `Stage3D`, which is
+  an HTML div tree using CSS perspective and `Plane` layers. Case 0003 is a
+  single `<svg>` of `<g>` transforms, and this file's own oldest mounting rule
+  says those two do not mix. So the existing move vocabulary could not have been
+  dropped into that episode; adopting it means restructuring an episode onto the
+  2.5D path, which is a real architectural decision and not a wire-up.
+
+  The audit finding SURVIVES the correction and is still the point: a whole
+  camera language is built and no episode has ever used the rendering path it
+  belongs to. But "I duplicated something that already existed" was the wrong
+  lesson, and a wrong lesson in this file is worse than none, because the next
+  author trusts it instead of testing.
+- **`motion.tsx`** is the one where the finding is exactly as bad as it looked,
+  because these are PURE FUNCTIONS with no rendering-path dependency and could
+  have been dropped into the SVG rig at any time: `squashStretch`, `holdPayoff`,
+  `staggerDelay`, `Entrance` and two spring presets are dead, while the character
+  rig ran its own hand-rolled `Math.sin`. Note the nuance the first pass missed:
+  `accentKick`, `anticipate`, `followThrough`, `entrance`, `vitals` and `EASE`
+  from the same file ARE used. So this was never "nobody found motion.tsx". Half
+  of it was found and the other half was reimplemented, which is worse and much
+  easier to do.
 - **`cast.tsx`: `RAY_HERO_POSES`**, commented "poses that read at thumbnail size,
   which is where the platform decides." Somebody already did the work of deciding
   which poses survive a phone screen. Nothing has ever read it.
