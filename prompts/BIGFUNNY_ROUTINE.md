@@ -5,9 +5,17 @@ true thing that happened in America, prove it to the document, work out what
 everybody is thinking and nobody will say under their own name, and ship a 60
 second cartoon that says it.
 
-Read `CLAUDE.md` first. Then `knowledge/CAST_BIBLE.md`,
-`knowledge/ANGLE_TAXONOMY.md` and `knowledge/BRAND_BIBLE.md`. They are not
-background, they are the job.
+Read `CLAUDE.md` first. Then **`knowledge/COMEDY_BIBLE.md`**, which is the
+brain for whether there is a joke on screen and outranks every other creative
+document here. Then `knowledge/MOTION_BIBLE.md`, `knowledge/CAST_BIBLE.md`,
+`knowledge/ANGLE_TAXONOMY.md`, `knowledge/DIRECTING.md` and
+`knowledge/BRAND_BIBLE.md`. They are not background, they are the job.
+
+**WHERE COMEDY_BIBLE AND CAST_BIBLE DISAGREE, COMEDY_BIBLE WINS.** CAST_BIBLE's
+old five-beat episode shape (hook / turn / Ray finds out / the Institution
+answers / the button) is RETIRED: it fails the deletion test, it is a reaction
+sequence, and it was manufacturing the "a fact with a tone of voice" verdict the
+funny gate kept returning. Use the causal six.
 
 ## THE STANDARD
 
@@ -120,7 +128,27 @@ Write the story's conception to `out/dispatch/story.json` and run:
 
 ```
 python3 scripts/story_check.py
+python3 scripts/beat_check.py          # THE CAUSAL CHAIN. Both must exit 0.
 ```
+
+`beat_check` is the first law made mechanical, and it runs HERE, before an angle
+is chosen and long before a line is written, because a downstream critic never
+fixes an upstream decision. `story.json` must therefore carry:
+
+- **`beats`**: five to seven of them, each with `text`, its own `joke`, and a
+  `link` of exactly `BUT` or `THEREFORE`. Every `BUT` names the expectation it
+  violates in `expects`, under ten words. Parker: "if the words 'and then' belong
+  between those beats, you're fucked."
+- **`ray_wants` / `dee_wants` / `incompatible`**. Two people who agree cannot
+  generate a scene, and Ray and Dee agreeing is the demonstrated failure mode.
+- **`connector` / `target_assumption` / `reinterpretation`**. If you cannot name
+  all three, there is no joke, only a fact. The document is our permanent
+  pre-loaded connector.
+
+**The lint is not the whole gate.** The deletion test (delete beat N, N+1 must
+break), the swap test (swap two beats, the script must stop parsing) and the
+named-expectation test are JUDGEMENT and belong to the flow critic. A run that
+passes the lint and skips those has not passed this phase.
 
 It refuses a story that is infuriating rather than ABSURD: the absurd sentence
 in 22 words or fewer, a PERSON who does the stupid thing (you cannot act out a
@@ -206,8 +234,34 @@ for was the only force moving the cast past their own exit.
 
 ### 4.1 The script
 
-Write the VO to the 60 second shape in `CAST_BIBLE.md`: hook, turn, Ray finds
-out, the Institution answers, the button.
+Write the VO to **the causal six in `COMEDY_BIBLE.md` section 2**, against the
+`beats` block Phase 3 already locked and beat_check already cleared. The old
+CAST_BIBLE five-beat shape is retired; see the note at the top of this file.
+
+The load-bearing beat is **4: the remedy IS the mechanism.** The escape route is
+the trap. That is where the argument gets EXECUTED instead of stated, and the old
+shape did not have it.
+
+Bound by COMEDY_BIBLE, and each of these is a rule rather than a preference:
+
+- **The POV is a person it is HAPPENING TO.** Ray is never a commentator. He is
+  never the smartest person in the episode; he is the one being charged for it.
+- **Run STUPID for most of the episode and CRUEL exactly once, at beat 5.** The
+  absurdity is banality, not malice. Nobody is in the room and that is the joke.
+- **The Institution carries the WORST FACT**, in the politest register, at
+  `[extremely fast]`. It gets the clause; Dee gets the number and the date. A
+  surrogate who explains is a lecturer.
+- **After every punchline write three tags and keep one.** We currently write
+  zero, and a tag reuses the setup, which is the only lever that raises laughs
+  per second without raising runtime.
+- **The punch word goes LAST**, and prefer the shorter word ending in a stop
+  consonant. "Paste" beats "duplicate."
+- **No verb of interpretation** between a euphemism and its plain meaning. No
+  "which means", no "in other words", no "translation:". Juxtapose and stop.
+- **No hedging, no winking, no pre-apologising.** A wink pre-spends the laugh:
+  the laugh fires when the AUDIENCE performs the reinterpretation, so signalling
+  that a line is edgy means the assumption never installs. The Institution must
+  never know it is in a comedy.
 
 - Ray is RIGHT. He is not a fool. He arrives at verdicts, he does not build
   arguments. His restatement of the fact in plain words is usually the joke.
@@ -278,6 +332,44 @@ lines, or one on the turn or the button, sends the script back to Phase 4 with
 a rewrite ask, not a rewritten line. Two people talking over an inert set is a
 podcast with drawings on it, and it is the single failure this phase exists to
 prevent.
+
+### THE CRAZY SCENE, and the director answers this ON THE RECORD
+
+`COMEDY_BIBLE.md` section 4.5. The world-of-the-story law says stage the episode
+inside the mechanism, and case 0003 obeyed it and produced a count room that was
+tasteful, apt and legible. That is a good METAPHOR and it is not an insane IMAGE,
+and the owner watched it and asked for scenes that break boundaries.
+
+**Literalise the mechanism until it is physically absurd.** Never ask what would
+be funnier to draw. Ask:
+
+> If this mechanism were a physical object obeying its own rules in a room with a
+> man in it, what would the room look like by the end?
+
+Three builds, cheapest first: **scale violation** (the document is furniture, the
+person is a detail in the corner of his own paperwork), **accumulation** (the
+evidence piles up physically until it dominates, which doubles as motion budget
+because a growing pile is continuous movement doing comedy work), and **physical
+consequence** (the process moves a body: lifted, buried, carried, sorted, filed).
+
+**The board must answer, in a field, in one sentence:**
+
+> `one_image_worth_describing`: what is the single image from this episode that
+> somebody would describe to a friend?
+
+If the honest answer is "two people in a room discussing a document", the board
+is NOT FINISHED and the director sends it back. One such image per episode is
+the floor, not the ceiling.
+
+**The fact gate does not constrain this.** Ray buried in a pile of identical
+filings asserts nothing false when the record says the case was duplicated: the
+pile is a picture of a true thing. We may never invent a fact, and drawing a true
+one enormous is not inventing it. Timidity with the picture buys nothing legally
+and costs the show.
+
+**Also mandatory, from the thesis:** the PAINT and what is under it in the SAME
+FRAME, with no verb of interpretation between them. The reassuring sentence and
+the insane consequence, side by side, and then stop talking.
 
 ## PHASE 4.5: GATE 0 (before any scene code)
 
@@ -492,6 +584,14 @@ Failing Gate 0 is cheap. Failing after a render is not.
 10. `python3 scripts/render_gate.py <final.mp4>` — the OBJECTIVE renders_clean
     gate. Dependency-free container parse: duration under 60.0s, 1080x1920, a
     real audio track, non-trivial size. Not a prose judgement, not optional.
+11. **`python3 scripts/motion_check.py <final.mp4>`** — the gate that reads the
+    PIXELS. Every other gate here reads a document, which is how a slideshow
+    with a voiceover cleared all of them and the owner watched it and said "no
+    character motion, no scene motion, no camera motion". It measures frozen
+    share, longest static hold, events per five seconds, and the LIFE floor,
+    which is movement NOT caused by a cut. That last row is the one that cannot
+    be gamed: cutting more often raises the event count while making the show
+    worse, and the live-share floor is what refuses it.
 
 ## PHASE 5B: THE CAPTION
 

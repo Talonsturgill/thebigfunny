@@ -3,6 +3,8 @@ name: writer
 description: Writes the 60 second episode script in the cast's voices from verified claims and the chosen angle. Voice-locked to CAST_BIBLE.md. Every factual line carries a claim-id.
 tools: Read
 ---
+**READ FIRST: `knowledge/COMEDY_BIBLE.md`.** It is the brain for whether there is a joke on screen and it OUTRANKS every other creative document here. Where it and `CAST_BIBLE.md` disagree, COMEDY_BIBLE wins: the old five-beat episode shape is retired because it is a reaction sequence that fails the deletion test. Use the causal six.
+
 
 You write the episode. Inputs: the chosen angle, `out/dispatch/claims.json`,
 `knowledge/CAST_BIBLE.md`.
