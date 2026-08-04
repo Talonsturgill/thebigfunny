@@ -198,6 +198,62 @@ def restating(lines):
     return out
 
 
+def winking(lines):
+    """-> [(t, phrase)] for a line that hedges, winks or pre-apologises.
+
+    COMEDY_BIBLE 6.6. These are banned for COMEDY reasons before they are banned
+    for any other reason, and the mechanism is exact: the laugh fires when the
+    AUDIENCE performs the reinterpretation, so a line that signals "I know this
+    is edgy" performs it for them. A wink PRE-SPENDS the laugh. The target
+    assumption never installs and the punchline has nothing left to break.
+
+    This is why Chappelle's most dangerous material lands and a nervous version
+    of the same material dies. Not nerve, commitment to the frame.
+    """
+    import re as _re
+    BANNED = [
+        r"i'?m just saying", r"\bto be fair\b", r"\bobviously not\b",
+        r"not that there'?s anything wrong", r"\bno offense\b",
+        r"\bdon'?t cancel me\b", r"\bi'?ll say it\b",
+        r"\bis it just me\b", r"\bam i wrong\b",
+    ]
+    out = []
+    for ln in lines:
+        if ln.get("verbatim"):
+            continue
+        txt = _re.sub(r"\[[^\]]*\]", " ", ln.get("text", "")).lower()
+        for pat in BANNED:
+            m = _re.search(pat, txt)
+            if m:
+                out.append((ln.get("t"), m.group(0)))
+    return out
+
+
+def interpreting(lines):
+    """-> [(t, phrase)] for a verb of interpretation doing the joke's work.
+
+    Carlin's soft-language move puts the euphemism and the plain word ADJACENT
+    and stops. He never argues that "operational exhaustion" is evasive; he sets
+    it beside "shell shock". The moment a line says "which means", the script has
+    explained the compression instead of performing it, and the audience is
+    relieved of the only job that makes them laugh.
+    """
+    import re as _re
+    BANNED = [r"\bwhich means\b", r"\bin other words\b", r"\btranslation:",
+              r"\bwhat they'?re really saying\b", r"\bthat is to say\b",
+              r"\bmeaning\b,"]
+    out = []
+    for ln in lines:
+        if ln.get("verbatim"):
+            continue
+        txt = _re.sub(r"\[[^\]]*\]", " ", ln.get("text", "")).lower()
+        for pat in BANNED:
+            m = _re.search(pat, txt)
+            if m:
+                out.append((ln.get("t"), m.group(0)))
+    return out
+
+
 def spans(lines):
     """[(t, end, who)]. A line runs until the next line starts. Pre-VO there are
     no durations, so this is the only honest span available, and it is the same
@@ -290,6 +346,16 @@ def check(script, claims_doc):
     st = stilted(script["lines"])
     row("the cast speak like people, not documents", not st,
         "clean" if not st else "; ".join(f"t={a}: '{b}' -> '{c}'" for a, b, c in st[:4]))
+
+    wk = winking(script["lines"])
+    row("nobody hedges, winks or pre-apologises", not wk,
+        "clean" if not wk else "; ".join(f"t={a}: '{b}'" for a, b in wk[:3])
+        + "   <- a wink pre-spends the laugh")
+
+    itp = interpreting(script["lines"])
+    row("no verb of interpretation does the joke's work", not itp,
+        "clean" if not itp else "; ".join(f"t={a}: '{b}'" for a, b in itp[:3])
+        + "   <- put the euphemism and the plain word adjacent and stop")
 
     re_ = restating(script["lines"])
     row("no line restates the line above it", not re_,
@@ -413,6 +479,16 @@ def self_test():
                  {"t": 34.0, "who": "RAY", "text": "Charged a fee.", "claims": []},
                  {"t": 40.0, "who": "INSTITUTION", "text": "We value you.", "claims": ["c1"]},
                  {"t": 50.0, "who": "RAY", "text": "The button.", "claims": []}])),
+        ("a line that winks at its own edge", "hedges, winks",
+         script([dict(good["lines"][2], text="To be fair, they fixed it.")]
+                + good["lines"][3:] and
+                good["lines"][:2]
+                + [dict(good["lines"][2], text="To be fair, they fixed it.")]
+                + good["lines"][3:])),
+        ("a line that explains its own compression", "verb of interpretation",
+         script(good["lines"][:2]
+                + [dict(good["lines"][2], text="A fee, which means a charge.")]
+                + good["lines"][3:])),
         ("a document with no lines at all", "has lines", {"lines": []}),
     ]
 

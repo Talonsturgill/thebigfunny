@@ -345,14 +345,67 @@ def self_test():
     return 0 if ok else 1
 
 
+def slug(row_name):
+    """A gate row's human name -> a stable defect slug the ledger can count."""
+    import re as _re
+    t = _re.sub(r"[^a-z0-9]+", "_", row_name.strip().lower()).strip("_")
+    return f"gate_{t}"[:64]
+
+
+def record_gate(gate, failed_rows, case=None, run_date=None):
+    """Record a GATE failure into the same cross-run memory as a critic verdict.
+
+    Owner, 2026-08-03: "any repeat offenders in the quality gates that the judges
+    kept seeing, those root cause should be fixed."
+
+    Until now this ledger only remembered what the CRITICS said. A gate could
+    fail on the same guard every run forever and nothing counted it, so each run
+    fixed the artifact and moved on and the underlying cause was never touched.
+    That is the same "each run re-learns it" failure the ledger was built to end,
+    one layer down.
+
+    Gate failures reuse the critic schema on purpose rather than getting their
+    own table: `repeat_offenders()` already counts defect slugs across distinct
+    runs, and `check()` already refuses to pass until an upgrade claims a repeat
+    offender by slug. Recording gates as `critic="gate:<name>"` means both of
+    those work on gate failures for free, and a gate that keeps failing is
+    escalated to a PROCESS defect exactly like a critic note that keeps
+    recurring.
+    """
+    return record({
+        "case": case,
+        "run_date": run_date,
+        "critic": f"gate:{gate}",
+        "defects": [slug(r) for r in failed_rows if str(r).strip()],
+        "note": f"{gate} failed {len(failed_rows)} row(s): "
+                + "; ".join(str(r)[:60] for r in failed_rows[:4]),
+    })
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--record", help="a JSON file holding one verdict entry")
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--record-gate", metavar="GATE",
+                    help="record a GATE failure into cross-run memory")
+    ap.add_argument("--failed", default="",
+                    help="with --record-gate: comma-separated failing row names")
+    ap.add_argument("--case", type=int)
+    ap.add_argument("--run-date")
     ap.add_argument("--self-test", action="store_true")
     a = ap.parse_args()
     if a.self_test:
         return self_test()
+    if a.record_gate:
+        rows = [r for r in a.failed.split(",") if r.strip()]
+        if not rows:
+            print("retro: --record-gate needs --failed with at least one row",
+                  file=sys.stderr)
+            return 1
+        n = record_gate(a.record_gate, rows, case=a.case, run_date=a.run_date)
+        print(f"retro: recorded gate failure for {a.record_gate}, "
+              f"{len(rows)} row(s), {n} verdict(s) on file")
+        return 0
     if a.record:
         n = record(json.load(open(a.record)))
         print(f"retro: recorded, {n} verdict(s) on file")
