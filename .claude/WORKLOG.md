@@ -390,9 +390,9 @@ building anything new that overlaps them:
 
 | capability | file | why it matters |
 | --- | --- | --- |
-| `CameraMoves` (dollyThrough, orbitReveal, craneDown, truckAcross, riseWith), `composeCams`, `PERSPECTIVE` | `stage3d.tsx` | A complete 2.5D camera vocabulary. A linear push was hand-rolled into an episode the same day this was found. `craneDown` documents itself as "the establish -> intimate move". |
+| `CameraMoves` (dollyThrough, orbitReveal, craneDown, truckAcross, riseWith), `composeCams`, `PERSPECTIVE` | `stage3d.tsx` | A complete 2.5D camera vocabulary, unused. **NOT a drop-in:** it returns a 3D `Camera` for `Stage3D`, an HTML/CSS-perspective tree, while episodes are flat SVG. Adopting it means moving an episode onto the 2.5D path, which is an architectural decision, not a wire-up. |
 | `Atmosphere` | `stage3d.tsx` | Aerial perspective, which MOTION_BIBLE section 6 asks for by name as the depth cue to pair with parallax. |
-| `squashStretch`, `holdPayoff`, `staggerDelay`, `Entrance`, spring presets | `motion.tsx` | A complete animation primitive library, while the character rig ran hand-rolled sines. |
+| `squashStretch`, `holdPayoff`, `staggerDelay`, `Entrance`, spring presets | `motion.tsx` | **The genuine drop-ins.** Pure functions, no rendering-path dependency, usable in the SVG rig today. And half this file IS used (`accentKick`, `anticipate`, `followThrough`, `entrance`, `vitals`, `EASE`), so the other half was not undiscovered, it was REIMPLEMENTED. |
 | `RAY_HERO_POSES` | `cast.tsx` | "Poses that read at thumbnail size, which is where the platform decides." The thumbnail question is already answered and never consulted. |
 | `Headgear`, `Outfit` | `Character.tsx` | The WORKLOG lists "Institution costume system (designed, never built)" as OPEN. It is built. |
 | `SmellRings`, `ScanReticle` | `FX.tsx` | Comedy FX. |
