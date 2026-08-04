@@ -171,26 +171,51 @@ reading out.
 
 ### Which current events, given the no-partisan law
 
-This is the part that needs saying plainly rather than discovered later. The
-house law bans taking a party's side, and the biggest American news stories are
-usually partisan. So we do NOT chase the top of the news. We chase the lane that
-is universal by construction:
+**CORRECTED 2026-08-03, same day, because the first version of this section was
+too conservative and the owner caught it.**
 
-**The daily indignities of being an American consumer and tenant and patient.**
-Fees, denials, hold music, insurance, rent, screening reports, airlines,
-subscriptions, medical billing, price changes, and algorithmic decisions made
-about you by something with no phone number.
+The first draft said the no-partisan law "rules out the biggest and most searched
+stories of any given week, and that costs reach." That conflated two different
+things, and the craft research commissioned in the same session contradicts it.
 
-That lane is: genuinely enraging, already being talked about, non-partisan
-BECAUSE everyone of every politics has been put on hold, endlessly supplied, and
-absolutely full of absurd primary documents. It is also exactly the territory
-South Park and Chappelle work when they are at their rudest.
+**The law bans taking a SIDE. It does not ban a TOPIC.** Parker, on NPR,
+describing the actual formula:
 
-**The honest cost, stated up front:** this rules out the biggest and most
-searched stories of any given week, and that costs reach. The trade is a show
-that cannot be dismissed as partisan and cannot be argued with on facts. That is
-the right trade for an account that has to survive, and it is a trade rather
-than a free win.
+> "we take an issue, and we sort of always have **two sides about to kill each
+> other over it and the boys in the middle** going, doing fart jokes and saying,
+> who cares?"
+
+That is a STAGING instruction, and it is how South Park has covered the single
+biggest political story of a given week for 27 years without being a Democrat
+show or a Republican show. Both sides are in frame, both are the target, and the
+POV character is the person stuck between them who did not ask to be there.
+
+**So the genuinely off-limits set is much smaller than the first draft claimed.**
+It is not "political stories." It is:
+
+- stories whose only available villain is a PARTY rather than an institution
+- stories where the funny angle requires the audience to already agree with one
+  side
+- stories where we would have to assert a contested claim rather than quote a
+  document
+
+Everything else is available, including the top of the news, provided the target
+is the machinery and Ray is its hostage rather than its partisan. A shutdown, an
+agency rule, a procurement, a subsidy, an enforcement action: all of these have
+an institution doing something insane to a person, which is the show.
+
+**The reach cost is therefore real but small,** and it is a cost of ANGLE
+selection rather than of topic selection. What we give up is the cheap version:
+the joke that works only because half the audience already hates the target. That
+one is easy, it is the most-shared kind of political comedy, and it is also the
+one that makes the account dismissible and eventually killable. Giving it up is
+the trade, and it is a much narrower trade than the first draft described.
+
+**The lane still holds as the DEFAULT**, because the universal indignities are
+where the absurd primary documents are: fees, denials, hold music, insurance,
+rent, screening reports, airlines, subscriptions, medical billing, and decisions
+made about you by something with no phone number. That is where the show is
+strongest. It is a default, not a fence.
 
 ## Approved scope
 
@@ -225,7 +250,7 @@ than a free win.
 | 2 | craft research: South Park, Harmon/R&M, Chappelle, motion, retention | **DONE.** 3 briefs, all sourced. Headline: our own CAST_BIBLE beat shape fails the deletion test and was manufacturing the defect. |
 | 3 | `knowledge/COMEDY_BIBLE.md` — the lane, the bit, but/therefore, the taboo line | **DONE.** 610 lines, every rule sourced to a practitioner. |
 | 4 | `knowledge/MOTION_BIBLE.md` — what moves and when, the moving hold, camera language | **DONE.** Three motion budgets, the moving hold with frame numbers, Lang's EDIT-vs-CUT finding, measured retention. |
-| 5 | ENGINE: the motion system (gesture, pose keys, camera moves, parallax) | TODO — biggest single task |
+| 5 | ENGINE: the motion system | **IN PROGRESS.** Landed: the moving hold (default ON, `still` opts out), whole-body drift on the root transform, non-metronomic blink, and a default per-shot camera push (`locked` opts out). STILL MISSING: pose blending / gesture keyframes, parallax layers, smears, hair and coat follow-through. |
 | 6 | `scripts/beat_check.py` + self-test — the but/therefore chain, mechanical | **DONE.** Lint half only, and it says so: the deletion/swap/named-expectation tests belong to the flow critic. |
 | 7 | `scripts/motion_check.py` + self-test — frozen share, max hold, events/5s, LIFE floor, scene cap | **DONE.** Reads the RENDER, not the board. Fails case 0003 at 59% frozen / 3.0s hold. Mutation-tested on the frozen-share and cut-share guards. Discriminates a slideshow (87% frozen, 100% cuts) from a pan (0%, 0%), so cutting more often cannot game it. |
 | 8 | the writers room rebuilt: beat sheet before script, opposed agents, real argument | TODO |
@@ -284,6 +309,31 @@ without recalibrating it would make the gate worse while looking like progress.
 The method is: sample case 0003 at both intervals, sweep the threshold at the
 finer one, and take the value that reproduces the verdict the owner already gave.
 
+## Motion system, MEASURED trajectory
+
+Same episode, same script, same audio. Only the engine changed.
+
+| metric | shipped | pass 1 | pass 2 | target |
+| --- | --- | --- | --- | --- |
+| frozen share | 59% | 38% | **25%** | 15% |
+| live share | 31% | 52% | **66%** | 40% (PASS) |
+| events per 5s | 2.57 | 3.43 | **4.19** | 1.0 (PASS) |
+| cut share | 37% | 28% | **23%** | 65% (PASS) |
+| longest static hold | 3.0s @ 9.0s | 3.0s @ 9.0s | **2.5s @ 35.5s** | 2.0s |
+
+**Pass 1 to pass 2 was one bug, and it is the moving-hold principle at camera
+scale.** The first push eased to REST over 4.2s, so every shot longer than that
+was frozen for its entire tail, and the longest hold did not move at all between
+passes. A held camera is never actually at rest either. Adding a small
+non-settling drift on top of the ease took frozen from 38% to 25%.
+
+**The two rows still failing have one cause and it is now well scoped.** The
+worst remaining hold is at 35.5s, which is the lectern shot: no character in
+frame, so the moving hold contributes nothing and only the camera is working.
+Character-free shots need PROP AND WORLD animation, which MOTION_BIBLE ranks
+Tier 2 and which pays twice, because a counter incrementing or a stack growing
+also does comedy work the dialogue cannot.
+
 ## Wrap
 - [ ] frozen share under 15%, measured, on a real episode
 - [ ] a script whose every seam is BUT or THEREFORE, checked mechanically
@@ -291,3 +341,44 @@ finer one, and take the value that reproduces the verdict the owner already gave
 - [ ] every new gate self-tests RED on purpose and is mutation-tested
 - [ ] an episode the owner watches and does not call a slideshow
 - [ ] delete this file
+
+## Motion system, pass 1: what landed and what is still missing
+
+**Landed.**
+
+- **The moving hold**, replacing the 3.4px sway that was the entire body-movement
+  vocabulary. Three summed sines at incommensurable periods (2.7s / 3.9s / 6.1s)
+  so the cycle never visibly repeats, per-instance phase derived from `x` so Ray
+  and Dee are never in lockstep, and enough amplitude to register on pixels. The
+  old idle was a peak velocity of about 10 px/s against a derived ~40 px/s floor
+  for ambient motion to be seen at all: it was four times too slow to be visible
+  even in principle.
+- **Whole-body drift on the root transform.** This is the component that moves
+  enough AREA to register on a frame-difference metric. A blink changes about
+  0.05% of the frame and never will.
+- **A non-metronomic blink**, jittered per instance and per cycle.
+- **A default per-shot camera push**, 4.5% over ~4.2s with an ease-out plus a
+  small lateral slide. `useCurrentFrame()` inside a `Shot` returns SHOT-relative
+  frames, so each push starts when its own shot starts rather than running off
+  the episode clock, which is what makes it safe to apply to all 18 shots at
+  once.
+
+**Both defaults are opt-OUT, not opt-in** (`still` on the figure, `locked` on the
+camera). That is the load-bearing design decision: gates catch the failure,
+defaults prevent it, and a rig where stillness is free will keep producing frozen
+film no matter how many gates sit downstream.
+
+**Still missing, and none of it is optional for the 100x:**
+
+- **Pose blending and gesture keyframes.** `pose` is still a discrete enum with a
+  switch statement, so a figure can hold a pose but cannot TRANSITION between
+  two. That means no gesture, no reach, no head turn, no point that arrives. The
+  refactor is known: arm poses return polylines of different lengths (3, 4, or a
+  `bent()` result), so they must be resampled to a fixed joint count before any
+  two can be blended.
+- **Parallax layers.** Free depth from art we already own, and because our first
+  law puts the cast INSIDE the mechanism, the mechanism's own parts are the
+  layers.
+- **Smears** on the two or three biggest actions per episode.
+- **Follow-through** on hair and coat. A one-time segmented-rig build, and worth
+  it because the cast is fixed by house rule.
