@@ -210,6 +210,62 @@ documents are and documents are our pre-loaded joke connector. **A default, not 
 fence.** If the funniest provable thing in America today is the top story, that
 is the episode.
 
+## THE ACTING MANDATE (owner, 2026-08-03, after watching the motion pass)
+
+> "the characters still did not move at all, they were just like a piece of
+> furniture in the screen, not useful at all, they are supposed to be characters,
+> they like don't move don't talk don't have mannerisms etc, the way you use the
+> characters u need to study and make 100x better"
+
+**He is right, and the way this went wrong is the important part.**
+
+The motion pass moved the METRIC and not the EXPERIENCE. Live share went 31% ->
+66% and frozen share 59% -> 25%, and the characters are still furniture. Both
+things are true at once, and believing the numbers over the owner would have been
+the whole failure.
+
+**The reason is a category error I made in my own bible.** MOTION_BIBLE names
+three budgets: LIFE, EVENTS and STAGING. I built LIFE, which is explicitly
+defined in that same document as the budget that **does NOT read at thumbnail** —
+breathing, drift, blinks, sub-perceptual movement whose only job is to stop a
+frame reading as a freeze. It is anti-death. It is not performance.
+
+What the owner is asking for is a fourth thing the bible never named:
+
+> **ACTING. The character WANTS something and you can see it in the body.**
+
+Gesture, mannerism, weight shift with intent, a head turn to look at the thing
+being discussed, a hand that points at the document, a recoil, a shrug, a lean.
+None of that exists in this rig at any amplitude, so no amount of tuning LIFE
+will ever produce it. `pose` is a discrete enum resolved by a switch statement:
+a figure can HOLD one of five poses and cannot travel between two. There is no
+gesture because there is no mechanism for a gesture.
+
+**THE LESSON, for FIELD_NOTES:** a proxy metric improving is not the thing
+improving. I built the instrument, the instrument went green, and the defect was
+untouched, because the instrument measured pixel change and the complaint was
+about INTENT. When the owner and the number disagree, the number is measuring
+something adjacent.
+
+### What acting requires, in build order
+
+1. **Pose blending.** Arm poses currently return polylines of different lengths
+   (3, 4, or a `bent()` result). They must be resampled to a fixed joint count
+   before any two can be interpolated. This is the unlock; nothing else works
+   without it.
+2. **A gesture track per shot**, so the director can say Ray goes arms-crossed ->
+   point at 3.2s and it EASES, with anticipation and overshoot rather than a
+   swap.
+3. **Head turns and eyelines.** A character who never looks at the thing being
+   discussed is not in the scene. This is the cheapest possible acting beat and
+   we have none of it.
+4. **Mannerisms as character.** CAST_BIBLE defines how Ray and Dee TALK and says
+   nothing about how they MOVE. Ray needs a physical tell and so does Dee, used
+   consistently, because a mannerism is what makes a recurring cast recognisable
+   at thumbnail size.
+5. **Reaction as a beat.** One register change, then hold. Currently a face
+   changes expression on a keyframe with no body behind it.
+
 ## Approved scope
 
 1. **A motion system in the engine.** Gesture and pose keyframing, camera moves
@@ -243,7 +299,7 @@ is the episode.
 | 2 | craft research: South Park, Harmon/R&M, Chappelle, motion, retention | **DONE.** 3 briefs, all sourced. Headline: our own CAST_BIBLE beat shape fails the deletion test and was manufacturing the defect. |
 | 3 | `knowledge/COMEDY_BIBLE.md` — the lane, the bit, but/therefore, the taboo line | **DONE.** 610 lines, every rule sourced to a practitioner. |
 | 4 | `knowledge/MOTION_BIBLE.md` — what moves and when, the moving hold, camera language | **DONE.** Three motion budgets, the moving hold with frame numbers, Lang's EDIT-vs-CUT finding, measured retention. |
-| 5 | ENGINE: the motion system | **IN PROGRESS.** Landed: the moving hold (default ON, `still` opts out), whole-body drift on the root transform, non-metronomic blink, and a default per-shot camera push (`locked` opts out). STILL MISSING: pose blending / gesture keyframes, parallax layers, smears, hair and coat follow-through. |
+| 5 | ENGINE: the motion system + **THE ACTING SYSTEM (the owner's top note)** | **IN PROGRESS.** Landed: the moving hold (default ON, `still` opts out), whole-body drift on the root transform, non-metronomic blink, and a default per-shot camera push (`locked` opts out). STILL MISSING: pose blending / gesture keyframes, parallax layers, smears, hair and coat follow-through. |
 | 6 | `scripts/beat_check.py` + self-test — the but/therefore chain, mechanical | **DONE.** Lint half only, and it says so: the deletion/swap/named-expectation tests belong to the flow critic. |
 | 7 | `scripts/motion_check.py` + self-test — frozen share, max hold, events/5s, LIFE floor, scene cap | **DONE.** Reads the RENDER, not the board. Fails case 0003 at 59% frozen / 3.0s hold. Mutation-tested on the frozen-share and cut-share guards. Discriminates a slideshow (87% frozen, 100% cuts) from a pan (0%, 0%), so cutting more often cannot game it. |
 | 8 | the writers room rebuilt: beat sheet before script, opposed agents, real argument | TODO |

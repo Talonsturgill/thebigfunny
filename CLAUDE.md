@@ -20,6 +20,35 @@ only number the platforms rank on.
 Target 50 to 58 seconds so the cut has somewhere to breathe. Revisit this only
 after a long run of episodes that are genuinely tight at sixty.
 
+## THE MISSION (owner, 2026-08-03)
+
+> "This is The Big Funny, the funniest show in America, through pushing borders,
+> highlighting hilarious and crazy things that happen daily, and through
+> leveraging ai we can run a automation that runs daily so nobody can keep up
+> with our output eventually."
+
+Three claims, and the third one is the strategy.
+
+1. **The funniest show in America.** Not a satire account, not a news explainer.
+   The bar is FUNNY and every other virtue here is downstream of it.
+2. **By pushing borders**, and by finding the genuinely insane things that happen
+   in this country every single day. See the no-sacred-cows rule below.
+3. **DAILY OUTPUT IS THE MOAT.** A human studio cannot ship a written, sourced,
+   voiced and animated episode every day forever. This one can, and the
+   compounding is the whole business case: nobody can keep up.
+
+**Claim 3 constrains every technical decision in this repo**, and it is the
+reason for rules that would otherwise look arbitrary:
+
+- **The cast is FIXED** because a recurring cast is what makes daily sustainable.
+  Redrawing characters per episode does not scale and it is where runs die.
+- **The art library is a KIT**, assembled per episode rather than drawn per
+  episode.
+- **Every gate is mechanical** wherever it can be, because a human bottleneck at
+  any phase caps output at human speed and forfeits the moat.
+- **Quality is not traded for speed.** Shipping something bad daily is not a moat,
+  it is a faster way to be ignored. The gates exist so the pace is survivable.
+
 ## What this show is
 
 One story a day. Something in America got worse, and we name who did it.
