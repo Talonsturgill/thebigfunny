@@ -35,11 +35,61 @@
  *     side. This is what carries light in ink drawing.
  */
 import React from 'react';
-import {Pt, ribbon, edge, band, spline, bent, lerp} from './draw';
+import {Pt, ribbon, edge, band, spline, bent, lerp, blendLine} from './draw';
 
 export type Emotion =
   | 'neutral' | 'angry' | 'worried' | 'shock' | 'smug' | 'flat' | 'squint';
 export type Pose = 'stand' | 'arms-crossed' | 'point' | 'panic' | 'raise';
+
+/**
+ * A GESTURE. One key = "be in this pose from this second".
+ *
+ * `pose` used to be a single enum resolved by a switch, so a figure could HOLD
+ * one of five poses and never travel between two. That is why the cast read as
+ * furniture: there was no gesture because there was no mechanism for a gesture,
+ * and no amount of tuning the idle sway could ever have produced one.
+ *
+ * `t` is in EPISODE seconds, matching the board, because the director works in
+ * absolute time and every other timing in this show already does.
+ */
+export type PoseKey = {t: number; pose: Pose; /** seconds, default 0.34 */ ease?: number};
+export type PoseTrack = PoseKey[];
+
+const GESTURE_EASE_S = 0.34;
+
+/**
+ * -> [{pose, w}] weights summing to 1 for the frame.
+ *
+ * Smoothstep rather than linear, because a linear arm arrives at constant speed
+ * and reads mechanical: slow-in/slow-out is the cheapest and highest-return of
+ * the twelve principles on a rig like this one.
+ */
+export function poseAt(track: PoseTrack, f: number, fps: number)
+    : {pose: Pose; w: number}[] {
+  if (!track.length) return [{pose: 'stand', w: 1}];
+  const t = f / fps;
+  const ks = [...track].sort((a, b) => a.t - b.t);
+  // Advance only past keys whose transition has fully COMPLETED. The first cut
+  // of this advanced as soon as `ks[i+1].t <= t`, which made the next key become
+  // `cur` the instant its time arrived, so the blend TO it never happened and
+  // every gesture snapped. The unit test caught it on the frame the key lands.
+  let i = 0;
+  while (i + 1 < ks.length
+         && t >= ks[i + 1].t + (ks[i + 1].ease ?? GESTURE_EASE_S)) i++;
+  const cur = ks[i];
+  const nxt = ks[i + 1];
+  if (!nxt) return [{pose: cur.pose, w: 1}];
+  const dur = Math.max(1e-3, nxt.ease ?? GESTURE_EASE_S);
+  if (t < nxt.t) return [{pose: cur.pose, w: 1}];
+  const u = Math.min(1, (t - nxt.t) / dur);
+  const e = u * u * (3 - 2 * u);          // smoothstep
+  // Collapse both ends to a single pose. At e=0 exactly (the frame a key lands)
+  // the maths correctly returns the new pose at weight ZERO, but blending two
+  // polylines to contribute nothing is wasted work every frame a gesture starts.
+  if (e <= 0) return [{pose: cur.pose, w: 1}];
+  if (e >= 1) return [{pose: nxt.pose, w: 1}];
+  return [{pose: cur.pose, w: 1 - e}, {pose: nxt.pose, w: e}];
+}
 export type Sex = 'f' | 'm';
 
 const INK = '#141420';
@@ -173,7 +223,8 @@ export type FigureProps = {
   sex: Sex;
   x?: number; y?: number; scale?: number; facing?: 1 | -1;
   emotion?: Emotion;
-  pose?: Pose;
+  /** A single pose HOLDS. A track GESTURES. See PoseTrack. */
+  pose?: Pose | PoseTrack;
   skin?: string; hair?: string; eyes?: string;
   /** garment + accent. Two colours is all a flat figure should carry. */
   wear?: {top: string; bottom: string; accent?: string};
@@ -186,6 +237,10 @@ export type FigureProps = {
   mouthSpread?: number;
   talking?: boolean;
   idleGain?: number;
+  /** Frames per second, for resolving a PoseTrack's seconds. The show is 30 and
+   *  always has been; this exists so a lib file does not hardcode a show
+   *  constant it cannot see. */
+  fps?: number;
   /** OPT-OUT of the moving hold. Deliberately not the default: a rig where
    *  stillness is free keeps producing frozen film. Use only when a shot needs
    *  a genuinely frozen figure as a deliberate effect. */
@@ -208,7 +263,7 @@ const EYES: Record<Emotion, {open: number; lid: number; brow: number; browTilt: 
 export const Figure: React.FC<FigureProps> = ({
   frame: f, sex,
   x = 0, y = 0, scale = 1, facing = 1,
-  emotion = 'neutral', pose = 'stand', still = false,
+  emotion = 'neutral', pose = 'stand', still = false, fps = 30,
   skin = '#e0a882', hair = '#2a1c16', eyes = '#3d5a72',
   wear = {top: '#3f6f8f', bottom: '#2f3a52', accent: '#e8dcc8'},
   hairstyle = 'short',
@@ -310,8 +365,14 @@ export const Figure: React.FC<FigureProps> = ({
   const torsoW = [s.shoulder * 0.66, s.shoulder, s.bust, s.underbust,
                   s.waist, s.upperHip, s.hip, s.hip * 0.92];
 
+  /* THE POSE MIX for this frame. A bare Pose is a hold (weight 1); a PoseTrack
+     is a gesture, and poseAt returns the two poses being travelled between. */
+  const mix = Array.isArray(pose)
+    ? poseAt(pose, f, fps)
+    : [{pose: pose as Pose, w: 1}];
+
   /* ---- ARMS. A pose is three joint positions, not a redrawn path. */
-  const armSpine = (side: 1 | -1): Pt[] => {
+  const armFor = (side: 1 | -1, pose: Pose): Pt[] => {
     const far = side > 0;
     const sh: Pt = [side * (s.shoulderJoint - (far ? 16 : 0)) + shift * 0.4,
                     Y.shoulder + 6 + (far ? 16 : 0) + side * shTilt];
@@ -339,6 +400,18 @@ export const Figure: React.FC<FigureProps> = ({
         return bent(sh, [side * (s.hip * 0.5 + 16 + (side > 0 ? 4 : 0)), Y.hip + 62],
                     side * (side > 0 ? 15 : 11), 4);
     }
+  };
+
+  /* THE GESTURE. armFor() gives one pose; this travels between two.
+     Poses return polylines of DIFFERENT LENGTHS (arms-crossed 4, raise 3, panic
+     3, the default a 4-sample bent()), and two polylines of different lengths
+     cannot be interpolated, which is exactly why this rig could only ever hold a
+     pose. blendLine resamples both by ARC LENGTH first, so a joint stays a joint
+     instead of sliding along the arm as it blends. */
+  const armSpine = (side: 1 | -1): Pt[] => {
+    if (mix.length === 1) return armFor(side, mix[0].pose);
+    const [a, b] = mix;
+    return blendLine(armFor(side, a.pose), armFor(side, b.pose), b.w, 6);
   };
 
   /* ---- LEGS. The weight leg carries the body and stays near-straight; the free

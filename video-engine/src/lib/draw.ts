@@ -204,3 +204,65 @@ export function band(
   const at = (t: number) => spine.map((p, i) => add(p, mul(perp(tan[i]), w(i) * t * side)));
   return spline([...at(from), ...at(to).reverse()], true);
 }
+
+/**
+ * Resample a polyline to exactly `n` points, evenly spaced by ARC LENGTH.
+ *
+ * Written 2026-08-03 to unblock pose blending, which is the thing standing
+ * between this show and characters that act. `Figure.armSpine()` returns a
+ * different number of points per pose (arms-crossed 4, raise 3, panic 3, the
+ * default a 4-sample `bent()`), and two polylines of different lengths cannot be
+ * interpolated. So a figure could HOLD one of five poses and never travel
+ * between two, which is why the cast reads as furniture: there is no gesture
+ * because there is no mechanism for a gesture.
+ *
+ * Arc length rather than index, because index-lerping two polylines whose points
+ * are unevenly spaced slides the elbow along the arm as it blends. Sampling by
+ * distance keeps a joint a joint.
+ */
+export function resample(pts: Pt[], n: number): Pt[] {
+  if (n < 2) return pts.slice(0, Math.max(1, n));
+  if (pts.length === 0) return [];
+  if (pts.length === 1) return Array.from({length: n}, () => pts[0]);
+
+  const seg: number[] = [];
+  let total = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const dx = pts[i][0] - pts[i - 1][0];
+    const dy = pts[i][1] - pts[i - 1][1];
+    const d = Math.hypot(dx, dy);
+    seg.push(d);
+    total += d;
+  }
+  // A degenerate polyline (every point identical) has no arc to walk along.
+  if (total <= 1e-9) return Array.from({length: n}, () => pts[0]);
+
+  const out: Pt[] = [pts[0]];
+  const step = total / (n - 1);
+  let i = 1, walked = 0;
+  for (let k = 1; k < n - 1; k++) {
+    const target = k * step;
+    while (i < seg.length && walked + seg[i - 1] < target) {
+      walked += seg[i - 1];
+      i++;
+    }
+    const rem = target - walked;
+    const t = seg[i - 1] > 1e-9 ? rem / seg[i - 1] : 0;
+    out.push([
+      pts[i - 1][0] + (pts[i][0] - pts[i - 1][0]) * t,
+      pts[i - 1][1] + (pts[i][1] - pts[i - 1][1]) * t,
+    ]);
+  }
+  out.push(pts[pts.length - 1]);
+  return out;
+}
+
+/** Blend two polylines of any lengths. `t` 0 = a, 1 = b. */
+export function blendLine(a: Pt[], b: Pt[], t: number, joints = 6): Pt[] {
+  const A = resample(a, joints);
+  const B = resample(b, joints);
+  return A.map((p, i) => [
+    p[0] + (B[i][0] - p[0]) * t,
+    p[1] + (B[i][1] - p[1]) * t,
+  ] as Pt);
+}
