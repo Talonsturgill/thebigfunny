@@ -38,6 +38,80 @@ is the whole overhaul. Phase 2 does not soften for it and never will.
 
 ---
 
+## 0.5 THE POV, AND THE THESIS
+
+**Owner, 2026-08-03, and this is the most load-bearing sentence anyone has
+written about this show:**
+
+> "your character arc like pov I think is the average American, and how we are
+> going through life and what is happening here in the US, as it gets crazy here,
+> and things are painted normal but insane things are happening every day"
+
+Three things in that, and each one settles a question that was open.
+
+### 0.5.1 The POV is THE AVERAGE AMERICAN. Not a commentator.
+
+Ray is not a host, a journalist, a satirist or a guy with a podcast. **He is a
+person this is happening TO.** He did not choose the subject; the subject arrived
+in his mail.
+
+This kills the failure mode that has produced every weak episode so far. A
+commentator has opinions ABOUT a thing and can only ever generate commentary. A
+person LIVING it has a want, an obstacle and a stake, which is the difference
+between a scene and a segment. It is also Harmon's pity gate: the audience lands
+on whoever they can feel sorry for, and you cannot feel sorry for a narrator.
+
+**Ray is never the smartest person in the episode. He is the one being charged
+for it.**
+
+### 0.5.2 The arc is ONGOING. This is a series, not 365 sketches.
+
+"How we are going through life" is a continuing condition, not a topic. The show
+is not a numbered list of unrelated outrages; it is **one guy's accumulating
+experience of living in a country that keeps getting stranger while insisting it
+is fine.**
+
+Consequences that are now rules:
+
+- **Ray never wins, and never learns.** Harmon's TV circle beat 8, "I must admit
+  the futility of change." If Ray solved it, the condition would end and the show
+  would end with it.
+- **He does not reset to zero.** He is not surprised in episode 200 the way he was
+  in episode 2. The wear accumulates, and that wear IS the character.
+- **The Institution is one antagonist wearing different uniforms.** A landlord's
+  screening service, an insurer, an airline and a hospital billing department are
+  the same entity to Ray, because to a person on hold they are.
+
+### 0.5.3 THE THESIS: painted normal, actually insane
+
+> **Things are painted normal but insane things are happening every day.**
+
+That is the show in one line, and it is not a mood: it is a MECHANISM, and it is
+the same mechanism as everything else in this file.
+
+- It is the CONNECTOR (section 10). One thing, two interpretations: the document
+  reads as routine and says something deranged.
+- It is Carlin's soft language: the paint IS the euphemism.
+- It is why the fact gate licenses the crudeness. **We are not claiming the world
+  is insane. We are quoting the paint and letting the viewer see through it.**
+
+**THE PAINT IS THE ANTAGONIST.** Not the fee, not the denial, not the number. The
+calm, competent, well-designed surface that presents an atrocity as a normal
+Tuesday. The hold music. The word "unfortunately." The cheerful onboarding
+illustration on the letter that ruins your year.
+
+Which gives every episode a mandatory image:
+
+> **THE PAINT AND WHAT IS UNDER IT MUST BE IN THE SAME FRAME**, with no verb of
+> interpretation between them. Never "which means." Never "in other words." Put
+> the reassuring sentence and the insane consequence side by side and stop
+> talking.
+
+Ray's whole function is to be the only one in the frame who has not agreed to
+pretend the paint is the wall.
+
+---
+
 ## 1. THE FIRST LAW: BUT / THEREFORE
 
 Trey Parker, NYU Tisch guest lecture (Prof. Ken Liotti's "Story-Telling

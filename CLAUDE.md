@@ -53,6 +53,19 @@ reason for rules that would otherwise look arbitrary:
 
 One story a day. Something in America got worse, and we name who did it.
 
+**The POV is the average American**, and the arc is ongoing: how we are going
+through life here as it gets crazier. Ray is not a commentator with opinions
+about a thing, he is a person it is HAPPENING TO, which is the difference between
+a scene and a segment. He never wins and he never resets; the wear accumulates
+and that wear is the character.
+
+**The thesis, in one line: things are painted normal but insane things are
+happening every day.** THE PAINT IS THE ANTAGONIST. Not the fee or the number,
+but the calm competent surface that presents an atrocity as a normal Tuesday.
+Every episode puts the paint and what is under it in the SAME FRAME, with no verb
+of interpretation between them. We never claim the world is insane; we quote the
+paint and let the viewer see through it.
+
 The show covers ANY topic and is beholden to NO single POV. It is not left or
 right and it never carries anyone's water, and that is the SOURCE of the licence
 rather than a limit on it: a show on nobody's team can dunk on everyone, and a
