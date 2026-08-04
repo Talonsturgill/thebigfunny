@@ -24,9 +24,12 @@ after a long run of episodes that are genuinely tight at sixty.
 
 One story a day. Something in America got worse, and we name who did it.
 
-The show is NOT political. It is not left or right, and it never takes a party's
-side, because the audience is everyone who has ever been put on hold. The
-villain is always an institution and never a voter.
+The show covers ANY topic and is beholden to NO single POV. It is not left or
+right and it never carries anyone's water, and that is the SOURCE of the licence
+rather than a limit on it: a show on nobody's team can dunk on everyone, and a
+partisan show structurally cannot, because it has to keep half the field safe.
+Both sides in frame, both get hit. The audience is everyone who has ever been
+put on hold, and the villain is always an institution and never a voter.
 
 The engine is not "write a joke." Claude models are mediocre joke writers and
 excellent researchers, so the labour is divided accordingly:
@@ -148,10 +151,18 @@ Everything else ships.
 
 - **No claim without a source.** Every factual line in a script carries a
   claim-id traced to a primary document. Phase 2 kills what cannot be proven.
-- **Punch at institutions, companies, and public figures acting in public.**
-  Never at private individuals. Never at protected classes. This is not
-  squeamishness, it is the line that keeps the account alive; South Park has
-  held it for 27 years while being ruder than anything we will make.
+- **NO SACRED COWS. There is no subject this show will not go at.** Politics,
+  religion, ideology, celebrity, culture war, our own audience. A run that ducks
+  a story because the topic is uncomfortable has failed the job, not protected
+  the channel. Either it is all okay or none of it is.
+- **Punch at POWER and self-importance, never at the powerless person inside the
+  system.** Institutions, companies, public figures acting in public, movements,
+  and the certainty of anybody enjoying being right: all of it, as hard as we
+  can. The clerk, the nurse, the driver, the applicant: never. This is CRAFT and
+  not caution. Punching down is the WEAK version, because anybody can mock
+  somebody with no power and the entire charge of a dunk comes from the size of
+  what is being dunked on. South Park has held this line for 27 years while
+  being ruder than anything we will make.
 - **No slurs, no hate, no sexual content, no harassment.** These are bans, not
   demonetizations. Crude is fine. Those are not crude, they are fatal.
 - **No two episodes visually alike.** Ledger-enforced, same as the cast law
