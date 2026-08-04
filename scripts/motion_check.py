@@ -67,8 +67,24 @@ EVENT_DELTA = 8.0           # above this, something legibly happened
 CUT_DELTA = 45.0            # a spike this large bounded by calm is a cut
 MAX_FROZEN_SHARE = 0.15
 MAX_HOLD_S = 2.0
+# THE LIFE BAND, added 2026-08-03 from the motion research. Between FROZEN and
+# EVENT sits genuine continuous movement that is neither a freeze nor a cut: a
+# camera drift, a moving hold, a prop running. Professional limited animation
+# runs THREE budgets that fail differently and cannot substitute for each other
+# (LIFE / EVENTS / STAGING, see knowledge/MOTION_BIBLE.md section 1).
+#
+# Without this floor the gate measures LIFE and EVENTS with one instrument, and
+# a film can satisfy it entirely by cutting. That is the loophole case 0003 went
+# through: visual_check passed it on declared events while 59% of it was frozen.
+MIN_LIVE_SHARE = 0.40
 MIN_EVENTS_PER_5S = 1.0     # the owner's five second rule
 MAX_CUT_SHARE = 0.65        # above this, the motion is editing, not movement
+# Lang et al. 1993 / Lang 2000: an EDIT (angle change, same scene) improves
+# recognition with no observed ceiling, but a CUT (change to a NEW scene) stops
+# helping above roughly 10 in two minutes and then recognition drops sharply.
+# So: many angle changes, few location changes. This cap is specifically what
+# stops "add more cuts" from being a way to pass the motion floor.
+MAX_SCENE_CHANGES_PER_MIN = 5.0
 
 
 def ff_bin(name):
@@ -170,6 +186,26 @@ def analyse(ts, deltas):
             cuts += 1
     moving = sum(events)
     cut_share = (cuts / moving) if moving else 1.0
+    cuts_per_min = (cuts / span) * 60.0 if span else 0.0
+
+    # LIFE: moving, and NOT because of a cut.
+    #
+    # First definition of this was the band FROZEN <= d < EVENT, and the
+    # self-test caught it immediately: a continuous pan produces deltas ABOVE
+    # EVENT_DELTA, so the fixture that is nothing but movement scored 0% live.
+    # The band was excluding exactly what it exists to reward. LIFE is not a
+    # middle magnitude, it is a CAUSE: the picture changed and no edit did it.
+    cut_at = set()
+    for i, d in enumerate(deltas):
+        if d < CUT_DELTA:
+            continue
+        prev = deltas[i - 1] if i > 0 else 0.0
+        nxt = deltas[i + 1] if i + 1 < n else 0.0
+        if prev < d * 0.5 and nxt < d * 0.5:
+            cut_at.add(i)
+    live = [d >= FROZEN_DELTA and i not in cut_at
+            for i, d in enumerate(deltas)]
+    live_share = sum(live) / n
 
     # The five second rule, reported per bucket so a failure has an address.
     buckets = []
@@ -191,6 +227,8 @@ def analyse(ts, deltas):
         "events_per_5s": events_per_5s,
         "cut_share": cut_share,
         "cuts": cuts,
+        "cuts_per_min": cuts_per_min,
+        "live_share": live_share,
         "buckets": buckets,
     }
 
@@ -236,6 +274,20 @@ def check(path):
     dead = [f"{b:.0f}-{b+5:.0f}s" for b, ev, _ in s["buckets"] if ev == 0]
     row("no 5s bucket with nothing happening in it", not dead,
         "clean" if not dead else f"dead: {', '.join(dead[:6])}")
+
+    row(f"live share >= {MIN_LIVE_SHARE:.0%} (things move BETWEEN the cuts)",
+        s["live_share"] >= MIN_LIVE_SHARE,
+        f"{s['live_share']:.0%} of the film is continuous movement"
+        + ("" if s["live_share"] >= MIN_LIVE_SHARE
+           else "   <- the LIFE budget. A camera drift, a moving hold, a prop "
+                "running. Cutting more cannot fix this row, which is the point."))
+
+    row(f"scene changes <= {MAX_SCENE_CHANGES_PER_MIN:.0f}/min",
+        s["cuts_per_min"] <= MAX_SCENE_CHANGES_PER_MIN,
+        f"{s['cuts_per_min']:.1f}/min"
+        + ("" if s["cuts_per_min"] <= MAX_SCENE_CHANGES_PER_MIN
+           else "   <- above ~10 per 2min recognition DROPS (Lang). Use angle "
+                "changes and camera moves instead; those have no ceiling."))
 
     row(f"cut share <= {MAX_CUT_SHARE:.0%} (movement, not just editing)",
         s["cut_share"] <= MAX_CUT_SHARE,

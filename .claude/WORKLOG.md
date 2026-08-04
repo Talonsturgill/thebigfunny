@@ -227,7 +227,7 @@ than a free win.
 | 4 | `knowledge/MOTION_BIBLE.md` — what moves and when, the moving hold, camera language | **DONE.** Three motion budgets, the moving hold with frame numbers, Lang's EDIT-vs-CUT finding, measured retention. |
 | 5 | ENGINE: the motion system (gesture, pose keys, camera moves, parallax) | TODO — biggest single task |
 | 6 | `scripts/beat_check.py` + self-test — the but/therefore chain, mechanical | **DONE.** Lint half only, and it says so: the deletion/swap/named-expectation tests belong to the flow critic. |
-| 7 | `scripts/motion_check.py` + self-test — frozen share, max hold, events/5s | **DONE.** Reads the RENDER, not the board. Fails case 0003 at 59% frozen / 3.0s hold. Mutation-tested on the frozen-share and cut-share guards. Discriminates a slideshow (87% frozen, 100% cuts) from a pan (0%, 0%), so cutting more often cannot game it. |
+| 7 | `scripts/motion_check.py` + self-test — frozen share, max hold, events/5s, LIFE floor, scene cap | **DONE.** Reads the RENDER, not the board. Fails case 0003 at 59% frozen / 3.0s hold. Mutation-tested on the frozen-share and cut-share guards. Discriminates a slideshow (87% frozen, 100% cuts) from a pan (0%, 0%), so cutting more often cannot game it. |
 | 8 | the writers room rebuilt: beat sheet before script, opposed agents, real argument | TODO |
 | 9 | rewrite the routine prompt around the new order of operations | TODO |
 | 10 | produce an episode that clears every new gate, with before/after numbers | TODO |
@@ -250,6 +250,39 @@ than a free win.
 - **E:** trigger config (lives outside this repo).
 - Dee's voice pick is with the owner. `main` carries Pulcherrima and the owner
   has now called the voices good, so treat this as SETTLED unless he reopens it.
+
+## Measured again after the LIFE floor and scene cap landed
+
+Case 0003 now fails four rows, and the two new ones found something the critics
+and I both missed:
+
+| row | measured | ceiling |
+| --- | --- | --- |
+| frozen share | 59% | 15% |
+| longest hold | 3.0s | 2.0s |
+| **live share** | **31%** | 40% |
+| **scene changes** | **11.4/min** | 5/min |
+
+**It was cutting more than twice the ceiling WHILE being 59% frozen.** That is
+the pathology stated exactly: the episode compensated for having no movement by
+cutting constantly, and per Lang that trade actively damages recognition of the
+fact Phase 2 spent the run verifying. Nobody had noticed, because until today
+nothing measured either number.
+
+## Known refinement, with its method, NOT yet done
+
+The motion research recommends sampling every 5 frames (0.167s) instead of 0.5s,
+because a blink (0.1-0.4s) and a 4-frame snap push are both invisible at the
+current interval. That change REQUIRES recalibrating `FROZEN_DELTA`, which is
+currently 3.0 and was calibrated at 0.5s spacing against the owner's own verdict
+("no motion" <-> 59% frozen). The same physical motion produces roughly a third
+of the per-gap delta at the finer interval, so the new threshold lands near 1.0,
+but it must be MEASURED and not assumed.
+
+Deliberately not done on a low context budget, because changing a threshold
+without recalibrating it would make the gate worse while looking like progress.
+The method is: sample case 0003 at both intervals, sweep the threshold at the
+finer one, and take the value that reproduces the verdict the owner already gave.
 
 ## Wrap
 - [ ] frozen share under 15%, measured, on a real episode
