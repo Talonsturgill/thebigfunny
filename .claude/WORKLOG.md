@@ -97,9 +97,8 @@ Do not touch the visual identity or the casting. They are the two things working
 
 One sentence, and every later decision is bound by it:
 
-> **A 60-second animated bit in which two people discover, out loud and with
-> escalating disbelief, that a real institution did something genuinely insane,
-> and the proof is on screen.**
+> **A 60-second animated bit in which a real institution does something
+> genuinely insane TO RAY, he cannot get out of it, and the proof is on screen.**
 
 It is a BIT, not a report. The distinction is the whole overhaul:
 
@@ -109,6 +108,89 @@ It is a BIT, not a report. The distinction is the whole overhaul:
 
 The fact-check gate does not soften for this and never will. Savage and sourced.
 What changes is that being sourced stops being mistaken for being funny.
+
+## THE CONTENT DECISION (owner asked, 2026-08-03, and delegated the call)
+
+> "I'm still kind of open on what we wanna use as content, I think the best thing
+> to use is the most relevant stuff going on in America, ppl are interested in it
+> and already talking about it, we just gotta find funny angles, I also like the
+> idea of kind like a show like south park that also incorporated relevant
+> current stuff but idk which way to go, want you to do whatever you will be able
+> to do best"
+
+**THE CALL: the South Park model, running on the news engine. Not one or the
+other.** Both halves matter and the order matters.
+
+### Why not pure news satire, which is what we have been doing
+
+Three episodes of "find a true absurd thing and describe it" produced 57, 69 and
+64 on funny and "it made no sense" from the owner. The reason is structural, not
+effort: **a fact is not a story.** A fact has no want, no obstacle and no
+causality, so a script built directly on one can only ever be a list of
+observations joined by AND THEN. That is failure 2 in this document, and it is
+caused by the content model, not by the writers room.
+
+The second problem is timing. The genuinely big current-events stories are being
+joked about by every account on the platform within hours. Arriving late with a
+more accurate version of a joke everyone has heard is the worst place to be.
+
+### Why the South Park model fixes exactly what is broken
+
+South Park's engine is a STABLE CAST that a current event happens TO. The comedy
+is people we know reacting in character to something real and insane. That is
+why it survives 27 years while topical sketch shows do not.
+
+We already have the fixed cast and have been wasting it. Ray and Dee are
+currently NARRATORS WITH NAMES: they comment on a document neither of them has
+any stake in. The simulated viewer put it exactly right on case 0003, "he has
+been talking constantly, so I do not know what he means by standing here." Ray
+had no situation. He had a subject.
+
+The fix is one sentence and it changes everything downstream:
+
+> **The institution does the absurd real thing TO RAY, on screen, and he cannot
+> get out of it.**
+
+That single move converts a fact into a premise, an observation into a scene,
+and AND THEN into BUT/THEREFORE, because now he WANTS something and each attempt
+makes it worse. It is the same engine that makes "Randy tries to fix it and
+makes it catastrophically worse" work every week.
+
+### The beat where the news still does the heavy lifting
+
+Research remains this machine's strongest capability and the fact gate remains
+the thing that licenses the crudeness. Nothing about that changes. What changes
+is WHERE the fact sits:
+
+- before: the fact was the PAYLOAD. The episode delivered it.
+- now: the fact is the PREMISE. The episode is what it does to a person.
+
+The document still appears on screen, still verbatim, still sourced in the first
+comment. It is now the thing Ray is trapped inside rather than the thing he is
+reading out.
+
+### Which current events, given the no-partisan law
+
+This is the part that needs saying plainly rather than discovered later. The
+house law bans taking a party's side, and the biggest American news stories are
+usually partisan. So we do NOT chase the top of the news. We chase the lane that
+is universal by construction:
+
+**The daily indignities of being an American consumer and tenant and patient.**
+Fees, denials, hold music, insurance, rent, screening reports, airlines,
+subscriptions, medical billing, price changes, and algorithmic decisions made
+about you by something with no phone number.
+
+That lane is: genuinely enraging, already being talked about, non-partisan
+BECAUSE everyone of every politics has been put on hold, endlessly supplied, and
+absolutely full of absurd primary documents. It is also exactly the territory
+South Park and Chappelle work when they are at their rudest.
+
+**The honest cost, stated up front:** this rules out the biggest and most
+searched stories of any given week, and that costs reach. The trade is a show
+that cannot be dismissed as partisan and cannot be argued with on facts. That is
+the right trade for an account that has to survive, and it is a trade rather
+than a free win.
 
 ## Approved scope
 
