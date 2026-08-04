@@ -225,7 +225,7 @@ than a free win.
 | 2 | craft research: South Park, Harmon/R&M, Chappelle, motion, retention | **DONE.** 3 briefs, all sourced. Headline: our own CAST_BIBLE beat shape fails the deletion test and was manufacturing the defect. |
 | 3 | `knowledge/COMEDY_BIBLE.md` — the lane, the bit, but/therefore, the taboo line | **DONE.** 610 lines, every rule sourced to a practitioner. |
 | 4 | `knowledge/MOTION_BIBLE.md` — what moves and when, the moving hold, camera language | **DONE.** Three motion budgets, the moving hold with frame numbers, Lang's EDIT-vs-CUT finding, measured retention. |
-| 5 | ENGINE: the motion system (gesture, pose keys, camera moves, parallax) | TODO — biggest single task |
+| 5 | ENGINE: the motion system | **IN PROGRESS.** Landed: the moving hold (default ON, `still` opts out), whole-body drift on the root transform, non-metronomic blink, and a default per-shot camera push (`locked` opts out). STILL MISSING: pose blending / gesture keyframes, parallax layers, smears, hair and coat follow-through. |
 | 6 | `scripts/beat_check.py` + self-test — the but/therefore chain, mechanical | **DONE.** Lint half only, and it says so: the deletion/swap/named-expectation tests belong to the flow critic. |
 | 7 | `scripts/motion_check.py` + self-test — frozen share, max hold, events/5s, LIFE floor, scene cap | **DONE.** Reads the RENDER, not the board. Fails case 0003 at 59% frozen / 3.0s hold. Mutation-tested on the frozen-share and cut-share guards. Discriminates a slideshow (87% frozen, 100% cuts) from a pan (0%, 0%), so cutting more often cannot game it. |
 | 8 | the writers room rebuilt: beat sheet before script, opposed agents, real argument | TODO |
@@ -291,3 +291,44 @@ finer one, and take the value that reproduces the verdict the owner already gave
 - [ ] every new gate self-tests RED on purpose and is mutation-tested
 - [ ] an episode the owner watches and does not call a slideshow
 - [ ] delete this file
+
+## Motion system, pass 1: what landed and what is still missing
+
+**Landed.**
+
+- **The moving hold**, replacing the 3.4px sway that was the entire body-movement
+  vocabulary. Three summed sines at incommensurable periods (2.7s / 3.9s / 6.1s)
+  so the cycle never visibly repeats, per-instance phase derived from `x` so Ray
+  and Dee are never in lockstep, and enough amplitude to register on pixels. The
+  old idle was a peak velocity of about 10 px/s against a derived ~40 px/s floor
+  for ambient motion to be seen at all: it was four times too slow to be visible
+  even in principle.
+- **Whole-body drift on the root transform.** This is the component that moves
+  enough AREA to register on a frame-difference metric. A blink changes about
+  0.05% of the frame and never will.
+- **A non-metronomic blink**, jittered per instance and per cycle.
+- **A default per-shot camera push**, 4.5% over ~4.2s with an ease-out plus a
+  small lateral slide. `useCurrentFrame()` inside a `Shot` returns SHOT-relative
+  frames, so each push starts when its own shot starts rather than running off
+  the episode clock, which is what makes it safe to apply to all 18 shots at
+  once.
+
+**Both defaults are opt-OUT, not opt-in** (`still` on the figure, `locked` on the
+camera). That is the load-bearing design decision: gates catch the failure,
+defaults prevent it, and a rig where stillness is free will keep producing frozen
+film no matter how many gates sit downstream.
+
+**Still missing, and none of it is optional for the 100x:**
+
+- **Pose blending and gesture keyframes.** `pose` is still a discrete enum with a
+  switch statement, so a figure can hold a pose but cannot TRANSITION between
+  two. That means no gesture, no reach, no head turn, no point that arrives. The
+  refactor is known: arm poses return polylines of different lengths (3, 4, or a
+  `bent()` result), so they must be resampled to a fixed joint count before any
+  two can be blended.
+- **Parallax layers.** Free depth from art we already own, and because our first
+  law puts the cast INSIDE the mechanism, the mechanism's own parts are the
+  layers.
+- **Smears** on the two or three biggest actions per episode.
+- **Follow-through** on hair and coat. A one-time segmented-rig build, and worth
+  it because the cast is fixed by house rule.

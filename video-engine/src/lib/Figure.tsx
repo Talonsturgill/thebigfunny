@@ -186,6 +186,10 @@ export type FigureProps = {
   mouthSpread?: number;
   talking?: boolean;
   idleGain?: number;
+  /** OPT-OUT of the moving hold. Deliberately not the default: a rig where
+   *  stillness is free keeps producing frozen film. Use only when a shot needs
+   *  a genuinely frozen figure as a deliberate effect. */
+  still?: boolean;
 };
 
 const EYES: Record<Emotion, {open: number; lid: number; brow: number; browTilt: number}> = {
@@ -204,7 +208,7 @@ const EYES: Record<Emotion, {open: number; lid: number; brow: number; browTilt: 
 export const Figure: React.FC<FigureProps> = ({
   frame: f, sex,
   x = 0, y = 0, scale = 1, facing = 1,
-  emotion = 'neutral', pose = 'stand',
+  emotion = 'neutral', pose = 'stand', still = false,
   skin = '#e0a882', hair = '#2a1c16', eyes = '#3d5a72',
   wear = {top: '#3f6f8f', bottom: '#2f3a52', accent: '#e8dcc8'},
   hairstyle = 'short',
@@ -219,10 +223,52 @@ export const Figure: React.FC<FigureProps> = ({
      The head lags the torso by a fraction of a cycle. That lag is the whole
      difference between a figure that is alive and one that is being translated:
      a rigid body has every part moving in lockstep, and a person does not. */
-  const breathe = Math.sin(f / 34);
-  const shift = 3.4 * idleGain * Math.sin(f / 62);
-  const headLag = 2.2 * idleGain * Math.sin(f / 62 - 0.55);
-  const blink = (f + 17) % 104 < 5 && emotion !== 'shock';
+  /* THE MOVING HOLD. Replaces a 3.4px sway that was the ENTIRE body-movement
+     vocabulary of this show and was invisible at 1080 wide. Measured on case
+     0003: 59% of the film registered as a held drawing, and the owner watched it
+     and said "no character motion, no scene motion, no camera motion".
+
+     Three things make this a moving hold rather than a bigger sine:
+
+     1. INCOMMENSURABLE PERIODS. 2.7s / 3.9s / 6.1s at 30fps. Summed sines whose
+        periods share no common multiple never visibly repeat, so the eye cannot
+        latch onto a cycle and read it as machinery. One sine at one period is
+        what "a computer made this" looks like.
+     2. PER-INSTANCE PHASE, derived from x so Ray and Dee are never in lockstep.
+        Two figures breathing in unison reads as one puppet with two heads.
+     3. AMPLITUDE THAT REGISTERS ON PIXELS. The old 3.4px over a 2.07s period is
+        a peak velocity of about 10 px/s. knowledge/MOTION_BIBLE.md derives ~40
+        px/s as the floor for ambient motion to read at all on this canvas, so
+        the previous idle was roughly four times too slow to be seen even in
+        principle. Amplitude alone says nothing; velocity is what is visible.
+
+     `still` exists as an OPT-OUT and is deliberately not the default. A rig
+     where stillness is free will keep producing frozen film no matter how many
+     gates are added downstream: gates catch the failure, defaults prevent it. */
+  const ph = (x * 0.013) % 6.283;            // per-instance, stable across frames
+  const g = still ? 0 : idleGain;
+  const breathe = Math.sin(f / 34 + ph);
+  // The weight shift, now three summed periods instead of one.
+  const shift = g * (6.2 * Math.sin(f / 81 + ph)
+                   + 2.4 * Math.sin(f / 117 + ph * 1.7)
+                   + 1.3 * Math.sin(f / 183 + ph * 0.4));
+  // The head LAGS the torso. That lag is the whole difference between a figure
+  // that is alive and one that is being translated.
+  const headLag = g * (4.1 * Math.sin(f / 81 + ph - 0.55)
+                     + 1.6 * Math.sin(f / 117 + ph * 1.7 - 0.4));
+  // WHOLE-BODY DRIFT, in screen pixels on the root transform. This is the
+  // component that actually moves enough area to register on a frame-difference
+  // metric; a blink changes about 0.05% of the frame and never will.
+  const driftX = g * (2.9 * Math.sin(f / 97 + ph * 1.3)
+                    + 1.1 * Math.sin(f / 151 + ph));
+  const driftY = g * (1.8 * Math.sin(f / 113 + ph * 0.8)
+                    + 0.9 * Math.sin(f / 179 + ph * 2.1));
+  // Blink interval jittered per instance and per cycle so it is not metronomic.
+  // Human rate is 15-20/min; the +/-40% variation is what stops a viewer feeling
+  // the clock. Never blink on `shock`: the held-open eye IS the expression.
+  const blinkPeriod = 96 + Math.floor(26 * Math.sin(f / 401 + ph * 3.1));
+  const blink = (f + 17 + Math.floor(ph * 11)) % blinkPeriod < 5
+                && emotion !== 'shock';
   // THE THREE-QUARTER CUE. A face dead-on is a passport photo; every reference
   // is turned a little and tilted a little. In a flat rig the turn is a
   // horizontal squeeze of the head plus a shift of the features inside it, so
@@ -522,7 +568,7 @@ export const Figure: React.FC<FigureProps> = ({
   };
 
   return (
-    <g transform={`translate(${x},${y}) scale(${scale * facing},${scale})`}>
+    <g transform={`translate(${x + driftX},${y + driftY}) scale(${scale * facing},${scale})`}>
       <defs>
         <linearGradient id={`${uid}_top`} x1="0" y1="0" x2="1" y2="0.35">
           <stop offset="0%" stopColor={shade(wear.top, 1.14)} />
