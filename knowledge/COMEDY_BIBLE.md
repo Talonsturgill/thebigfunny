@@ -291,41 +291,107 @@ worst fifteen seconds, with exactly one change at the moment the argument lands.
 
 ---
 
-## 6. THE TABOO LINE
+## 6. NO SACRED COWS
 
-The rule is structural, not a values statement, which is what makes it
-checkable. Parker on NPR:
+**Owner, 2026-08-03, and this is doctrine, not a mood:**
+
+> "we can cover ANY topic, we are beholden to NO single POV, and we will DUNK on
+> everyone, and make fun of ANYTHING that is funny. this is a bold show."
+
+Take that literally. It is also, word for word, what the show we are modelling
+on says about itself. Kyle, in *Cartoon Wars Part II*, which is South Park
+stating its own constitution in text:
+
+> "If you don't show Muhammad, then you've made a distinction between what is
+> okay to poke fun at and what isn't. **Either it's all okay or none of it is.**"
+
+Parker: "Everyone can be made fun of, and everything should be made fun of if you
+do it in the right way."
+
+### 6.1 ANY TOPIC. There is no list of subjects we avoid.
+
+Politics, religion, ideology, celebrity, culture war, industry, sport, science,
+the media, our own audience, and anything else that is funny. **There is no
+subject this show will not go at**, and any run that ducks a story because the
+topic is uncomfortable has failed at the job, not protected the channel.
+
+A previous version of this file quietly ruled out "the biggest story of the
+week" on the grounds that it was usually political. That was cowardice with a
+policy voice, and the owner caught it. It is deleted.
+
+### 6.2 NO SINGLE POV. We are on nobody's team.
+
+Not centrist, which is its own smug position. **Unaligned.** We have no side to
+protect, and that is the source of the licence rather than a limit on it: a show
+that is not carrying anyone's water can hit everyone, and a partisan show
+structurally cannot. It has to keep half the field safe.
+
+Parker's staging, from NPR, and read it as a camera instruction rather than a
+disclaimer:
 
 > "we take an issue, and we sort of always have **two sides about to kill each
 > other over it and the boys in the middle** going, doing fart jokes and saying,
 > who cares?"
 
-Stone, same interview:
+Both sides in frame. **Both get hit.** The POV character is the person stuck
+between them who did not ask to be there, which is Ray, always.
 
-> "We would never want people to think that this show is a Democrat show or a
-> Republican show."
+The test is positive, not negative. Not "did we avoid advantaging a party" but
+**"is everyone in this frame taking a hit, and is Ray a hostage rather than a
+partisan?"**
 
-**That is a staging instruction.** The neutrality is achieved by where the camera
-stands. Both sides are in frame, both are the target, and the POV character is
-the person stuck between them who did not ask to be there.
+### 6.3 The ONE line, and it is craft rather than caution
 
-Our `not_partisan` gate tests for ABSENCE of party advantage. The Parker version
-is a POSITIVE test: **is the POV character a hostage of the fight rather than a
-partisan in it?**
+We punch at **power and self-importance.** Institutions, companies, public
+figures acting in public, movements, ideologies, and the certainty of anybody
+enjoying being right. All of it, all the time, as hard as we can.
 
-**Who is safe:** self-importance and the machinery of power. Corporations,
-institutions, public figures acting in public, movements, and the certainty of
-anybody enjoying being right.
+We do not punch at the powerless person inside the system. The clerk, the nurse,
+the driver, the applicant, the call-centre worker.
 
-**Who is not:** the ordinary person inside the system who is not hurting anyone.
-The clerk, the nurse, the driver, the call-centre worker. They are fellow
-hostages. When the show does aim there, **it turns the gun around in the last
-beat.**
+**This is not squeamishness and it is not a hedge. It is that punching down is
+the WEAK version.** Anybody can mock somebody with no power; it takes nothing,
+it is not brave, and it is not funny. The whole charge of a dunk comes from the
+size of what you are dunking on. Aiming at a hostage does not make the show
+bolder, it makes it smaller, and it hands anyone who wants us dead the only
+weapon that actually works.
 
-Parker: "Everyone can be made fun of, and everything should be made fun of if you
-do it in the right way." Kyle, in text: "Either it's all okay or none of it is."
+There is one diagnostic and it comes free with the fact gate: **punching at the
+vulnerable requires exaggeration to work, and punching at power works better
+verbatim.** If a line needs the fact stretched to land, it is aimed the wrong
+way, because power's actual conduct is always already sufficient.
 
----
+When the show DOES aim at an ordinary person, it turns the gun around in the last
+beat. That is a technique, not an exception. *All About Mormons* ridicules a
+religion for twenty minutes and then hands the sincere believer the last word:
+"You've got a lot of growing up to do, buddy. **Suck my balls.**" The doctrine is
+destroyed and the believer is not, and the person who spent the episode being
+smug is the one indicted.
+
+### 6.4 The two bans that stay, and why they cost us nothing
+
+**No slurs. No hate. No sexual content. No harassment of a named private
+person.** These are BANS and not preferences. They are not about taste and they
+are not about what is funny; they are the four things that end a channel
+outright, and a dead channel dunks on nobody.
+
+None of them constrains a single joke worth making. A slur is not an edgy
+version of a punchline, it is a substitute for one.
+
+**Everything is sourced.** This is the other half of the boldness and it is the
+half people miss. Savage and sourced is unanswerable. **The reason we can dunk
+this hard is that nothing we say can be argued with**, and the moment we ship one
+thing that is not true, every enemy the show has made gets to dismiss all of it
+at once. The fact gate is not a brake on the show. It is the thing that lets the
+show be this rude and survive.
+
+### 6.5 The empirical note, for the record
+
+Chappelle's *The Closer* drew a GLAAD statement and a Netflix employee walkout in
+2021, and he absorbed it on two decades of accumulated standing. We have none.
+That is not an argument for being timid about topics; he was right that the topic
+was fair game. It is an argument for being **precise about direction**, because
+precision is the only standing a new account has.
 
 ## 7. ANTI-PATTERNS, the standing list
 

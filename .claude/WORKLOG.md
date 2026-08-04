@@ -169,53 +169,102 @@ The document still appears on screen, still verbatim, still sourced in the first
 comment. It is now the thing Ray is trapped inside rather than the thing he is
 reading out.
 
-### Which current events, given the no-partisan law
+### Which current events: ALL OF THEM
 
-**CORRECTED 2026-08-03, same day, because the first version of this section was
-too conservative and the owner caught it.**
+**Owner, 2026-08-03, overruling an earlier timid version of this section:**
 
-The first draft said the no-partisan law "rules out the biggest and most searched
-stories of any given week, and that costs reach." That conflated two different
-things, and the craft research commissioned in the same session contradicts it.
+> "we can cover ANY topic, we are beholden to NO single POV, and we will DUNK on
+> everyone, and make fun of ANYTHING that is funny. this is a bold show."
 
-**The law bans taking a SIDE. It does not ban a TOPIC.** Parker, on NPR,
-describing the actual formula:
+The first draft of this section ruled out "the biggest and most searched stories
+of any given week" on the grounds that they are usually political, and called it
+a cost of the no-partisan law. That was wrong twice over.
 
-> "we take an issue, and we sort of always have **two sides about to kill each
-> other over it and the boys in the middle** going, doing fart jokes and saying,
-> who cares?"
+**First, it confused a topic ban with a side ban.** The law bans carrying a
+party's water. It has never banned a subject. Parker's formula puts two sides in
+frame and hits both, with the POV character stuck in the middle, and that is how
+South Park has covered the biggest political story of a given week for 27 years
+without being a Democrat show or a Republican show.
 
-That is a STAGING instruction, and it is how South Park has covered the single
-biggest political story of a given week for 27 years without being a Democrat
-show or a Republican show. Both sides are in frame, both are the target, and the
-POV character is the person stuck between them who did not ask to be there.
+**Second, and worse, it was cowardice with a policy voice.** No topic is off
+limits. Politics, religion, ideology, celebrity, culture war, industry, the
+media, our own audience. A run that ducks a story because the topic is
+uncomfortable has failed the job.
 
-**So the genuinely off-limits set is much smaller than the first draft claimed.**
-It is not "political stories." It is:
+**What we actually give up is the CHEAP joke**, the one that works only because
+half the audience already hates the target. That is the most-shared kind of
+political comedy and it is also the version that makes an account dismissible.
+Dropping it is not a constraint on boldness, it is the difference between a dunk
+and a team chant.
 
-- stories whose only available villain is a PARTY rather than an institution
-- stories where the funny angle requires the audience to already agree with one
-  side
-- stories where we would have to assert a contested claim rather than quote a
-  document
+The one line is DIRECTION, and it is craft rather than caution: power and
+self-importance get hit, the powerless person inside the system does not. Not
+because we are nice, but because punching down is the weak version. Anybody can
+mock somebody with no power. The charge in a dunk comes from the size of what is
+being dunked on.
 
-Everything else is available, including the top of the news, provided the target
-is the machinery and Ray is its hostage rather than its partisan. A shutdown, an
-agency rule, a procurement, a subsidy, an enforcement action: all of these have
-an institution doing something insane to a person, which is the show.
+**The universal-indignities beat stays as a strong DEFAULT** (fees, denials, hold
+music, rent, screening reports, medical billing, decisions made about you by
+something with no phone number), because that is where the absurd primary
+documents are and documents are our pre-loaded joke connector. **A default, not a
+fence.** If the funniest provable thing in America today is the top story, that
+is the episode.
 
-**The reach cost is therefore real but small,** and it is a cost of ANGLE
-selection rather than of topic selection. What we give up is the cheap version:
-the joke that works only because half the audience already hates the target. That
-one is easy, it is the most-shared kind of political comedy, and it is also the
-one that makes the account dismissible and eventually killable. Giving it up is
-the trade, and it is a much narrower trade than the first draft described.
+## THE ACTING MANDATE (owner, 2026-08-03, after watching the motion pass)
 
-**The lane still holds as the DEFAULT**, because the universal indignities are
-where the absurd primary documents are: fees, denials, hold music, insurance,
-rent, screening reports, airlines, subscriptions, medical billing, and decisions
-made about you by something with no phone number. That is where the show is
-strongest. It is a default, not a fence.
+> "the characters still did not move at all, they were just like a piece of
+> furniture in the screen, not useful at all, they are supposed to be characters,
+> they like don't move don't talk don't have mannerisms etc, the way you use the
+> characters u need to study and make 100x better"
+
+**He is right, and the way this went wrong is the important part.**
+
+The motion pass moved the METRIC and not the EXPERIENCE. Live share went 31% ->
+66% and frozen share 59% -> 25%, and the characters are still furniture. Both
+things are true at once, and believing the numbers over the owner would have been
+the whole failure.
+
+**The reason is a category error I made in my own bible.** MOTION_BIBLE names
+three budgets: LIFE, EVENTS and STAGING. I built LIFE, which is explicitly
+defined in that same document as the budget that **does NOT read at thumbnail** —
+breathing, drift, blinks, sub-perceptual movement whose only job is to stop a
+frame reading as a freeze. It is anti-death. It is not performance.
+
+What the owner is asking for is a fourth thing the bible never named:
+
+> **ACTING. The character WANTS something and you can see it in the body.**
+
+Gesture, mannerism, weight shift with intent, a head turn to look at the thing
+being discussed, a hand that points at the document, a recoil, a shrug, a lean.
+None of that exists in this rig at any amplitude, so no amount of tuning LIFE
+will ever produce it. `pose` is a discrete enum resolved by a switch statement:
+a figure can HOLD one of five poses and cannot travel between two. There is no
+gesture because there is no mechanism for a gesture.
+
+**THE LESSON, for FIELD_NOTES:** a proxy metric improving is not the thing
+improving. I built the instrument, the instrument went green, and the defect was
+untouched, because the instrument measured pixel change and the complaint was
+about INTENT. When the owner and the number disagree, the number is measuring
+something adjacent.
+
+### What acting requires, in build order
+
+1. **Pose blending.** Arm poses currently return polylines of different lengths
+   (3, 4, or a `bent()` result). They must be resampled to a fixed joint count
+   before any two can be interpolated. This is the unlock; nothing else works
+   without it.
+2. **A gesture track per shot**, so the director can say Ray goes arms-crossed ->
+   point at 3.2s and it EASES, with anticipation and overshoot rather than a
+   swap.
+3. **Head turns and eyelines.** A character who never looks at the thing being
+   discussed is not in the scene. This is the cheapest possible acting beat and
+   we have none of it.
+4. **Mannerisms as character.** CAST_BIBLE defines how Ray and Dee TALK and says
+   nothing about how they MOVE. Ray needs a physical tell and so does Dee, used
+   consistently, because a mannerism is what makes a recurring cast recognisable
+   at thumbnail size.
+5. **Reaction as a beat.** One register change, then hold. Currently a face
+   changes expression on a keyframe with no body behind it.
 
 ## Approved scope
 
@@ -250,7 +299,7 @@ strongest. It is a default, not a fence.
 | 2 | craft research: South Park, Harmon/R&M, Chappelle, motion, retention | **DONE.** 3 briefs, all sourced. Headline: our own CAST_BIBLE beat shape fails the deletion test and was manufacturing the defect. |
 | 3 | `knowledge/COMEDY_BIBLE.md` — the lane, the bit, but/therefore, the taboo line | **DONE.** 610 lines, every rule sourced to a practitioner. |
 | 4 | `knowledge/MOTION_BIBLE.md` — what moves and when, the moving hold, camera language | **DONE.** Three motion budgets, the moving hold with frame numbers, Lang's EDIT-vs-CUT finding, measured retention. |
-| 5 | ENGINE: the motion system | **IN PROGRESS.** Landed: the moving hold (default ON, `still` opts out), whole-body drift on the root transform, non-metronomic blink, and a default per-shot camera push (`locked` opts out). STILL MISSING: pose blending / gesture keyframes, parallax layers, smears, hair and coat follow-through. |
+| 5 | ENGINE: the motion system + **THE ACTING SYSTEM (the owner's top note)** | **IN PROGRESS.** Landed: the moving hold (default ON, `still` opts out), whole-body drift on the root transform, non-metronomic blink, and a default per-shot camera push (`locked` opts out). STILL MISSING: pose blending / gesture keyframes, parallax layers, smears, hair and coat follow-through. |
 | 6 | `scripts/beat_check.py` + self-test — the but/therefore chain, mechanical | **DONE.** Lint half only, and it says so: the deletion/swap/named-expectation tests belong to the flow critic. |
 | 7 | `scripts/motion_check.py` + self-test — frozen share, max hold, events/5s, LIFE floor, scene cap | **DONE.** Reads the RENDER, not the board. Fails case 0003 at 59% frozen / 3.0s hold. Mutation-tested on the frozen-share and cut-share guards. Discriminates a slideshow (87% frozen, 100% cuts) from a pan (0%, 0%), so cutting more often cannot game it. |
 | 8 | the writers room rebuilt: beat sheet before script, opposed agents, real argument | TODO |
