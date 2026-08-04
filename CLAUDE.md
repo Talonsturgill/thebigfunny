@@ -187,9 +187,12 @@ Everything else ships.
   inventory; **every run reads it and casts from the shelf before drawing
   anything new**, and registers additions in the same commit.
 - `assets/` — committed sfx and voice.
-- `runs/` — shipped artifacts, merged each run. The deliverable is the mp4 AND
-  the post copy: `caption.txt` (the body) plus `first_comment.txt` (the sources,
-  which NEVER go in the body). A video with no caption is half a deliverable.
+- `runs/` — shipped artifacts, merged each run. The deliverable is the POST FILE
+  (`<case>_tiktok.mp4`: 9:16, yuv420p, faststart), a DOWNLOAD URL the owner can
+  tap on a phone, AND the post copy: `caption.txt` (the body) plus
+  `first_comment.txt` (the sources, which NEVER go in the body). A video with no
+  caption is half a deliverable; a video with no URL is a file on a machine the
+  owner is not sitting at. `scripts/delivery_check.py` enforces all of it.
   `out/` — scratch (gitignored).
 
 ## Lineage

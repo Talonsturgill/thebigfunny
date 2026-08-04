@@ -579,7 +579,8 @@ a quiet "no episode today".
 
 On a passing run:
 1. Write `runs/<date>/` — the full deliverable, which is:
-   - `final.mp4` and a thumbnail
+   - `final.mp4` (the master) and a thumbnail
+   - **`<case>_tiktok.mp4`, THE POST FILE**, encoded to platform spec (below)
    - `caption.txt` (the post body) and `first_comment.txt` (the sources)
    - `script.json`, `claims.json`, `vo_lines.json`
    - the panel reports and the score card
@@ -590,8 +591,47 @@ On a passing run:
    `instincts.json`.
 3. Commit, push, open a PR that is **ready, not a draft**, and **MERGE it to
    main in the same run**.
-4. Draft the post copy (hook, caption, on-screen text) into the Gmail draft.
+4. **PRODUCE THE DOWNLOAD URL, and put it at the TOP of the Gmail draft.**
+   See the definition of done below. A path inside a repo is not a deliverable
+   to a person holding a phone.
+5. Draft the post copy (hook, caption, on-screen text) into the Gmail draft.
    **This routine never posts.** A human posts.
+
+### THE DEFINITION OF DONE (owner, 2026-08-03)
+
+> "the deliverable definition of done is to add in a url that will allow me to
+> download the video, in 9:16 or whatever TikTok wants"
+
+A run is NOT delivered because an mp4 exists on a branch. It is delivered when
+the owner can tap a link on a phone and get a file a platform will accept. The
+run does the encoding and the hosting; the owner does not open a terminal.
+
+**The post file must be, and `scripts/delivery_check.py` enforces every line:**
+
+| property | required | why |
+| --- | --- | --- |
+| dimensions | 1080x1920, exactly 9:16 | the only aspect the feed ranks full-screen |
+| pixel format | `yuv420p` | **NOT `yuvj420p`.** Remotion emits full-range JPEG YUV, and a range mismatch lifts or crushes the blacks when the platform re-encodes. This show is crushed dark teal, so it is the most visible defect available. |
+| colour | `tv` range, bt709 | same reason, stated rather than inferred |
+| faststart | moov before mdat | otherwise a player buys the whole file before frame one |
+| audio | AAC, 48kHz, present | a silent upload is the 2026-07-17 failure |
+| duration | <= 60.0s | the law |
+| size | under 280MB | the mobile upload cap |
+
+**The URL.** The repo is public, so the canonical form is the raw link to the
+post file on `main`, which needs no auth and downloads directly:
+
+```
+https://raw.githubusercontent.com/Talonsturgill/thebigfunny/main/runs/<date>/<case>_tiktok.mp4
+```
+
+It only resolves AFTER the PR is merged, so produce it in step 4, after step 3,
+and **fetch it once to prove it is live** before writing it into the draft. A
+URL that 404s is worse than no URL, because it is the one thing in the draft the
+owner will act on first.
+
+Write it into `runs/<date>/DELIVERY.md` as well, so the run's own record carries
+the link and not just an email that may be archived.
 
 There is no "failed run" branch of this phase, because a run does not end
 without a video. If you are here, you have one.
