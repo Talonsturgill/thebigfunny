@@ -171,26 +171,51 @@ reading out.
 
 ### Which current events, given the no-partisan law
 
-This is the part that needs saying plainly rather than discovered later. The
-house law bans taking a party's side, and the biggest American news stories are
-usually partisan. So we do NOT chase the top of the news. We chase the lane that
-is universal by construction:
+**CORRECTED 2026-08-03, same day, because the first version of this section was
+too conservative and the owner caught it.**
 
-**The daily indignities of being an American consumer and tenant and patient.**
-Fees, denials, hold music, insurance, rent, screening reports, airlines,
-subscriptions, medical billing, price changes, and algorithmic decisions made
-about you by something with no phone number.
+The first draft said the no-partisan law "rules out the biggest and most searched
+stories of any given week, and that costs reach." That conflated two different
+things, and the craft research commissioned in the same session contradicts it.
 
-That lane is: genuinely enraging, already being talked about, non-partisan
-BECAUSE everyone of every politics has been put on hold, endlessly supplied, and
-absolutely full of absurd primary documents. It is also exactly the territory
-South Park and Chappelle work when they are at their rudest.
+**The law bans taking a SIDE. It does not ban a TOPIC.** Parker, on NPR,
+describing the actual formula:
 
-**The honest cost, stated up front:** this rules out the biggest and most
-searched stories of any given week, and that costs reach. The trade is a show
-that cannot be dismissed as partisan and cannot be argued with on facts. That is
-the right trade for an account that has to survive, and it is a trade rather
-than a free win.
+> "we take an issue, and we sort of always have **two sides about to kill each
+> other over it and the boys in the middle** going, doing fart jokes and saying,
+> who cares?"
+
+That is a STAGING instruction, and it is how South Park has covered the single
+biggest political story of a given week for 27 years without being a Democrat
+show or a Republican show. Both sides are in frame, both are the target, and the
+POV character is the person stuck between them who did not ask to be there.
+
+**So the genuinely off-limits set is much smaller than the first draft claimed.**
+It is not "political stories." It is:
+
+- stories whose only available villain is a PARTY rather than an institution
+- stories where the funny angle requires the audience to already agree with one
+  side
+- stories where we would have to assert a contested claim rather than quote a
+  document
+
+Everything else is available, including the top of the news, provided the target
+is the machinery and Ray is its hostage rather than its partisan. A shutdown, an
+agency rule, a procurement, a subsidy, an enforcement action: all of these have
+an institution doing something insane to a person, which is the show.
+
+**The reach cost is therefore real but small,** and it is a cost of ANGLE
+selection rather than of topic selection. What we give up is the cheap version:
+the joke that works only because half the audience already hates the target. That
+one is easy, it is the most-shared kind of political comedy, and it is also the
+one that makes the account dismissible and eventually killable. Giving it up is
+the trade, and it is a much narrower trade than the first draft described.
+
+**The lane still holds as the DEFAULT**, because the universal indignities are
+where the absurd primary documents are: fees, denials, hold music, insurance,
+rent, screening reports, airlines, subscriptions, medical billing, and decisions
+made about you by something with no phone number. That is where the show is
+strongest. It is a default, not a fence.
 
 ## Approved scope
 
