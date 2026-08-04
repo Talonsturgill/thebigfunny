@@ -145,7 +145,7 @@ What changes is that being sourced stops being mistaken for being funny.
 | 4 | `knowledge/MOTION_BIBLE.md` — what moves and when, the moving hold, camera language | TODO |
 | 5 | ENGINE: the motion system (gesture, pose keys, camera moves, parallax) | TODO — biggest single task |
 | 6 | `scripts/beat_check.py` + self-test — the but/therefore chain, mechanical | TODO |
-| 7 | `scripts/motion_check.py` + self-test — frozen share, max hold, events/5s | TODO |
+| 7 | `scripts/motion_check.py` + self-test — frozen share, max hold, events/5s | **DONE.** Reads the RENDER, not the board. Fails case 0003 at 59% frozen / 3.0s hold. Mutation-tested on the frozen-share and cut-share guards. Discriminates a slideshow (87% frozen, 100% cuts) from a pan (0%, 0%), so cutting more often cannot game it. |
 | 8 | the writers room rebuilt: beat sheet before script, opposed agents, real argument | TODO |
 | 9 | rewrite the routine prompt around the new order of operations | TODO |
 | 10 | produce an episode that clears every new gate, with before/after numbers | TODO |
