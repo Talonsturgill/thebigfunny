@@ -38,6 +38,80 @@ is the whole overhaul. Phase 2 does not soften for it and never will.
 
 ---
 
+## 0.5 THE POV, AND THE THESIS
+
+**Owner, 2026-08-03, and this is the most load-bearing sentence anyone has
+written about this show:**
+
+> "your character arc like pov I think is the average American, and how we are
+> going through life and what is happening here in the US, as it gets crazy here,
+> and things are painted normal but insane things are happening every day"
+
+Three things in that, and each one settles a question that was open.
+
+### 0.5.1 The POV is THE AVERAGE AMERICAN. Not a commentator.
+
+Ray is not a host, a journalist, a satirist or a guy with a podcast. **He is a
+person this is happening TO.** He did not choose the subject; the subject arrived
+in his mail.
+
+This kills the failure mode that has produced every weak episode so far. A
+commentator has opinions ABOUT a thing and can only ever generate commentary. A
+person LIVING it has a want, an obstacle and a stake, which is the difference
+between a scene and a segment. It is also Harmon's pity gate: the audience lands
+on whoever they can feel sorry for, and you cannot feel sorry for a narrator.
+
+**Ray is never the smartest person in the episode. He is the one being charged
+for it.**
+
+### 0.5.2 The arc is ONGOING. This is a series, not 365 sketches.
+
+"How we are going through life" is a continuing condition, not a topic. The show
+is not a numbered list of unrelated outrages; it is **one guy's accumulating
+experience of living in a country that keeps getting stranger while insisting it
+is fine.**
+
+Consequences that are now rules:
+
+- **Ray never wins, and never learns.** Harmon's TV circle beat 8, "I must admit
+  the futility of change." If Ray solved it, the condition would end and the show
+  would end with it.
+- **He does not reset to zero.** He is not surprised in episode 200 the way he was
+  in episode 2. The wear accumulates, and that wear IS the character.
+- **The Institution is one antagonist wearing different uniforms.** A landlord's
+  screening service, an insurer, an airline and a hospital billing department are
+  the same entity to Ray, because to a person on hold they are.
+
+### 0.5.3 THE THESIS: painted normal, actually insane
+
+> **Things are painted normal but insane things are happening every day.**
+
+That is the show in one line, and it is not a mood: it is a MECHANISM, and it is
+the same mechanism as everything else in this file.
+
+- It is the CONNECTOR (section 10). One thing, two interpretations: the document
+  reads as routine and says something deranged.
+- It is Carlin's soft language: the paint IS the euphemism.
+- It is why the fact gate licenses the crudeness. **We are not claiming the world
+  is insane. We are quoting the paint and letting the viewer see through it.**
+
+**THE PAINT IS THE ANTAGONIST.** Not the fee, not the denial, not the number. The
+calm, competent, well-designed surface that presents an atrocity as a normal
+Tuesday. The hold music. The word "unfortunately." The cheerful onboarding
+illustration on the letter that ruins your year.
+
+Which gives every episode a mandatory image:
+
+> **THE PAINT AND WHAT IS UNDER IT MUST BE IN THE SAME FRAME**, with no verb of
+> interpretation between them. Never "which means." Never "in other words." Put
+> the reassuring sentence and the insane consequence side by side and stop
+> talking.
+
+Ray's whole function is to be the only one in the frame who has not agreed to
+pretend the paint is the wall.
+
+---
+
 ## 1. THE FIRST LAW: BUT / THEREFORE
 
 Trey Parker, NYU Tisch guest lecture (Prof. Ken Liotti's "Story-Telling
@@ -212,6 +286,65 @@ not been doing is following it past the point where it stops being reasonable.
 
 That question converts a verified mechanism into a plot instead of a complaint.
 It belongs in angle hygiene, not just here.
+
+---
+
+## 4.5 CRAZY SCENES: THE STAGING COMMITS AS HARD AS THE WRITING
+
+**Owner:** *"I also like south park how its not afraid to make crazy scenes and
+break boundaries and really make fun of people and things."*
+
+**CRAZY SCENES is the note, and it is one we have been failing quietly.**
+
+Our world-of-the-story law says stage the episode inside the mechanism, and case
+0003 obeyed it: a count room, tasteful, apt, legible. It was a good METAPHOR and
+it was not an insane IMAGE. South Park does not stop at apt. It builds a giant
+robot Barbra Streisand, a human centipede made of an iPad, a town buried in its
+own bullshit. The picture is as deranged as the premise.
+
+**The rule: LITERALISE THE MECHANISM UNTIL IT IS PHYSICALLY ABSURD.**
+
+This is section 4's escalation-by-rigor principle applied to the IMAGE instead of
+the plot. Do not ask what would be funnier to draw. Ask:
+
+> **If this mechanism were a physical object obeying its own rules in a room with
+> a man in it, what would the room look like by the end?**
+
+Worked, against our own shipped episode:
+
+| the mechanism | what we drew | what the rule demands |
+| --- | --- | --- |
+| the report copies one case nine times | nine cards on a floor, tidy | Ray waist-deep and RISING, the pile lifting him toward the ceiling, only his head showing by the button |
+| a dispute returns INVALID | a card comes back stamped | the chute fires it back so fast and so often that it builds a second pile out of refusals |
+| a fee compounds | a number on a counter | the counter physically outgrows its housing and cracks the wall |
+
+**Three ways to build a crazy scene, in order of cost:**
+
+1. **SCALE VIOLATION.** The document is furniture-sized. The machine is a
+   building. The person is a detail in the corner of his own paperwork. Cheapest
+   and most reliable, and it is already native to our kit.
+2. **ACCUMULATION.** The thing keeps happening and the evidence PILES UP in
+   frame, physically, until it dominates. This one doubles as the motion budget,
+   because a growing pile is continuous movement that also does comedy work.
+3. **PHYSICAL CONSEQUENCE.** The absurd process moves a body. Ray is lifted,
+   buried, carried, sorted, filed. The moment the mechanism touches him
+   physically, the episode stops being about a document.
+
+**THE TEST, and it is now a question the director room must answer on the record:**
+
+> **What is the one image from this episode that somebody would describe to a
+> friend?**
+
+If the answer is "two people in a room discussing a document", there is no crazy
+scene and the board is not finished. Case 0003's honest answer was "a wall of
+identical eviction cards", which is why that beat is the only one either
+simulated viewer called impressive. **One such image per episode, minimum.**
+
+**The fact gate is not in tension with this and never has been.** Ray buried in a
+pile of identical filings asserts nothing false: the record says the case was
+duplicated. The PILE is a picture of a true thing. What we may never do is invent
+a fact, and drawing a true fact enormous is not inventing it. Being timid with
+the picture buys us nothing legally and costs us the show.
 
 ---
 
@@ -392,6 +525,95 @@ Chappelle's *The Closer* drew a GLAAD statement and a Netflix employee walkout i
 That is not an argument for being timid about topics; he was right that the topic
 was fair game. It is an argument for being **precise about direction**, because
 precision is the only standing a new account has.
+
+## 6.6 FEARLESSNESS IS A CRAFT REQUIREMENT, NOT A RISK POSTURE
+
+**Owner:** *"I like how Dave Chappelle never feared any categories and didn't
+fear getting cancelled."*
+
+Take it, and understand WHY it works, because the reason is mechanical and it
+makes fearlessness non-optional rather than brave.
+
+**Fear shows up in a script as hedging, winking and pre-apologising, and all
+three kill the joke independently of any safety question.**
+
+Dean's model makes it exact. The laugh fires at the moment the AUDIENCE performs
+the reinterpretation. A wink is the performer performing it for them. So:
+
+> **A wink pre-spends the laugh.** If the script signals "I know this is edgy,"
+> the target assumption never installs, and the punchline has nothing left to
+> break.
+
+That is why Chappelle's most dangerous material lands and a nervous version of
+the same material dies. Not nerve. **Total commitment to the frame.** Clayton
+Bigsby is played entirely straight: the correspondent is earnest, the Klansmen
+are sincere, nobody in the sketch acknowledges the premise is absurd. The
+absurdity is structural, and the audience does all the work, which is why they
+laugh.
+
+**The banned moves, and they are banned for comedy reasons:**
+
+- "I'm just saying..." / "to be fair..." / "obviously not everyone..."
+- A character signalling that a line was edgy
+- Softening a verb to make a claim feel safer (that is also the move that ends
+  channels: soften the CLAIM and you are lying, so kill the claim instead)
+- Any line whose job is to reassure the audience that we are nice
+
+**The Institution must never know it is in a comedy.** The moment it is arch,
+sardonic or self-aware, it has winked. It is unfailingly polite and completely
+sincere, and that is what makes it terrifying and funny at once.
+
+Same for Dee. Her deadpan is not a flat delivery, it is **total commitment to a
+frame in which the insane number is a normal number.**
+
+The two bans in 6.4 are not fear and never were. They are the four things that
+end a channel outright, and none of them has ever been the difference between a
+funny script and a scared one.
+
+---
+
+## 6.7 THE INSTITUTION IS STUPID, NOT EVIL
+
+**Owner:** *"I also like Rick and Morty how it has humor that highlights funny
+stupid stuff in a funny way."*
+
+This is a distinct register from satire and we should be running it constantly.
+Satire says *look what they did to you.* This says *look how DUMB this is.* The
+second one is funnier, it is more accurate, and it is far harder to argue with.
+
+**The absurdity in our stories is almost never malice. It is banality.**
+
+- Someone pressed paste twice.
+- A field was the wrong type.
+- Nobody owns the form.
+- The remedy is under development.
+- A number got rounded and a person lost an apartment.
+
+**Nobody is in the room. That is the joke.** A sinister institution implies a
+mastermind, which is flattering, arguable, and gives the audience someone to
+imagine reasoning with. A STUPID institution is worse, funnier, and unfalsifiable,
+because the paperwork proves it.
+
+The Rick technique for delivering it: **be bored by your own mechanism.** The
+explainer's attitude instructs the audience how much to care about the
+machinery, and the answer is: not much. Contempt for the mechanism, attention on
+the consequence. Our Institution's `[extremely fast]` tag is exactly this
+instrument and it is underused.
+
+**Where the two registers sit:**
+
+| register | who carries it | the line it produces |
+| --- | --- | --- |
+| this is STUPID | Dee, and the Institution's own indifference | "It counted the same case nine times." |
+| this is CRUEL | Ray, once, late | "So which one of those do I live in?" |
+
+**Run stupid for most of the episode and cruel exactly once, at beat 5.** Stupid
+is the engine; cruel is the payload. Leading with cruel is a lecture, and it is
+the "agreement is not comedy" failure wearing a serious face. Arriving at cruel
+after sixty seconds of stupid is what makes it land, because the viewer got there
+first and you only had to stop talking.
+
+---
 
 ## 7. ANTI-PATTERNS, the standing list
 
