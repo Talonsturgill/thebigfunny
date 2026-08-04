@@ -25,7 +25,7 @@
  * could negotiate with, and the premise dies.
  */
 import React from 'react';
-import {Figure, FigureProps, Emotion, Pose} from './Figure';
+import {Figure, FigureProps, Emotion, Pose, PoseTrack, ScalarKey} from './Figure';
 
 type CastProps = Omit<FigureProps, 'sex' | 'skin' | 'hair' | 'eyes' | 'wear' | 'hairstyle'> & {
   /** Escape hatch for a genuine costume gag. Rare: a cast that gets re-dressed
@@ -125,3 +125,82 @@ export const RAY_LADDER: readonly Emotion[] = ['angry', 'shock', 'smug'] as cons
 
 /** Poses that read at thumbnail size, which is where the platform decides. */
 export const RAY_HERO_POSES: readonly Pose[] = ['panic', 'point', 'raise'] as const;
+
+/* ===========================================================================
+   MANNERISMS. How they MOVE, which CAST_BIBLE never said.
+
+   The bible defines how Ray and Dee TALK in detail and says nothing about how
+   they carry themselves, so every episode staged them as two posed statues that
+   breathe. A recurring cast is the show's whole production model (it is what
+   makes daily output survivable), and a recurring cast that has no physical
+   signature is not recurring, it is just reused.
+
+   A mannerism has to be legible at thumbnail size, which means SILHOUETTE. Eye
+   darts and finger work are LIFE and read as nothing on a phone.
+   =========================================================================== */
+
+/**
+ * RAY'S TELL: he points. His whole function is arriving at a verdict, and the
+ * arm going out is that verdict with a body attached. It is also the pose
+ * RAY_HERO_POSES already lists as reading at thumbnail size, which is where the
+ * platform decides.
+ */
+export const RAY_TELL: Pose = 'point';
+
+/**
+ * DEE'S TELL: she does not gesture, she LOOKS. Her power in a scene is that she
+ * already knows, so the move is the head turning to the thing before Ray has
+ * caught up. Costs no silhouette change and reads as authority.
+ */
+export const DEE_TELL: Pose = 'arms-crossed';
+
+/** A caption cue, which is the timing source every episode already generates. */
+export type Cue = {start: number; end: number; who: string};
+
+/**
+ * LOOK AT WHOEVER IS TALKING.
+ *
+ * The cheapest acting beat that exists and the one this show has never had. A
+ * character who never looks at the thing being discussed is not in the scene,
+ * and until `look` was wired the rig physically could not do it.
+ *
+ * `me` turns toward `otherSide` while somebody else speaks, and returns to
+ * roughly front while speaking themselves, because a person addressing a room
+ * faces out and a person listening faces the speaker.
+ */
+export function watchSpeaker(
+  cues: Cue[], me: string, otherSide: -1 | 1, amount = 0.34,
+): ScalarKey[] {
+  const out: ScalarKey[] = [{t: 0, v: 0}];
+  for (const c of cues) {
+    // Turn slightly BEFORE the line starts. Anticipation is what makes a head
+    // turn read as attention rather than as a delayed reaction.
+    out.push({t: Math.max(0, c.start - 0.18),
+              v: c.who === me ? 0.06 * otherSide : amount * otherSide});
+  }
+  return out;
+}
+
+/**
+ * GESTURE ON YOUR OWN LINES.
+ *
+ * Builds a PoseTrack that moves a character into their tell while they speak and
+ * releases afterwards, so the body does something on the beat the voice does.
+ * `hold` is the default resting pose.
+ *
+ * This is deliberately mechanical rather than expressive: a per-line director's
+ * gesture is better and this is the floor, so that no episode ever again ships
+ * with a cast that never moves because nobody hand-authored every beat.
+ */
+export function gestureOnLines(
+  cues: Cue[], me: string, tell: Pose, hold: Pose = 'stand',
+): PoseTrack {
+  const out: PoseTrack = [{t: 0, pose: hold}];
+  for (const c of cues) {
+    if (c.who !== me) continue;
+    if (c.end - c.start < 0.7) continue;   // too short to read as a gesture
+    out.push({t: Math.max(0, c.start - 0.12), pose: tell});
+    out.push({t: c.end + 0.10, pose: hold});
+  }
+  return out;
+}

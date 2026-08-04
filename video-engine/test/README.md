@@ -17,8 +17,14 @@ would have been invisible in a render too:
   arm as it blends, so a joint stops being a joint), and does not divide by zero
   on a degenerate polyline.
 
-Run both:
+- **`mannerisms.test.mjs`** proves the two acting helpers build sane tracks
+  from real cue shapes: a character faces out on their OWN lines and turns
+  toward the speaker on everyone else's, every turn ANTICIPATES its line rather
+  than lagging it, a line too short to read as a gesture is skipped, and every
+  gesture releases back to rest.
+
+Run all three:
 
 ```
-node test/resample.test.mjs && node test/pose_blend.test.mjs
+node test/resample.test.mjs && node test/pose_blend.test.mjs && node test/mannerisms.test.mjs
 ```
