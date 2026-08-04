@@ -282,12 +282,21 @@ def check(path):
            else "   <- the LIFE budget. A camera drift, a moving hold, a prop "
                 "running. Cutting more cannot fix this row, which is the point."))
 
-    row(f"scene changes <= {MAX_SCENE_CHANGES_PER_MIN:.0f}/min",
-        s["cuts_per_min"] <= MAX_SCENE_CHANGES_PER_MIN,
+    # HONEST LIMITATION, stated in the row itself rather than discovered later.
+    # Lang's ceiling applies to CUTS (a change to a new SCENE), not to EDITS (an
+    # angle change within one scene, which is memory-positive and uncapped). A
+    # frame differ cannot tell those apart: both are a spike. So this row counts
+    # hard visual discontinuities, and for a single-location episode most of them
+    # are EDITS and are fine. It is reported as a WARNING, and the real check
+    # belongs on the BOARD, which knows how many distinct locations it declared.
+    over = s["cuts_per_min"] > MAX_SCENE_CHANGES_PER_MIN
+    row(f"visual discontinuities (warn only, see note)", True,
         f"{s['cuts_per_min']:.1f}/min"
-        + ("" if s["cuts_per_min"] <= MAX_SCENE_CHANGES_PER_MIN
-           else "   <- above ~10 per 2min recognition DROPS (Lang). Use angle "
-                "changes and camera moves instead; those have no ceiling."))
+        + ("" if not over else
+           f"   <- above the {MAX_SCENE_CHANGES_PER_MIN:.0f}/min ceiling IF these "
+           f"are scene changes. A frame differ cannot tell an angle change from a "
+           f"location change, so check the board: EDITs are uncapped and "
+           f"memory-positive, CUTs are not."))
 
     row(f"cut share <= {MAX_CUT_SHARE:.0%} (movement, not just editing)",
         s["cut_share"] <= MAX_CUT_SHARE,

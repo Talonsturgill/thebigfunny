@@ -284,6 +284,31 @@ without recalibrating it would make the gate worse while looking like progress.
 The method is: sample case 0003 at both intervals, sweep the threshold at the
 finer one, and take the value that reproduces the verdict the owner already gave.
 
+## Motion system, MEASURED trajectory
+
+Same episode, same script, same audio. Only the engine changed.
+
+| metric | shipped | pass 1 | pass 2 | target |
+| --- | --- | --- | --- | --- |
+| frozen share | 59% | 38% | **25%** | 15% |
+| live share | 31% | 52% | **66%** | 40% (PASS) |
+| events per 5s | 2.57 | 3.43 | **4.19** | 1.0 (PASS) |
+| cut share | 37% | 28% | **23%** | 65% (PASS) |
+| longest static hold | 3.0s @ 9.0s | 3.0s @ 9.0s | **2.5s @ 35.5s** | 2.0s |
+
+**Pass 1 to pass 2 was one bug, and it is the moving-hold principle at camera
+scale.** The first push eased to REST over 4.2s, so every shot longer than that
+was frozen for its entire tail, and the longest hold did not move at all between
+passes. A held camera is never actually at rest either. Adding a small
+non-settling drift on top of the ease took frozen from 38% to 25%.
+
+**The two rows still failing have one cause and it is now well scoped.** The
+worst remaining hold is at 35.5s, which is the lectern shot: no character in
+frame, so the moving hold contributes nothing and only the camera is working.
+Character-free shots need PROP AND WORLD animation, which MOTION_BIBLE ranks
+Tier 2 and which pays twice, because a counter incrementing or a stack growing
+also does comedy work the dialogue cannot.
+
 ## Wrap
 - [ ] frozen share under 15%, measured, on a real episode
 - [ ] a script whose every seam is BUT or THEREFORE, checked mechanically

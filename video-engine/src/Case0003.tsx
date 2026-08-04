@@ -160,8 +160,13 @@ const Cam: React.FC<{
   // Ease-out: fast at the top of the shot where attention arrives, settling as
   // the beat lands. Never moving THROUGH a punchline, which buries it.
   const ease = 1 - Math.pow(1 - Math.min(1, t / 4.2), 3);
-  const push = locked ? 1 : 1 + 0.045 * ease;
-  const slideX = locked ? 0 : 9 * ease;
+  // AND THEN IT NEVER SETTLES. First cut of this eased to rest over 4.2s, which
+  // left every shot longer than that frozen for its whole tail: measured, the
+  // longest static hold stayed at 3.0s even after the push landed. That is the
+  // moving-hold principle at camera scale, and missing it is the same mistake
+  // one level up. A held camera is never actually at rest.
+  const push = locked ? 1 : 1 + 0.045 * ease + 0.009 * t;
+  const slideX = locked ? 0 : 9 * ease + 2.4 * t;
   return (
     <g transform={
       `translate(${W / 2 + slideX},${H / 2}) scale(${zoom * push}) ` +
