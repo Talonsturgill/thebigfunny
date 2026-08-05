@@ -33,13 +33,13 @@ export const CAPTIONS: Cue[] = [
   {start: 27.65, end: 31.725, who: 'DEE', text: 'Paid out of pocket. Or gone without post-acute care.'},
   {start: 32.82, end: 34.747, who: 'RAY', text: 'It\'s on the list like an option.'},
   {start: 35.65, end: 38.748, who: 'INSTITUTION', text: 'Your appeal rights are in your plan materials.'},
-  {start: 39.95, end: 43.059, who: 'RAY', text: 'Wrong every fucking time somebody checked.'},
-  {start: 43.96, end: 47.794, who: 'DEE', text: 'Same finding in 2018. Seventy-five percent.'},
-  {start: 49.09, end: 50.157, who: 'RAY', text: 'It\'s going up.'},
+  {start: 39.95, end: 42.826, who: 'RAY', text: 'Wrong every fucking time somebody checked.'},
+  {start: 43.73, end: 47.564, who: 'DEE', text: 'Same finding in 2018. Seventy-five percent.'},
+  {start: 48.86, end: 49.927, who: 'RAY', text: 'It\'s going up.'},
 ];
 
 /** Seconds of finished episode: last spoken word plus the 1.5s tail. */
-export const TOTAL = 51.66;
+export const TOTAL = 51.43;
 
 /** Who is speaking at time t, or null in a gap. One definition, so the caption
  *  tint, the speaker label and the talk pose can never disagree. */

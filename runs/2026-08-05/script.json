@@ -1,7 +1,7 @@
 {
   "case": 4,
   "run_date": "2026-08-05",
-  "estimated_seconds": 50.16,
+  "estimated_seconds": 49.93,
   "word_count": 96,
   "angle_type": "number",
   "funniest_line_intended": "So it was never a no. It was a question.",
@@ -194,7 +194,7 @@
     {
       "t": 39.95,
       "who": "RAY",
-      "text": "[flat] Wrong every fucking time somebody checked.",
+      "text": "Wrong every fucking time somebody checked.",
       "claims": [
         "c1",
         "c3"
@@ -206,10 +206,10 @@
       },
       "hold": 0.64,
       "hold_why": "the receipt",
-      "delivery_note": "2.09 w/s on the first take, which is his hardest line delivered like a eulogy. [flat] kills the gravitas the model keeps adding; the routine documents it as exactly that lever."
+      "delivery_note": "[flat] made it WORSE, 2.09 w/s -> 1.93. [flat] kills the intonation the model adds and kills the PACE with it, so it is the wrong lever for 'too slow'. Reverted to the original take, which is cached and costs nothing."
     },
     {
-      "t": 43.96,
+      "t": 43.73,
       "who": "DEE",
       "text": "Same finding in 2018. Seventy-five percent.",
       "claims": [
@@ -224,7 +224,7 @@
       "hold_why": "the button"
     },
     {
-      "t": 49.09,
+      "t": 48.86,
       "who": "RAY",
       "text": "[sigh] It's going up.",
       "claims": [

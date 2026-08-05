@@ -14,8 +14,8 @@
 export type FaceBeat = {t: number; emotion: string};
 
 export const FACES: Record<string, FaceBeat[]> = {
-  DEE: [{t: 0, emotion: 'flat'}, {t: 1.98, emotion: 'squint'}, {t: 3.91, emotion: 'flat'}, {t: 8.56, emotion: 'squint'}, {t: 10.25, emotion: 'flat'}, {t: 15.46, emotion: 'worried'}, {t: 17.8, emotion: 'shock'}, {t: 20.82, emotion: 'worried'}, {t: 23.03, emotion: 'flat'}, {t: 25.61, emotion: 'squint'}, {t: 27.65, emotion: 'flat'}, {t: 32.82, emotion: 'worried'}, {t: 35.65, emotion: 'squint'}, {t: 39.95, emotion: 'worried'}, {t: 43.96, emotion: 'flat'}, {t: 49.09, emotion: 'worried'}],
-  RAY: [{t: 0, emotion: 'squint'}, {t: 1.98, emotion: 'angry'}, {t: 3.91, emotion: 'shock'}, {t: 8.56, emotion: 'angry'}, {t: 10.25, emotion: 'shock'}, {t: 15.46, emotion: 'smug'}, {t: 17.8, emotion: 'angry'}, {t: 23.03, emotion: 'flat'}, {t: 25.61, emotion: 'worried'}, {t: 27.65, emotion: 'shock'}, {t: 32.82, emotion: 'flat'}, {t: 35.65, emotion: 'squint'}, {t: 39.95, emotion: 'angry'}, {t: 43.96, emotion: 'worried'}, {t: 49.09, emotion: 'flat'}],
+  DEE: [{t: 0, emotion: 'flat'}, {t: 1.98, emotion: 'squint'}, {t: 3.91, emotion: 'flat'}, {t: 8.56, emotion: 'squint'}, {t: 10.25, emotion: 'flat'}, {t: 15.46, emotion: 'worried'}, {t: 17.8, emotion: 'shock'}, {t: 20.82, emotion: 'worried'}, {t: 23.03, emotion: 'flat'}, {t: 25.61, emotion: 'squint'}, {t: 27.65, emotion: 'flat'}, {t: 32.82, emotion: 'worried'}, {t: 35.65, emotion: 'squint'}, {t: 39.95, emotion: 'worried'}, {t: 43.73, emotion: 'flat'}, {t: 48.86, emotion: 'worried'}],
+  RAY: [{t: 0, emotion: 'squint'}, {t: 1.98, emotion: 'angry'}, {t: 3.91, emotion: 'shock'}, {t: 8.56, emotion: 'angry'}, {t: 10.25, emotion: 'shock'}, {t: 15.46, emotion: 'smug'}, {t: 17.8, emotion: 'angry'}, {t: 23.03, emotion: 'flat'}, {t: 25.61, emotion: 'worried'}, {t: 27.65, emotion: 'shock'}, {t: 32.82, emotion: 'flat'}, {t: 35.65, emotion: 'squint'}, {t: 39.95, emotion: 'angry'}, {t: 43.73, emotion: 'worried'}, {t: 48.86, emotion: 'flat'}],
 };
 
 /** The expression in force for `who` at a global frame. */
