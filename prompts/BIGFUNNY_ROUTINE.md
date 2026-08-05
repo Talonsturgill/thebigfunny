@@ -571,6 +571,48 @@ Failing Gate 0 is cheap. Failing after a render is not.
    sheet could not: twelve cells across 58 seconds samples every 4.8s, and
    sampling cannot find a hole narrower than its own interval.
 
+7c. **`python3 scripts/face_size.py` BEFORE any render.** It reads the SCENE
+   SOURCE and measures every cast placement as a percentage of frame height.
+
+   It exists because case 0003 shipped with every character under 8% of frame,
+   median 4.7%, largest 5.9%. At 1920px that is a ninety pixel head, about SEVEN
+   MILLIMETRES on a phone. The show had a seven-emotion eye table, 34 generated
+   expression changes, a passing `face_check` and wired eyelines, and all of it
+   rendered at a size nobody could see. Three episodes had never once cut to a
+   face. The owner's note was "they were just like a piece of furniture in the
+   screen", and it was not a figure of speech: at 4.7% a character IS a prop.
+
+   `face_check` verifies the expressions EXIST. This verifies they are VISIBLE.
+   A run can pass the first and fail the second, and case 0003 did, five times.
+
+   Two rows:
+     REACTION  at least one head at 20% of frame or more. A wide is legitimate;
+               an episode that never gets close is decoration nobody sees.
+     MEDIAN    the median placement at 7% or more. Not every placement, because
+               an establishing wide with small figures is real cinema and a gate
+               that banned it would push every episode into the same mid-shot.
+
+   When it fails, do NOT enlarge the figures inside the wide. That inflates a
+   person against a set whose scale is usually the joke. Cut closer, or split
+   the shot. Splitting is almost always the right answer, because a shot too
+   wide to read a face is also usually a shot held too long: the six close-ups
+   added to case 0003 took its longest hold from 7.46s to 4.14s in the same pass.
+
+   The place to look is where the film ALREADY says a reaction belongs and does
+   not stage one. In case 0003 every single fix was a shot arguing with itself:
+   a block comment reading "the reaction belongs to Dee" over Dee at 3.2%, and
+   the angriest line in the episode playing 3.3 seconds over a still wheel with
+   nobody on screen. Read the block comments against `script.json`'s `face` map
+   before inventing new coverage.
+
+   FRAME IT BY ARITHMETIC, NOT BY EYE. The first pass at these close-ups put
+   three of four crowns 60% down the frame with the burned-in caption crossing a
+   mouth, which is a close-up of a wall with a chin under it. Solve it: the
+   visible band at `cy` and `zoom` is `cy*H +/- H/(2*zoom)`, a crown wants to sit
+   near 30% down that band, and `ground = crown + mult * CARD_W * CAST_TO_CARD`.
+   Then render the still and LOOK, because arithmetic does not catch a porthole
+   sitting on somebody's head like a halo. That took two more passes.
+
 8. `bash scripts/render.sh final` only when the draft is right.
 
    **WAIT FOR THE ARTIFACT, NOT FOR THE SHELL.** A render launched in the

@@ -74,6 +74,21 @@ hard_gates:
       diverges from recent runs per ledger/artwork.json divergence rules.
     fails_run: true
 
+  - id: faces_visible
+    name: Somebody's face is big enough to read
+    rule: >
+      scripts/face_size.py exits 0. At least one cast placement puts a head at
+      20% of frame height or more, and the MEDIAN placement is at 7% or more.
+      Case 0003 shipped with every character under 8% of frame and a median of
+      4.7%, which is a ninety pixel head, about seven millimetres on a phone,
+      and the owner called the cast "a piece of furniture in the screen". It was
+      not a figure of speech. face_check verifies the expressions exist; this
+      verifies they are visible, and an episode can pass the first while failing
+      the second. The remedy is to cut closer or split a shot, NEVER to enlarge
+      a figure inside a wide, because that inflates a person against a set whose
+      scale is usually the joke.
+    fails_run: true
+
   - id: renders_clean
     name: The file is actually good
     rule: >

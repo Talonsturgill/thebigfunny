@@ -35,7 +35,14 @@ files that did not exist and would have graded anyway.
    Institution cold, rectilinear, too large for frame.
 4. **Divergence.** Hero structure, atmosphere, palette family, continuity device
    and camera language all clear `ledger/artwork.json`.
-5. **Scene count matches** what `Episode.tsx` will render. A mismatch makes
+5. **Somebody's face is big enough to read.** At least one shot puts a head at
+   20% of frame height or more, and the median staged head clears 7%. Case 0003
+   boarded eighteen shots at a median of 4.7%, which is about seven millimetres
+   on a phone, and shipped three episodes without ever cutting to a face; the
+   owner's word for the cast was "furniture". `face_size.py` gates the scene
+   later, but the board is where it is cheap. If a board note says a reaction
+   belongs to somebody, the same board owes that reaction a size.
+6. **Scene count matches** what `Episode.tsx` will render. A mismatch makes
    Episode silently fall back to the previous episode's hardcoded timings and the
    picture drifts from the words with nothing printed.
 
