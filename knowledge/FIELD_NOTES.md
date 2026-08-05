@@ -922,3 +922,70 @@ from prose that instructs them to open it.
 
 Describe an absent file; never spell it as a path.
 
+## Printing usage is not a read-only operation (2026-08-05)
+
+A full-repo review opened by running `--help` on all 33 scripts, on the theory
+that it is the safest thing you can do to an unfamiliar program. Four of them
+failed and one of them CHANGED THE REPO.
+
+`sfx_bank.py --help` resolved `'--help'` as an effect kind, missed, and
+self-healed by running `build_sfx_library.py`, which rewrites MANIFEST.md from
+scratch. Nineteen lines of hand-written licensing disappeared: the CC0
+verification for twenty eight committed third-party takes, the pointer to their
+sha256 provenance, and the prohibition naming the sources that must never be
+committed here. The files stayed committed and stayed first in the resolution
+order. `git status` is the only reason anyone noticed.
+
+Three lessons, in order of how much they cost:
+
+1. **Parse arguments before doing anything.** `build_scenes`, `build_sfx_library`
+   and `fetch_sfx` all did real work before argparse: `--help` variously ran the
+   sixty-second gate, rebuilt a hundred WAV files, or started scraping a website.
+2. **A self-heal needs to know what it is healing.** Rebuilding on ANY
+   unresolvable name made a typo indistinguishable from an empty directory. An
+   unknown NAME and an absent BANK are different failures and only one of them is
+   repairable by building. If any other kind resolves, the bank exists.
+3. **Generated files must not own hand-written content.** A writer that rewrites
+   a file from scratch will eventually delete the part a human wrote. Split it:
+   generated above, human below, and the writer preserves everything past the
+   boundary.
+
+## Three bugs were invisible because the one episode in development dodges them (2026-08-05)
+
+- `run_guard` resolved its stamp against `Path.cwd()` while `render.sh` cds into
+  `video-engine/` first, so the stamp was never found and every props-driven
+  render was refused. Case 0003 is SELF-TIMED, has no `episode_props.json`, and
+  skips the guard entirely.
+- `mux_and_verify` refused every mux once a mix existed, because the staleness
+  guard compares against the master and the mix is built after the render. It
+  went unnoticed for a session because the one person hitting it (me) reached for
+  `touch` instead of reading the message.
+- `build_scenes`'s fallback shot map has seven entries and `Episode.tsx` renders
+  nine. Latent for the same reason: nothing in development uses `Episode`.
+
+**The episode you are working on is not a test suite.** A green session on one
+composition says nothing about the paths that composition does not take, and
+"it works" from inside a self-timed episode is a statement about one branch of
+the pipeline. When a guard has never fired, find out whether that is because it
+is satisfied or because it is never reached.
+
+And the `touch` one is its own lesson: **a workaround that unblocks you is a bug
+report you decided not to file.** The moment the fix is "adjust the inputs until
+the tool stops complaining", the tool is either wrong or the pipeline is, and
+both are worth the two minutes.
+
+## A gate can be blind to the exact thing it was built for (2026-08-05)
+
+`mix_check` exists to catch "the delivered audio is just the VO". It computed
+`resid = mix - vo`, which assumes the voice reaches the master at unity gain.
+`build_mix` soft-limits the whole bus, so the real relationship is `mix = (vo +
+fx) * k`. Reproduced: `mix = vo * 0.80` with ZERO effects and ZERO score passed
+all eight rows, including "the score plays under the film, 100% coverage".
+
+A plain volume change satisfied a gate whose entire purpose was to notice that
+nothing had been added. The fix is one line (subtract the least-squares best-fit
+multiple of the VO, which cancels the bus term whatever it was) and the finding
+is not: **when a gate compares an output to an input, check what the pipeline
+does to the input on the way through.** Every stage between them is a term the
+comparison has to account for.
+
