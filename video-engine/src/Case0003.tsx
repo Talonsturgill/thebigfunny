@@ -71,8 +71,16 @@ import {GradeLayer} from './lib/lighting';
 import {TallyCounter} from './lib/props';
 import {
   CountRoomBG, DocketCard, CardPile, CardChute, VerifyDie, FilingPlate,
-  COUNTROOM, CAST_TO_CARD,
+  COUNTROOM, CAST_TO_CARD, CARD_ASPECT,
 } from './lib/countroom';
+// SHIPPED IN THE PORT, CALLED BY NOBODY. scripts/unused_engine.py reported
+// entrance, SNAP, staggerDelay and holdPayoff as dead exports: an animation
+// -principles layer written specifically because early judge passes said
+// "sprites scale but don't articulate; nothing follows through", sitting
+// unreached while this episode hand-rolled a three-point interpolate for its
+// cold open and left its payoff shot as a four second freeze. A capability
+// that exists and is never called looks exactly like one that does not.
+import {entrance, staggerDelay, holdPayoff, SNAP} from './lib/motion';
 import {CAPTIONS, speakerAt, TOTAL as TOTAL_S} from './case0003_captions';
 import {emotionAt} from './case0003_faces';
 
@@ -139,7 +147,15 @@ const Cam: React.FC<{
   children: React.ReactNode;
   /** Opt OUT of the automatic drift. Not the default, on purpose. */
   locked?: boolean;
-}> = ({cx = 0.5, cy = 0.5, zoom = 1, locked = false, children}) => {
+  /**
+   * SHOT-RELATIVE second a reveal LANDS. The camera then stops dead for
+   * motion.tsx's doctrine hold band, because the pause is the punctuation and a
+   * camera that drifts through a payoff steps on it. The clock is REWOUND by
+   * the hold afterwards rather than resumed at the wall time, so the drift
+   * picks up exactly where it stopped instead of jumping the held distance.
+   */
+  hold?: number;
+}> = ({cx = 0.5, cy = 0.5, zoom = 1, locked = false, hold, children}) => {
   // THE DEFAULT SLOW PUSH. Every shot breathes unless it explicitly refuses to.
   //
   // Case 0003 had camera movement in 2 of its 18 shots, which is why the owner
@@ -159,14 +175,20 @@ const Cam: React.FC<{
   const t = sf / FPS;
   // Ease-out: fast at the top of the shot where attention arrives, settling as
   // the beat lands. Never moving THROUGH a punchline, which buries it.
-  const ease = 1 - Math.pow(1 - Math.min(1, t / 4.2), 3);
+  // THE PAYOFF HOLD. holdPayoff() returns 1 inside the doctrine band (0.4-0.8s)
+  // after a reveal lands, and it means NO NEW MOTION STARTS. Applied to the
+  // clock rather than to the output so the drift resumes continuously.
+  const HOLD_S = 0.6;
+  const held = hold !== undefined && holdPayoff(sf, FPS, s(hold), HOLD_S) === 1;
+  const te = hold === undefined || t < hold ? t : held ? hold : t - HOLD_S;
+  const ease = 1 - Math.pow(1 - Math.min(1, te / 4.2), 3);
   // AND THEN IT NEVER SETTLES. First cut of this eased to rest over 4.2s, which
   // left every shot longer than that frozen for its whole tail: measured, the
   // longest static hold stayed at 3.0s even after the push landed. That is the
   // moving-hold principle at camera scale, and missing it is the same mistake
   // one level up. A held camera is never actually at rest.
-  const push = locked ? 1 : 1 + 0.045 * ease + 0.009 * t;
-  const slideX = locked ? 0 : 9 * ease + 2.4 * t;
+  const push = locked ? 1 : 1 + 0.045 * ease + 0.009 * te;
+  const slideX = locked ? 0 : 9 * ease + 2.4 * te;
   return (
     <g transform={
       `translate(${W / 2 + slideX},${H / 2}) scale(${zoom * push}) ` +
@@ -176,6 +198,31 @@ const Cam: React.FC<{
     </g>
   );
 };
+
+/**
+ * entrance()'s deform, with the WIDENING clamped to the margin the slab has.
+ *
+ * The volume-preserving squash widens a card as it flattens on landing, and
+ * these cards run nearly frame-width. The first pass at this cropped "EVICTION
+ * ACTION" to "VICTION ACTION" and ate the C off the case number for four
+ * frames. This file's own rule, written into three separate shots: cropping a
+ * case number mid-word reads as a mistake and not as a choice, and it is the
+ * one string the whole film asks a viewer to match. Volume preservation loses
+ * to that, every time.
+ *
+ * `margin` is the width the slab can grow into as a fraction of its OWN width,
+ * measured AFTER the camera zoom. That measurement is the part the first fix
+ * got wrong: the cold open card is 0.88W of the scene but the shot is at zoom
+ * 1.35, so on screen it is already WIDER than the frame and its margin is zero.
+ * Clamping against the scene width let it keep widening anyway.
+ *
+ * sy is passed through untouched, so a slab with no room still visibly flattens
+ * against what it lands on. It stops being volume-preserving at that point,
+ * which is the correct trade: nobody has ever noticed a card conserve area, and
+ * everybody notices a case number missing its first letter.
+ */
+const slabDeform = (e: {sx: number; sy: number}, margin: number) =>
+  ({sx: Math.min(e.sx, 1 + Math.max(0, margin) * 0.7), sy: e.sy});
 
 /** A shot. Every one carries its own window from the board, so a retimed script
     moves one number in one place. */
@@ -249,13 +296,42 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
         <Shot from={0} to={2.364}>
           <Cam cy={0.82} zoom={interpolate(f, [0, s(2.364)], [1.35, 1.42], clamp)}>
             <CountRoomBG f={f} w={W} h={H} light={0.9} pile={0.02} />
-            {/* The card is sized so BOTH legible strings sit inside the frame at
-                this zoom. Cropping a case number mid-word reads as a mistake and
-                not as a choice, and it is the one string the whole film asks the
-                viewer to match. */}
-            <DocketCard x={W * 0.06} w={W * 0.88} {...card} light={1}
-                        y={interpolate(f, [0, s(0.55), s(0.75)],
-                                       [H * 1.02, H * 0.765, H * 0.78], clamp)} />
+            {/* THE CARD IS SIZED SO BOTH LEGIBLE STRINGS SIT INSIDE THE FRAME,
+                and until now that was an assertion this comment made and the
+                render contradicted. 0.88W was measured against the SCENE, not
+                against the screen, and this shot runs at camera zoom 1.35-1.42
+                with the default push on top, so the card was 1.19 of the frame
+                and the hook opened on "VICTION ACTION" over a case number with
+                no C. Two seconds in, on the string the whole film asks a viewer
+                to match, in the only three seconds short form decides anything.
+                0.88W -> 0.58W still fills 91% of the frame at the widest point
+                of the push, which is furniture size by any reading, and now the
+                words survive it. Measured at both ends of the zoom AND with the
+                slide, because the slide is what eats the right margin. */}
+            {/* THE CARD IS MANUFACTURED, and now it has weight.
+                This was a three-point interpolate with a hand-typed overshoot
+                (1.02 -> 0.765 -> 0.78). entrance() gives the same move as
+                PHYSICS: an anticipation beat, a spring that overshoots on its
+                own, and volume-preserving squash on arrival, which is the part
+                a keyframed y can never fake. It also hands back `vy`, so the
+                travel is available to a motion blur the day this shot wants
+                one. Pivot is the card's BOTTOM edge, because a slab that lands
+                squashes against what it lands ON, not about its middle. */}
+            {(() => {
+              const CW = W * 0.58;
+              const e = entrance(f, FPS, s(0.18), {drop: H * 0.24, preset: SNAP});
+              // 0.58W of the scene at camera zoom 1.42 and a 1.066 push is 0.91
+              // of the FRAME, so there is 0.10 of its own width to grow into.
+              const d = slabDeform(e, 0.10);
+              const foot = H * 0.78 + CW * CARD_ASPECT;
+              return (
+                <g transform={`translate(${W * 0.5},${foot}) scale(${d.sx},${d.sy}) `
+                              + `translate(${-W * 0.5},${-foot})`}>
+                  <DocketCard x={W * 0.21} y={H * 0.78 + e.dy} w={CW}
+                              {...card} light={1} />
+                </g>
+              );
+            })()}
           </Cam>
         </Shot>
 
@@ -560,7 +636,19 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             politeness menacing: there is nothing to negotiate with.
             ============================================================ */}
         <Shot from={27.39} to={31.77}>
-          <Cam cx={0.16} cy={0.20} zoom={3.2}>
+          {/* motion_check put the film's longest static hold at 30.0s, which is
+              here: the card finishes going in at 29.14 and then 2.6 seconds of
+              this shot are a held drawing, on the Institution's only line.
+              The fix cannot be to make the machine emote, react or brighten;
+              that is the show's hardest rule and this shot exists to hold it.
+              So the CAMERA moves instead. A 0.16 -> 0.19 lateral crawl at zoom
+              3.2 is 104px over 4.38s, about 24px/s: slow enough to read as a
+              machine being inspected rather than as a machine performing, and
+              it moves 100% of the pixels for the whole shot. Refusing to
+              editorialise is a rule about the SUBJECT, never a licence for a
+              frozen frame. */}
+          <Cam cx={interpolate(f, [s(27.39), s(31.77)], [0.16, 0.19], clamp)}
+               cy={0.20} zoom={3.2}>
             <CountRoomBG f={f} w={W} h={H} light={1} pile={0}
                          intake={interpolate(f, [s(28.016), s(29.142)], [0, 1], clamp)} />
           </Cam>
@@ -663,7 +751,10 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
               shot was an inert wall. The house rule is that the joke lands on
               the face of the person who is NOT talking, and a reaction costs
               zero runtime. Ray is now in frame with the chute still in it. */}
-          <Cam cx={0.66} cy={0.70} zoom={1.5}>
+          {/* hold: the cover plate finishes falling at 40.85, which is 1.97s into
+              this shot, and the camera used to drift straight through the one
+              reveal in the film. It now stops dead for the doctrine band. */}
+          <Cam cx={0.66} cy={0.70} zoom={1.5} hold={1.97}>
             <CountRoomBG f={f} w={W} h={H} light={0.7} pile={1} />
             {/* THE PLATE COMES OFF the chute that has been at the lower right
                 frame edge since second five. Thirty-eight seconds of absence,
@@ -706,11 +797,45 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             place it was ever asked to be consistent.
             ============================================================ */}
         <Shot from={42.19} to={46.31}>
-          <rect x={0} y={0} width={W} height={H} fill={COUNTROOM.ink} />
-          <DocketCard x={W * 0.04} y={H * 0.20} w={W * 0.92} {...card}
-                      differs="RESOLVED" light={1} />
-          <DocketCard x={W * 0.04} y={H * 0.56} w={W * 0.92} {...card}
-                      differs="INVALID" light={1} />
+          {/* WRAPPED IN A CAM so the default push reaches it. The two cards now
+              arrive as a reading path, but they are landed by 43.2 and this
+              shot runs to 46.31, so the last 3.1 seconds were still a held
+              drawing. Starting slightly wide at 0.96 means the push carries it
+              to about 1.005 instead of cropping the two words the shot exists
+              for. The ink field is oversized to match, or the pull-back would
+              show frame edges. */}
+          <Cam cy={0.5} zoom={0.96}>
+          <rect x={-W * 0.3} y={-H * 0.3} width={W * 1.6} height={H * 1.6}
+                fill={COUNTROOM.ink} />
+          {/* THE PAYOFF OF THE WHOLE COMPARISON, and it was a JPEG for 4.12
+              seconds: both cards simply existed, from the first frame, with
+              nothing to look at first. The shot asks the viewer to read two
+              words in two places and told them nothing about the order.
+              staggerDelay() is the function for exactly this and had never been
+              called: 300ms apart turns a simultaneous pop-in into a reading
+              path. RESOLVED lands, then INVALID lands on top of it, which is
+              also the order the line says them in. */}
+          {[
+            {y: H * 0.20, differs: 'RESOLVED'},
+            {y: H * 0.56, differs: 'INVALID'},
+          ].map((c, i) => {
+            const e = entrance(
+              f, FPS, s(42.19) + s(0.12) + staggerDelay(i, FPS, 300),
+              {drop: H * 0.13, preset: SNAP});
+            // No <Cam> in this shot, so 0.92W is 0.92 of the frame and there
+            // is (1 - 0.92) / 0.92 = 0.087 of its own width to grow into.
+            const d = slabDeform(e, 0.087);
+            const foot = c.y + W * 0.92 * CARD_ASPECT;
+            return (
+              <g key={c.differs}
+                 transform={`translate(${W * 0.5},${foot}) scale(${d.sx},${d.sy}) `
+                            + `translate(${-W * 0.5},${-foot})`}>
+                <DocketCard x={W * 0.04} y={c.y + e.dy} w={W * 0.92} {...card}
+                            differs={c.differs} light={1} />
+              </g>
+            );
+          })}
+          </Cam>
         </Shot>
 
         {/* ============================================================

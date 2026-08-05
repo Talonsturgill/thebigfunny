@@ -304,7 +304,9 @@ something adjacent.
 | 7 | `scripts/motion_check.py` + self-test — frozen share, max hold, events/5s, LIFE floor, scene cap | **DONE.** Reads the RENDER, not the board. Fails case 0003 at 59% frozen / 3.0s hold. Mutation-tested on the frozen-share and cut-share guards. Discriminates a slideshow (87% frozen, 100% cuts) from a pan (0%, 0%), so cutting more often cannot game it. |
 | 8 | the writers room rebuilt: beat sheet before script, opposed agents, real argument | TODO |
 | 9 | rewrite the routine prompt around the new order of operations | TODO |
-| 10 | produce an episode that clears every new gate, with before/after numbers | TODO |
+| 10 | produce an episode that clears every new gate, with before/after numbers | TODO (owner said HOLD) |
+| 11 | FACES: the acting layer was rendering at a size nobody could see | **DONE 2026-08-05.** `face_size.py` + six close-ups. Median head 4.7% -> 7.7% of frame, five reaction shots over 20% where three episodes had zero. Wired as a hard gate, a routine phase, and a requirement on the director and the storyboard critic. |
+| 12 | wire the unused engine capability the owner asked about | **DONE 2026-08-05.** `entrance`, `SNAP`, `staggerDelay`, `holdPayoff` wired. `squashStretch`, `CameraMoves`, `Headgear`/`Outfit` left alone with the reason recorded in the audit table below, so the next run does not re-litigate them. |
 
 ## The measured reasons (do not re-litigate)
 
@@ -392,9 +394,10 @@ building anything new that overlaps them:
 | --- | --- | --- |
 | `CameraMoves` (dollyThrough, orbitReveal, craneDown, truckAcross, riseWith), `composeCams`, `PERSPECTIVE` | `stage3d.tsx` | A complete 2.5D camera vocabulary, unused. **NOT a drop-in:** it returns a 3D `Camera` for `Stage3D`, an HTML/CSS-perspective tree, while episodes are flat SVG. Adopting it means moving an episode onto the 2.5D path, which is an architectural decision, not a wire-up. |
 | `Atmosphere` | `stage3d.tsx` | Aerial perspective, which MOTION_BIBLE section 6 asks for by name as the depth cue to pair with parallax. |
-| `squashStretch`, `holdPayoff`, `staggerDelay`, `Entrance`, spring presets | `motion.tsx` | **The genuine drop-ins.** Pure functions, no rendering-path dependency, usable in the SVG rig today. And half this file IS used (`accentKick`, `anticipate`, `followThrough`, `entrance`, `vitals`, `EASE`), so the other half was not undiscovered, it was REIMPLEMENTED. |
+| ~~`holdPayoff`, `staggerDelay`, `entrance`, `SNAP`~~ | `motion.tsx` | **WIRED 2026-08-05.** `entrance` + `SNAP` now drive the cold open card, which was a hand-typed three-point interpolate with a hand-typed overshoot; `staggerDelay` gives the RESOLVED / INVALID payoff a 300ms reading path instead of both cards simply existing; `holdPayoff` became a `hold` prop on `Cam` so the camera stops dead for the doctrine band after the one reveal in the film. This was the REIMPLEMENTED half of the file: `accentKick`, `anticipate`, `followThrough`, `vitals` and `EASE` were already in use. |
+| `squashStretch` | `motion.tsx` | Still dead, and left dead ON PURPOSE. The obvious call site is a card thumping as it lands on the pile in S4, and S4's whole design is that the picture on the floor does NOT change so the only measurable change is the height of the man standing on it. Forcing the call would fight the shot. Note it and move on: a capability with no honest call site is not a debt. |
 | `RAY_HERO_POSES` | `cast.tsx` | "Poses that read at thumbnail size, which is where the platform decides." The thumbnail question is already answered and never consulted. |
-| `Headgear`, `Outfit` | `Character.tsx` | The WORKLOG lists "Institution costume system (designed, never built)" as OPEN. It is built. |
+| `Headgear`, `Outfit` | `Character.tsx` | The WORKLOG lists "Institution costume system (designed, never built)" as OPEN. It is built. **But NOT a drop-in for the cast:** `Character` is the RETIRED crowd rig, on a different bbox (`-440..+10`) from `Figure` (`crown 0 .. ground 680`), which `Case0003.tsx` documents as having been read wrong three separate times. Wiring these means porting them onto `Figure`, which is a build, not a wire-up. |
 | `SmellRings`, `ScanReticle` | `FX.tsx` | Comedy FX. |
 | `FormGradients`, `HazeOverlay`, `Tones` | `lighting.tsx` | Lighting tools. |
 
