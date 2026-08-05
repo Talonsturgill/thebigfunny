@@ -52,6 +52,56 @@ SPEAK_MIN = 7.0
 REACT_MIN = 20.0
 
 
+def _consts(src):
+    """Every `const NAME = <arithmetic on numbers and earlier consts>` in scope.
+
+    THE GATE USED TO READ EXACTLY ONE EPISODE. It looked for the literal shape
+    `crown={CARD_W * CAST_TO_CARD * n}`, which is case 0003's idiom and nobody
+    else's, so case 0004 came back "no cast found -- needs a human" on a scene
+    that stages the cast eleven times. A gate that only understands the episode
+    it was written against fails every NEW episode, and a gate that fails every
+    new episode gets switched off. Same defect class as the zoom regex that only
+    matched literals, found the same morning.
+
+    So: resolve names instead of matching one spelling. Scene-local consts
+    first, then anything imported from lib/, which is where a world file keeps
+    its scale constants (countroom's CAST_TO_CARD, window's CAST_TO_COUNTER).
+    """
+    env = {}
+    lib = os.path.join(REPO, "video-engine", "src", "lib")
+    if os.path.isdir(lib):
+        for fn in os.listdir(lib):
+            if fn.endswith((".tsx", ".ts")):
+                for n, v in re.findall(
+                        r'export const ([A-Z_][A-Z0-9_]*)\s*=\s*([\d.]+)\s*;',
+                        open(os.path.join(lib, fn)).read()):
+                    env[n] = float(v)
+    for n, expr in re.findall(r'const ([A-Za-z_]\w*)\s*=\s*([^;\n]+);', src):
+        v = _eval(expr, env)
+        if v is not None:
+            env[n] = v
+    return env
+
+
+def _eval(expr, env):
+    """A product of numbers and known names, or None. Deliberately not a parser:
+    anything more complicated than `A * B * 1.5` is a staging decision a human
+    should look at, and returning None routes it to the unreadable row."""
+    expr = expr.strip().rstrip(",")
+    if not re.fullmatch(r'[\w.\s*]+', expr):
+        return None
+    out = 1.0
+    for tok in (x for x in expr.split("*") if x.strip()):
+        tok = tok.strip()
+        if re.fullmatch(r'\d+\.?\d*', tok):
+            out *= float(tok)
+        elif tok in env:
+            out *= env[tok]
+        else:
+            return None
+    return out
+
+
 def measure(src):
     """-> [(from, to, zoom, mult, head_px, pct)] for every Cast placement."""
     m = re.search(r'const CARD_W = (\d+)', src)
@@ -67,9 +117,13 @@ def measure(src):
         if m:
             c2c = float(m.group(1))
     out = []
-    parts = re.split(r'<Shot from=\{([\d.]+)\} to=\{([\d.]+)\}>', src)
+    env = _consts(src)
+    unreadable = []
+    parts = re.split(r'<Shot from=\{([\d.]+)\} to=\{([^}]+)\}>', src)
     for i in range(1, len(parts), 3):
-        a, b, body = float(parts[i]), float(parts[i + 1]), parts[i + 2]
+        a = float(parts[i])
+        b = _eval(parts[i + 1], env) or a
+        body = parts[i + 2]
         # ZOOM CAN BE ANIMATED, and this regex only ever matched a literal.
         # `zoom={interpolate(f, [...], [1.35, 1.42], clamp)}` silently scored as
         # zoom=1.0 and understated every head in that shot by 35-42%. Case 0003's
@@ -81,7 +135,12 @@ def measure(src):
         # the widest the shot ever gets, so the head size reported is the
         # smallest the viewer ever sees, and the gate cannot be satisfied by a
         # zoom that only briefly gets close.
-        zm = re.search(r'<Cam[^>]*?zoom=\{(.+?)\}\s*>', body, re.S)
+        # BALANCED, not lazy-to-the-first-brace-then-anything. The lazy version
+        # matched `zoom={1.28} hold={0.75` on a Cam that also takes a hold, then
+        # took the minimum of both numbers and reported the shot at zoom 0.75.
+        # It understated rather than overstated, so it failed safe, but a gate
+        # that reports the wrong number is a gate nobody can act on.
+        zm = re.search(r'<Cam[^>]*?zoom=\{((?:[^{}]|\{[^{}]*\})*)\}', body, re.S)
         zoom = 1.0
         if zm:
             nums = [float(x) for x in re.findall(r'(?<![\w.])\d+\.?\d*', zm.group(1))]
@@ -89,10 +148,21 @@ def measure(src):
             # interpolate's input range is frames or seconds, which are not.
             cand = [x for x in nums if 0.05 <= x <= 20.0]
             zoom = min(cand) if cand else 1.0
-        for cm in re.finditer(
-                r'crown=\{CARD_W \* CAST_TO_CARD(?:\s*\*\s*([\d.]+))?\}', body):
-            mult = float(cm.group(1)) if cm.group(1) else 1.0
-            head = card_w * c2c * mult * HEAD_FRAC * zoom
+        for cm in re.finditer(r'crown=\{([^}]+)\}', body):
+            raw = cm.group(1)
+            # case 0003's spelling stays fast-pathed so its numbers cannot drift.
+            legacy = re.fullmatch(
+                r'CARD_W \* CAST_TO_CARD(?:\s*\*\s*([\d.]+))?', raw.strip())
+            if legacy:
+                mult = float(legacy.group(1)) if legacy.group(1) else 1.0
+                crown_px = card_w * c2c * mult
+            else:
+                crown_px = _eval(raw, env)
+                if crown_px is None:
+                    unreadable.append((a, b, raw.strip()[:40]))
+                    continue
+                mult = crown_px / (card_w * c2c)
+            head = crown_px * HEAD_FRAC * zoom
             out.append((a, b, zoom, mult, head, head / H * 100.0))
     return out
 

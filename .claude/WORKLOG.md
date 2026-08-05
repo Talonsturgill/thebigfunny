@@ -291,7 +291,45 @@ something adjacent.
 - The fact-check gate. It is not the problem and it never bends.
 - The 60-second law. The owner did not complain about length.
 
-## Status
+## SHIPPED: case 0004, 2026-08-05
+
+`runs/2026-08-05/case0004_tiktok.mp4`, 51.4s, every gate green. The first
+episode produced end to end since the engine work of 2026-08-05, and the first
+one whose staging was designed against `face_size.py` instead of rescued after
+it.
+
+Beat `machine-said-no`, angle type `number`, both unused before. HHS OIG
+OEI-09-24-00331: UnitedHealth overturned **99.7 percent** of appealed
+skilled-nursing denials; only **18 percent** were ever appealed; OIG found the
+same pattern in 2018 at 75 percent, so it went UP.
+
+World THE WINDOW, human scale, deliberately the inverse of case 0003. The set
+is the argument: the shutter is the no, the bell is the appeal, the chairs are
+the 82 percent.
+
+| measure | 0003 | 0004 |
+| --- | --- | --- |
+| median head size | 7.7% | **14.0%** |
+| largest head | 23.6% | 24.8% |
+| frozen share | 13% | **11%** |
+| live share | 77% | **82%** |
+| longest hold | 1.5s | **2.0s** |
+| events / 5s | 4.7 | 2.9 |
+
+What the gates caught, in order: `story_check` rejected a 35-word absurd
+sentence as a situation rather than a joke; `beat_check` rejected a ten-beat
+shot list until it became a causal seven with a laugh on every beat;
+`coherence_check` found two claims the world said it staged and no shot
+declared; `vo_cast` refused to spend TTS on a script whose faces held past
+eight seconds; `motion_check` found a dead five-second bucket that turned out
+to be a COVERAGE error, four seconds of Ray's face under Dee's biggest number.
+
+Two gates had to be generalised to read a second episode at all: `face_size`
+only understood case 0003's `crown={CARD_W * CAST_TO_CARD}` idiom, and
+`retime_check` silently dropped `to={TOTAL_S}` and called a 51.4s film unbroken
+at 48.9s. Both now resolve names, and case 0003 measures identically.
+
+## Status## Status
 
 | # | task | state |
 | --- | --- | --- |

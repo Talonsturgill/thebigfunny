@@ -1,0 +1,34 @@
+{
+  "plannable": true,
+  "shippable": true,
+  "blocked_on": [],
+  "case": 4,
+  "claims_ref": "out/dispatch/claims.json",
+  "logline": "A denial is a shutter that comes down, and a bell that opens it again, and almost nobody rings the bell.",
+  "world": {
+    "name": "THE WINDOW",
+    "drawn_from": [
+      "denial",
+      "appeal",
+      "window",
+      "shutter",
+      "bell",
+      "counter",
+      "waiting",
+      "chairs",
+      "stamp"
+    ],
+    "why_this_world": "The mechanism is not assembly, it is a BARRIER WITH NO MASS. So the set is the barrier: a service window with a roller shutter, a bell on the counter that opens it, and a room of chairs behind. Everything the episode argues about is one prop. The shutter is the no, the bell is the appeal, the chairs are the 82 percent, and none of it needs a caption.",
+    "scale": "HUMAN, and deliberately the inverse of case 0003. That episode measured a person against one enormous court case; this one puts the machine at counter height so it is exactly as big as a man, because a barrier that folds instantly was never monumental."
+  },
+  "the_turn": {
+    "at_seconds": 19.6,
+    "what_gets_worse": "Ray rings the bell and the shutter goes straight back up with no resistance at all, before his hand has left the dome. The no had no mass. He was leaning on a door that was never locked, and at his back a room of occupied chairs where not one person is at the counter."
+  },
+  "the_button": {
+    "document": "HHS OIG report OEI-09-24-00331, June 2026, with the 2018 sentence set beside the 2026 sentence so the receipt shows the number went UP: about 75 percent then, 95 percent now.",
+    "claim": "c9",
+    "image": "Flat plate at 1080x1920, the OIG page filling frame over the counter, the two sentences highlighted one above the other, the bell still sitting there unrung."
+  },
+  "sight_gags_surviving_claim_guards": 3
+}

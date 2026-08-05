@@ -35,6 +35,14 @@
       "angle_type": "the-machine-is-never-wrong",
       "angle": "The report wrote the same eviction case out again and again, and counted each copy as another time he was sued. It is not wrong about anything: every copy is accurate, and being accurate that many times is what makes the total false.",
       "landed": null
+    },
+    {
+      "run_date": "2026-08-05",
+      "angle_type": "number",
+      "angle": "UnitedHealth overturned 99.7 percent of the skilled-nursing denials that got appealed, and only 18 percent were ever appealed.",
+      "shape": "ONE figure and its comparison unit. Deliberately not `ratio` (ran 08-02) even though two numbers are in play: the episode is built on 99.7 and 18 is what makes it mean something.",
+      "connector": "the word 'no' on a coverage denial",
+      "reinterpretation": "not an answer, a question, and the question is 'are you going to argue?'"
     }
   ]
 }

@@ -11,7 +11,7 @@
       "killed_reason": "null unless shipped is false, in which case it names the OUTAGE. Never a quality reason: quality failures are fixed, not recorded as an ending."
     }
   },
-  "next_case": 4,
+  "next_case": 5,
   "entries": [
     {
       "case": 1,
@@ -36,6 +36,13 @@
       "title": "CASE No. 0003 - One Eviction Case, Counted Again",
       "beat": "the-landlord",
       "killed_reason": null
+    },
+    {
+      "case": 4,
+      "run_date": "2026-08-05",
+      "shipped": true,
+      "title": "A no that folds 99.7 percent of the time",
+      "subject": "medicare-advantage-prior-authorization-denials-overturned-on-appeal-oig"
     }
   ]
 }

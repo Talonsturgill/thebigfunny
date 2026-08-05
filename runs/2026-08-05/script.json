@@ -1,0 +1,241 @@
+{
+  "case": 4,
+  "run_date": "2026-08-05",
+  "estimated_seconds": 49.93,
+  "word_count": 96,
+  "angle_type": "number",
+  "funniest_line_intended": "So it was never a no. It was a question.",
+  "lines": [
+    {
+      "t": 0.0,
+      "who": "DEE",
+      "text": "[flat] They denied the nursing home.",
+      "claims": [
+        "c8"
+      ],
+      "needs_claim": true,
+      "face": {
+        "RAY": "squint",
+        "DEE": "flat"
+      },
+      "hold": 0.09,
+      "hold_why": "straight back at her"
+    },
+    {
+      "t": 1.98,
+      "who": "RAY",
+      "text": "He just left the hospital.",
+      "claims": [],
+      "needs_claim": false,
+      "face": {
+        "RAY": "angry",
+        "DEE": "squint"
+      },
+      "hold": 0.24
+    },
+    {
+      "t": 3.91,
+      "who": "DEE",
+      "text": "You appeal, they say yes. Ninety-five percent.",
+      "claims": [
+        "c1"
+      ],
+      "needs_claim": true,
+      "face": {
+        "RAY": "shock",
+        "DEE": "flat"
+      },
+      "hold": 0.44,
+      "hold_why": "the 95 lands before he reacts"
+    },
+    {
+      "t": 8.56,
+      "who": "RAY",
+      "text": "So they were wrong.",
+      "claims": [],
+      "needs_claim": false,
+      "face": {
+        "RAY": "angry",
+        "DEE": "squint"
+      },
+      "hold": 0.24
+    },
+    {
+      "t": 10.25,
+      "who": "DEE",
+      "text": "UnitedHealth's own number: ninety-nine point seven.",
+      "claims": [
+        "c3"
+      ],
+      "needs_claim": true,
+      "face": {
+        "RAY": "shock",
+        "DEE": "flat"
+      },
+      "hold": 0.64,
+      "hold_why": "he does the arithmetic"
+    },
+    {
+      "t": 15.46,
+      "who": "RAY",
+      "text": "That's a hundred percent with a typo.",
+      "claims": [
+        "c3"
+      ],
+      "needs_claim": false,
+      "face": {
+        "RAY": "smug",
+        "DEE": "worried"
+      },
+      "note": "Reframes c3 rather than echoing it. A joke about rounding, not a claim: 99.7 is the cited figure and stays cited.",
+      "hold": 0.54,
+      "hold_why": "then the reinterpretation"
+    },
+    {
+      "t": 17.8,
+      "who": "RAY",
+      "text": "So it was never a no. It was a question.",
+      "claims": [],
+      "needs_claim": false,
+      "face": {
+        "RAY": "angry",
+        "DEE": "shock"
+      },
+      "note": "THE UNSAYABLE, and it is a character's verdict, not a claim the show makes. story.json: keeping this in Ray's mouth rather than in a caption is what keeps the episode inside the fact-check gate.",
+      "hold": 0.24,
+      "hold_why": "the drop"
+    },
+    {
+      "t": 20.82,
+      "who": "RAY",
+      "text": "Are you gonna argue.",
+      "claims": [],
+      "needs_claim": false,
+      "face": {
+        "RAY": "angry",
+        "DEE": "worried"
+      },
+      "hold": 0.74,
+      "hold_why": "let 'are you gonna argue' hang"
+    },
+    {
+      "t": 23.03,
+      "who": "DEE",
+      "text": "Eighteen percent argue.",
+      "claims": [
+        "c2"
+      ],
+      "needs_claim": true,
+      "face": {
+        "RAY": "flat",
+        "DEE": "flat"
+      },
+      "hold": 0.44
+    },
+    {
+      "t": 25.61,
+      "who": "RAY",
+      "text": "The other eighty-two?",
+      "claims": [
+        "c7"
+      ],
+      "needs_claim": false,
+      "face": {
+        "RAY": "worried",
+        "DEE": "squint"
+      },
+      "hold": 0.64,
+      "hold_why": "she finds the sentence"
+    },
+    {
+      "t": 27.65,
+      "who": "DEE",
+      "text": "[reading] Paid out of pocket. Or gone without post-acute care.",
+      "claims": [
+        "c7"
+      ],
+      "needs_claim": true,
+      "face": {
+        "RAY": "shock",
+        "DEE": "flat"
+      },
+      "note": "THE PAINT, quoted verbatim from OEI-09-24-00331 and not characterised. The flatness of the delivery is the whole point.",
+      "hold": 0.84,
+      "hold_why": "the list lands before he names it"
+    },
+    {
+      "t": 32.82,
+      "who": "RAY",
+      "text": "It's on the list like an option.",
+      "claims": [],
+      "needs_claim": false,
+      "face": {
+        "RAY": "flat",
+        "DEE": "worried"
+      },
+      "note": "Names the paint without re-quoting it. OIG put 'gone without post-acute care' third on a neutral list, and the list is the thing, not the phrase.",
+      "hold": 0.64,
+      "hold_why": "the shutter answers"
+    },
+    {
+      "t": 35.65,
+      "who": "INSTITUTION",
+      "text": "Your appeal rights are in your plan materials.",
+      "claims": [],
+      "needs_claim": false,
+      "face": {
+        "RAY": "squint",
+        "DEE": "squint"
+      },
+      "note": "GENERIC industry phrasing. Not attributed to any company and not presented as a quotation from one. The Institution has no face and does not budge.",
+      "hold": 0.94,
+      "hold_why": "THE LONGEST BEAT IN THE FILM, before his verdict"
+    },
+    {
+      "t": 39.95,
+      "who": "RAY",
+      "text": "Wrong every fucking time somebody checked.",
+      "claims": [
+        "c1",
+        "c3"
+      ],
+      "needs_claim": false,
+      "face": {
+        "RAY": "angry",
+        "DEE": "worried"
+      },
+      "hold": 0.64,
+      "hold_why": "the receipt",
+      "delivery_note": "[flat] made it WORSE, 2.09 w/s -> 1.93. [flat] kills the intonation the model adds and kills the PACE with it, so it is the wrong lever for 'too slow'. Reverted to the original take, which is cached and costs nothing."
+    },
+    {
+      "t": 43.73,
+      "who": "DEE",
+      "text": "Same finding in 2018. Seventy-five percent.",
+      "claims": [
+        "c9"
+      ],
+      "needs_claim": true,
+      "face": {
+        "RAY": "worried",
+        "DEE": "flat"
+      },
+      "hold": 1.04,
+      "hold_why": "the button"
+    },
+    {
+      "t": 48.86,
+      "who": "RAY",
+      "text": "[sigh] It's going up.",
+      "claims": [
+        "c9"
+      ],
+      "needs_claim": false,
+      "face": {
+        "RAY": "flat",
+        "DEE": "worried"
+      },
+      "note": "Ray does not win and does not reset. The wear accumulates."
+    }
+  ]
+}

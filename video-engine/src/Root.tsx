@@ -3,11 +3,13 @@ import {Ep0729, ep0729Schema} from './Ep0729';
 import {Case0001, case0001Schema} from './Case0001';
 import {Case0002, case0002Schema} from './Case0002';
 import {Case0003, case0003Schema} from './Case0003';
+import {Case0004, case0004Schema} from './Case0004';
 // durationInFrames is DERIVED, never typed. The VO owns the runtime; a
 // hand-entered frame count here silently truncates or pads the episode
 // after every re-fit, and the render still looks internally consistent.
 import {TOTAL as CASE0002_TOTAL} from './case0002_captions';
 import {TOTAL as CASE0003_TOTAL} from './case0003_captions';
+import {TOTAL as CASE0004_TOTAL} from './case0004_captions';
 import { Composition } from 'remotion';
 import { Episode, episodeSchema } from './Episode';
 import { Standoff } from './Standoff';
@@ -58,6 +60,16 @@ export const RemotionRoot: React.FC = () => {
         width={1080}
         height={1920}
         schema={case0002Schema}
+        defaultProps={{}}
+      />
+      <Composition
+        id="Case0004"
+        component={Case0004}
+        durationInFrames={Math.round(CASE0004_TOTAL * 30)}
+        fps={30}
+        width={1080}
+        height={1920}
+        schema={case0004Schema}
         defaultProps={{}}
       />
       <Composition

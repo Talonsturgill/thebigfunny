@@ -1,0 +1,17 @@
+Sources, both primary, both read in full:
+
+HHS Office of Inspector General, OEI-09-24-00331, June 2026. "Medicare Advantage Organizations Overturned Nearly All Appealed Prior Authorization Denials for Skilled Nursing Facility Admission, Raising Concerns About Initial Denials."
+https://oig.hhs.gov/reports/all/2026/medicare-advantage-organizations-overturned-nearly-all-appealed-prior-authorization-denials-for-skilled-nursing-facility-admission-raising-concerns-about-initial-denials/
+
+Verbatim from that report:
+"When SNF denials were appealed, MAOs overturned 95 percent in favor of the enrollee."
+"Enrollees and their providers appealed 18 percent of SNF denials."
+"The high overall overturn rate was driven largely by the MAO UnitedHealth Group, Inc., which received 42 percent of the SNF appeal requests and overturned them 99.7 percent of the time."
+"In a 2018 report, OIG found that when enrollees and providers appealed denied requests between 2014 and 2016, MAOs overturned about 75 percent of their own prior authorization and payment denials."
+
+HHS Office of Inspector General, OEI-09-24-00330, June 2026, the companion report on long-term acute care and inpatient rehabilitation.
+https://oig.hhs.gov/reports/all/2026/the-three-largest-medicare-advantage-organizations-denied-requests-for-long-term-acute-care-and-inpatient-rehabilitation-at-some-of-the-highest-rates/
+
+The review covers 19 organizations and 29.3 million enrollees, 86 percent of Medicare Advantage.
+
+What we did NOT say, because the documents do not: how many people were harmed, why the denials were issued, or that any algorithm made them. OIG reports the reversal rate. It does not report a reason.

@@ -1,0 +1,31 @@
+{
+  "episode_seed": "2026-08-05",
+  "music": {
+    "mood": "hold",
+    "db": -26,
+    "turn": 20.82,
+    "note": "THE TURN IS THE BELL, at 20.82s. The harmony sours on the exact frame Ray's hand lands on the dome and the shutter starts rising, so the score changes at the moment the no stops meaning anything. Same tempo, same instrument, same politeness; nothing announces it. The bed is hold music on purpose: it is the paint, playing calmly over a barrier that folds 99.7 percent of the time."
+  },
+  "note": "Case 0004, THE WINDOW. Every cue is timed to a thing that MOVES in Case0004.tsx, lifted from that scene's own interpolate ranges, so a retime moves both together. The room has no machine in it: unlike case 0003 there is nothing here that ticks. The only rhythm is the shutter and the bell, and the twenty seconds of near-silence before the bell is the point.",
+  "cues": [
+    {"t": 0.10, "kind": "chain", "db": -20, "note": "the shutter starts down. shut interpolates 0.55 -> 1 across 0 to 0.9"},
+    {"t": 0.34, "kind": "chain", "db": -22, "note": "slats"},
+    {"t": 0.60, "kind": "chain", "db": -22, "note": "slats"},
+    {"t": 0.88, "kind": "thud",  "db": -12, "note": "IT LANDS, and the word NO is complete on the same frame. The heaviest sound in the first twenty seconds"},
+
+    {"t": 3.95, "kind": "paper", "db": -22, "note": "Dee's document, as she starts the appeal line"},
+    {"t": 15.52, "kind": "paper", "db": -24, "note": "the stamp tray, as we cut to it"},
+
+    {"t": 20.82, "kind": "ding",  "db": -8,  "note": "THE BELL. Twenty seconds of nobody touching it, and it is the loudest thing in the film until the button. The whole episode is whether anybody hits this"},
+    {"t": 20.95, "kind": "chain", "db": -14, "note": "AND THE SHUTTER IS ALREADY MOVING. 130ms after the bell, which is inside one shot and inside one gesture. world.json's handoff forbids a cut here and the audio must not imply one either"},
+    {"t": 21.18, "kind": "chain", "db": -16, "note": "rising"},
+    {"t": 21.42, "kind": "clank", "db": -13, "note": "it locks open. It never comes down again"},
+
+    {"t": 27.70, "kind": "paper", "db": -20, "note": "Dee finds the sentence in the report"},
+    {"t": 35.72, "kind": "chain", "db": -18, "note": "the Institution's notice, the slats moving a little and stopping"},
+    {"t": 39.10, "kind": "clank", "db": -21, "note": "and stopping"},
+
+    {"t": 48.95, "kind": "thud",  "db": -11, "note": "the OIG page lands. The receipt has weight"},
+    {"t": 50.95, "kind": "stamp", "db": -10, "note": "ALLEGED"}
+  ]
+}
