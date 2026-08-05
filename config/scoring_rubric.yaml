@@ -89,6 +89,20 @@ hard_gates:
       scale is usually the joke.
     fails_run: true
 
+  - id: has_sound_design
+    name: The cartoon makes a sound other than talking
+    rule: >
+      scripts/mix_check.py exits 0 and the muxed audio is out/dispatch/mix.wav,
+      not vo.wav. Three episodes shipped as dialogue over digital silence while
+      a seventeen-kind SFX bank with six takes each, a shuffle bag and a curated
+      real-recording tier sat in the repo with no caller. The gate reads the
+      AUDIO, not the cue sheet: it checks the delivered mix differs from the VO,
+      that the loudest effect is audible against the voice without burying it,
+      that nothing clips, and that no twelve second stretch of the film is
+      voice-only. When it fails, fix the cue sheet and the levels. A cartoon
+      that goes quiet for a quarter of its runtime is a podcast with pictures.
+    fails_run: true
+
   - id: renders_clean
     name: The file is actually good
     rule: >

@@ -117,6 +117,31 @@ Two working rules that came out of fixing it:
 Never fix it by drawing the person BIGGER inside the same wide. That inflates a
 character against a set whose scale is usually the joke. Move the camera.
 
+### 5b. Author the SOUND. `out/dispatch/sfx_cues.json`
+You decided what moves. You are therefore the only person who knows what it
+sounds like, so the cue sheet is yours and it ships with the shot plan.
+
+Until 2026-08-05 nobody wrote one and nobody noticed for three episodes. The
+repo has seventeen effect kinds with six takes each, a shuffle bag, a curated
+real-recording tier and a self-heal, and `resolve()` had never been called, so
+every episode shipped as dialogue over digital silence: a card the size of a
+door landing on a floor, an odometer counting to nine, a cover plate falling
+off a wall, all of it silent.
+
+  - **Every cue is timed to a thing that MOVES**, lifted from the scene's own
+    interpolate ranges so a retime moves both together. A cue on a beat that
+    merely felt like it wanted a noise is the wrong cue.
+  - **Levels are per cue, in dB.** A wheel tick and a card slam are not the same
+    size of event, and one global level says they are.
+  - **The loudest thing in the film should be the reveal.** If it is not, you
+    have either mis-levelled the mix or mis-identified the reveal.
+  - **Silence is a cue too.** Case 0003's wheel ticks eight times and then never
+    again, and the thirty seconds of no ticking is what makes the wheel topping
+    out read as something stopping rather than as a pause. Say in the sheet
+    where the sound STOPS and why.
+  - `mix_check.py` fails a run with no cue sheet, an inaudible one, one that
+    buries the line, or one that leaves twelve seconds of the film voice-only.
+
 ### 6. Check what the picture asserts
 Every shot that shows a number, a badge, a label, a logo or a document is making
 a factual claim. It resolves to a claim-id in `claims.json` or it does not go on
