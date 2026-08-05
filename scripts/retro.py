@@ -217,7 +217,13 @@ def report(entries=None):
     for e in ent:
         by_case.setdefault(e.get("case"), []).append(e)
     lines.append("SCORES BY RUN")
-    for case in sorted(by_case):
+    # SORT NONE-SAFELY. `record_gate` takes `case=None` and every caller that
+    # omits it lands a None key here, so `sorted()` compared None against int
+    # and raised TypeError. One --record-gate without --case permanently bricked
+    # retro.py AND retro.py --check, which is the tool that reads the ledger the
+    # whole self-improvement loop depends on. An unattributed defect is still a
+    # defect; it sorts first and says so.
+    for case in sorted(by_case, key=lambda c: (c is None, c)):
         for critic in sorted({x.get("critic") for x in by_case[case]}):
             reads = [x for x in by_case[case] if x.get("critic") == critic]
             reads.sort(key=lambda x: x.get("read", 0))
@@ -346,9 +352,25 @@ def self_test():
 
 
 def slug(row_name):
-    """A gate row's human name -> a stable defect slug the ledger can count."""
+    """A gate row's human name -> a STABLE defect slug the ledger can count.
+
+    Stable is the whole job. Repeat-offender escalation counts how often the
+    same slug reappears across runs, so a slug that varies run to run makes a
+    chronic defect look like a series of one-offs and the escalation never
+    fires.
+
+    Gate rows print their own thresholds, and some of those thresholds are
+    computed per episode: mix_check's cue-count row renders as "(12+ cues at
+    this length)" for a 53s film and "(6+ cues at this length)" for a 20s one,
+    so the same defect slugged two different ways. Strip every number, and any
+    parenthesised aside, before slugging. The row NAME identifies the defect;
+    the row DETAIL carries the measurement.
+    """
     import re as _re
-    t = _re.sub(r"[^a-z0-9]+", "_", row_name.strip().lower()).strip("_")
+    t = row_name.strip().lower()
+    t = _re.sub(r"\([^)]*\)", " ", t)          # "(12+ cues at this length)"
+    t = _re.sub(r"[-+]?\d[\d.,]*\s*%?", " ", t)  # any bare number or percentage
+    t = _re.sub(r"[^a-z]+", "_", t).strip("_")
     return f"gate_{t}"[:64]
 
 

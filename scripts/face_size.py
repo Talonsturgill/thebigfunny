@@ -70,8 +70,25 @@ def measure(src):
     parts = re.split(r'<Shot from=\{([\d.]+)\} to=\{([\d.]+)\}>', src)
     for i in range(1, len(parts), 3):
         a, b, body = float(parts[i]), float(parts[i + 1]), parts[i + 2]
-        zm = re.search(r'<Cam[^>]*zoom=\{([\d.]+)\}', body, re.S)
-        zoom = float(zm.group(1)) if zm else 1.0
+        # ZOOM CAN BE ANIMATED, and this regex only ever matched a literal.
+        # `zoom={interpolate(f, [...], [1.35, 1.42], clamp)}` silently scored as
+        # zoom=1.0 and understated every head in that shot by 35-42%. Case 0003's
+        # cold open already uses it, and the motion doctrine pushes every shot
+        # toward a moving camera, so this was one staging decision away from
+        # letting an unreadable episode pass.
+        #
+        # An animated zoom has a RANGE. Take the SMALLEST value in it: that is
+        # the widest the shot ever gets, so the head size reported is the
+        # smallest the viewer ever sees, and the gate cannot be satisfied by a
+        # zoom that only briefly gets close.
+        zm = re.search(r'<Cam[^>]*?zoom=\{(.+?)\}\s*>', body, re.S)
+        zoom = 1.0
+        if zm:
+            nums = [float(x) for x in re.findall(r'(?<![\w.])\d+\.?\d*', zm.group(1))]
+            # drop frame-number arguments: a zoom is a small multiplier, and an
+            # interpolate's input range is frames or seconds, which are not.
+            cand = [x for x in nums if 0.05 <= x <= 20.0]
+            zoom = min(cand) if cand else 1.0
         for cm in re.finditer(
                 r'crown=\{CARD_W \* CAST_TO_CARD(?:\s*\*\s*([\d.]+))?\}', body):
             mult = float(cm.group(1)) if cm.group(1) else 1.0
@@ -156,6 +173,10 @@ def self_test():
     has_close = head + shot % ("1.45", "1.0") + \
         '<Shot from={4} to={8}>\n<Cam cy={0.5} zoom={5.0}>\ncrown={CARD_W * CAST_TO_CARD * 1.6}\n</Cam>\n</Shot>\n'
     ok = True
+    animated = head + (
+        '<Shot from={0} to={4}>\n'
+        '<Cam cy={0.5} zoom={interpolate(f, [0, s(2.3)], [1.35, 1.42], clamp)}>\n'
+        'crown={CARD_W * CAST_TO_CARD * 1.0}\n</Cam>\n</Shot>\n')
     cases = [
         ("an episode that never cuts to a face", "REACTION shot", wide_only),
         ("an episode whose typical character is unreadable", "MEDIAN placement", wide_only),
@@ -167,6 +188,13 @@ def self_test():
         print(f"  {'ok  ' if fired else 'FAIL'} catches: {name}"
               + ("" if fired else f"   <- did NOT fire: {guard}"))
         ok &= fired
+    z = measure(animated)
+    got = z[0][2] if z else 0.0
+    okz = abs(got - 1.35) < 0.01
+    print(f"  {'ok  ' if okz else 'FAIL'} reads an ANIMATED zoom at its widest "
+          f"(interpolate 1.35->1.42 read as {got:.2f}, want 1.35)")
+    ok &= okz
+
     rows, hits = check(has_close)
     clean = all(o for _, o, _ in rows)
     big = max(h[5] for h in hits) if hits else 0

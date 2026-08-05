@@ -33,6 +33,7 @@ writing a link into the draft that 404s, which is worse than no link because it
 is the first thing the owner acts on.
 """
 import argparse
+import re
 import json
 import os
 import subprocess
@@ -86,6 +87,57 @@ def faststart(path):
     if m == -1:
         return False
     return d == -1 or m < d
+
+
+# THE POST COPY. CLAUDE.md: "The deliverable is the POST FILE ... AND the post
+# copy: caption.txt (the body) plus first_comment.txt (the sources, which NEVER
+# go in the body). A video with no caption is half a deliverable ...
+# scripts/delivery_check.py enforces all of it."
+#
+# It did not. Until 2026-08-05 this file had no caption row of any kind, so a
+# run could ship a video with no caption, no first comment, or with every source
+# URL pasted into the body, and the gate the doctrine names as the enforcer
+# passed it. A documented guarantee with nothing behind it is worse than an
+# undocumented gap, because everyone downstream stops checking.
+CAPTION_MAX = 2200          # TikTok's cap
+CAPTION_MIN = 20
+_URL = re.compile(r'https?://|www\.', re.I)
+
+
+def check_copy(caption_p, comment_p):
+    """-> rows for the two files that ship WITH the video."""
+    rows = []
+
+    def row(n, ok, d):
+        rows.append((n, ok, d))
+
+    cap = open(caption_p).read().strip() if os.path.exists(caption_p) else None
+    com = open(comment_p).read().strip() if os.path.exists(comment_p) else None
+
+    row("the caption exists", bool(cap),
+        f"{len(cap)} chars" if cap else
+        f"{caption_p} is missing or empty   <- a video with no caption is half a "
+        f"deliverable")
+    row("the first comment exists", bool(com),
+        f"{len(com)} chars" if com else
+        f"{comment_p} is missing or empty   <- the sources ship in the FIRST "
+        f"COMMENT, and a savage claim with no visible receipt is the version "
+        f"that gets the channel killed")
+    if cap:
+        row(f"the caption is a real caption ({CAPTION_MIN}-{CAPTION_MAX} chars)",
+            CAPTION_MIN <= len(cap) <= CAPTION_MAX, f"{len(cap)} chars")
+        # THE RULE THE DOCTRINE STATES AND NOTHING CHECKED.
+        found = _URL.findall(cap)
+        row("no source links in the caption BODY", not found,
+            "clean" if not found else
+            f"{len(found)} link(s) in the body   <- sources go in the first "
+            f"comment, never the body")
+    if com:
+        row("the first comment actually carries sources", bool(_URL.search(com)),
+            "has link(s)" if _URL.search(com) else
+            "no URL in the first comment   <- it is the receipt; it needs the "
+            "documents")
+    return rows
 
 
 def check(path, url=None, fetch=True):
@@ -208,13 +260,17 @@ def check(path, url=None, fetch=True):
     return rows
 
 
-def run(path, url, fetch=True):
+def run(path, url, fetch=True, copy_dir=None):
     rows = check(path, url, fetch=fetch)
+    # The post copy ships from the same directory as the post file.
+    d = copy_dir or os.path.dirname(os.path.abspath(path))
+    rows += check_copy(os.path.join(d, "caption.txt"),
+                       os.path.join(d, "first_comment.txt"))
     for n, ok, d in rows:
-        print(f"  {'ok  ' if ok else 'FAIL'} {n:<44} {d}")
+        print(f"  {'ok  ' if ok else 'FAIL'} {n:<48} {d}")
     if all(o for _, o, _ in rows):
         print("\ndelivery_check: PASS. The owner can tap a link and get a "
-              "postable file.")
+              "postable file,\n                with the copy to post it with.")
         return 0
     print("\ndelivery_check: FAIL. Fix the DELIVERABLE, not this file. The run "
           "is not\n                delivered because an mp4 exists somewhere.")
@@ -339,6 +395,49 @@ def self_test():
     print(f"  {'ok  ' if clean else 'FAIL'} accepts: a spec-clean post file")
     ok &= clean
 
+    # THE POST-COPY ROWS. CLAUDE.md names this gate as their enforcer and it
+    # had none of them, so each direction gets proved here.
+    import tempfile
+    td = tempfile.mkdtemp()
+    def _copy(cap, com):
+        for nm, body in (("caption.txt", cap), ("first_comment.txt", com)):
+            if body is None:
+                continue
+            open(os.path.join(td, nm), "w").write(body)
+        r = check_copy(os.path.join(td, "caption.txt"),
+                       os.path.join(td, "first_comment.txt"))
+        for nm in ("caption.txt", "first_comment.txt"):
+            fp = os.path.join(td, nm)
+            if os.path.exists(fp):
+                os.remove(fp)
+        return r
+
+    good_cap = "One eviction case, counted nine times. Every copy accurate."
+    good_com = "Sources: https://www.ftc.gov/legal-library/browse/cases-proceedings"
+    for name, guard, cap, com in [
+        ("a video shipped with no caption", "the caption exists", None, good_com),
+        ("a video shipped with no first comment", "the first comment exists",
+         good_cap, None),
+        ("source links pasted into the caption BODY", "no source links in the caption",
+         good_cap + " https://www.ftc.gov/x", good_com),
+        ("a first comment carrying no receipts",
+         "first comment actually carries sources", good_cap, "trust me"),
+    ]:
+        r = _copy(cap, com)
+        fired = any(guard in n and not o for n, o, _ in r)
+        print(f"  {'ok  ' if fired else 'FAIL'} catches: {name}"
+              + ("" if fired else f"   <- did NOT fire: {guard}"))
+        ok &= fired
+    r = _copy(good_cap, good_com)
+    clean = all(o for _, o, _ in r)
+    print(f"  {'ok  ' if clean else 'FAIL'} accepts: a real caption plus a sourced "
+          f"first comment")
+    if not clean:
+        for n, o, d in r:
+            if not o:
+                print(f"       (tripped '{n}': {d})")
+    ok &= clean
+
     print("\nself-test: " + ("both directions correct, as designed"
                              if ok else "THE GATE IS WRONG"))
     return 0 if ok else 1
@@ -350,13 +449,15 @@ def main():
     ap.add_argument("--url", help="the download URL the owner will be given")
     ap.add_argument("--no-fetch", action="store_true",
                     help="skip the live fetch (self-test only; it FAILS the row)")
+    ap.add_argument("--copy-dir", help="where caption.txt / first_comment.txt live "
+                                       "(default: alongside the post file)")
     ap.add_argument("--self-test", action="store_true")
     a = ap.parse_args()
     if a.self_test:
         return self_test()
     if not a.path:
         ap.error("give the post file, or --self-test")
-    return run(a.path, a.url, fetch=not a.no_fetch)
+    return run(a.path, a.url, fetch=not a.no_fetch, copy_dir=a.copy_dir)
 
 
 if __name__ == "__main__":

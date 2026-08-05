@@ -12,7 +12,10 @@
 #   2. measure the OUTPUT mp4's actual audio and exit non-zero if it is silent
 #      (< -60 dB), so a silent mux fails the run instead of shipping.
 #
-# Usage: scripts/mux_and_verify.sh <silent_video.mp4> <master.wav> <out.mp4>
+# Usage: scripts/mux_and_verify.sh <silent_video.mp4> <master.wav> <out.mp4> [upstream.wav]
+#   upstream.wav: what the PICTURE was cut to, for the staleness check. Defaults
+#   to <master.wav>. Pass out/dispatch/vo.wav when the master is a MIX, because a
+#   mix is built after the render and is downstream of it.
 #        scripts/mux_and_verify.sh --self-test
 # ============================================================================
 set -uo pipefail
@@ -197,8 +200,8 @@ PY
   exit "$ok"
 fi
 
-if [ "$#" -ne 3 ]; then
-  echo "usage: mux_and_verify.sh <silent_video.mp4> <master.wav> <out.mp4>" >&2
+if [ "$#" -lt 3 ] || [ "$#" -gt 4 ]; then
+  echo "usage: mux_and_verify.sh <silent_video.mp4> <master.wav> <out.mp4> [upstream.wav]" >&2
   echo "       mux_and_verify.sh --self-test" >&2
   exit 2
 fi
@@ -259,10 +262,34 @@ for src in "$_SRC_GLOB"/Case*.tsx "$_SRC_GLOB"/case*_captions.ts \
   fi
 done
 
-if [ "$AUDIO" -nt "$VIDEO" ]; then
-  echo "MUX REFUSED: the video is OLDER than the audio." >&2
-  echo "  video: $VIDEO  ($(date -r "$VIDEO" '+%H:%M:%S'))" >&2
-  echo "  audio: $AUDIO  ($(date -r "$AUDIO" '+%H:%M:%S'))" >&2
+# THE STALENESS COMPARISON IS AGAINST THE UPSTREAM, NOT AGAINST THE MASTER.
+#
+# What this guard actually protects is: the picture must not be older than the
+# thing that DETERMINED IT. That is the VO, because the word timings drive the
+# captions and the scene bounds. It was written when the master WAS the VO, so
+# it compared against $AUDIO and that was the same file.
+#
+# It stopped being the same file the day a mix arrived. The mix is built AFTER
+# the render (it needs nothing from the picture, and its cue times come from the
+# scene source), so `$AUDIO -nt $VIDEO` is true on every single run and the mux
+# refused every time, with a message blaming a render that had just succeeded.
+# Adding sound effects to a soundtrack does not invalidate a cut.
+#
+# So: compare against $UPSTREAM, which callers may pass as a 4th argument and
+# which DEFAULTS TO $AUDIO so every existing caller keeps the old behaviour.
+UPSTREAM="${4:-$AUDIO}"
+if [ ! -f "$UPSTREAM" ]; then
+  echo "MUX REFUSED: upstream '$UPSTREAM' does not exist." >&2
+  echo "  An absent input is not a passing input." >&2
+  exit 1
+fi
+if [ "$UPSTREAM" -nt "$VIDEO" ]; then
+  echo "MUX REFUSED: the video is OLDER than the audio it was cut to." >&2
+  echo "  video:    $VIDEO  ($(date -r "$VIDEO" '+%H:%M:%S'))" >&2
+  echo "  upstream: $UPSTREAM  ($(date -r "$UPSTREAM" '+%H:%M:%S'))" >&2
+  if [ "$UPSTREAM" != "$AUDIO" ]; then
+    echo "  master:   $AUDIO (not compared; a mix is downstream of the picture)" >&2
+  fi
   echo "  The render did not run, or it failed after the VO was rebuilt." >&2
   echo "  Re-render before muxing; a stale picture with fresh audio passes every" >&2
   echo "  downstream gate, because they all ask about the file and not the cut." >&2

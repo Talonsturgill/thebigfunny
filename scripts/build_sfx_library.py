@@ -394,6 +394,26 @@ def main():
         rows.append((kind, durs))
         print(f"  {kind:8} {VARIANTS} takes  {min(durs):4.2f}-{max(durs):4.2f}s")
     man = os.path.join(BANK, "MANIFEST.md")
+    # PRESERVE THE HAND-WRITTEN PROVENANCE. This function rewrites MANIFEST.md
+    # from scratch, and everything below the synth list is written by a HUMAN:
+    # the CC0 verification for the committed third-party takes in real/, the
+    # pointer to their sha256 manifest, and the "CC0-only in this directory"
+    # prohibition naming the sources that must never be committed here.
+    #
+    # On 2026-08-05 a single stray argument to sfx_bank.py self-healed into this
+    # function and silently deleted all nineteen lines of it, while the twenty
+    # eight files they license stayed committed and stayed FIRST in the
+    # resolution order. For a show whose defensibility is "savage and sourced",
+    # dropping the licence record of third-party assets it redistributes is the
+    # same class of failure as an unsourced claim.
+    #
+    # So: generated content ABOVE, human content BELOW, and the split survives.
+    keep = ""
+    if os.path.exists(man):
+        prev = open(man).read()
+        i = prev.find("\n## Real recordings")
+        if i != -1:
+            keep = prev[i:]
     with open(man, "w") as f:
         f.write("# SFX bank — designed foley with variants (scripts/build_sfx_library.py)\n\n")
         f.write("Deterministic numpy sound design (crc32-seeded), 44.1k/16-bit stereo, -6 dBFS\n")
@@ -409,8 +429,20 @@ def main():
         f.write("instead of the synth ones, automatically.\n\n")
         for kind, durs in rows:
             f.write(f"- `{kind}_v1..v{VARIANTS}.wav` — {min(durs):.2f}-{max(durs):.2f}s — designed synth — no attribution needed\n")
-    print(f"bank: {len(rows)} kinds x {VARIANTS} takes -> {BANK}")
+        if keep:
+            f.write(keep)
+    print(f"bank: {len(rows)} kinds x {VARIANTS} takes -> {BANK}"
+          + ("  (hand-written provenance preserved)" if keep else ""))
 
 
 if __name__ == "__main__":
+    # ARGPARSE BEFORE WORK. `--help` used to run the entire bank build: a
+    # hundred-odd WAV files and minutes of numpy, from a flag whose entire
+    # purpose is to print one paragraph and exit.
+    import argparse
+    ap = argparse.ArgumentParser(
+        description="Synthesize the designed-foley bank into assets/sfx/. "
+                    "Rewrites the generated half of MANIFEST.md and preserves "
+                    "the hand-written provenance below it.")
+    ap.parse_args()
     main()

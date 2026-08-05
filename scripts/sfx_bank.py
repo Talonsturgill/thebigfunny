@@ -63,19 +63,53 @@ def _bag(kind, episode_seed, pool):
     return _bags[key]
 
 
+def _known_kinds():
+    """Every kind the bank can currently resolve. Empty means no bank at all."""
+    seen = set()
+    for d in (os.path.join(BANK, "real"), BANK):
+        if not os.path.isdir(d):
+            continue
+        for f in os.listdir(d):
+            if f.endswith(".wav"):
+                seen.add(re.split(r"_v?\d|_kenney|\.wav", f)[0])
+    return sorted(k for k in seen if k)
+
+
 def resolve(kind: str, episode_seed: str = "default") -> str:
     """Next take for `kind` from the episode's shuffle-bag. Deterministic for a
     given (episode_seed, call sequence); different episodes deal differently."""
     kind = ALIASES.get(kind, kind)
     pool = takes(kind)
     if not pool:
-        # self-heal: rebuild the bank once, then retry
-        sys.stderr.write(f"sfx_bank: '{kind}' missing — rebuilding bank\n")
+        # SELF-HEAL ONLY WHEN THE BANK IS ACTUALLY MISSING.
+        #
+        # This used to rebuild on ANY unresolvable name, which made a typo in a
+        # cue sheet indistinguishable from an empty assets/ directory. The cost
+        # of getting that wrong is not just the minutes of numpy: the rebuild
+        # rewrites MANIFEST.md, and on 2026-08-05 one stray argument to this
+        # file's own __main__ deleted the CC0 provenance for the twenty eight
+        # committed third-party takes. Both ends of that are fixed now, but the
+        # trigger was always wrong. An unknown NAME and an absent BANK are
+        # different failures and only one of them is repairable by building.
+        #
+        # So: if any other kind resolves, the bank exists and the caller simply
+        # asked for something that is not in it. Fail immediately, and say what
+        # IS in it, because the caller is a director with a typo.
+        known = _known_kinds()
+        if known:
+            raise FileNotFoundError(
+                f"sfx_bank: no design named '{kind}'. The bank is present and has "
+                f"{len(known)} kinds: {', '.join(known)}.\n"
+                f"           This is a naming error, not a missing bank, so the "
+                f"bank was NOT rebuilt.")
+        sys.stderr.write("sfx_bank: the bank is empty — rebuilding it once\n")
         subprocess.run([sys.executable, os.path.join(HERE, "build_sfx_library.py")],
                        capture_output=True)
         pool = takes(kind)
         if not pool:
-            raise FileNotFoundError(f"sfx_bank: no design named '{kind}' (see assets/sfx/MANIFEST.md)")
+            raise FileNotFoundError(
+                f"sfx_bank: rebuilt the bank and still no design named '{kind}' "
+                f"(see assets/sfx/MANIFEST.md)")
     if len(pool) == 1:
         return pool[0]
     b = _bag(kind, episode_seed, pool)
@@ -95,6 +129,13 @@ def resolve(kind: str, episode_seed: str = "default") -> str:
 
 
 if __name__ == "__main__":
+    # A flag is not an effect name. `sfx_bank.py --help` used to resolve '--help'
+    # as a kind, miss, and trigger the rebuild described above.
+    if len(sys.argv) > 1 and sys.argv[1].startswith("-"):
+        print(__doc__)
+        print(f"  usage: sfx_bank.py [kind] [episode_seed] [count]\n"
+              f"  kinds: {', '.join(_known_kinds())}")
+        sys.exit(0)
     k = sys.argv[1] if len(sys.argv) > 1 else "thud"
     seed = sys.argv[2] if len(sys.argv) > 2 else "default"
     for _ in range(int(sys.argv[3]) if len(sys.argv) > 3 else 1):

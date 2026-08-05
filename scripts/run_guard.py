@@ -61,8 +61,23 @@ class StaleArtifactError(RuntimeError):
     never stamped, so freshness cannot be proven)."""
 
 
+# THE REPO ROOT, not the working directory.
+#
+# `Path.cwd()` looked right and was wrong: render.sh does `cd ../video-engine`
+# on line 25 before it calls `run_guard check`, so the stamp resolved to
+# video-engine/out/dispatch/.run_stamp.json, which never exists. run_guard reads
+# an unstamped run as a REFUSAL on purpose (freshness cannot be proven), so
+# render.sh aborted every render of any episode that has an episode_props.json.
+# It went unnoticed because the only episode in active development is
+# self-timed, so the props file is absent and the guard is skipped entirely.
+#
+# The stamp belongs to the RUN, and a run has one root no matter which directory
+# a step happens to be standing in.
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
 def _stamp_path(root: str | None = None) -> Path:
-    base = Path(root) if root else Path.cwd()
+    base = Path(root) if root else REPO_ROOT
     return base / STAMP_REL
 
 
