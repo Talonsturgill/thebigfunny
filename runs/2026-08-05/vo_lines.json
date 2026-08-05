@@ -1,0 +1,185 @@
+{
+  "lines": [
+    {
+      "idx": 0,
+      "who": "DEE",
+      "start": 0.0,
+      "end": 1.633,
+      "text": "[flat] They denied the nursing home.",
+      "voice": "Pulcherrima",
+      "claims": [
+        "c8"
+      ],
+      "verbatim": false
+    },
+    {
+      "idx": 1,
+      "who": "RAY",
+      "start": 1.98,
+      "end": 3.404,
+      "text": "He just left the hospital.",
+      "voice": "Algenib",
+      "claims": [],
+      "verbatim": false
+    },
+    {
+      "idx": 2,
+      "who": "DEE",
+      "start": 3.91,
+      "end": 7.864,
+      "text": "You appeal, they say yes. Ninety-five percent.",
+      "voice": "Pulcherrima",
+      "claims": [
+        "c1"
+      ],
+      "verbatim": false
+    },
+    {
+      "idx": 3,
+      "who": "RAY",
+      "start": 8.56,
+      "end": 9.744,
+      "text": "So they were wrong.",
+      "voice": "Algenib",
+      "claims": [],
+      "verbatim": false
+    },
+    {
+      "idx": 4,
+      "who": "DEE",
+      "start": 10.25,
+      "end": 14.569,
+      "text": "UnitedHealth's own number: ninety-nine point seven.",
+      "voice": "Pulcherrima",
+      "claims": [
+        "c3"
+      ],
+      "verbatim": false
+    },
+    {
+      "idx": 5,
+      "who": "RAY",
+      "start": 15.46,
+      "end": 17.0,
+      "text": "That's a hundred percent with a typo.",
+      "voice": "Algenib",
+      "claims": [
+        "c3"
+      ],
+      "verbatim": false
+    },
+    {
+      "idx": 6,
+      "who": "RAY",
+      "start": 17.8,
+      "end": 20.312,
+      "text": "So it was never a no. It was a question.",
+      "voice": "Algenib",
+      "claims": [],
+      "verbatim": false
+    },
+    {
+      "idx": 7,
+      "who": "RAY",
+      "start": 20.82,
+      "end": 22.029,
+      "text": "Are you gonna argue.",
+      "voice": "Algenib",
+      "claims": [],
+      "verbatim": false
+    },
+    {
+      "idx": 8,
+      "who": "DEE",
+      "start": 23.03,
+      "end": 24.913,
+      "text": "Eighteen percent argue.",
+      "voice": "Pulcherrima",
+      "claims": [
+        "c2"
+      ],
+      "verbatim": false
+    },
+    {
+      "idx": 9,
+      "who": "RAY",
+      "start": 25.61,
+      "end": 26.751,
+      "text": "The other eighty-two?",
+      "voice": "Algenib",
+      "claims": [
+        "c7"
+      ],
+      "verbatim": false
+    },
+    {
+      "idx": 10,
+      "who": "DEE",
+      "start": 27.65,
+      "end": 31.725,
+      "text": "[reading] Paid out of pocket. Or gone without post-acute care.",
+      "voice": "Pulcherrima",
+      "claims": [
+        "c7"
+      ],
+      "verbatim": false
+    },
+    {
+      "idx": 11,
+      "who": "RAY",
+      "start": 32.82,
+      "end": 34.747,
+      "text": "It's on the list like an option.",
+      "voice": "Algenib",
+      "claims": [],
+      "verbatim": false
+    },
+    {
+      "idx": 12,
+      "who": "INSTITUTION",
+      "start": 35.65,
+      "end": 38.748,
+      "text": "Your appeal rights are in your plan materials.",
+      "voice": "Despina",
+      "claims": [],
+      "verbatim": false
+    },
+    {
+      "idx": 13,
+      "who": "RAY",
+      "start": 39.95,
+      "end": 43.059,
+      "text": "[flat] Wrong every fucking time somebody checked.",
+      "voice": "Algenib",
+      "claims": [
+        "c1",
+        "c3"
+      ],
+      "verbatim": false
+    },
+    {
+      "idx": 14,
+      "who": "DEE",
+      "start": 43.96,
+      "end": 47.794,
+      "text": "Same finding in 2018. Seventy-five percent.",
+      "voice": "Pulcherrima",
+      "claims": [
+        "c9"
+      ],
+      "verbatim": false
+    },
+    {
+      "idx": 15,
+      "who": "RAY",
+      "start": 49.09,
+      "end": 50.157,
+      "text": "[sigh] It's going up.",
+      "voice": "Algenib",
+      "claims": [
+        "c9"
+      ],
+      "verbatim": false
+    }
+  ]
+}
