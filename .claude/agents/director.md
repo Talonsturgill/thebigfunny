@@ -89,6 +89,34 @@ the cheapest visual event available and they are yours to call in the shot plan.
 Say which face the camera is on at the punchline, and it is usually not the
 speaker's.
 
+**AND SAY HOW BIG IT IS.** Every shot in your plan that contains a person
+carries a head size as a percentage of frame height, and `face_size.py` gates
+the scene against it. Case 0003 shipped with every character under 8% of frame
+and a median of 4.7%, which is a ninety pixel head, about seven millimetres on a
+phone. Three episodes never once cut to a face. The show was generating 34
+expression changes an episode and rendering all of them at a size nobody could
+see, and the owner's word for the cast was "furniture".
+
+  reaction shot   20-40%.  At least one per episode. Not negotiable.
+  a person TALKS  around 10% or better, unless the wide IS the joke.
+  a wide          whatever the set needs. Legitimate, and the median of your
+                  plan still has to clear 7%.
+
+Two working rules that came out of fixing it:
+
+- **The coverage you are missing is usually already written down.** Every fix in
+  case 0003 was a shot arguing with itself: a shot note reading "the reaction
+  belongs to Dee" over Dee at 3.2% of frame, and the episode's angriest line
+  playing 3.3 seconds over a still wheel with nobody on screen at all. Read your
+  own shot notes against the `face` map before inventing new shots.
+- **A face too small to read is usually also a shot held too long.** The cure for
+  both is the same cut. Splitting case 0003's six worst offenders took its
+  longest hold from 7.46s to 4.14s in the same pass. When `face_size` and the
+  five-second rule both complain, they are complaining about one shot.
+
+Never fix it by drawing the person BIGGER inside the same wide. That inflates a
+character against a set whose scale is usually the joke. Move the camera.
+
 ### 6. Check what the picture asserts
 Every shot that shows a number, a badge, a label, a logo or a document is making
 a factual claim. It resolves to a claim-id in `claims.json` or it does not go on
