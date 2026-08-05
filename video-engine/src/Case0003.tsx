@@ -295,7 +295,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             the floor does not change at all and the only measurable change in
             the frame is the height of the man standing on it.
             ============================================================ */}
-        <Shot from={6.46} to={13.92}>
+        <Shot from={6.46} to={10.6}>
           <Cam cy={0.82} zoom={1.45}>
             <CountRoomBG f={f} w={W} h={H} light={0.85} pile={pile} />
             <CardPile x={W * 0.5 - CARD_W / 2} y={H * 0.92} w={CARD_W} count={landed}
@@ -309,6 +309,28 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             <Cast f={f} crown={CARD_W * CAST_TO_CARD}
                   ground={H * 0.92 - landed * (CARD_W * 0.018)}
                   rayX={W * 0.28} deeX={W * 0.72} rayPose="point" />
+          </Cam>
+        </Shot>
+
+        {/* ============================================================
+            S4b  10.6-13.9  THE FUNNIEST LINE, ON A FACE.
+            script.json names "Evicted. Evicted. Yeah, no. Career defendant."
+            as funniest_line_intended and marks Ray SMUG on it. The shipped cut
+            played all 6.2 seconds of it in one 7.5s wide with his head at 5% of
+            frame, which is the longest shot in the film and the least readable
+            face in it, on the line the whole episode is built around.
+            The wide above has made its point by 10.6: the count has landed and
+            the floor is the count. So the punch lands close.
+            ============================================================ */}
+        <Shot from={10.6} to={13.92}>
+          <Cam cy={0.56} zoom={1.4}>
+            <CountRoomBG f={f} w={W} h={H} light={0.85} pile={pile} />
+            <CardPile x={W * 0.5 - CARD_W / 2} y={H * 1.12} w={CARD_W} count={landed}
+                      mode="flush" {...card} />
+            {/* rayX 0.46 -> 0.34: at 0.46 the wall porthole sat exactly on his
+                crown and read as a halo. Off-centre is also the better frame. */}
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 4.8} ground={H * 1.60}
+                  rayX={W * 0.34} deeX={W * 1.4} rayPose="point" show="ray" />
           </Cam>
         </Shot>
 
@@ -345,7 +367,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             uncleared transaction. The board files this as a note to the
             writers room rather than a rejection.
             ============================================================ */}
-        <Shot from={16.04} to={18.923}>
+        <Shot from={16.04} to={17.77}>
           {/* MACRO ON THE HINGE KNUCKLE. This is one of the film's three sight
               gags and the gate counted it, so it has to be READABLE: no keyhole,
               no lock, no sign, and the teal brush stroke running unbroken
@@ -360,6 +382,28 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
                 reaching for it; `raise` read as celebrating. */}
             <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.42} ground={H * 0.625}
                   rayX={W * 0.1} deeX={W * 0.905} deePose="point" show="dee" />
+          </Cam>
+        </Shot>
+
+        {/* ============================================================
+            S6b  17.8-18.9  "somebody got paid to do that", ON HER.
+            The macro above holds all three panel rattles and then hands the
+            line off. Ray says it; the shot is Dee, because the payoff of "I
+            asked where they got it" is the face of the person who asked when
+            she is told the answer. The panel she cannot open is still behind
+            her, unmoving, which is the answer.
+            ============================================================ */}
+        <Shot from={17.77} to={18.923}>
+          <Cam cx={0.62} cy={0.5} zoom={1.5}>
+            <CountRoomBG f={f} w={W} h={H} light={0.95} pile={0} panel={0} />
+            {/* ground 1.58 -> 1.35H. At 1.58 her crown landed 62% down the
+                frame and the burned-in caption crossed her mouth: the shot was
+                a close-up of a wall with a chin under it. Solved by arithmetic,
+                not by taste: the visible band at cy 0.5 zoom 1.5 is y 320..1600,
+                so a crown at 30% of frame wants scene y 704, and ground is
+                crown plus 4.3 * CARD_W * CAST_TO_CARD. */}
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 4.3} ground={H * 1.35}
+                  rayX={W * -0.4} deeX={W * 0.66} show="dee" />
           </Cam>
         </Shot>
 
@@ -405,7 +449,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             move WITHOUT moving. The only thing acting in the frame is the
             floor, and he does not look down.
             ============================================================ */}
-        <Shot from={22.15} to={24.29}>
+        <Shot from={22.15} to={23.3}>
           <Cam cy={0.72} zoom={1.6}>
             <CountRoomBG f={f} w={W} h={H} light={0.7} pile={1} />
             {/* THE PILE IS FLOOR HERE, not a document. Its printing is pushed
@@ -421,6 +465,23 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
         </Shot>
 
         {/* ============================================================
+            S9b  23.3-24.3  THE FACE THAT DOES NOTHING.
+            "I've been standing here the whole time" is the pity beat, marked
+            RAY flat, and it is the one line in the episode whose joke IS an
+            absence of expression. You cannot play NOT REACTING at 5% of frame
+            height; there is nothing there to not react. The floor finishes
+            rising under him in the wide above at 23.03, so the close costs the
+            gag nothing and buys the only thing the line has.
+            ============================================================ */}
+        <Shot from={23.3} to={24.29}>
+          <Cam cy={0.5} zoom={1.5}>
+            <CountRoomBG f={f} w={W} h={H} light={0.7} pile={1} />
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 4.4} ground={H * 1.39}
+                  rayX={W * 0.68} deeX={W * 1.4} rayPose="stand" show="ray" />
+          </Cam>
+        </Shot>
+
+        {/* ============================================================
             S10  26.6-30.0  THE ONLY FLOATING TWO-SHOT, and it is 3.4s.
             Spent on the one thing a two-hander can buy: two people NOT reacting
             while the world moves them. It ends on a hard geometric event, Ray's
@@ -428,7 +489,13 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             never rolls again.
             ============================================================ */}
         <Shot from={24.29} to={26.047}>
-          <Cam cy={interpolate(f, [s(24.29), s(26.047)], [0.66, 0.58], clamp)} zoom={1.5}>
+          {/* THE CAMERA NOW RIDES LOWER, 0.66->0.58 becomes 0.60->0.54, because
+              the figures got bigger and his crown would otherwise leave the top
+              of frame as he rises. Measured, not eyeballed: at crown 2.1x the
+              visible band has to start above y=407 by the end of the rise and
+              still contain y=1728 at the start of it, and 0.60->0.54 is the
+              only pair that does both. */}
+          <Cam cy={interpolate(f, [s(24.29), s(26.047)], [0.60, 0.54], clamp)} zoom={1.5}>
             <CountRoomBG f={f} w={W} h={H} light={0.7} pile={1} />
             <g transform={`translate(${W * 0.5},${H * 0.42})`}>
               <TallyCounter x={-62} y={-22} s={0.78} f={f} variant="odometer" count={count} />
@@ -436,7 +503,13 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             <CardPile x={W * 0.02} y={H * 1.02} w={W * 0.96} count={3} mode="flush" {...card} />
             {/* Ray RISES until his crown crosses the odometer boss at 28.8s.
                 The wheel stops at 9 there and never rolls again. */}
-            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 1.15}
+            {/* 1.15x -> 2.1x. This is the two-hander the block comment above
+                calls "two people NOT reacting while the world moves them", and
+                it was playing their non-reaction at 5.9% of frame height, which
+                is a scale at which not reacting and not existing look the same.
+                It is also the reverse of the close at 23.3, so Ray's line and
+                Dee's "I know" now sit in one exchange instead of two wides. */}
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 2.1}
                   ground={interpolate(f, [s(24.29), s(26.047)], [H * 0.90, H * 0.70], clamp)}
                   rayX={W * 0.30} deeX={W * 0.74} />
           </Cam>
@@ -497,18 +570,29 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
               and he read as a headless suit with a red tie, and Dee was low
               enough for the chute lip to cross both her upper arms. Same
               body-integrity class this recut exists to kill, one shot along. */}
-          <Cam cx={0.34} cy={0.52} zoom={1.3}>
+          {/* AND PULLED BACK AGAIN, 1.3 -> 1.15, to buy the depth this shot was
+              always described as having. The block comment above says "the
+              reaction belongs to Dee", and script.json marks her SHOCK on the
+              machine's "Invalid" at 33.1. She was rendering at 3.2% of frame
+              height. A shock reaction at 3.2% is a rumour.
+              She is now FOREGROUND: bigger and lower, which is the only depth
+              cue a flat SVG has. Ray stays small and high at the chute, which
+              makes him read as further away rather than as shrunken, so the
+              room keeps its scale while her face gets to exist. */}
+          <Cam cx={0.42} cy={0.56} zoom={1.15}>
             <CountRoomBG f={f} w={W} h={H} light={0.95} pile={1}
                          intake={interpolate(f, [s(32.435), s(32.952)], [0, 1], clamp)} />
-            {/* The card comes STRAIGHT back out, before he has got his arms down. */}
+            {/* The card comes STRAIGHT back out, before he has got his arms down.
+                Moved left, off Dee's new foreground column, so INVALID is never
+                behind her shoulder. */}
             {f > s(33.235) && (
-              <DocketCard x={W * 0.10} y={H * 0.66} w={W * 0.52} {...card}
+              <DocketCard x={W * 0.02} y={H * 0.60} w={W * 0.46} {...card}
                           differs="INVALID" rot={-4} light={1} />
             )}
             <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.62} ground={H * 0.35}
-                  rayX={W * 0.06} deeX={W * 0.62} rayPose="raise" show="ray" />
-            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 0.72} ground={H * 0.84}
-                  rayX={W * 0.06} deeX={W * 0.50} show="dee" />
+                  rayX={W * 0.10} deeX={W * 0.62} rayPose="raise" show="ray" />
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 2.5} ground={H * 0.92}
+                  rayX={W * 0.10} deeX={W * 0.72} show="dee" />
           </Cam>
         </Shot>
 
@@ -519,7 +603,7 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             seconds of a wheel that turns for every copy, and the one thing that
             will not make it turn is a person disagreeing.
             ============================================================ */}
-        <Shot from={33.82} to={38.88}>
+        <Shot from={33.82} to={36.0}>
           {/* MATCHED EXACTLY to S2's framing. Same lens, same boss. The only
               two differences are a number and a floor, and that comparison is
               the whole shot. */}
@@ -530,6 +614,28 @@ export const Case0003: React.FC<z.infer<typeof case0003Schema>> = () => {
             </g>
             <CardPile x={W * 0.5 - CARD_W * 0.42} y={H * 0.86} w={CARD_W * 0.72}
                       count={5} mode="stacked" reveal={0.4} {...card} />
+          </Cam>
+        </Shot>
+
+        {/* ============================================================
+            S14b  36.0-38.9  HE SHOUTS, SHE DOES NOT MOVE.
+            The worst shot in the shipped cut was this one's other half: Ray's
+            "That's not a decision. That's a fucking word." is the episode's
+            emotional peak, its only profanity and its angriest line, and it
+            played for 3.3 seconds over a still wheel with NOT ONE PERSON ON
+            SCREEN. The same defect as the closed panel at 38.9, one shot
+            earlier and worse, because this line has nothing else to look at.
+            The wheel keeps the first half, which is the half he is describing.
+            The cut lands in the line's own pause, and the punch plays on DEE,
+            marked flat, entirely unmoved while he loses it off-camera. That is
+            funnier than watching him shout, and it sets up the reverse: she
+            takes the next line, and at 38.9 we are on HIS face for it.
+            ============================================================ */}
+        <Shot from={36.0} to={38.88}>
+          <Cam cy={0.5} zoom={1.5}>
+            <CountRoomBG f={f} w={W} h={H} light={0.95} pile={1} />
+            <Cast f={f} crown={CARD_W * CAST_TO_CARD * 4.4} ground={H * 1.36}
+                  rayX={W * -0.4} deeX={W * 0.34} show="dee" />
           </Cam>
         </Shot>
 
