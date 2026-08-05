@@ -98,8 +98,9 @@ hard_gates:
       real-recording tier sat in the repo with no caller. The gate reads the
       AUDIO, not the cue sheet: it checks the delivered mix differs from the VO,
       that the loudest effect is audible against the voice without burying it,
-      that nothing clips, and that no twelve second stretch of the film is
-      voice-only. When it fails, fix the cue sheet and the levels. A cartoon
+      that nothing clips, that no twelve second stretch of the film is
+      voice-only, and that a declared score is actually under the film rather
+      than declared in a cue sheet and never rendered. When it fails, fix the cue sheet and the levels. A cartoon
       that goes quiet for a quarter of its runtime is a podcast with pictures.
     fails_run: true
 

@@ -645,6 +645,38 @@ Failing Gate 0 is cheap. Failing after a render is not.
    added together is not a mix, it is a collision, and the thing that loses a
    collision with a two second door slam is the line the episode is about.
 
+   **THE SCORE.** The cue sheet also carries a `music` block, and
+   `build_music.py` renders it inside `build_mix.py` so there is no path where a
+   run declares a score and ships without one.
+
+   It is SYNTHESIZED, not fetched, and that is a decision with reasons rather
+   than a shortcut. `get_music.py` is the ported Alaska fetcher; its `--pool`
+   path reads a music-sources pool config that was never ported, and it hands
+   off to an `audio_v3` module referenced nowhere in this repo. (Both named as
+   ABSENT on purpose and not written as paths: `refs_check` flagged the first
+   draft of this paragraph, correctly, because a run told to read a path does
+   not error on a missing file, it proceeds and answers confidently from
+   nothing.) Beyond being broken: a
+   daily run cannot depend on a network, a CC-BY track is a permanent daily
+   attribution obligation and one mis-credit is the same class of risk the
+   fact-check gate exists to prevent, and a pool of tracks REPEATS while the
+   ledger forbids repeating. Seeded synthesis gives every episode its own score
+   for free.
+
+   The brief comes from the show's own thesis. THE PAINT IS THE ANTAGONIST, so
+   the score IS the paint: pleasant, competent, the music you hear on hold while
+   being told your call is important, playing calmly over an atrocity. It never
+   comments, never stings, never tells the viewer a thing is bad. Refusing to
+   editorialise is the same rule the Institution's visuals hold, one channel
+   over.
+
+   **Set `turn` to the second the episode turns.** The harmony sours there while
+   the tempo, the instrument and the politeness stay exactly the same: major
+   thirds go minor and the resolution stops arriving, with nothing announcing
+   it. That is the thesis in audio and it is the difference between a bed and a
+   score. Case 0003 sours at 26.047s, the frame where VERIFIED comes down on a
+   copy while the intake still holds the one original.
+
    Then mux the MIX:
      `bash scripts/mux_and_verify.sh <silent.mp4> out/dispatch/mix.wav <out.mp4>`
 

@@ -142,6 +142,16 @@ off a wall, all of it silent.
   - `mix_check.py` fails a run with no cue sheet, an inaudible one, one that
     buries the line, or one that leaves twelve seconds of the film voice-only.
 
+**AND YOU SET THE SCORE'S TURN.** The `music` block in the same sheet takes a
+mood and a `turn`, and `turn` is the second the EPISODE turns. The harmony sours
+there while the tempo, the instrument and the politeness stay exactly the same:
+the major thirds go minor and the resolution stops arriving, and nothing
+announces it. You are the only person who knows which frame that is, and
+choosing wrong wastes the one structural move the score has. The score itself is
+the paint: pleasant, competent, hold music playing calmly over an atrocity. It
+never comments and never stings, because refusing to editorialise is the same
+rule the Institution's visuals hold, one channel over.
+
 ### 6. Check what the picture asserts
 Every shot that shows a number, a badge, a label, a logo or a document is making
 a factual claim. It resolves to a claim-id in `claims.json` or it does not go on

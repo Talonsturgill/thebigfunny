@@ -52,6 +52,12 @@ SR = 44100
 # broadcast convention for music under speech, and an effect is more transient
 # than music, so it survives the duck better than a bed would.
 DUCK_DB = -11.0
+# THE BED DUCKS HARDER THAN THE EFFECTS. An effect is transient and survives a
+# deep duck; a bed is continuous, so under speech it is the thing competing with
+# every syllable. Broadcast practice is music several dB further down than
+# spot effects, and the show's brief makes that a creative point too: the score
+# is the polite surface, and a polite surface never talks over anybody.
+MUSIC_DUCK_DB = -8.0
 # The envelope is smoothed over this window so the duck does not chatter on
 # every syllable, and released slower than it attacks so it does not pump.
 ENV_ATTACK_S = 0.020
@@ -128,6 +134,33 @@ def build(vo_path, cues_path, out_path, quiet=False):
 
     L = list(voL)
     R = list(voR)
+
+    # THE SCORE, first, so everything else sits on top of it.
+    #
+    # Generated rather than fetched, and generated HERE rather than read off
+    # disk, so a run cannot half-do it: there is no path where the cue sheet
+    # declares a bed and the mix quietly ships without one. See build_music.py's
+    # header for why this show synthesizes its own score instead of downloading
+    # somebody else's.
+    music = spec.get("music")
+    if music:
+        import build_music
+        mL, mR = build_music.render(
+            seed=str(music.get("seed", seed)),
+            seconds=n / SR,
+            mood=music.get("mood", "hold"),
+            turn=music.get("turn"))
+        mg = _db(float(music.get("db", -26.0)))
+        for i in range(min(n, len(mL))):
+            d = _db(MUSIC_DUCK_DB * env[i])
+            L[i] += mL[i] * mg * d
+            R[i] += mR[i] * mg * d
+        if not quiet:
+            t = music.get("turn")
+            print(f"  score    {music.get('mood','hold'):<8} "
+                  f"{float(music.get('db',-26.0)):+.0f} dB, seed {music.get('seed', seed)}"
+                  + (f", sours at {float(t):.1f}s" if t is not None else ", no turn"))
+
     placed, report = 0, []
     for c in cues:
         kind = c["kind"]

@@ -54,6 +54,11 @@ FX_PEAK_BAND_DB = (-24.0, 3.0)
 # voice is continuous, so a healthy mix sits well under unity here.
 VOICE_MARGIN_DB = -6.0
 CEILING = 0.90
+# When the cue sheet declares a score, the score has to actually be under the
+# film. Measured as the share of half-second windows carrying something other
+# than voice: spot effects alone leave most of a film empty on this measure, a
+# bed fills it. 85% leaves room for a deliberate silence of several seconds.
+BED_COVERAGE = 0.85
 
 
 def read_mono(path):
@@ -123,6 +128,22 @@ def check(vo, mix, cues):
     if cues is None:
         row("the cue sheet was readable", False, "no cue sheet given")
         return rows
+
+    if cues.get("music"):
+        # THE ROW THAT NEEDS NO STEM. resid is everything the mix has that the
+        # VO does not, so with a bed under the film it is continuous and with
+        # spot effects alone it is mostly silence. That difference is the
+        # measurement, and it cannot be satisfied by declaring a score in the
+        # sheet and never rendering one.
+        win = int(0.5 * SR)
+        wins = [resid[i:i + win] for i in range(0, n - win, win)]
+        floor = max(1e-5, v_rms * 0.0015)
+        cov = sum(1 for w in wins if rms(w) > floor) / max(1, len(wins))
+        row(f"the score plays under the film ({BED_COVERAGE*100:.0f}% coverage)",
+            cov >= BED_COVERAGE,
+            f"{cov*100:.0f}% of the film carries something other than voice"
+            + ("" if cov >= BED_COVERAGE else
+               "   <- the cue sheet declares a score and the mix does not have one"))
     ts = sorted(float(c["t"]) for c in cues.get("cues", []))
     want = max(MIN_CUES_FLOOR, int(round(dur * MIN_CUE_RATE)))
     row(f"the cue sheet is not a token gesture ({want}+ cues at this length)",
@@ -178,6 +199,13 @@ def self_test():
         ("an effects layer nobody can hear",
          "actually audible",
          vo, [vo[i] + 0.00002 * math.sin(i * 0.7) for i in range(N)], full_cues),
+        ("a cue sheet that declares a score the mix does not have",
+         "the score plays under the film",
+         vo,
+         # spot effects only: four short bursts, no bed
+         [vo[i] + (0.09 * math.sin(i * 0.31) if (i // (SR * 4)) * SR * 4 <= i
+                   < (i // (SR * 4)) * SR * 4 + SR // 5 else 0.0) for i in range(N)],
+         dict(full_cues, music={"mood": "hold"})),
     ]
     ok = True
     for name, guard, v, m, c in cases:
@@ -188,8 +216,9 @@ def self_test():
         ok &= fired
 
     good = [vo[i] + (0.09 if abs(i % SR) < 900 else 0.0) * math.sin(2 * math.pi * 900 * i / SR)
+            + 0.004 * math.sin(2 * math.pi * 130 * i / SR)          # the bed
             for i in range(N)]
-    rows = check(vo, good, full_cues)
+    rows = check(vo, good, dict(full_cues, music={"mood": "hold"}))
     clean = all(o for _, o, _ in rows)
     print(f"  {'ok  ' if clean else 'FAIL'} accepts: a real mix (voice plus a quiet "
           f"effects layer on a full cue sheet)")
