@@ -1,6 +1,12 @@
 {
   "episode_seed": "2026-08-03",
-  "note": "Case 0003, and the show's first cue sheet. Committed HERE, beside the scene it is timed to, because every cue is lifted from Case0003.tsx's own interpolate ranges and the two have to move together. A run writes its working copy to out/dispatch/sfx_cues.json (scratch); this is the worked example the next director reads. Rule: a cue is timed to a thing that MOVES, never to a beat that merely felt like it wanted a noise.",
+  "music": {
+    "mood": "hold",
+    "db": -26,
+    "turn": 26.047,
+    "note": "THE TURN IS THE SHOT BOUNDARY AT 26.047s: the VERIFIED die comes down on a copy while the intake still holds the one original. That is the frame where the episode stops being about volume and starts being about a lie, so it is the frame where the harmony goes minor. Same tempo, same instrument, same politeness. Nothing announces it."
+  },
+  "note": "Case 0003, and the show's first cue sheet AND first score. Committed HERE, beside the scene it is timed to, because every cue is lifted from Case0003.tsx's own interpolate ranges and the two have to move together. A run writes its working copy to out/dispatch/sfx_cues.json (scratch); this is the worked example the next director reads. Rule: a cue is timed to a thing that MOVES, never to a beat that merely felt like it wanted a noise.",
   "cues": [
     {
       "t": 0.2,
