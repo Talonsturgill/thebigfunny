@@ -779,3 +779,103 @@ deliberately NOT a gate: a show that de-Alaska'd itself legitimately leaves
 Alaska props unused, and the tool cannot tell a retired asset from a forgotten
 capability. It is a PROMPT, to be read before building something new, because the
 step that was skipped was looking.
+
+## The gate that passed was measuring the wrong noun (2026-08-05)
+
+`face_check.py` verified that every line changes somebody's expression, and it
+passed on every episode. It was true and it was worthless, because nothing
+verified those expressions were BIG ENOUGH TO SEE.
+
+Measured: every cast placement in case 0003 put a head under 8% of frame height.
+Median 4.7%. At 1920px that is a ninety pixel head, about seven millimetres on a
+phone held at arm's length. The largest head in the whole film was 5.9%. Three
+episodes had never once cut to a face.
+
+The owner's note was "they were just like a piece of furniture in the screen",
+and it was not a figure of speech. At 4.7% a character IS a prop. The show owned
+a seven-emotion eye table with per-emotion lid, brow and brow-tilt values, a
+generated face track with 34 changes an episode, a passing gate and freshly
+wired eyelines, and rendered every bit of it at seven millimetres.
+
+**The lesson is about gates, not about faces.** `face_check` asked "does the
+expression EXIST" when the question that mattered was "can anyone SEE it". A
+gate that measures the existence of a thing and never its magnitude will pass
+forever while the thing it guards is useless. Ask of every gate here: what is
+the degenerate artifact that satisfies this row and still fails a viewer?
+
+The fix has a rule attached. When faces are too small, do NOT enlarge the figure
+inside the wide: that inflates a person against a set whose scale is usually the
+joke. Cut closer, or split the shot. Splitting is almost always right, because a
+shot too wide to read a face is usually also a shot held too long. The six
+close-ups added to case 0003 took its longest hold from 7.46s to 4.14s in the
+same pass, and `face_size` and the five-second rule turned out to be complaining
+about the same shots.
+
+And the coverage you are missing is usually already written down. Every one of
+those six shots was ARGUING WITH ITSELF: a block comment reading "the reaction
+belongs to Dee" staged over Dee at 3.2% of frame, the line `script.json` names
+`funniest_line_intended` played in one 7.5 second wide, and the episode's
+angriest line playing 3.3 seconds over a still wheel with nobody on screen at
+all. Read the shot notes against the `face` map before inventing new shots.
+
+## The comment asserted it and the render refuted it (2026-08-05)
+
+Case 0003's cold open carries this note, in the file, in capitals:
+
+> The card is sized so BOTH legible strings sit inside the frame at this zoom.
+> Cropping a case number mid-word reads as a mistake and not as a choice, and it
+> is the one string the whole film asks the viewer to match.
+
+It has never been true. The episode opens on "VICTION ACTION" over a case number
+with no C, and it shipped that way three times.
+
+The card was sized at `0.88W` against the SCENE. The shot runs at camera zoom
+1.35 to 1.42 with the default push on top, so on screen the card was 1.19 of the
+frame. The comment measured the wrong coordinate space and then asserted the
+result as a fact, which is worse than no comment, because a later reader (me)
+spent a render cycle blaming a squash I had just added.
+
+This is the third entry in this file about the same thing: **measure the camera,
+do not eyeball it, and do not believe a comment that says you already did.** The
+first two were a floating forearm at a frame edge and a headless suit with a red
+tie. All three were the same arithmetic and all three were asserted correct in
+prose sitting directly above the bug.
+
+Corollary that saved me here: when a defect appears right after your change,
+render the same frame off `main` before you fix it. It cost one render and it
+was the difference between fixing the bug and fixing the wrong thing.
+
+## The show had never made a sound (2026-08-05)
+
+`scripts/sfx_bank.py` is seventeen effect kinds with six sibling takes each, a
+shuffle bag that plays every take before any repeats, no-repeat-last-2 across
+reshuffles, an episode-seeded deal so a re-run is bit-identical, a curated
+real-recording tier that supersedes the synth takes, and a self-heal that
+rebuilds the bank on a miss. It was written against a specific owner note.
+
+`resolve()` had never been called by anything. `mux_and_verify.sh` takes one
+audio file and the routine always handed it `vo.wav`. Every episode shipped is
+dialogue over digital silence: a card the size of a door landing on a floor, an
+odometer counting to nine, a cover plate falling off a wall, all silent.
+
+That is the SECOND finding of this exact shape in three days, after the entry
+above about capabilities that exist and are never called. The pattern has a
+name now: **a missing CALLER is invisible to every gate in the repo, because
+every gate reads an artifact and an artifact that was never built has no row.**
+`unused_engine.py` is the only tool that looks for this and it is a prompt, not
+a gate, so it only helps a run that chooses to read it.
+
+Two things that made the fix real rather than notional:
+
+- **The mixer sums in Python.** The Remotion-vendored ffmpeg is built
+  `--disable-filters`: no `amix`, no `adelay`, no `volume`. That trap is already
+  documented in `mux_and_verify.sh` and it would have eaten this too.
+- **Ducking is the whole job.** Two audio files added together is not a mix, it
+  is a collision, and the thing that loses a collision with a two second door
+  slam is the line the episode is about.
+
+**Still open, and deliberately not built blind:** `scripts/get_music.py` exists,
+no music is committed, and nothing mixes a bed. Unlike the SFX, whether this
+show WANTS music under it is a creative call and not an obvious omission, and
+this environment cannot audition audio. Recording it here rather than guessing.
+

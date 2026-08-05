@@ -306,6 +306,7 @@ something adjacent.
 | 9 | rewrite the routine prompt around the new order of operations | TODO |
 | 10 | produce an episode that clears every new gate, with before/after numbers | TODO (owner said HOLD) |
 | 11 | FACES: the acting layer was rendering at a size nobody could see | **DONE 2026-08-05.** `face_size.py` + six close-ups. Median head 4.7% -> 7.7% of frame, five reaction shots over 20% where three episodes had zero. Wired as a hard gate, a routine phase, and a requirement on the director and the storyboard critic. |
+| 13 | SOUND: the show had never made a sound other than talking | **DONE 2026-08-05.** `sfx_bank.resolve()` had no caller and the routine muxed `vo.wav`, so three episodes shipped as dialogue over digital silence. `build_mix.py` (sums and ducks in Python, because the vendored ffmpeg has no `amix`) + `mix_check.py` (reads the audio, not the cue sheet) + 33 cues for case 0003 + hard gate `has_sound_design` + the cue sheet is now a DIRECTOR deliverable. Proven end to end through a final render and the real mux. |
 | 12 | wire the unused engine capability the owner asked about | **DONE 2026-08-05.** `entrance`, `SNAP`, `staggerDelay`, `holdPayoff` wired. `squashStretch`, `CameraMoves`, `Headgear`/`Outfit` left alone with the reason recorded in the audit table below, so the next run does not re-litigate them. |
 
 ## The measured reasons (do not re-litigate)
@@ -400,6 +401,15 @@ building anything new that overlaps them:
 | `Headgear`, `Outfit` | `Character.tsx` | The WORKLOG lists "Institution costume system (designed, never built)" as OPEN. It is built. **But NOT a drop-in for the cast:** `Character` is the RETIRED crowd rig, on a different bbox (`-440..+10`) from `Figure` (`crown 0 .. ground 680`), which `Case0003.tsx` documents as having been read wrong three separate times. Wiring these means porting them onto `Figure`, which is a build, not a wire-up. |
 | `SmellRings`, `ScanReticle` | `FX.tsx` | Comedy FX. |
 | `FormGradients`, `HazeOverlay`, `Tones` | `lighting.tsx` | Lighting tools. |
+
+**AND THE AUDIT DID NOT GO FAR ENOUGH.** `unused_engine.py` reads TypeScript
+exports, so it never looked at `scripts/`, where the biggest instance of this
+exact bug was sitting: `sfx_bank.resolve()`, a full shuffle-bag SFX resolver
+with a curated real-recording tier, called by nothing, while every episode
+shipped as dialogue over silence. A missing CALLER is invisible to every gate in
+this repo, because every gate reads an artifact and an artifact that was never
+built has no row. Next audit: run the same "exported, never referenced" question
+over `scripts/` and `.claude/skills/`, not just `video-engine/src/`.
 
 Ignore the Alaska residue in `kit.tsx`, `fishcraft.tsx` and `biomes.tsx`: those
 are correctly unused since the show de-Alaska'd, and `unused_engine.py` cannot
