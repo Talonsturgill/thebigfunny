@@ -619,6 +619,39 @@ Failing Gate 0 is cheap. Failing after a render is not.
    background notifies when the WRAPPER exits, which is immediate. Check that
    the mp4 is newer than the scene file that draws it before doing anything with
    it. "The command completed" has already meant "191 frames into 1748" once.
+8b. **BUILD THE MIX. `python3 scripts/build_mix.py`, then
+   `python3 scripts/mix_check.py`, and mux the MIX, not the VO.**
+
+   Until 2026-08-05 this step did not exist and nobody noticed for three
+   episodes. `scripts/sfx_bank.py` is seventeen effect kinds with six takes
+   each, a shuffle bag that plays every take before any repeats, no-repeat-
+   last-2 across reshuffles, an episode-seeded deal, a curated real-recording
+   tier and a self-heal on a miss. **`resolve()` had never been called by
+   anything.** `mux_and_verify.sh` takes one audio file and the routine was
+   handing it `vo.wav`, so every episode shipped is dialogue over digital
+   silence: a card the size of a door landing on a floor, an odometer counting
+   to nine, a chute running, a cover plate falling off a wall, all silent.
+
+   The DIRECTOR authors `out/dispatch/sfx_cues.json` in Phase 4.4, because the
+   person who decided what moves is the person who knows what it sounds like.
+   Every cue is timed to a thing that MOVES in the scene file, lifted from that
+   scene's own interpolate ranges, so a retime moves both together. A cue placed
+   on a beat that merely felt like it wanted a noise is the wrong cue.
+
+   `build_mix.py` sums in Python rather than shelling out, because the
+   Remotion-vendored ffmpeg is built `--disable-filters` and there is no `amix`
+   (see the header of `mux_and_verify.sh`, which has been burned by this twice).
+   It DUCKS every cue under the VO envelope, which is the whole job: two files
+   added together is not a mix, it is a collision, and the thing that loses a
+   collision with a two second door slam is the line the episode is about.
+
+   Then mux the MIX:
+     `bash scripts/mux_and_verify.sh <silent.mp4> out/dispatch/mix.wav <out.mp4>`
+
+   `mix_check` reads the AUDIO, not the cue sheet, for the same reason
+   `motion_check` reads pixels. A cue sheet listing thirty cues proves nothing
+   about a file nobody mixed.
+
 9. `bash scripts/mux_and_verify.sh` for audio mux and integrity. It refuses a
    missing input, a video older than its audio, a video older than the SCENE
    SOURCE that draws it, and an ffmpeg that failed (which used to leave the
