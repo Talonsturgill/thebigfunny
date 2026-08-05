@@ -291,6 +291,36 @@ something adjacent.
 - The fact-check gate. It is not the problem and it never bends.
 - The 60-second law. The owner did not complain about length.
 
+## RUN IN FLIGHT: case 0004, 2026-08-05 (resume here)
+
+Branch `run/2026-08-05`. Stamped. Case 4 taken from `ledger/cases.json`.
+
+**Story, locked and gated.** Beat `machine-said-no` (never used). Angle type
+`number` (never used; deliberately NOT `ratio`, which ran 08-02).
+
+HHS OIG **OEI-09-24-00331**, June 2026, read verbatim from the PDF:
+UnitedHealth **overturned 99.7 percent** of the skilled-nursing prior-auth
+denials that were appealed, and only **18 percent** were ever appealed. Its own
+subsidiary naviHealth issued half the requests and denied at the highest rate;
+UnitedHealth then overturned **97 percent** of naviHealth's denials. OIG found
+the same pattern in **2018 at 75 percent**, so the number has gone UP.
+
+The joke: a no that folds 99.7 percent of the time was never an answer, it was
+a question, and the question is "are you going to argue?" The 82 percent who
+do not argue are the product. Ray says that out loud; the show only quotes
+documents, which is what keeps it inside the fact-check gate.
+
+| artifact | state |
+| --- | --- |
+| `out/dispatch/claims.json` | 12 cleared claims, 2 primary OIG PDFs read verbatim, 4 explicit CUTs (no harm counts, no intent, no algorithm, no named individual) |
+| `out/dispatch/story.json` | angle, causal seven, connector triple, wants, absurd sentence |
+| `out/dispatch/script.json` | 16 lines, 96 words, ~55s estimated |
+| gates passed | `script_check`, `beat_check` lint, `story_check` |
+| still TODO | `world.json` (coherence_check blocks on it), VO, captions, faces, **Case0004.tsx**, sfx cues + score, render, panel, delivery |
+
+Notes for whoever resumes: `out/dispatch/` had case 3 leftovers and `run_guard`
+correctly refused them; they are cleared. TTS budget is 75 calls, 0 spent today.
+
 ## Status
 
 | # | task | state |
