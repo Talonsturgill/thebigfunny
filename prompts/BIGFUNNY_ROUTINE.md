@@ -677,8 +677,16 @@ Failing Gate 0 is cheap. Failing after a render is not.
    score. Case 0003 sours at 26.047s, the frame where VERIFIED comes down on a
    copy while the intake still holds the one original.
 
-   Then mux the MIX:
-     `bash scripts/mux_and_verify.sh <silent.mp4> out/dispatch/mix.wav <out.mp4>`
+   Then mux the MIX, PASSING THE VO AS THE STALENESS UPSTREAM:
+     `bash scripts/mux_and_verify.sh <silent.mp4> out/dispatch/mix.wav <out.mp4> out/dispatch/vo.wav`
+
+   The 4th argument is not optional bookkeeping. The mux refuses a video older
+   than its audio, because a stale picture with fresh audio passes every
+   downstream gate. That guard was written when the master WAS the VO. The mix
+   is built after the render, so comparing against it refused EVERY run, with a
+   message blaming a render that had just succeeded. The picture is cut to the
+   VO; the mix is downstream of the picture. Pass the thing the picture was cut
+   to.
 
    `mix_check` reads the AUDIO, not the cue sheet, for the same reason
    `motion_check` reads pixels. A cue sheet listing thirty cues proves nothing

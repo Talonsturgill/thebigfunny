@@ -328,6 +328,18 @@ def self_test():
 
 
 if __name__ == "__main__":
+    # ARGPARSE BEFORE WORK. `--help` used to fall straight through to main(),
+    # which reads this run's VO, enforces the sixty-second law and the scene
+    # count contract, and exits 1 on a SystemExit gate. A flag that prints usage
+    # should never be able to return a gate verdict.
     if "--self-test" in sys.argv:
         sys.exit(self_test())
+    if any(a in ("-h", "--help") for a in sys.argv[1:]):
+        import argparse
+        argparse.ArgumentParser(
+            description="Turn this run's VO timings into "
+                        "out/dispatch/episode_props.json for the Remotion "
+                        "Episode composition. Enforces the sixty-second law and "
+                        "the scene-count contract with Episode.tsx.",
+            epilog="--self-test proves both gates can go red.").parse_args()
     main()

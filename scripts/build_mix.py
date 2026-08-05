@@ -57,7 +57,7 @@ DUCK_DB = -11.0
 # every syllable. Broadcast practice is music several dB further down than
 # spot effects, and the show's brief makes that a creative point too: the score
 # is the polite surface, and a polite surface never talks over anybody.
-MUSIC_DUCK_DB = -8.0
+MUSIC_DUCK_DB = -15.0
 # The envelope is smoothed over this window so the duck does not chatter on
 # every syllable, and released slower than it attacks so it does not pump.
 ENV_ATTACK_S = 0.020

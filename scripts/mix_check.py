@@ -91,7 +91,23 @@ def check(vo, mix, cues):
 
     # THE ONE THAT CATCHES THE FAILURE. Residual = what the mix has that the VO
     # does not. If it is silence, nobody mixed anything.
-    resid = [mix[i] - vo[i] for i in range(n)]
+    #
+    # AND IT HAS TO ALLOW FOR THE BUS GAIN. `mix - vo` assumes the VO reaches
+    # the master at unity, and it does not: build_mix soft-limits the whole bus,
+    # so the delivered voice is vo*k for some k slightly under 1. That leaves
+    # vo*(k-1) in the residual, which is a scaled copy of the voice, which is
+    # loud. Reproduced on 2026-08-05: `mix = vo * 0.80` with ZERO effects and
+    # ZERO score passed all eight rows including "the score plays under the film,
+    # 100% coverage". A gate that a plain volume change satisfies is not
+    # measuring what it says.
+    #
+    # Fix: project the mix onto the VO and subtract the best-fit multiple. That
+    # is the least-squares gain, it removes the whole bus-gain term whatever k
+    # turned out to be, and it needs nothing passed in from the mixer.
+    dot = sum(mix[i] * vo[i] for i in range(n))
+    vv = sum(vo[i] * vo[i] for i in range(n)) or 1e-12
+    k = dot / vv
+    resid = [mix[i] - k * vo[i] for i in range(n)]
     r_rms, v_rms = rms(resid), rms(vo[:n])
     mixed = r_rms > v_rms * 0.004
     row("the episode makes a sound other than talking", mixed,
@@ -189,6 +205,9 @@ def self_test():
     cases = [
         ("audio that was never mixed (the shipped failure)",
          "makes a sound other than talking", vo, list(vo), full_cues),
+        ("a bus-gain change masquerading as a mix",
+         "makes a sound other than talking",
+         vo, [v * 0.80 for v in vo], full_cues),
         ("effects that bury the line",
          "the voice still wins",
          vo, [vo[i] + random.uniform(-0.9, 0.9) for i in range(N)], full_cues),

@@ -81,8 +81,14 @@ SHAPES = {
 MOODS = {
     "hold": {
         "bpm": 76, "bars_per_chord": 1,
+        # ROOTS IDENTICAL IN BOTH TABLES. The module docstring and the comment
+        # above SHAPES both promise "the bass line does not change at the turn,
+        # so nothing announces that anything happened", and then chord 2 moved
+        # 45 -> 44, which is a bass note walking down a semitone at exactly the
+        # moment the change is supposed to be unannounced. Only the QUALITY
+        # changes now, which is what the paragraph always claimed.
         "before": [(48, "maj7"), (45, "m7"), (41, "maj7"), (43, "7sus4")],
-        "after":  [(48, "mMaj7"), (44, "maj7"), (41, "m7"), (43, "m7b5")],
+        "after":  [(48, "mMaj7"), (45, "m7b5"), (41, "m7"), (43, "m7b5")],
         "arp": [0, 2, 1, 3, 2, 1],  # indices into the chord, a polite figure
         "pulse": False,
         "blurb": "elevator-pleasant, and it sours at the turn without changing tempo",
@@ -90,7 +96,7 @@ MOODS = {
     "dread": {
         "bpm": 58, "bars_per_chord": 2,
         "before": [(41, "min9"), (39, "m7")],
-        "after":  [(41, "m7b5"), (38, "m7b5")],
+        "after":  [(41, "m7b5"), (39, "m7b5")],
         "arp": [0, 1, 0, 2],
         "pulse": False,
         "blurb": "low, slow, unresolved. no comic surface to hide behind",
@@ -183,16 +189,37 @@ def render(seed, seconds, mood="hold", turn=None):
     chord_s = bar * m["bars_per_chord"]
     turn_s = seconds if turn is None else float(turn)
 
+    # THE TURN LANDS WHERE IT IS ASKED TO.
+    #
+    # This loop steps by whole chords, and the sour table was selected with
+    # `t >= turn_s`, so the turn could only ever happen ON a chord boundary and
+    # rounded UP to the next one. Case 0003 asks for 26.047s, the frame VERIFIED
+    # comes down on a copy, and got 28.421s: 2.4 seconds late, well past the shot
+    # it was written for. `dread` was up to 7.1s late.
+    #
+    # The self-test did not catch it because the fixture put the turn exactly on
+    # a boundary, which is the only value where the bug is invisible. Same
+    # lesson as the control row two commits ago: a test that only exercises the
+    # lucky input is not a test. The fixture below now uses an off-grid turn.
+    #
+    # Fix: cut the chord short at the turn. The bar in progress ends early, the
+    # sour table starts exactly on the requested second, and because the root
+    # does not move (see the tables) the seam is inaudible as an EVENT while the
+    # harmony underneath it has changed.
     t = 0.0
     idx = 0
     while t < seconds:
         # THE TURN IS A LOOKUP, NOT A TRANSITION. Nothing crossfades, nothing
         # swells; the next chord is simply the sour one. The bass root does not
         # move, so the change has no announcement attached to it.
-        table = m["after"] if t >= turn_s else m["before"]
+        table = m["after"] if t >= turn_s - 1e-9 else m["before"]
         root, shape = table[idx % len(table)]
         tones = [root + s for s in SHAPES[shape]]
         at = int(t * SR)
+        # If the turn falls inside this chord, END THE CHORD THERE.
+        span = chord_s
+        if t < turn_s < t + chord_s:
+            span = turn_s - t
 
         # PAD: the chord, held for the whole bar, mid register.
         for k, note in enumerate(tones):
@@ -200,7 +227,7 @@ def render(seed, seconds, mood="hold", turn=None):
             # jitter is a MIDI file, not a performance.
             j = int(rng.uniform(0, 0.012) * SR)
             v = 0.30 * rng.uniform(0.88, 1.0)
-            voice = pad(hz(note + 12), chord_s * 0.98, rng)
+            voice = pad(hz(note + 12), span * 0.98, rng)
             # spread the voicing across the image, low notes centred
             panL = 0.5 + 0.16 * math.sin(k * 1.7)
             _add(L, at + j, voice, v * panL)
@@ -209,11 +236,17 @@ def render(seed, seconds, mood="hold", turn=None):
         # SUB: the root, two octaves down, quiet. It is the only thing that does
         # not change at the turn, which is why the turn reads as the ground
         # staying put while everything above it goes wrong.
-        _add(L, at, pad(hz(root - 12), chord_s * 0.98, rng), 0.20)
-        _add(R, at, pad(hz(root - 12), chord_s * 0.98, rng), 0.20)
+        # ONE render, BOTH channels. This was two separate pad() calls, each
+        # drawing its own detune and phase from the rng, so the sub was
+        # decorrelated across the image: it beat against itself and partially
+        # cancelled on a mono fold-down, which is how most phones play this.
+        # Twice the CPU for a worse bass. A centred sub is one signal.
+        sub = pad(hz(root - 12), span * 0.98, rng)
+        _add(L, at, sub, 0.20)
+        _add(R, at, sub, 0.20)
 
         # ARP: the polite figure. One note per beat-ish, bell tone, high.
-        step = chord_s / len(m["arp"])
+        step = span / len(m["arp"])
         for s_i, ci in enumerate(m["arp"]):
             note = tones[ci % len(tones)] + 24
             a = at + int((s_i * step + rng.uniform(0, 0.010)) * SR)
@@ -224,12 +257,12 @@ def render(seed, seconds, mood="hold", turn=None):
             _add(R, a, tone, v * (1.0 - pan))
 
         if m["pulse"]:
-            for b in range(4 * m["bars_per_chord"]):
+            for b in range(max(1, int(span / beat))):
                 a = at + int(b * beat * SR)
                 _add(L, a, pluck(hz(root - 24), 0.16, rng, bright=0.4), 0.22)
                 _add(R, a, pluck(hz(root - 24), 0.16, rng, bright=0.4), 0.22)
 
-        t += chord_s
+        t += span
         idx += 1
 
     # Fade the ends. A bed that starts at full level on frame one announces
@@ -301,10 +334,15 @@ def self_test():
     def thirds(sig, t0):
         return energy(sig, EB4, t0, t0 + 2.0), energy(sig, E4, t0, t0 + 2.0)
 
-    # turn lands exactly on the start of cycle two; slot 0 recurs at 2*cyc.
-    turned = render("2026-08-03", 2.5 * cyc + 4, "hold", turn=cyc)[0]
+    # AN OFF-GRID TURN, on purpose. The first version of this fixture used
+    # turn=cyc, exactly on a chord boundary, which is the one value where the
+    # quantization bug is invisible: the turn rounded up to the next boundary
+    # and the next boundary WAS the requested time. A real turn (26.047s in case
+    # 0003) landed 2.4s late and this test said it was fine.
+    off = cyc + 1.317
+    turned = render("2026-08-03", 2.5 * cyc + 6, "hold", turn=off)[0]
     b_eb, b_e = thirds(turned, 0.4)
-    a_eb, a_e = thirds(turned, 2 * cyc + 0.4)
+    a_eb, a_e = thirds(turned, off + 0.15)
     flipped = b_e > b_eb and a_eb > a_e
     print(f"  {'ok  ' if flipped else 'FAIL'} the turn actually changes the harmony "
           f"(E natural {b_e/max(b_eb,1e-9):.1f}x before, E flat {a_eb/max(a_e,1e-9):.1f}x after)")
@@ -312,13 +350,48 @@ def self_test():
 
     # And a score with NO turn must keep the major third in both windows, or the
     # row above is measuring the arpeggio moving rather than the harmony.
-    flat = render("2026-08-03", 2.5 * cyc + 4, "hold", turn=None)[0]
+    flat = render("2026-08-03", 2.5 * cyc + 6, "hold", turn=None)[0]
     f_eb, f_e = thirds(flat, 0.4)
-    g_eb, g_e = thirds(flat, 2 * cyc + 0.4)
+    g_eb, g_e = thirds(flat, off + 0.15)
     still = f_e > f_eb and g_e > g_eb
     print(f"  {'ok  ' if still else 'FAIL'} a score with no turn keeps its major third "
           f"in the same slot ({f_e/max(f_eb,1e-9):.1f}x, {g_e/max(g_eb,1e-9):.1f}x)")
     ok &= still
+
+    # THE ROW THE QUANTIZATION BUG NEEDED. Not "does the harmony change" but
+    # "does it change WHEN ASKED". Sweep turns that deliberately miss the grid.
+    late = []
+    for want in (cyc + 0.4, cyc + 1.317, cyc + 2.9):
+        sig = render("s", 2.5 * cyc + 6, "hold", turn=want)[0]
+        # the sour third must be winning 0.15s after the requested second, and
+        # the sweet third must still be winning 0.15s before it
+        p_eb, p_e = thirds(sig, want - 2.15)
+        q_eb, q_e = thirds(sig, want + 0.15)
+        if not (p_e > p_eb and q_eb > q_e):
+            late.append(want)
+    print(f"  {'ok  ' if not late else 'FAIL'} the turn lands WHEN ASKED, not at the "
+          f"next chord boundary"
+          + ("" if not late else f"   <- still late for turn(s) {late}"))
+    ok &= not late
+
+    # ROOTS MUST NOT MOVE. The docstring promises the bass does not change at
+    # the turn, and for two of three moods it did.
+    moved = {k: [r for r, _ in v["before"]] for k, v in MOODS.items()
+             if [r for r, _ in v["before"]] != [r for r, _ in v["after"]]}
+    print(f"  {'ok  ' if not moved else 'FAIL'} the bass root does not move at the turn "
+          f"(the change is unannounced)"
+          + ("" if not moved else f"   <- moves in {sorted(moved)}"))
+    ok &= not moved
+
+    # A CENTRED SUB MUST SURVIVE MONO. Two pad() calls for L and R drew
+    # different phases and partially cancelled when folded down.
+    Lc, Rc = render("s", 6.0, "hold", turn=None)
+    def _r(x): return (sum(v * v for v in x) / len(x)) ** 0.5
+    mono = _r([(Lc[i] + Rc[i]) * 0.5 for i in range(len(Lc))])
+    keep = mono / max(1e-9, (_r(Lc) + _r(Rc)) / 2)
+    print(f"  {'ok  ' if keep >= 0.97 else 'FAIL'} the mix survives a mono fold-down "
+          f"({keep*100:.0f}% of the level kept)")
+    ok &= keep >= 0.97
 
     for mood in MOODS:
         L, R = render("s", 6.0, mood, turn=3.0)

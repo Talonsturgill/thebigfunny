@@ -26,7 +26,34 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, ".."))
 REAL = os.path.join(REPO, "assets", "sfx", "real")
-FF = os.environ.get("FFMPEG_BIN", "ffmpeg")
+def _ffmpeg():
+    """A usable ffmpeg, or a sentence saying so.
+
+    `FF = "ffmpeg"` assumed one on PATH and there is not one in every
+    environment this runs in, so the failure was a bare FileNotFoundError out of
+    subprocess with no hint. mux_and_verify.sh already solved this: prefer a
+    system ffmpeg, else the full n7.1 that Remotion vendors in its linux
+    compositor package. Same search, same reasons.
+    """
+    import glob as _glob
+    import shutil as _shutil
+    env = os.environ.get("FFMPEG_BIN")
+    if env and (os.path.isfile(env) or _shutil.which(env)):
+        return env
+    found = _shutil.which("ffmpeg")
+    if found:
+        return found
+    here = os.path.dirname(os.path.abspath(__file__))
+    for c in _glob.glob(os.path.join(here, "..", "video-engine", "node_modules",
+                                     "@remotion", "compositor-*", "ffmpeg")):
+        if os.access(c, os.X_OK):
+            return c
+    raise SystemExit(
+        "fetch_sfx: no ffmpeg. Install one, or run `npm install` in "
+        "video-engine/ (it vendors a full ffmpeg), or set FFMPEG_BIN.")
+
+
+FF = None   # resolved lazily in main(), so --help never needs an ffmpeg
 SR = 44100
 
 # pack slug -> asset page (the page is scraped for the current zip href)
@@ -91,6 +118,8 @@ def normalize(raw_ogg, dst):
 
 
 def main():
+    global FF
+    FF = _ffmpeg()
     os.makedirs(REAL, exist_ok=True)
     manifest_path = os.path.join(REAL, "manifest.json")
     manifest = json.load(open(manifest_path)) if os.path.exists(manifest_path) else {"files": []}
@@ -147,4 +176,16 @@ def main():
 
 
 if __name__ == "__main__":
+    # ARGPARSE BEFORE WORK, and before the NETWORK. `--help` used to fall into
+    # main() and start scraping kenney.nl. Three scripts in this directory had
+    # the same shape on 2026-08-05 (this one, build_sfx_library, build_scenes);
+    # one of them rewrote a licence file as a side effect of printing usage.
+    import argparse
+    argparse.ArgumentParser(
+        description="Harvest CC0 impact/interface takes from kenney.nl into "
+                    "assets/sfx/real/, with sha256 provenance in "
+                    "real/manifest.json. sfx_bank then prefers them over the "
+                    "synth bank, per kind.",
+        epilog="Needs an ffmpeg (system, or the one video-engine/ vendors).",
+    ).parse_args()
     main()
