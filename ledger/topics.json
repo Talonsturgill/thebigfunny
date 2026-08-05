@@ -34,6 +34,14 @@
       "subject": "rentgrow-tenant-screening-duplicate-records-ftc",
       "target": "RentGrow, Inc. (tenant screening)",
       "summary": "The FTC alleges RentGrow's tenant screening reports carried duplicate entries for the same eviction action, so applicants looked like they had been sued for eviction more times than they actually had. Disputes were sometimes labelled invalid with no further action. Settled; a settlement is not an admission."
+    },
+    {
+      "run_date": "2026-08-05",
+      "episode_no": 4,
+      "beat": "machine-said-no",
+      "subject": "medicare-advantage-prior-authorization-denials-overturned-on-appeal-oig",
+      "target": "UnitedHealth Group, Inc. and its subsidiary naviHealth",
+      "summary": "HHS OIG found UnitedHealth overturned 99.7 percent of appealed skilled-nursing denials, and that only 18 percent were ever appealed."
     }
   ]
 }

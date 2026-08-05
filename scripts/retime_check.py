@@ -54,10 +54,50 @@ def ranges(src):
     return out
 
 
+def _sibling_consts(src):
+    """The generated caption module a self-timed scene imports TOTAL from."""
+    import os as _os
+    m = re.search(r"from '\./(case\d+_captions)'", src)
+    if not m:
+        return ""
+    p = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))),
+                      "video-engine", "src", m.group(1) + ".ts")
+    return open(p).read() if _os.path.exists(p) else ""
+
+
 def shots(src):
-    """-> [(from, to)] for every <Shot from={} to={}>."""
-    return [(float(a), float(b)) for a, b in
+    """-> [(from, to)] for every <Shot from={} to={}>, named boundaries too."""
+    out = [(float(a), float(b)) for a, b in
             re.findall(r"<Shot\s+from=\{([\d.]+)\}\s+to=\{([\d.]+)\}", src)]
+    # A NAMED BOUNDARY IS STILL A BOUNDARY. The literal-only pattern above
+    # silently DROPPED `<Shot from={48.86} to={TOTAL_S}>`, so case 0004 reported
+    # eleven shots ending at 48.9s in a 51.4s film and called it unbroken. The
+    # one thing this gate exists to catch is a hole, and the hole was the last
+    # three seconds of the episode.
+    #
+    # Resolve the common case: a bare imported/declared constant. Anything more
+    # than a name is left alone and will show up as a gap, which is the right
+    # failure mode for something a human should look at.
+    named = re.findall(r"<Shot\s+from=\{([\d.]+)\}\s+to=\{([A-Za-z_]\w*)\}", src)
+    if named:
+        env = {}
+        for n, v in re.findall(r"(?:export\s+)?const ([A-Za-z_]\w*)\s*=\s*([\d.]+)\s*;", src):
+            env[n] = float(v)
+        for n, v in re.findall(r"export const ([A-Za-z_]\w*)\s*=\s*([\d.]+)\s*;",
+                               _sibling_consts(src)):
+            env.setdefault(n, float(v))
+        # AND THE NAME MAY BE AN ALIAS. Scenes import `{TOTAL as TOTAL_S}`, so
+        # the local name never appears in the module that exports it. Map the
+        # local back to the exported name before looking it up, or the resolver
+        # silently finds nothing and the shot is dropped exactly as before.
+        for local, exported in re.findall(r"(\w+)\s+as\s+(\w+)", src):
+            if local in env and exported not in env:
+                env[exported] = env[local]
+        for a, name in named:
+            if name in env:
+                out.append((float(a), env[name]))
+        out.sort()
+    return out
 
 
 def check(src, board=None):

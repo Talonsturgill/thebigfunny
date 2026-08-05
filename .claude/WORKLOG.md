@@ -291,37 +291,45 @@ something adjacent.
 - The fact-check gate. It is not the problem and it never bends.
 - The 60-second law. The owner did not complain about length.
 
-## RUN IN FLIGHT: case 0004, 2026-08-05 (resume here)
+## SHIPPED: case 0004, 2026-08-05
 
-Branch `run/2026-08-05`. Stamped. Case 4 taken from `ledger/cases.json`.
+`runs/2026-08-05/case0004_tiktok.mp4`, 51.4s, every gate green. The first
+episode produced end to end since the engine work of 2026-08-05, and the first
+one whose staging was designed against `face_size.py` instead of rescued after
+it.
 
-**Story, locked and gated.** Beat `machine-said-no` (never used). Angle type
-`number` (never used; deliberately NOT `ratio`, which ran 08-02).
+Beat `machine-said-no`, angle type `number`, both unused before. HHS OIG
+OEI-09-24-00331: UnitedHealth overturned **99.7 percent** of appealed
+skilled-nursing denials; only **18 percent** were ever appealed; OIG found the
+same pattern in 2018 at 75 percent, so it went UP.
 
-HHS OIG **OEI-09-24-00331**, June 2026, read verbatim from the PDF:
-UnitedHealth **overturned 99.7 percent** of the skilled-nursing prior-auth
-denials that were appealed, and only **18 percent** were ever appealed. Its own
-subsidiary naviHealth issued half the requests and denied at the highest rate;
-UnitedHealth then overturned **97 percent** of naviHealth's denials. OIG found
-the same pattern in **2018 at 75 percent**, so the number has gone UP.
+World THE WINDOW, human scale, deliberately the inverse of case 0003. The set
+is the argument: the shutter is the no, the bell is the appeal, the chairs are
+the 82 percent.
 
-The joke: a no that folds 99.7 percent of the time was never an answer, it was
-a question, and the question is "are you going to argue?" The 82 percent who
-do not argue are the product. Ray says that out loud; the show only quotes
-documents, which is what keeps it inside the fact-check gate.
+| measure | 0003 | 0004 |
+| --- | --- | --- |
+| median head size | 7.7% | **14.0%** |
+| largest head | 23.6% | 24.8% |
+| frozen share | 13% | **11%** |
+| live share | 77% | **82%** |
+| longest hold | 1.5s | **2.0s** |
+| events / 5s | 4.7 | 2.9 |
 
-| artifact | state |
-| --- | --- |
-| `out/dispatch/claims.json` | 12 cleared claims, 2 primary OIG PDFs read verbatim, 4 explicit CUTs (no harm counts, no intent, no algorithm, no named individual) |
-| `out/dispatch/story.json` | angle, causal seven, connector triple, wants, absurd sentence |
-| `out/dispatch/script.json` | 16 lines, 96 words, ~55s estimated |
-| gates passed | `script_check`, `beat_check` lint, `story_check` |
-| still TODO | `world.json` (coherence_check blocks on it), VO, captions, faces, **Case0004.tsx**, sfx cues + score, render, panel, delivery |
+What the gates caught, in order: `story_check` rejected a 35-word absurd
+sentence as a situation rather than a joke; `beat_check` rejected a ten-beat
+shot list until it became a causal seven with a laugh on every beat;
+`coherence_check` found two claims the world said it staged and no shot
+declared; `vo_cast` refused to spend TTS on a script whose faces held past
+eight seconds; `motion_check` found a dead five-second bucket that turned out
+to be a COVERAGE error, four seconds of Ray's face under Dee's biggest number.
 
-Notes for whoever resumes: `out/dispatch/` had case 3 leftovers and `run_guard`
-correctly refused them; they are cleared. TTS budget is 75 calls, 0 spent today.
+Two gates had to be generalised to read a second episode at all: `face_size`
+only understood case 0003's `crown={CARD_W * CAST_TO_CARD}` idiom, and
+`retime_check` silently dropped `to={TOTAL_S}` and called a 51.4s film unbroken
+at 48.9s. Both now resolve names, and case 0003 measures identically.
 
-## Status
+## Status## Status
 
 | # | task | state |
 | --- | --- | --- |

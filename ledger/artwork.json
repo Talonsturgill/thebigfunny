@@ -58,6 +58,15 @@
         "VerifyDie",
         "FilingPlate"
       ]
+    },
+    {
+      "run_date": "2026-08-05",
+      "episode_no": 4,
+      "hero_structure": "a service window at COUNTER HEIGHT in a municipal waiting room, human scale: one aperture with a roller shutter, a formica counter with a bell on it, a row of oxblood chairs. The deliberate inverse of 0003's monumental machine face.",
+      "atmosphere": "flat overhead fluorescent, no falloff, no shadow that ever moves. A room with no time of day.",
+      "palette_family": "municipal oxblood and cream",
+      "continuity_device": "THE BELL. In frame from second one, untouched for twenty seconds, and the last thing on screen still unrung.",
+      "camera_language": "SHOT / REVERSE at counter height with exactly one wide. The show's first conversation coverage, which only became possible when face_size.py forced human-scale staging."
     }
   ]
 }
