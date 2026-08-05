@@ -1,0 +1,193 @@
+{
+  "designable": true,
+  "shippable": true,
+  "blocked_on": [],
+  "missing_inputs": [],
+  "mechanism": {
+    "sentence": "A request goes under the window, the shutter comes down with NO on it, and the instant somebody rings the bell on the counter the shutter goes straight back up and the same request comes back approved, so the denial only holds against the people who never touch the bell.",
+    "claim_ids": [
+      "c1",
+      "c2",
+      "c3",
+      "c7",
+      "c9"
+    ]
+  },
+  "rejected_worlds": [
+    {
+      "world": "The inside of the claims machine, a conveyor sorting requests into YES and NO hoppers.",
+      "why_rejected": "That is case 0003's count room re-liveried, and the artwork ledger bans it. It also argues the wrong thing: a conveyor implies a process with a reason, and the whole finding is that there is no process behind the no."
+    },
+    {
+      "world": "A hospital discharge room, the bed being wheeled out.",
+      "why_rejected": "Puts the patient on screen as the subject, which drags the episode toward the victim and away from the mechanism. story_check calls that failure by name."
+    },
+    {
+      "world": "A courtroom or a hearing.",
+      "why_rejected": "Factually wrong. These appeals are decided by the insurer itself, and staging a neutral arbiter would teach the viewer something the documents contradict."
+    }
+  ],
+  "world": {
+    "name": "THE WINDOW",
+    "the_inside_of": "not the machine and not the office. The ROOM THE MACHINE MAKES YOU SIT IN. One service window with a roller shutter, a formica counter with a bell on it, and a row of chairs behind. There is no back office visible and there never is: what is behind the shutter is never shown, because nothing the episode found suggests anything is."
+  },
+  "scale": "HUMAN. Counter at 1.05m, shutter opening a little wider than a man's shoulders, chairs at real seat height. THE DELIBERATE INVERSE OF CASE 0003, which measured a person against one enormous court case. Here the machine is exactly as big as a man, because a barrier that folds in under a second was never monumental, and drawing it monumental would flatter it.",
+  "palette": {
+    "family": "municipal oxblood and cream",
+    "notes": "Oxblood vinyl chairs, cream formica counter, ochre wall to shoulder height with a dado rail, dull aluminium shutter. Diverges from 0001 manila/carbon, 0002 night steel, 0003 enamel teal/brass. Warm, worn, and 40 years old, because the room is not futuristic and neither is the finding: OIG named this in 2018."
+  },
+  "lighting_rig": {
+    "key": "flat overhead fluorescent, everywhere, no falloff",
+    "shadows": "almost none, and no shadow ever moves",
+    "why": "A waiting room has no time of day. Case 0001 had a dust column, 0002 had night, 0003 had one hard practical. This one refuses all three: nothing here tells you how long you have been in it."
+  },
+  "cast_from_kit": [
+    {
+      "primitive": "cast.Ray / cast.Dee",
+      "status": "exists",
+      "file": "video-engine/src/lib/cast.tsx",
+      "used_as": "the two at the counter, at HUMAN scale for the first time. The episode is shot in the show's first true shot/reverse coverage, so the face_size floor is met by staging rather than by rescue close-ups."
+    },
+    {
+      "primitive": "brand.Stamp",
+      "status": "exists",
+      "file": "video-engine/src/lib/brand.tsx",
+      "used_as": "the one stamp of the episode, on the button plate. NOTE the audited collision: brand.Stamp and kit.Stamp are two components with incompatible props. Import from brand."
+    },
+    {
+      "primitive": "brand.Wordmark / CaseNumber / EndCard",
+      "status": "exists",
+      "file": "video-engine/src/lib/brand.tsx",
+      "used_as": "standard chrome"
+    },
+    {
+      "primitive": "lighting.GradeLayer",
+      "status": "exists",
+      "file": "video-engine/src/lib/lighting.tsx",
+      "used_as": "grade, HTML layer, mounted OUTSIDE the svg per the mounting contract"
+    },
+    {
+      "primitive": "Figure poses point / arms-crossed / raise / stand",
+      "status": "exists",
+      "file": "video-engine/src/lib/Figure.tsx",
+      "used_as": "Ray reaches for the bell; Dee holds the document"
+    },
+    {
+      "primitive": "a service counter, a roller shutter, a bell, a chair row, a stamp pair, an OIG page plate",
+      "status": "must_build",
+      "file": "video-engine/src/lib/window.tsx (NEW)",
+      "used_as": "the whole set. Case 0003 built countroom.tsx the same way. Registers in ASSET_MANIFEST.md in the same commit."
+    }
+  ],
+  "new_assets": [
+    {
+      "name": "ServiceWindow",
+      "what": "the wall aperture plus roller shutter, `shut` 0..1 driving the slats down over the opening, with a stencilled NO on the shutter face that is only readable when it is down"
+    },
+    {
+      "name": "CounterBell",
+      "what": "the dome bell on its base, `struck` 0..1 giving a 3px dome compress and a ring wobble. It is on screen from second one and untouched for twenty seconds"
+    },
+    {
+      "name": "ChairRow",
+      "what": "oxblood vinyl waiting chairs on a rail, `occupied` count, seated figures drawn as simple silhouettes so they never compete with the cast"
+    },
+    {
+      "name": "StampPair",
+      "what": "two rubber stamps in one tray, NO and YES, both worn to the same shine"
+    },
+    {
+      "name": "OIGPlate",
+      "what": "the report page for the button, with two highlightable sentences at fixed rows"
+    }
+  ],
+  "sight_gags": [
+    {
+      "gag": "THE BELL. It sits on the counter in frame from second one and nobody touches it for twenty seconds. When Ray finally hits it, the shutter is ALREADY GOING UP before his hand leaves the dome. The no folds faster than a person can react to it, which is the whole finding drawn instead of said.",
+      "claim": "c1",
+      "survives_sound_off": true
+    },
+    {
+      "gag": "THE CHAIRS. One wide, once, and every chair behind him is occupied and not one of those people is at the counter. The 82 percent, drawn, never named in dialogue.",
+      "claim": "c2",
+      "survives_sound_off": true
+    },
+    {
+      "gag": "THE TWO STAMPS in one tray, NO and YES, worn to exactly the same shine. The same hand does both, all day, to the same piece of paper.",
+      "claim": "c3",
+      "survives_sound_off": true
+    }
+  ],
+  "shots": [
+    {
+      "station": "the shutter, counter height (0.0-4.6s)",
+      "on_screen": "the aperture with the shutter coming down, NO stencilled across the slats, the bell in the near corner of frame already",
+      "camera": "counter height, square on"
+    },
+    {
+      "station": "Dee at the counter (4.6-10.2s)",
+      "on_screen": "Dee, mid, the document in her hands, the shutter behind her shoulder",
+      "camera": "the reverse. THE SHOW'S FIRST CONVERSATION COVERAGE"
+    },
+    {
+      "station": "Ray (10.2-19.6s)",
+      "on_screen": "Ray, mid to close, working the number out",
+      "camera": "the reverse of the reverse"
+    },
+    {
+      "station": "THE TURN, the bell (19.6-26.2s)",
+      "on_screen": "his hand on the dome and the shutter already rising behind it, in ONE frame, no cut",
+      "camera": "counter height, wider by a hair so both are in it",
+      "claim": "c1"
+    },
+    {
+      "station": "the room (26.2-31.4s)",
+      "on_screen": "THE WIDE. Every chair occupied, nobody at the counter",
+      "camera": "the only wide in the film",
+      "claim": "c2"
+    },
+    {
+      "station": "the document, Dee (31.4-39.0s)",
+      "on_screen": "Dee reading the flat list, close",
+      "camera": "reverse, closer than before",
+      "claim": "c7"
+    },
+    {
+      "station": "the shutter answers (39.0-43.6s)",
+      "on_screen": "the shutter, no face, a laminated notice on it about appeal rights",
+      "camera": "square on, locked"
+    },
+    {
+      "station": "Ray (43.6-48.8s)",
+      "on_screen": "Ray, close, stating the record",
+      "camera": "reverse, closest in the film",
+      "claim": "c3"
+    },
+    {
+      "station": "THE BUTTON (48.8-55.0s)",
+      "on_screen": "the OIG page filling frame, the 2018 sentence above the 2026 sentence, both highlighted, the bell still unrung at the edge",
+      "camera": "flat plate",
+      "claim": "c9"
+    }
+  ],
+  "legibility_gate": "Both OIG sentences on the button plate must be readable at 1080x1920 at speed, and the two percentages (75 and 95) must be the largest type on the plate. The NO on the shutter must read at thumbnail size.",
+  "divergence": {
+    "hero_structure": "a service window at counter height in a waiting room, human scale, shot/reverse. NOT 0001's cabinet wall, NOT 0002's one-point recession, NOT 0003's flat machine face.",
+    "atmosphere": "flat overhead fluorescent with no falloff and no moving shadow. NOT 0001's dust column, NOT 0002's night, NOT 0003's single hard practical.",
+    "palette_family": "municipal oxblood and cream. NOT manila/carbon, NOT night steel, NOT enamel teal/brass.",
+    "continuity_device": "THE BELL, present in frame from second one, untouched for twenty seconds, and the last thing on screen still unrung. NOT 0001's drifting shape, NOT 0003's edge-tease.",
+    "camera_language": "SHOT / REVERSE at seated eye height, with exactly one wide. The show has never cut a conversation before, because until today the cast were too small to cut to."
+  },
+  "handoff_to_board": [
+    "THE SHUTTER MUST BE ALREADY MOVING IN THE SAME FRAME AS THE HAND ON THE BELL. If the board cuts between them, the gag becomes cause-and-effect over time and the point is that there is NO time. One frame, both things.",
+    "THE BACK OFFICE IS NEVER DRAWN. Nothing in either OIG report describes who or what issues these denials, so an office, a clerk or a machine on the far side asserts a mechanism the documents do not contain. The aperture reads as unlit depth and stays that way. (The chairs at Ray's back are a different thing entirely and are required; see the wide.)",
+    "THE SEATED FIGURES ARE SILHOUETTES. They are the 82 percent, not characters, and giving one of them a face turns the wide into a story about that person.",
+    "NO ONE MAY BE SHOWN BEING HARMED. c7 is quoted as the report's own list of what MAY have happened and is never illustrated. The chairs carry it.",
+    "THE INSTITUTION HAS NO FACE. Its line comes off a laminated notice taped to the shutter. Nothing brightens, no aperture irises, no part of the wall turns toward camera. The shutter rising IS required and is not an expression: it is a mechanism doing the one thing it does, indifferently, which is the point."
+  ],
+  "the_turn": {
+    "at_seconds": 19.6,
+    "what_gets_worse": "Ray rings the bell and the shutter goes straight back up with no resistance at all, before his hand has left the dome. The no had no mass. He was leaning on a door that was never locked, and at his back a room of occupied chairs where not one person is at the counter."
+  },
+  "the_joke": "The barrier folds faster than a person can react, and it is still a barrier, because it only ever had to hold against the people who never touched it."
+}

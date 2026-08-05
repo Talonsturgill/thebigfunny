@@ -1,0 +1,139 @@
+{
+  "case": 4,
+  "run_date": "2026-08-05",
+  "beat": "machine-said-no",
+  "subject": "medicare-advantage-prior-authorization-denials-overturned-on-appeal-oig",
+  "target": "UnitedHealth Group, Inc. and its subsidiary naviHealth; the Medicare Advantage prior-authorization industry",
+  "primary_sources": [
+    {
+      "id": "S1",
+      "title": "Medicare Advantage Organizations Overturned Nearly All Appealed Prior Authorization Denials for Skilled Nursing Facility Admission, Raising Concerns About Initial Denials",
+      "publisher": "HHS Office of Inspector General",
+      "report_no": "OEI-09-24-00331",
+      "date": "June 2026",
+      "url": "https://oig.hhs.gov/reports/all/2026/medicare-advantage-organizations-overturned-nearly-all-appealed-prior-authorization-denials-for-skilled-nursing-facility-admission-raising-concerns-about-initial-denials/",
+      "pdf": "https://oig.hhs.gov/documents/audit/11694/OEI-09-24-00331.pdf",
+      "read": "full PDF text extracted and read verbatim, 2026-08-05"
+    },
+    {
+      "id": "S2",
+      "title": "The Three Largest Medicare Advantage Organizations Denied Requests for Long-Term Acute Care and Inpatient Rehabilitation at Some of the Highest Rates",
+      "publisher": "HHS Office of Inspector General",
+      "report_no": "OEI-09-24-00330",
+      "date": "June 2026",
+      "url": "https://oig.hhs.gov/reports/all/2026/the-three-largest-medicare-advantage-organizations-denied-requests-for-long-term-acute-care-and-inpatient-rehabilitation-at-some-of-the-highest-rates/",
+      "pdf": "https://oig.hhs.gov/documents/audit/11693/OEI-09-24-00330.pdf",
+      "read": "full PDF text extracted and read verbatim, 2026-08-05"
+    }
+  ],
+  "claims": [
+    {
+      "id": "c1",
+      "source": "S1",
+      "verbatim": "When SNF denials were appealed, MAOs overturned 95 percent in favor of the enrollee.",
+      "plain": "Appeal a denial of skilled nursing care and the insurer reversed itself 95% of the time.",
+      "cleared": true
+    },
+    {
+      "id": "c2",
+      "source": "S1",
+      "verbatim": "Enrollees and their providers appealed 18 percent of SNF denials.",
+      "plain": "Only 18% of those denials were ever appealed.",
+      "cleared": true
+    },
+    {
+      "id": "c3",
+      "source": "S1",
+      "verbatim": "The high overall overturn rate was driven largely by the MAO UnitedHealth Group, Inc., which received 42 percent of the SNF appeal requests and overturned them 99.7 percent of the time.",
+      "plain": "UnitedHealth reversed 99.7% of the appealed denials it received.",
+      "cleared": true,
+      "note": "THE SPINE. Verbatim, named company, the federal watchdog's own analysis."
+    },
+    {
+      "id": "c4",
+      "source": "S1",
+      "verbatim": "The MAO contractor naviHealth processed half of all requests for SNF admission and denied 14 percent of them-a higher denial rate than MAOs that processed requests internally (11 percent) and other contractors (9 percent).",
+      "plain": "naviHealth handled half of all requests and denied at a higher rate than anyone else.",
+      "cleared": true
+    },
+    {
+      "id": "c5",
+      "source": "S1",
+      "verbatim": "MAOs later overturned 97 percent of SNF denials issued by naviHealth when enrollees appealed.",
+      "plain": "The insurers reversed 97% of the denials their own contractor issued.",
+      "cleared": true,
+      "note": "S2 identifies naviHealth verbatim as 'a subsidiary of the MAO UnitedHealth Group, Inc.' The company paid its own subsidiary to say no, then reversed it 97 times in 100."
+    },
+    {
+      "id": "c6",
+      "source": "S1",
+      "verbatim": "MAOs and their contractors denied requests for SNF-level care from nursing home residents 40 percent of the time, a much higher rate than requests from all other enrollees (11 percent).",
+      "plain": "People already living in a nursing home were denied nursing-home-level care 40% of the time, against 11% for everyone else.",
+      "cleared": true
+    },
+    {
+      "id": "c7",
+      "source": "S1",
+      "verbatim": "For the 82 percent of denials that were not appealed, the patient may have requested a lower level of care (e.g., home health), paid for SNF-level care out of pocket, or gone without post-acute care.",
+      "plain": "OIG's own list of what may have happened to the 82% who did not appeal.",
+      "cleared": true,
+      "note": "THE PAINT. The report euphemising its own finding. 'Gone without post-acute care' is doing enormous work at the end of that sentence, and the show quotes it rather than characterising it."
+    },
+    {
+      "id": "c8",
+      "source": "S1",
+      "verbatim": "Overall, MAOs denied 12 percent of requests for SNF admission in June 2024 (approximately 13,500 of 109,400 requests).",
+      "plain": "13,500 denials out of 109,400 requests, in one month.",
+      "cleared": true
+    },
+    {
+      "id": "c9",
+      "source": "S1",
+      "verbatim": "In a 2018 report, OIG found that when enrollees and providers appealed denied requests between 2014 and 2016, MAOs overturned about 75 percent of their own prior authorization and payment denials.",
+      "plain": "OIG found the same pattern in 2018. The reversal rate has gone UP since.",
+      "cleared": true,
+      "note": "The eight-year receipt. Not a new glitch."
+    },
+    {
+      "id": "c10",
+      "source": "S2",
+      "verbatim": "The three largest MAOs by enrollment (UnitedHealth Group, Inc., Humana Inc.; and CVS Health Corporation) received the most requests for LTCH admission and denied them more than 70 percent of the time.",
+      "plain": "The three biggest insurers denied more than 70% of long-term acute care requests.",
+      "cleared": true
+    },
+    {
+      "id": "c11",
+      "source": "S2",
+      "verbatim": "In a 2022 report, OIG physician reviewers found that among the prior authorization requests (for all service types) that MAOs denied, 13 percent met Medicare coverage rules.",
+      "plain": "13% of denied requests met Medicare's own coverage rules.",
+      "cleared": true
+    },
+    {
+      "id": "c12",
+      "source": "S1",
+      "verbatim": "The 19 MAOs in this study had 29.3 million people enrolled in their Medicare Advantage contracts in June 2024, which represented 86 percent of enrollment in the Medicare Advantage program at that time.",
+      "plain": "29.3 million people, 86% of Medicare Advantage.",
+      "cleared": true
+    }
+  ],
+  "CUT": [
+    {
+      "claim": "Any count of people harmed, bankrupted or killed.",
+      "why": "OIG gives none. c7 may be QUOTED as the report's own list of possibilities; no outcome may be asserted."
+    },
+    {
+      "claim": "That the denials were deliberate, or designed to make money.",
+      "why": "NOT IN THE DOCUMENT. OIG says the pattern 'raises concerns'. Intent is uncleared and unnecessary: the arithmetic is funnier than the accusation, and asserting motive is how this becomes a lawsuit instead of a joke."
+    },
+    {
+      "claim": "Anything about nH Predict, AI or an algorithm making these decisions.",
+      "why": "That is an ALLEGATION in ongoing private litigation, not an OIG finding. Neither report attributes these denials to an algorithm."
+    },
+    {
+      "claim": "Any named individual executive.",
+      "why": "The target is the institution. Always."
+    }
+  ],
+  "punch_direction": "UP. Named: UnitedHealth Group, its subsidiary naviHealth, and the largest MA insurers. Never the enrollees, the nursing home residents, the providers filing appeals, or the OIG analysts.",
+  "not_partisan": "Medicare Advantage prior authorization is attacked from both parties; the Senate Permanent Subcommittee on Investigations work in this area was pressed jointly by Blumenthal (D-CT) and Hawley (R-MO). The episode names a company, not a party, and advances no policy position."
+}

@@ -1,0 +1,90 @@
+{
+  "case": 4,
+  "run_date": "2026-08-05",
+  "beat": "machine-said-no",
+  "angle_type": "number",
+  "angle_type_check": "euphemism (08-01), ratio (08-02), the-machine-is-never-wrong (08-03). `number` has not run in the last seven. Deliberately NOT `ratio`, which ran on 08-02, even though two figures are in play: the episode is built on ONE figure and its comparison unit, which is what The Number is.",
+  "angle": "UnitedHealth overturned 99.7 percent of the skilled-nursing denials that got appealed, and only 18 percent of denials were ever appealed.",
+  "the_document": "HHS OIG, OEI-09-24-00331, June 2026, verbatim: 'The high overall overturn rate was driven largely by the MAO UnitedHealth Group, Inc., which received 42 percent of the SNF appeal requests and overturned them 99.7 percent of the time.'",
+  "why_it_is_funny": "Because 99.7 percent is not an error rate. An error rate that high is not a system making mistakes, it is a system that was never answering the question. The comedy is that the machine folds INSTANTLY and COMPLETELY the moment anybody pushes, which retroactively empties the word 'no' of all content, and it keeps saying it anyway because 82 percent of people do not push.",
+  "the_unsayable": "A no that reverses 99.7 percent of the time is not an answer. It is a question, and the question is 'are you going to argue?'",
+  "who_says_it": "RAY. This is a character REACTION, not a claim the show makes. The episode asserts only what the documents say and puts the paint in the same frame as the thing; Ray is the one who says out loud what the viewer already worked out. Keeping that line in his mouth rather than in a caption is what keeps the episode inside the fact-check gate.",
+  "the_paint": "OIG's own sentence about the 82 percent: 'the patient may have requested a lower level of care (e.g., home health), paid for SNF-level care out of pocket, or gone without post-acute care.' The calm parallel structure, with 'gone without post-acute care' arriving last and flattest, IS the paint. The episode quotes it and does not characterise it.",
+  "the_turn": "The reveal that the denials came from naviHealth, a UnitedHealth subsidiary, and that UnitedHealth overturned 97 percent of them. The company paid itself to say no and then overruled itself. The turn is not a new fact about cruelty, it is the discovery that both halves of the argument are the same company.",
+  "the_button": "OIG found the same pattern in 2018, when the overturn rate was about 75 percent. It has gone UP. This is not a glitch anybody is fixing.",
+  "target": "UnitedHealth Group, Inc. and its subsidiary naviHealth. An institution, acting in public, at enormous scale.",
+  "never_the_target": "The enrollees. The nursing home residents. The providers who file the appeals. The OIG analysts who found this. Ray is one of the people it is happening to.",
+  "one_angle_only": "The 40 percent nursing-home-resident denial rate (c6) is the single most enraging number in the file and it is CUT from the spine. It is a second angle and sixty seconds holds one. It may appear as a picture, never as an argument.",
+  "claims_used": [
+    "c1",
+    "c2",
+    "c3",
+    "c5",
+    "c7",
+    "c9"
+  ],
+  "claims_available_unused": [
+    "c4",
+    "c6",
+    "c8",
+    "c10",
+    "c11",
+    "c12"
+  ],
+  "connector": "The word 'no' on a coverage denial.",
+  "target_assumption": "A no is a decision about whether the care is medically necessary.",
+  "reinterpretation": "A no is a fee collected in paperwork from anyone who does not appeal, and it evaporates on contact with anyone who does.",
+  "ray_wants": "The care, and an explanation of why it was refused.",
+  "dee_wants": "To do it the correct way, which is to file the appeal and cite the document.",
+  "incompatible": "Filing the appeal WORKS, and that is the problem. Dee's correct channel gets the yes, which proves the no was empty, which is the one thing Ray cannot accept and the one thing Dee cannot escalate. Winning the appeal removes the grounds for complaining about it.",
+  "beats": [
+    {
+      "n": 1,
+      "link": null,
+      "text": "A denial arrives for skilled nursing care, for a man who has just left the hospital.",
+      "joke": "It arrives like weather. Nobody decided it, it just came, and the flatness is the first laugh."
+    },
+    {
+      "n": 2,
+      "link": "BUT",
+      "expects": "an appeal is a long fight you usually lose",
+      "text": "Dee files the appeal and it is granted almost at once. Ninety-five percent of them are.",
+      "joke": "She braced for a siege and the gate was open. Winning this fast is somehow worse news than losing."
+    },
+    {
+      "n": 3,
+      "link": "THEREFORE",
+      "text": "So the denial was wrong, and UnitedHealth's own reversal rate on these appeals is 99.7 percent.",
+      "joke": "99.7 is not an error rate. It is a rounding error away from conceding the no was decorative, and Ray says so: a hundred percent with a typo."
+    },
+    {
+      "n": 4,
+      "link": "THEREFORE",
+      "text": "So Ray reinterprets the word: a no that folds 99.7 percent of the time was never an answer, it was a question.",
+      "joke": "THE REINTERPRETATION. 'Are you gonna argue' is the entire product, said out loud by the only person rude enough to say it."
+    },
+    {
+      "n": 5,
+      "link": "BUT",
+      "expects": "anyone refused care after a hospital stay would fight it",
+      "text": "Only 18 percent of people appeal at all.",
+      "joke": "The machine is not beating people. It is beating the 82 percent who never showed up, which is a much easier fight and it is the one it is in."
+    },
+    {
+      "n": 6,
+      "link": "THEREFORE",
+      "text": "So Ray asks what became of the other 82 percent, and the report answers in a flat parallel list ending in 'gone without post-acute care'.",
+      "joke": "The horror is item three, in the same tone as items one and two. Nobody wrote it as a horror; it is just where the sentence ended."
+    },
+    {
+      "n": 7,
+      "link": "BUT",
+      "expects": "being caught 99.7 percent wrong changes something",
+      "text": "The Institution replies with the location of his appeal rights, and OIG's 2018 finding was 75 percent, so this is the improved version.",
+      "joke": "It answers a question nobody asked, politely, and the receipt underneath says eight years of attention made the number go UP."
+    }
+  ],
+  "absurd_sentence": "A company tells you no, then says yes 99.7 percent of the time you ask again, and still opens with no.",
+  "who_does_the_stupid_thing": "UnitedHealth Group. It paid its own subsidiary, naviHealth, to review these requests; naviHealth denied them at a higher rate than anyone else in the study; and then UnitedHealth overturned 97 percent of naviHealth's denials on appeal. The company is arguing with itself and losing 97 times out of 100. Nobody is being outsmarted here, including by the company.",
+  "why_absurd_not_just_bad": "A story about somebody being denied care is INFURIATING, and infuriating is not this show's job. What makes this one absurd is that the denial does not survive a single question. The institution is not defending a position, because it turns out not to have one: challenge it and it folds instantly, completely, 99.7 percent of the time. That is not a villain, it is a pratfall. A man who falls over every single time he stands up, and who stands up again every morning, is slapstick, and this is that at the scale of 29.3 million people. The rage is real and it is the FUEL, but the laugh is at an institution that cannot win an argument it insists on starting."
+}
