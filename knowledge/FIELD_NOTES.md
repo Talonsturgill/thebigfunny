@@ -874,8 +874,51 @@ Two things that made the fix real rather than notional:
   is a collision, and the thing that loses a collision with a two second door
   slam is the line the episode is about.
 
-**Still open, and deliberately not built blind:** `scripts/get_music.py` exists,
-no music is committed, and nothing mixes a bed. Unlike the SFX, whether this
-show WANTS music under it is a creative call and not an obvious omission, and
-this environment cannot audition audio. Recording it here rather than guessing.
+**The music was the same shape and the owner settled it in four words** ("yes we
+want music, build it"). `get_music.py` turned out to be a fetcher whose fallback
+path was never ported, so there was nothing to wire; the score is synthesized
+now. Three reasons that generalise past music: a daily run cannot depend on a
+network, a CC-BY asset is a permanent daily attribution obligation and one
+mis-credit is the same class of risk as a bad fact, and a POOL repeats while the
+ledger forbids repeating. Anything this show consumes daily should be generated
+and seeded, not fetched and cycled.
+
+## A self-test without a CONTROL row proves nothing (2026-08-05)
+
+`build_music.py` asserts that the score's harmony sours at the turn. The first
+version of that test compared the spectrum of a window at 6.4s against one at
+18.4s and asked whether it moved.
+
+It moves either way. The progression is four chords long, so those two windows
+sit on DIFFERENT CHORDS and would differ in a score with no turn at all. The
+test would have passed on a completely broken turn, forever.
+
+What caught it was the row underneath: "a score with no turn does not move."
+That row went red the first time it ran, which is the only reason the one above
+it got fixed. The measurement is musical now instead of statistical: sample the
+SAME SLOT of the progression on both sides of the turn and require E natural to
+win before it and E flat to win after it. Nothing but the third moving can do
+that.
+
+**Every "X happens" row in this repo needs a paired "X does not happen when it
+should not" row, and the pair has to use the same measurement.** A row that only
+ever fires in one direction is measuring that the code ran, not that it worked.
+The same pattern is already in `motion_check` (a pan must score 0% cuts, a
+slideshow 100%) and in `face_size` (a wide-only episode must fail, a wide plus a
+close must pass). It was missing here and it cost a test that could not fail.
+
+## A named path in prose is a promise a run will try to keep (2026-08-05)
+
+Writing the routine paragraph that explains why the music is synthesized, I
+named two files as examples of things that DO NOT EXIST. `refs_check` failed the
+commit.
+
+It was right, and the reasoning is worth keeping: a run told to read a path does
+not error on a missing file. It proceeds, and it answers confidently from
+nothing. That is the failure this repo already has an entry about under "an
+absent input is not a passing input", arriving through a different door: prose
+that mentions a path is indistinguishable, to a reader following instructions,
+from prose that instructs them to open it.
+
+Describe an absent file; never spell it as a path.
 
